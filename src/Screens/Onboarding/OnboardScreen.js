@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Animated, Image, TouchableOpacity } from 'react-native';
 import { scr_height, scr_width } from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
-import { Gilmer } from '../../Global/FontFamily';
+import { Gilmer, Manrope } from '../../Global/FontFamily';
 import { useNavigation } from '@react-navigation/native';
 import { BottomSheet } from 'react-native-btr';
 import { Iconviewcomponent } from '../../Components/Icontag';
@@ -135,11 +135,11 @@ const OnboardScreen = () => {
 
             <View style={{ width: '100%', position: 'absolute', alignItems: 'center', bottom: 0, height: 300, backgroundColor: Color.white, borderTopStartRadius: 30, borderTopRightRadius: 30 }}>
                 <View style={{ width: '95%', padding: 10 }}>
-                    <Text style={{ textAlign: 'left', fontSize: 24, color: Color.black, fontFamily: Gilmer.Heavy, paddingHorizontal: 10, paddingVertical: 5, letterSpacing: 1 }}>Hello!</Text>
-                    <Text style={{ textAlign: 'justify', fontSize: 15, color: Color.lightBlack, fontFamily: Gilmer.Light, paddingHorizontal: 10, letterSpacing: 0.5, lineHeight: 22 }}>Discover the joy of convenient and secure online shopping with Shopeasey, your trusted destination for a vast selection of products.</Text>
+                    <Text style={{ textAlign: 'left', fontSize: 24, color: Color.black, fontFamily: Manrope.ExtraBold, paddingHorizontal: 10, paddingVertical: 5, letterSpacing: 1 }}>Hello!</Text>
+                    <Text style={{ textAlign: 'justify', fontSize: 15, color: Color.cloudyGrey, fontFamily: Manrope.Medium, paddingHorizontal: 10, letterSpacing: 0.5, lineHeight: 22 }}>Discover the joy of convenient and secure online shopping with Shopeasey, your trusted destination for a vast selection of products.</Text>
                 </View>
                 <View style={{ width: '95%', padding: 10, }}>
-                    <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Gilmer.Medium, letterSpacing: 0.5, lineHeight: 22 }}>Select Your Region</Text>
+                    <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22 }}>Select Your Region</Text>
 
                     <TouchableOpacity
                         onPress={() => sale_toggleBottomView()}
@@ -149,20 +149,21 @@ const OnboardScreen = () => {
                                 source={{ uri: selectImage }}
                                 style={{ width: 50, height: 50, resizeMode: 'contain' }}
                             />
-                            <Text style={{ fontSize: 16, color: Color.lightBlack, fontFamily: Gilmer.Bold, letterSpacing: 0.5 }}>{selectname}</Text>
+                            <Text style={{ fontSize: 16, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5 }}>{selectname}</Text>
 
                             <Iconviewcomponent
                                 Icontag={'Entypo'}
                                 iconname={'chevron-small-down'}
-                                icon_size={22}
+                                icon_size={24}
                                 iconstyle={{ color: Color.lightBlack, marginRight: 10 }}
                             />
                         </View>
                     </TouchableOpacity>
 
 
-                    <TouchableOpacity style={{ width: '100%', height: 45, marginVertical: 10, backgroundColor: Color.primary, borderColor: Color.lightgrey, borderWidth: 0.5, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
-                        <Text style={{ fontSize: 14, color: Color.white, fontFamily: Gilmer.Medium, letterSpacing: 0.5, lineHeight: 22 }}>Get Started</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("OnboardTwo")}
+                        style={{ width: '100%', height: 45, marginVertical: 10, backgroundColor: Color.primary, borderColor: Color.lightgrey, borderWidth: 0.5, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
+                        <Text style={{ fontSize: 14, color: Color.white, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22 }}>Get Started</Text>
                     </TouchableOpacity>
 
                 </View>

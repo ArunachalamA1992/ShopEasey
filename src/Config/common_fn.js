@@ -1,5 +1,5 @@
 import {Platform, ToastAndroid, LayoutAnimation, UIManager} from 'react-native';
-import {pick} from 'react-native-document-picker';
+
 
 const common_fn = {
   showToast: msg => {

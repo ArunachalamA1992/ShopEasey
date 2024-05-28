@@ -1,19 +1,24 @@
-import React, {useEffect, useState} from 'react';
-import {LogBox, StatusBar, View, Linking} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { LogBox, StatusBar, View, Linking } from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {Provider, useDispatch, useSelector} from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 
-import {Provider as PaperProvider} from 'react-native-paper';
-import {navigationRef} from '../RootNavigation';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { navigationRef } from '../RootNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Store from './Redux/Store';
 import SplashScreen from './SplashScreen';
 import OnboardScreen from './Screens/Onboarding/OnboardScreen';
 import Color from './Global/Color';
 import TabNavigator, { Auth } from './route';
+import OnboardTwo from './Screens/Onboarding/OnboardTwo';
+import CustomDrawerContent from './Components/Nav/CustomDrawerContent';
+import WishList from './Screens/Home/BottomTabs/WishList';
+import Icon from 'react-native-vector-icons/Ionicons';
+import ProductList from './Screens/Home/ProductList';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -87,13 +92,13 @@ const MyDrawer = () => {
       <NavigationContainer linking={linking} ref={navigationRef}>
         <Drawer.Navigator
           initialRouteName="Home"
-          screenOptions={{swipeEnabled: false}}
-          // drawerContent={props => <CustomDrawerContent {...props} />}
-          >
+          screenOptions={{ swipeEnabled: false }}
+          drawerContent={props => <CustomDrawerContent {...props} />}
+        >
           <Drawer.Screen
             name="Home"
             component={MainApp}
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
           />
           {/* <Stack.Screen
             name="DetailedScreen"
@@ -159,34 +164,39 @@ const MainApp = () => {
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="OnboardScreen"
           component={OnboardScreen}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OnboardTwo"
+          component={OnboardTwo}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Auth"
           component={Auth}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
-       
-        {/* <Stack.Screen
-          name="SearchScreen"
-          component={SearchScreen}
-          options={({navigation, route}) => ({
-            headerTitle: 'Search Jobs',
+
+        <Stack.Screen
+          name="Wishlist"
+          component={WishList}
+          options={({ navigation, route }) => ({
+            headerTitle: 'Wish List',
             headerTitleAlign: 'center',
-            headerTitleStyle: {color: Color.black},
-            headerStyle: {backgroundColor: Color.white},
+            headerTitleStyle: { color: Color.black },
+            headerStyle: { backgroundColor: Color.white },
             headerLeft: () => (
-              <View style={{marginHorizontal: 10}}>
+              <View style={{ marginHorizontal: 10 }}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -200,27 +210,28 @@ const MainApp = () => {
 
 
         <Stack.Screen
-          name="AppliedJobs"
-          component={AppliedJobs}
-          options={({navigation, route}) => ({
-            headerTitle: 'Applied Jobs',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {color: Color.black},
-            headerStyle: {backgroundColor: Color.white},
-            headerLeft: () => (
-              <View style={{marginHorizontal: 10}}>
-                <Icon
-                  name="arrow-back"
-                  size={30}
-                  color={Color.black}
-                  onPress={() => navigation.goBack()}
-                />
-              </View>
-            ),
-          })}
+          name="ProductList"
+          component={ProductList}
+          // options={({navigation, route}) => ({
+          //   headerTitle: 'Product List',
+          //   headerTitleAlign: 'center',
+          //   headerTitleStyle: {color: Color.black},
+          //   headerStyle: {backgroundColor: Color.white},
+          //   headerLeft: () => (
+          //     <View style={{marginHorizontal: 10}}>
+          //       <Icon
+          //         name="arrow-back"
+          //         size={30}
+          //         color={Color.black}
+          //         onPress={() => navigation.goBack()}
+          //       />
+          //     </View>
+          //   ),
+          // })}
+          options={{ headerShown: false }}
         />
 
-        <Stack.Screen
+        {/*  <Stack.Screen
           name="Notification"
           component={Notification}
           options={({navigation, route}) => ({
