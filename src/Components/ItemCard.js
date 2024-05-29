@@ -30,18 +30,25 @@ const ItemCard = props => {
         resizeMode="cover"
         onError={error => console.log('Image loading error:', error)}>
         <View style={styles.imageTopView}>
-          <Text style={styles.offerText}>{discount}% off</Text>
-          <TouchableOpacity>
-            <AntDesign
-              name="hearto"
-              size={20}
-              color={Color.black}
-              style={{
-                backgroundColor: '#FFFFFF80',
-                padding: 10,
-                borderRadius: 100,
-              }}
-            />
+          <View
+            style={{
+              backgroundColor: Color.lightYellow,
+              borderRadius: 5,
+              paddingHorizontal: 10,
+              padding: 5,
+            }}>
+            <Text style={styles.offerText}>{discount}% off</Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#FFFFFF80',
+              width: 30,
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 100,
+            }}>
+            <AntDesign name="hearto" size={16} color={Color.black} />
           </TouchableOpacity>
         </View>
         <LinearGradient
@@ -117,13 +124,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   offerText: {
-    backgroundColor: Color.lightYellow,
     fontFamily: Manrope.Bold,
     fontSize: 12,
     color: Color.black,
-    borderRadius: 5,
     textAlign: 'center',
-    paddingHorizontal: 10,
   },
   locationView: {
     flexDirection: 'row',

@@ -20,6 +20,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ProductList from './Screens/Home/ProductList';
 import ProductDetails from './Screens/Home/ProductDetails';
 import CategoryScreen from './Screens/Home/CategoryScreen';
+import SearchScreen from './Screens/Home/SearchScreen';
+import {Manrope} from './Global/FontFamily';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -118,6 +120,30 @@ const MainApp = () => {
             headerTitle: 'Category',
             headerTitleAlign: 'center',
             headerTitleStyle: {color: Color.black},
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="Search"
+          component={SearchScreen}
+          options={({navigation, route}) => ({
+            headerTitle: '',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontFamily: Manrope.Bold,
+              fontSize: 18,
+            },
             headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
               <View style={{marginHorizontal: 10}}>

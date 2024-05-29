@@ -1,25 +1,29 @@
-//import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import {Text, View} from 'react-native';
+import Color from '../../../Global/Color';
+import {Manrope} from '../../../Global/FontFamily';
 
-// create a component
 const MyCart = () => {
-    return (
-        <View style={styles.container}>
-            <Text>My Cart</Text>
-        </View>
-    );
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: Color.white,
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text
+        style={{
+          fontSize: 14,
+          fontFamily: Manrope.Bold,
+          color: Color.black,
+          marginHorizontal: 5,
+        }}>
+        No Cart
+      </Text>
+    </View>
+  );
 };
 
-// define your styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
-});
-
-//make this component available to the app
 export default MyCart;
