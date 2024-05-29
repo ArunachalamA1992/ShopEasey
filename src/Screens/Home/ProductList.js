@@ -1,399 +1,268 @@
+import React, {useState} from 'react';
 import {
-    Dimensions,
-    FlatList,
-    Image,
-    ImageBackground,
-    StyleSheet,
-    Text,
-    TextInput,
-    Touchable,
-    TouchableOpacity,
-    View,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React, { useState } from 'react';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
+import {Badge} from 'react-native-paper';
+import ItemCard from '../../Components/ItemCard';
 import Color from '../../Global/Color';
-import { Gilmer, Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
-
+import {Manrope} from '../../Global/FontFamily';
+import {products} from '../../Config/Content';
 
 const ProductList = () => {
+  const navigation = useNavigation();
+  const [selectedCategory, setSelectedCategory] = useState([]);
 
-    const navigation = useNavigation();
+  const categoryList = [
+    {
+      id: 1,
+      name: 'Indian wear',
+    },
+    {
+      id: 2,
+      name: 'Top wear',
+    },
+    {
+      id: 3,
+      name: 'Bottom wear',
+    },
+    {
+      id: 4,
+      name: 'Inner wear',
+    },
+  ];
 
-    const [selectedCategory, setSelectedCategory] = useState([]);
-    const products = [
-        {
-            id: 1,
-            name: 'Brand TShirt Yellow',
-            image: require('../../assets/images/1.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-        {
-            id: 2,
-            name: 'Brand TShirt Yellow',
-            image: require('../../assets/images/2.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-        {
-            id: 3,
-            name: 'Brand TShirt Yellow',
-            image: require('../../assets/images/3.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-        {
-            id: 4,
-            name: 'Brand TShirt Yellow',
-            image: require('../../assets/images/4.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-        {
-            id: 5,
-            name: 'Brand TShirt Yellow',
-            image: require('../../assets/images/5.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-        {
-            id: 6,
-            name: 'Brand TShirt',
-            image: require('../../assets/images/6.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-        {
-            id: 7,
-            name: 'Brand rt',
-            image: require('../../assets/images/7.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-        {
-            id: 8,
-            name: 'Bramknd rt',
-            image: require('../../assets/images/8.png'),
-            category: 'TShirt-Men',
-            price: 800,
-            discountPrice: 300,
-            offer: 50,
-            rating: 4.5,
-            reviews: 244,
-            location: 'Chennai,India',
-        },
-    ];
+  const handleCategory = item => {
+    setSelectedCategory(item);
+  };
 
-
-    const categoryList = [
-
-        {
-            id: 1,
-            name: 'Indian wear',
-        },
-        {
-            id: 2,
-            name: 'Top wear',
-        },
-        {
-            id: 3,
-            name: 'Bottom wear',
-        },
-        {
-            id: 4,
-            name: 'Inner wear',
-        },
-    ];
-
-
-    const handleCategory = item => {
-        setSelectedCategory(item);
-    };
-
-
-    return (
-        <View style={{ flex: 1 }}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <AntDesign name="arrowleft" size={25} color={Color.white} />
-                </TouchableOpacity>
-                <View style={styles.searchView}>
-                    <AntDesign name="search1" size={25} color={Color.black} />
-                    <TextInput style={styles.searchInput} placeholder="Search...." />
-                </View>
-                <TouchableOpacity>
-                    <AntDesign name="hearto" size={25} color={Color.white} />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <Feather name="shopping-cart" size={25} color={Color.white} />
-                </TouchableOpacity>
-            </View>
-
-            {/* Body */}
-            <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 }}>
-                    <Feather name="filter" size={20} color={Color.black} />
-                    <Text
-                        style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.Medium, paddingHorizontal: 10 }}>
-                        Filter
-                    </Text>
-                </View>
-                <View style={{ flex: 4, backgroundColor: Color.white, paddingVertical: 5 }}>
-                    <FlatList
-                        data={categoryList}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        renderItem={({ item, index }) => {
-                            const isFocused = item.name === selectedCategory.name;
-                            return (
-                                <TouchableOpacity
-                                    style={{ backgroundColor: isFocused ? Color.primary : Color.white, padding: 5, paddingHorizontal: 20, borderRadius: 40, borderWidth: 0.5, borderColor: Color.primary, margin: 5, marginHorizontal: 5 }}
-                                    onPress={() => handleCategory(item)}>
-                                    <Text style={{ textAlign: 'center', fontSize: 14, fontFamily: Manrope.SemiBold, color: isFocused ? Color.white : Color.black, paddingVertical: 5 }}>
-                                        {item.name}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        }}
-                        style={{ width: '95%' }}
-                    />
-                </View>
-            </View>
-            <View style={{ width: '100%', alignItems: 'center' }}>
-                <FlatList
-                    data={products}
-                    contentContainerStyle={styles.productContainer}
-                    numColumns={2}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <TouchableOpacity style={styles.product} onPress={() => { }}>
-                                <ImageBackground
-                                    style={styles.Productimage}
-                                    source={item.image}>
-                                    <View style={styles.imageTopView}>
-                                        <Text style={styles.offerText}>{item.offer} %off</Text>
-                                        <TouchableOpacity style={styles.like}>
-                                            <AntDesign name="hearto" size={15} color={Color.black} />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <LinearGradient
-                                        style={styles.locationView}
-                                        start={{ x: 0, y: 0 }}
-                                        end={{ x: 1, y: 0 }}
-                                        colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
-                                        <Ionicons
-                                            name="location-outline"
-                                            size={15}
-                                            color={Color.white}
-                                        />
-                                        <Text style={styles.locationText}>{item.location}</Text>
-                                    </LinearGradient>
-                                </ImageBackground>
-
-
-                                <View style={styles.contentView}>
-                                    <Text style={styles.categoryName}>{item.category}</Text>
-                                    <Text style={styles.productName}>{item.name}</Text>
-                                    <Text style={styles.productDiscountPrice}>
-                                        ${item.discountPrice}{' '}
-                                        <Text style={styles.productPrice}>${item.price}</Text>
-                                    </Text>
-                                    <View style={styles.productRatingView}>
-                                        <FontAwesome
-                                            name="star"
-                                            size={15}
-                                            color={Color.lightYellow}
-                                        />
-                                        <Text>
-                                            {item.rating}
-                                            <Text> ({item.reviews} reviews)</Text>
-                                        </Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    }}
-                    style={{ width: '100%' }}
-                />
-            </View>
+  return (
+    <View style={{flex: 1}}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={{marginHorizontal: 5}}
+          onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={25} color={Color.white} />
+        </TouchableOpacity>
+        <View style={styles.searchView}>
+          <AntDesign name="search1" size={25} color={Color.cloudyGrey} />
+          <TextInput style={styles.searchInput} placeholder="Search...." />
         </View>
-    );
+        <TouchableOpacity style={{marginHorizontal: 5}}>
+          <AntDesign name="hearto" size={25} color={Color.white} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{marginHorizontal: 5}}>
+          <Badge
+            style={{
+              position: 'absolute',
+              zIndex: 1,
+              top: -10,
+              right: -10,
+              backgroundColor: Color.white,
+              color: Color.black,
+              fontFamily: Manrope.Bold,
+            }}>
+            {0}
+          </Badge>
+          <Feather name="shopping-cart" size={25} color={Color.white} />
+        </TouchableOpacity>
+      </View>
+      <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: Color.black,
+              padding: 10,
+              borderRadius: 50,
+            }}>
+            <Feather name="filter" size={20} color={Color.white} />
+            <Text
+              style={{
+                fontSize: 14,
+                color: Color.white,
+                fontFamily: Manrope.Medium,
+                paddingHorizontal: 10,
+              }}>
+              Filter
+            </Text>
+          </View>
+          <FlatList
+            data={categoryList}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item, index}) => {
+              const isFocused = item.name === selectedCategory.name;
+              return (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: isFocused ? Color.primary : Color.white,
+                    padding: 5,
+                    paddingHorizontal: 10,
+                    borderRadius: 50,
+                    borderWidth: 1,
+                    borderColor: isFocused ? Color.primary : Color.cloudyGrey,
+                    margin: 5,
+                    marginHorizontal: 5,
+                  }}
+                  onPress={() => handleCategory(item)}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 14,
+                      fontFamily: Manrope.SemiBold,
+                      color: isFocused ? Color.white : Color.black,
+                      paddingVertical: 5,
+                    }}>
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+        <FlatList
+          data={products}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item, index}) => {
+            return <ItemCard item={item} navigation={navigation} />;
+          }}
+        />
+      </View>
+    </View>
+  );
 };
-
 
 export default ProductList;
 
-
-const { height, width } = Dimensions.get('screen');
-
-
 const styles = StyleSheet.create({
-    header: {
-        backgroundColor: Color.primary,
-        padding: height * 0.02,
-
-
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    searchView: {
-        backgroundColor: Color.white,
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: width * 0.04,
-        borderRadius: 50,
-        gap: width * 0.02,
-    },
-    searchInput: {
-        width: width * 0.4,
-        paddingVertical: 8,
-    },
-    CategoryContainer: {
-        backgroundColor: Color.white,
-        flexDirection: "row"
-    },
-    categoriesView: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: width * 0.02,
-        paddingVertical: 5,
-        marginHorizontal: width * 0.02,
-        marginVertical: height * 0.02,
-        backgroundColor: Color.white,
-        borderWidth: 1,
-        borderRadius: 30,
-        gap: 5,
-    },
-    categoriesText: {
-        color: Color.black,
-        fontSize: 16, padding: 2
-    },
-    productContainer: {
-        width: '100%',
-        backgroundColor: Color.white,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingBottom: height * 0.4,
-    },
-    product: {
-        width: width * 0.4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: width * 0.04,
-    },
-    Productimage: {
-        width: width * 0.44,
-        height: height * 0.2,
-        justifyContent: 'space-between',
-        resizeMode: 'cover',
-    },
-    imageTopView: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: width * 0.02,
-    },
-    offerText: {
-        backgroundColor: Color.lightYellow,
-        fontFamily: Gilmer.Heavy,
-        fontSize: 10,
-        textAlignVertical: 'center',
-        paddingVertical: 2,
-        paddingHorizontal: width * 0.01,
-    },
-    like: {
-        backgroundColor: Color.white,
-        padding: 3,
-        borderRadius: 50,
-    },
-    locationView: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingLeft: 10,
-    },
-    locationText: {
-        color: Color.white,
-        fontSize: 12,
-        fontFamily: Gilmer.Medium,
-        padding: width * 0.01,
-    },
-    contentView: {
-        width: width * 0.438,
-        borderWidth: 0.2,
-        borderColor: Color.cloudyGrey,
-        borderTopWidth: 0,
-        // padding: 0.04,
-        padding: width * 0.02,
-        gap: 5,
-    },
-    categoryName: {
-        color: Color.cloudyGrey,
-        fontSize: 12,
-    },
-    productName: {
-        color: Color.black,
-        fontSize: 14,
-    },
-    productDiscountPrice: {
-        color: Color.black,
-        fontFamily: Gilmer.Bold,
-        fontSize: 16,
-    },
-    productPrice: {
-        color: Color.smokeyGrey,
-        fontFamily: Gilmer.Medium,
-        fontSize: 12,
-        paddingLeft: 25,
-    },
-    productRatingView: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: width * 0.01,
-    },
+  header: {
+    backgroundColor: Color.primary,
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  searchView: {
+    flex: 1,
+    backgroundColor: Color.white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    height: 45,
+    borderRadius: 50,
+  },
+  searchInput: {},
+  CategoryContainer: {
+    backgroundColor: Color.white,
+    flexDirection: 'row',
+  },
+  categoriesView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 10,
+    marginVertical: 10,
+    backgroundColor: Color.white,
+    borderWidth: 1,
+    borderRadius: 30,
+    gap: 5,
+  },
+  categoriesText: {
+    color: Color.black,
+    fontSize: 16,
+    padding: 2,
+  },
+  productContainer: {
+    backgroundColor: Color.white,
+  },
+  product: {
+    margin: 5,
+    flex: 1,
+  },
+  Productimage: {
+    width: '100%',
+    height: 170,
+    justifyContent: 'space-between',
+    resizeMode: 'cover',
+  },
+  imageTopView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  offerText: {
+    backgroundColor: Color.lightYellow,
+    fontFamily: Manrope.Bold,
+    fontSize: 12,
+    color: Color.black,
+    borderRadius: 5,
+    textAlign: 'center',
+    paddingHorizontal: 10,
+  },
+  locationView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+  },
+  locationText: {
+    color: Color.white,
+    fontSize: 12,
+    fontFamily: Manrope.Bold,
+    padding: 5,
+  },
+  contentView: {
+    borderLeftWidth: 1,
+    borderLeftColor: Color.lightgrey,
+    borderRightWidth: 1,
+    borderRightColor: Color.lightgrey,
+    borderBottomWidth: 1,
+    borderBottomColor: Color.lightgrey,
+    padding: 10,
+    borderBottomEndRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  categoryName: {
+    color: '#777777',
+    fontSize: 14,
+    flex: 1,
+    fontFamily: Manrope.Bold,
+  },
+  productName: {
+    color: Color.lightBlack,
+    fontSize: 14,
+    fontFamily: Manrope.Bold,
+  },
+  productDiscountPrice: {
+    color: Color.black,
+    fontFamily: Manrope.Bold,
+    fontSize: 18,
+  },
+  productPrice: {
+    color: Color.smokeyGrey,
+    fontFamily: Manrope.Medium,
+    fontSize: 14,
+    paddingLeft: 25,
+    textDecorationLine: 'line-through',
+  },
+  productRatingView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
-
-
-
