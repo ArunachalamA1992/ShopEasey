@@ -1,9 +1,17 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import F6Icon from 'react-native-vector-icons/FontAwesome6';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SearchScreen = ({navigation}) => {
   const [searchJob, setSearchJob] = useState('');
@@ -37,15 +45,24 @@ const SearchScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Searchbar
-        placeholder="Search products"
-        placeholderTextColor={Color.grey}
-        style={styles.searchView}
-        value={searchJob}
-        iconColor={Color.grey}
-        inputStyle={{color: Color.black}}
-        onChangeText={search => propertySearch(search)}
-      />
+      <TouchableOpacity style={styles.searchView}>
+        <Icon color={Color.cloudyGrey} name="search" size={25} />
+        <TextInput
+          placeholder="Search products"
+          value={searchJob}
+          style={{flex: 1, marginLeft: 10}}
+          placeholderTextColor={Color.grey}
+          onChangeText={search => propertySearch(search)}
+        />
+        <MCIcon
+          color={Color.cloudyGrey}
+          name="microphone"
+          size={25}
+          style={{
+            marginHorizontal: 5,
+          }}
+        />
+      </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.7}
         style={{
@@ -99,7 +116,7 @@ const SearchScreen = ({navigation}) => {
           }}>
           {RecentlySearch.map((item, index) => {
             return (
-              <View
+              <TouchableOpacity
                 key={index}
                 style={{
                   paddingHorizontal: 10,
@@ -111,6 +128,9 @@ const SearchScreen = ({navigation}) => {
                   borderWidth: 1,
                   borderColor: Color.lightgrey,
                   flexDirection: 'row',
+                }}
+                onPress={() => {
+                  setSearchJob(item?.name);
                 }}>
                 <F6Icon
                   name="arrow-rotate-left"
@@ -128,7 +148,7 @@ const SearchScreen = ({navigation}) => {
                   }}>
                   {item?.name}
                 </Text>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -147,8 +167,10 @@ const styles = StyleSheet.create({
   },
   searchView: {
     borderRadius: 10,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#F1F1F1',
-    marginTop: 10,
     borderWidth: 1,
     borderColor: Color.lightgrey,
   },

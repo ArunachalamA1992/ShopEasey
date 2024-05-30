@@ -24,7 +24,7 @@ export const products = [
           'https://staranddaisy.in/wp-content/uploads/2022/04/204627gh.jpg',
       },
     ],
-    type: 'TShirt',
+    type: 'Casual Shirts',
     category: 'Men',
     price: 800,
     discountPrice: 500,
@@ -126,7 +126,7 @@ export const products = [
   },
   {
     id: 2,
-    name: 'Brand TShirt Yellow',
+    name: 'Brand Ethnic Wear Yellow',
     images: [
       {
         id: 1,
@@ -149,8 +149,8 @@ export const products = [
           'https://staranddaisy.in/wp-content/uploads/2022/04/204627gh.jpg',
       },
     ],
-    type: 'TShirt',
-    category: 'Men',
+    type: 'Ethnic Wear',
+    category: 'Women',
     price: 800,
     discountPrice: 500,
     offer: 50,
@@ -274,7 +274,7 @@ export const products = [
           'https://staranddaisy.in/wp-content/uploads/2022/04/204627gh.jpg',
       },
     ],
-    type: 'TShirt',
+    type: 'Casual Shirts',
     category: 'Men',
     price: 800,
     discountPrice: 500,
@@ -399,7 +399,7 @@ export const products = [
           'https://staranddaisy.in/wp-content/uploads/2022/04/204627gh.jpg',
       },
     ],
-    type: 'TShirt',
+    type: 'Casual Shirts',
     category: 'Men',
     price: 800,
     discountPrice: 500,
@@ -501,7 +501,7 @@ export const products = [
   },
   {
     id: 5,
-    name: 'Brand TShirt Yellow',
+    name: 'Brand Ethnic Wear Yellow',
     images: [
       {
         id: 1,
@@ -524,7 +524,7 @@ export const products = [
           'https://staranddaisy.in/wp-content/uploads/2022/04/204627gh.jpg',
       },
     ],
-    type: 'TShirt',
+    type: 'Ethnic Wear',
     category: 'Men',
     price: 800,
     discountPrice: 500,
@@ -774,7 +774,7 @@ export const products = [
           'https://staranddaisy.in/wp-content/uploads/2022/04/204627gh.jpg',
       },
     ],
-    type: 'TShirt',
+    type: 'Casual Shirts',
     category: 'Men',
     price: 800,
     discountPrice: 500,

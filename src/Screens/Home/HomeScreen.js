@@ -13,8 +13,10 @@ import {
   LogBox,
   StatusBar,
   FlatList,
+  PermissionsAndroid,
 } from 'react-native';
 import Color from '../../Global/Color';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import {Manrope} from '../../Global/FontFamily';
 import {useNavigation} from '@react-navigation/native';
@@ -28,13 +30,14 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {scr_width} from '../../Utils/Dimensions';
 import CountdownTimer from '../../Components/CountdownTimer';
 import ItemCard from '../../Components/ItemCard';
+import * as ImagePicker from 'react-native-image-picker';
 
 LogBox.ignoreAllLogs();
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [netInfo_State, setNetinfo] = useState(true);
-  const [hotDealsData, setHotDealsData] = useState([
+  const [OfferBanner] = useState([
     {
       id: '0',
       category_name: 'Men',
@@ -44,6 +47,20 @@ const HomeScreen = () => {
       id: '1',
       category_name: 'Women',
       category_image: require('../../assets/images/deal_two.png'),
+    },
+  ]);
+  const [hotDealsData] = useState([
+    {
+      id: 1,
+      image: require('../../assets/images/hot_one.png'),
+    },
+    {
+      id: 2,
+      image: require('../../assets/images/hot_two.png'),
+    },
+    {
+      id: 3,
+      image: require('../../assets/images/hot_three.png'),
     },
   ]);
   const [bannerData, setBannerData] = useState([
@@ -72,17 +89,17 @@ const HomeScreen = () => {
     {
       id: '1',
       ban_name: 'Ethnic Wear',
-      ban_image: require('../../assets/images/ethnic.png'),
+      ban_image: require('../../assets/images/casual.png'),
     },
     {
       id: '2',
       ban_name: 'Kid’s Wear',
-      ban_image: require('../../assets/images/kids.png'),
+      ban_image: require('../../assets/images/casual.png'),
     },
     {
       id: '3',
       ban_name: 'Fruits & Snacks',
-      ban_image: require('../../assets/images/fruits.png'),
+      ban_image: require('../../assets/images/casual.png'),
     },
   ]);
   const [shopSection] = useState([
@@ -102,6 +119,61 @@ const HomeScreen = () => {
     setVisibleData(newVisibleData);
     setShowLoadMore(newVisibleData.length < products.length);
   };
+
+  const calculateTotalDiscountPercentage = type => {
+    const filteredProducts = products?.filter(
+      product => product?.type === type,
+    );
+
+    if (filteredProducts.length === 0) return 0;
+
+    const totalDiscountPercentage = filteredProducts.reduce(
+      (total, product) => {
+        const discount = parseInt(
+          ((product.price - product.discountPrice) / product.price) * 100,
+          10,
+        );
+        return total + discount;
+      },
+      0,
+    );
+
+    return totalDiscountPercentage / filteredProducts.length;
+  };
+
+  const [responseCamera, setResponseCamera] = React.useState([]);
+
+  const openCameraWithPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        ImagePicker.launchCamera(
+          {
+            mediaType: 'photo',
+            includeBase64: false,
+            maxHeight: 200,
+            maxWidth: 200,
+          },
+          response => {
+            setResponseCamera(response?.assets);
+          },
+        );
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
@@ -119,7 +191,7 @@ const HomeScreen = () => {
             <Text
               style={{
                 fontSize: 16,
-                color: Color.cloudyGrey,
+                color: '#999999',
                 fontFamily: Manrope.Medium,
               }}>
               Location
@@ -212,14 +284,19 @@ const HomeScreen = () => {
               marginHorizontal: 5,
             }}
           />
-          <MCIcon
-            color={Color.cloudyGrey}
-            name="camera-outline"
-            size={25}
-            style={{
-              marginHorizontal: 5,
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              openCameraWithPermission();
+            }}>
+            <MCIcon
+              color={Color.cloudyGrey}
+              name="camera-outline"
+              size={25}
+              style={{
+                marginHorizontal: 5,
+              }}
+            />
+          </TouchableOpacity>
         </TouchableOpacity>
       </View>
       <Animated.SectionList
@@ -349,7 +426,7 @@ const HomeScreen = () => {
               );
             case 'hot deals':
               return (
-                <View>
+                <View style={{padding: 10}}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -382,6 +459,32 @@ const HomeScreen = () => {
                       </Text>
                     </View>
                   </View>
+                  <FlatList
+                    data={hotDealsData}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={({item, index}) => {
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginRight: 10,
+                            marginVertical: 10,
+                          }}>
+                          <Image
+                            source={item?.image}
+                            style={{
+                              width: 160,
+                              height: 100,
+                              resizeMode: 'contain',
+                            }}
+                          />
+                        </View>
+                      );
+                    }}
+                  />
                 </View>
               );
             case 'Trend Product':
@@ -411,9 +514,8 @@ const HomeScreen = () => {
                       <Text
                         style={{
                           fontSize: 14,
-                          color: Color.lightBlack,
+                          color: Color.black,
                           textAlign: 'right',
-                          lineHeight: 25,
                           fontFamily: Manrope.Medium,
                         }}>
                         View All
@@ -422,7 +524,6 @@ const HomeScreen = () => {
                   </View>
                   <View
                     style={{
-                      width: '100%',
                       flexDirection: 'row',
                       alignItems: 'center',
                       marginVertical: 10,
@@ -442,45 +543,93 @@ const HomeScreen = () => {
                               borderTopRightRadius: 5,
                               margin: 5,
                             }}>
-                            <View
+                            <Image
+                              source={item.ban_image}
                               style={{
                                 width: 140,
                                 height: 160,
-                                borderTopStartRadius: 5,
-                                borderTopRightRadius: 5,
+                                resizeMode: 'contain',
+                              }}
+                            />
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                backgroundColor: Color.lightBlack,
+                                paddingHorizontal: 10,
+                                padding: 5,
+                                marginHorizontal: 10,
+                                position: 'absolute',
+                                top: 10,
+                                right: -10,
                               }}>
-                              <Image
-                                source={item.ban_image}
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  resizeMode: 'contain',
-                                  borderTopStartRadius: 5,
-                                  borderTopRightRadius: 5,
-                                }}
+                              <FontAwesome6
+                                name="award"
+                                size={14}
+                                color={Color.white}
                               />
+                              <Text
+                                style={{
+                                  color: Color.white,
+                                  fontSize: 12,
+                                  fontFamily: Manrope.Medium,
+                                  marginHorizontal: 5,
+                                }}>
+                                Best Seller
+                              </Text>
                             </View>
                             <View
                               style={{
-                                width: 140,
-                                height: 35,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                backgroundColor: Color.lightBlack,
+                                paddingHorizontal: 10,
+                                padding: 5,
+                                marginHorizontal: 10,
+                                position: 'absolute',
+                                top: 40,
+                                right: -10,
+                              }}>
+                              <Text
+                                style={{
+                                  color: Color.white,
+                                  fontSize: 12,
+                                  fontFamily: Manrope.Medium,
+                                  marginHorizontal: 5,
+                                }}>
+                                {calculateTotalDiscountPercentage(
+                                  item?.ban_name,
+                                )}{' '}
+                                %
+                              </Text>
+                            </View>
+                            <View
+                              style={{
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 backgroundColor: Color.primary,
                                 position: 'absolute',
+                                flexDirection: 'row',
+                                padding: 10,
                                 bottom: 0,
                                 borderBottomStartRadius: 5,
                                 borderBottomRightRadius: 5,
                               }}>
                               <Text
                                 style={{
+                                  flex: 1,
                                   color: Color.white,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontFamily: Manrope.Bold,
                                   letterSpacing: 0.5,
                                 }}>
                                 {item.ban_name}
                               </Text>
+                              <Icon
+                                name="arrow-forward-circle"
+                                size={25}
+                                color={Color.white}
+                              />
                             </View>
                           </View>
                         );
@@ -496,7 +645,7 @@ const HomeScreen = () => {
                     backgroundColor: Color.white,
                   }}>
                   <FlatList
-                    data={hotDealsData}
+                    data={OfferBanner}
                     horizontal
                     renderItem={({item, index}) => {
                       return (
