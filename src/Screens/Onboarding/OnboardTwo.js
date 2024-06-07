@@ -6,6 +6,7 @@ import { scr_height, scr_width } from '../../Utils/Dimensions';
 import { Gilmer, Manrope } from '../../Global/FontFamily';
 import { Iconviewcomponent } from '../../Components/Icontag';
 import { useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
 
 // create a component
 const OnboardTwo = () => {
@@ -17,7 +18,7 @@ const OnboardTwo = () => {
         <View style={styles.container}>
             <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', padding: 10 }}>
                 <Image
-                    source={require('../../assets/images/welcome.png')}
+                    source={{ uri: Media.welcome }}
                     style={styles.image}
                 />
             </View>
@@ -30,14 +31,15 @@ const OnboardTwo = () => {
                     <View style={{ width: '95%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <View style={{ width: '45%', flexDirection: 'row', backgroundColor: '#F0F9FB', borderRadius: 5, justifyContent: 'center', alignItems: 'center', padding: 15 }}>
                             <Image
-                                source={require('../../assets/images/coupon.png')}
+                                source={{ uri: Media.coupon_icon }}
+                                // source={require('../../assets/images/coupon.png')}
                                 style={{ width: 25, height: 25, resizeMode: 'contain' }}
                             />
                             <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22, paddingHorizontal: 10 }}>Free Coupon</Text>
                         </View>
                         <View style={{ width: '45%', flexDirection: 'row', backgroundColor: '#F0F9FB', borderRadius: 5, justifyContent: 'center', alignItems: 'center', padding: 15 }}>
                             <Image
-                                source={require('../../assets/images/voucher.png')}
+                                source={{ uri: Media.voucher_icon }}
                                 style={{ width: 25, height: 25, resizeMode: 'contain' }}
                             />
                             <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22, paddingHorizontal: 10 }}>Voucher</Text>
@@ -46,7 +48,7 @@ const OnboardTwo = () => {
                     <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 20 }}>
                         <View style={{ flexDirection: 'row', backgroundColor: '#F0F9FB', borderRadius: 5, justifyContent: 'center', alignItems: 'center', padding: 15 }}>
                             <Image
-                                source={require('../../assets/images/cap.png')}
+                                source={{ uri: Media.van_icon }}
                                 style={{ width: 35, height: 35, resizeMode: 'contain' }}
                             />
                             <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22, paddingHorizontal: 10 }}>Free Shipping</Text>

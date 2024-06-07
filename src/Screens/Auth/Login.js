@@ -5,6 +5,7 @@ import Color from '../../Global/Color';
 import { Manrope } from '../../Global/FontFamily';
 import { Iconviewcomponent } from '../../Components/Icontag';
 import { useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
 
 // create a component
 const Login = () => {
@@ -85,7 +86,7 @@ const Login = () => {
                 <TouchableOpacity
                     style={{ width: '90%', height: 50, flexDirection: 'row', marginVertical: 10, backgroundColor: Color.white, borderColor: Color.cloudyGrey, borderWidth: 0.5, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
                     <Image
-                        source={require('../../assets/images/google.png')}
+                        source={{ uri: Media.google_icon }}
                         style={{ width: 30, height: 30, resizeMode: 'contain' }}
                     />
                     <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.Medium, letterSpacing: 0.5, paddingHorizontal: 10 }}>Login With Google</Text>

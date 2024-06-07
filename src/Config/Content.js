@@ -1,3 +1,5 @@
+import { Media } from '../Global/Media';
+
 export const products = [
   {
     id: 1,
@@ -1880,43 +1882,49 @@ export const categoryData = [
   {
     id: 1,
     category_name: 'Men',
-    category_image: require('../assets/images/male.png'),
+    category_image: Media.male_image,
     products_count: '288',
   },
   {
     id: 2,
     category_name: 'Women',
-    category_image: require('../assets/images/female.png'),
+    category_image: Media.female_image,
     products_count: '288',
   },
   {
     id: 3,
     category_name: 'Kid’s Wear',
-    category_image: require('../assets/images/kutties.png'),
+    category_image: Media.kutties_image,
     products_count: '288',
   },
   {
     id: 4,
     category_name: 'Snacks',
-    category_image: require('../assets/images/snacks.png'),
+    category_image: Media.snacks_image,
     products_count: '288',
   },
   {
     id: 5,
     category_name: 'Baby Care',
-    category_image: require('../assets/images/baby.png'),
+    category_image: Media.baby_care,
     products_count: '288',
   },
   {
     id: 6,
     category_name: 'Personal Care',
-    category_image: require('../assets/images/care.png'),
+    category_image: Media.care_image,
     products_count: '288',
   },
   {
     id: 7,
     category_name: 'Home Kitchen',
-    category_image: require('../assets/images/kitchen.png'),
+    category_image: Media.kitchen_image,
     products_count: '288',
   },
+  // {
+  //   id: 8,
+  //   category_name: 'Personal Care',
+  //   category_image: Media.care_image ,
+  //   products_count: '288',
+  // },
 ];

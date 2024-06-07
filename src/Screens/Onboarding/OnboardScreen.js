@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -8,40 +8,39 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {scr_height, scr_width} from '../../Utils/Dimensions';
+import { scr_height, scr_width } from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
-import {BottomSheet} from 'react-native-btr';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { useNavigation } from '@react-navigation/native';
+import { BottomSheet } from 'react-native-btr';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { Media } from '../../Global/Media';
 
 // create a component
 const OnboardScreen = () => {
   const navigation = useNavigation();
 
   const [selectname, setSelectName] = useState('India');
-  const [selectImage, setSelectImage] = useState(
-    'https://png.pngtree.com/png-vector/20210129/ourmid/pngtree-the-national-flag-of-india-png-image_2845292.jpg',
-  );
+  const [selectImage, setSelectImage] = useState(Media.india_flag);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const [countryData, setCountryData] = useState([
     {
       id: '0',
-      flag_image:
-        'https://png.pngtree.com/png-vector/20210129/ourmid/pngtree-the-national-flag-of-india-png-image_2845292.jpg',
+      flag_image: Media.india_flag,
       name: 'India',
+      sign: 'Indian Ruperr (₹)',
     },
     {
       id: '1',
-      flag_image:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREdBWMmm4KDzXEodCRuj10qgKhb87kYxG7VaFBHuc-u-WxUUxmQxGVKcqo5XAxlyVl-qM&usqp=CAU',
+      flag_image: Media.singapore_flag,
       name: 'Singapore',
+      sign: 'Singapore Dollar (SGD)',
     },
     {
       id: '2',
-      flag_image:
-        'https://e7.pngegg.com/pngimages/416/106/png-clipart-flag-of-malaysia-flag-of-the-united-states-national-flag-flag-miscellaneous-flag.png',
+      flag_image: Media.malay_flag,
       name: 'Malaysia',
+      sign: 'Malaysian Ringgit (MYR)',
     },
   ]);
   const imageScale = new Animated.Value(0.1);
@@ -100,12 +99,12 @@ const OnboardScreen = () => {
                     Icontag={'AntDesign'}
                     iconname={'closecircleo'}
                     icon_size={22}
-                    iconstyle={{color: Color.primary, marginRight: 10}}
+                    iconstyle={{ color: Color.primary, marginRight: 10 }}
                   />
                 </TouchableOpacity>
               </View>
 
-              <View style={{width: '100%', alignItems: 'center'}}>
+              <View style={{ width: '100%', alignItems: 'center' }}>
                 {countryData.map((item, index) => {
                   return (
                     <TouchableOpacity
@@ -114,29 +113,47 @@ const OnboardScreen = () => {
                       style={{
                         width: '100%',
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
                         padding: 15,
                         margin: 5,
                         backgroundColor:
                           selectname === item.name ? Color.primary : '#f3f3f3',
                       }}>
-                      <Image
-                        source={{uri: item.flag_image}}
-                        style={{width: 30, height: 30, resizeMode: 'contain'}}
-                      />
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          color:
-                            selectname === item.name
-                              ? Color.white
-                              : Color.black,
-                          marginHorizontal: 10,
-                          fontFamily: Manrope.Medium,
-                        }}>
-                        {item.name}
-                      </Text>
+                      <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                        <Image
+                          source={{ uri: item.flag_image }}
+                          style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                        />
+                      </View>
+                      <View style={{ flex: 1.5, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color:
+                              selectname === item.name
+                                ? Color.white
+                                : Color.black,
+                            marginHorizontal: 10,
+                            fontFamily: Manrope.Medium,
+                          }}>
+                          {item.name}
+                        </Text>
+                      </View>
+                      <View style={{ flex: 2, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color:
+                              selectname === item.name
+                                ? Color.white
+                                : Color.black,
+                            marginHorizontal: 10,
+                            fontFamily: Manrope.Medium,
+                          }}>
+                          {item.sign}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   );
                 })}
@@ -163,7 +180,7 @@ const OnboardScreen = () => {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('../../assets/images/onboard_shop.png')}
+        source={{ uri: Media.onboard_main }}
         style={styles.image}
       />
 
@@ -178,7 +195,7 @@ const OnboardScreen = () => {
           borderTopStartRadius: 30,
           borderTopRightRadius: 30,
         }}>
-        <View style={{width: '95%', padding: 10}}>
+        <View style={{ width: '95%', padding: 10 }}>
           <Text
             style={{
               textAlign: 'left',
@@ -206,7 +223,7 @@ const OnboardScreen = () => {
             products.
           </Text>
         </View>
-        <View style={{width: '95%', padding: 10}}>
+        <View style={{ width: '95%', padding: 10 }}>
           <Text
             style={{
               fontSize: 14,
@@ -240,8 +257,8 @@ const OnboardScreen = () => {
                 paddingHorizontal: 10,
               }}>
               <Image
-                source={{uri: selectImage}}
-                style={{width: 50, height: 50, resizeMode: 'contain'}}
+                source={{ uri: selectImage }}
+                style={{ width: 50, height: 50, resizeMode: 'contain' }}
               />
               <Text
                 style={{
@@ -257,7 +274,7 @@ const OnboardScreen = () => {
                 Icontag={'Entypo'}
                 iconname={'chevron-small-down'}
                 icon_size={24}
-                iconstyle={{color: Color.lightBlack, marginRight: 10}}
+                iconstyle={{ color: Color.lightBlack, marginRight: 10 }}
               />
             </View>
           </TouchableOpacity>

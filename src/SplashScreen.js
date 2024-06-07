@@ -1,15 +1,16 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Animated} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Animated } from 'react-native';
+import { useDispatch } from 'react-redux';
 import Color from './Global/Color';
+import { Media } from './Global/Media';
 
-const SplashScreen = ({navigation}) => {
+const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     try {
-      const SplashLoad = setTimeout(() => {
+      const splash = setTimeout(() => {
         navigation.replace('OnboardScreen');
       }, 3000);
-      return () => clearInterval(SplashLoad);
+      return () => clearInterval(splash);
     } catch (error) {
       console.log('catch in splash_Screen ', error);
     }
@@ -26,8 +27,8 @@ const SplashScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('./assets/logos/main.png')}
-        style={[styles.image, {transform: [{scale: imageScale}]}]}
+        source={{ uri: "https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/main.png" }}
+        style={[styles.image, { transform: [{ scale: imageScale }] }]}
       />
     </View>
   );

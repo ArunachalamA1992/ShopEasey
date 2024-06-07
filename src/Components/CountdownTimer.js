@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Color from '../Global/Color';
-import {Manrope} from '../Global/FontFamily';
+import { Manrope } from '../Global/FontFamily';
 
-const CountdownTimer = ({days, hours, minutes, seconds}) => {
+const CountdownTimer = ({ days, hours, minutes, seconds }) => {
   const initialTime =
     days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + seconds;
   const [timeLeft, setTimeLeft] = useState(initialTime);
@@ -79,16 +79,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timeBox: {
-    borderWidth: 1,
-    borderColor: Color.black,
-    padding: 5,
+    borderWidth: 1, borderRadius: 5,
+    borderColor: Color.cloudyGrey,
+    padding: 5, paddingHorizontal: 10,
   },
   timeText: {
-    fontSize: 14,
+    fontSize: 14, color: Color.black,
     fontFamily: Manrope.Bold,
   },
   colon: {
-    fontSize: 14,
+    fontSize: 14, color: Color.black,
     fontFamily: Manrope.Bold,
     marginHorizontal: 5,
   },

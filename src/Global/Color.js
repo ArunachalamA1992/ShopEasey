@@ -25,7 +25,7 @@ export default {
   BlazeOrange: '#F67600',
   sunShade: '#FFA825',
   Lavender: '#934961',
-  // softPeach: '#EEEEEE',
+  mediumGrey: '#EEEEEE',
   filterColor: '#F1ECE2',
   grey: '#A5A5A5',
   almond: '#F0E3CD',

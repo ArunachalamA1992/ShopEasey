@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
-import {Badge} from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { Badge } from 'react-native-paper';
 import ItemCard from '../../Components/ItemCard';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {products} from '../../Config/Content';
+import { Manrope } from '../../Global/FontFamily';
+import { products } from '../../Config/Content';
 
 const ProductList = () => {
   const navigation = useNavigation();
@@ -44,21 +44,21 @@ const ProductList = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <View style={styles.header}>
         <TouchableOpacity
-          style={{marginHorizontal: 5}}
+          style={{ marginHorizontal: 5 }}
           onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={25} color={Color.white} />
         </TouchableOpacity>
         <View style={styles.searchView}>
-          <AntDesign name="search1" size={25} color={Color.cloudyGrey} />
+          <AntDesign name="search1" size={22} color={Color.cloudyGrey} />
           <TextInput style={styles.searchInput} placeholder="Search...." />
         </View>
-        <TouchableOpacity style={{marginHorizontal: 5}}>
-          <AntDesign name="hearto" size={25} color={Color.white} />
+        <TouchableOpacity style={{ marginHorizontal: 5 }}>
+          <AntDesign name="hearto" size={22} color={Color.white} />
         </TouchableOpacity>
-        <TouchableOpacity style={{marginHorizontal: 5}}>
+        <TouchableOpacity style={{ marginHorizontal: 5 }}>
           <Badge
             style={{
               position: 'absolute',
@@ -71,26 +71,28 @@ const ProductList = () => {
             }}>
             {0}
           </Badge>
-          <Feather name="shopping-cart" size={25} color={Color.white} />
+          <Feather name="shopping-cart" size={22} color={Color.white} />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+      <View style={{ flex: 1, backgroundColor: Color.white }}>
         <View
           style={{
+            width: '100%',
             flexDirection: 'row',
             justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'center', paddingVertical: 10
           }}>
           <View
             style={{
+              flex: 1,
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: Color.black,
               padding: 10,
-              borderRadius: 50,
+              borderRadius: 5, marginHorizontal: 10
             }}>
-            <Feather name="filter" size={20} color={Color.white} />
+            <Feather name="filter" size={16} color={Color.white} />
             <Text
               style={{
                 fontSize: 14,
@@ -101,45 +103,47 @@ const ProductList = () => {
               Filter
             </Text>
           </View>
-          <FlatList
-            data={categoryList}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            renderItem={({item, index}) => {
-              const isFocused = item.name === selectedCategory.name;
-              return (
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: isFocused ? Color.primary : Color.white,
-                    padding: 5,
-                    paddingHorizontal: 10,
-                    borderRadius: 50,
-                    borderWidth: 1,
-                    borderColor: isFocused ? Color.primary : Color.cloudyGrey,
-                    margin: 5,
-                    marginHorizontal: 5,
-                  }}
-                  onPress={() => handleCategory(item)}>
-                  <Text
+          <View style={{ flex: 4, width: '95%', alignItems: 'center' }}>
+            <FlatList
+              data={categoryList}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item, index }) => {
+                const isFocused = item.name === selectedCategory.name;
+                return (
+                  <TouchableOpacity
                     style={{
-                      textAlign: 'center',
-                      fontSize: 14,
-                      fontFamily: Manrope.SemiBold,
-                      color: isFocused ? Color.white : Color.black,
-                      paddingVertical: 5,
-                    }}>
-                    {item.name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }}
-          />
+                      backgroundColor: isFocused ? Color.primary : Color.white,
+                      padding: 3,
+                      paddingHorizontal: 10,
+                      borderRadius: 50,
+                      borderWidth: 1,
+                      borderColor: isFocused ? Color.primary : Color.cloudyGrey,
+                      margin: 5,
+                      marginHorizontal: 5,
+                    }}
+                    onPress={() => handleCategory(item)}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 13,
+                        fontFamily: Manrope.SemiBold,
+                        color: isFocused ? Color.white : Color.lightBlack,
+                        paddingVertical: 5,
+                      }}>
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
         </View>
         <FlatList
           data={products}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             return <ItemCard item={item} navigation={navigation} />;
           }}
         />
@@ -159,7 +163,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchView: {
-    flex: 1,
+    // flex: 1, 
+    width: '70%',
     backgroundColor: Color.white,
     flexDirection: 'row',
     alignItems: 'center',

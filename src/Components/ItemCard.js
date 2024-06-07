@@ -10,11 +10,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Color from '../Global/Color';
-import {Manrope} from '../Global/FontFamily';
+import { Manrope } from '../Global/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
 
 const ItemCard = props => {
-  const {item, navigation} = props;
+  const { item, navigation } = props;
   var discount = parseInt(
     ((item?.price - item?.discountPrice) / item?.price) * 100,
   );
@@ -22,11 +22,11 @@ const ItemCard = props => {
     <TouchableOpacity
       style={styles.product}
       onPress={() => {
-        navigation.replace('ProductDetails', {item});
+        navigation.replace('ProductDetails', { item });
       }}>
       <ImageBackground
         style={styles.Productimage}
-        source={{uri: item.images[0].image}}
+        source={{ uri: item.images[0].image }}
         resizeMode="cover"
         onError={error => console.log('Image loading error:', error)}>
         <View style={styles.imageTopView}>
@@ -35,15 +35,15 @@ const ItemCard = props => {
               backgroundColor: Color.lightYellow,
               borderRadius: 5,
               paddingHorizontal: 10,
-              padding: 5,
+              padding: 3,
             }}>
             <Text style={styles.offerText}>{discount}% off</Text>
           </View>
           <TouchableOpacity
             style={{
               backgroundColor: '#FFFFFF80',
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 100,
@@ -53,20 +53,20 @@ const ItemCard = props => {
         </View>
         <LinearGradient
           style={styles.locationView}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
           colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
           <Octicons name="location" size={15} color={Color.white} />
           <Text style={styles.locationText}>{item.location}</Text>
         </LinearGradient>
       </ImageBackground>
       <View style={styles.contentView}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={styles.categoryName}>{item.type}</Text>
           <Text
             style={{
               color: Color.red,
-              fontSize: 14,
+              fontSize: 11,
               fontFamily: Manrope.Medium,
             }}>
             Sold 0/1
@@ -78,19 +78,19 @@ const ItemCard = props => {
           <Text style={styles.productPrice}>${item.price}</Text>
         </Text>
         <View style={styles.productRatingView}>
-          <FontAwesome name="star" size={15} color={Color.lightYellow} />
+          <FontAwesome name="star" size={12} color={Color.lightYellow} />
           <Text
             style={{
               fontFamily: Manrope.Bold,
-              fontSize: 14,
+              fontSize: 12, paddingHorizontal: 5,
               color: Color.black,
             }}>
             {item.rating}
             <Text
               style={{
-                fontFamily: Manrope.Bold,
-                fontSize: 14,
-                color: Color.cloudyGrey,
+                fontFamily: Manrope.SemiBold,
+                fontSize: 10,
+                color: Color.cloudyGrey, letterSpacing: 0.5
               }}>
               {' '}
               ({item?.shop?.reviews} Reviews)
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   product: {
+    width: '100%',
     margin: 5,
     flex: 1,
   },
@@ -124,9 +125,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   offerText: {
-    fontFamily: Manrope.Bold,
-    fontSize: 12,
-    color: Color.black,
+    fontFamily: Manrope.SemiBold,
+    fontSize: 10,
+    color: Color.lightBlack,
     textAlign: 'center',
   },
   locationView: {
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     color: Color.white,
-    fontSize: 12,
+    fontSize: 10,
     fontFamily: Manrope.Bold,
     padding: 5,
   },
@@ -153,29 +154,29 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     color: '#777777',
-    fontSize: 14,
+    fontSize: 11,
     flex: 1,
-    fontFamily: Manrope.Bold,
+    fontFamily: Manrope.SemiBold,
   },
   productName: {
     color: Color.lightBlack,
-    fontSize: 14,
-    fontFamily: Manrope.Bold,
+    fontSize: 12, paddingVertical: 3,
+    fontFamily: Manrope.Bold, letterSpacing: 0.5
   },
   productDiscountPrice: {
     color: Color.black,
     fontFamily: Manrope.Bold,
-    fontSize: 18,
+    fontSize: 16, paddingVertical: 0, letterSpacing: 0.5
   },
   productPrice: {
     color: Color.smokeyGrey,
     fontFamily: Manrope.Medium,
-    fontSize: 14,
-    paddingLeft: 25,
+    fontSize: 12,
+    paddingLeft: 25, letterSpacing: 0.5,
     textDecorationLine: 'line-through',
   },
   productRatingView: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center', paddingVertical: 5
   },
 });

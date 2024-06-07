@@ -23,7 +23,7 @@ export default class ImageView extends Component {
     var {images} = this.props;
     var {visible, active} = this.state;
     return (
-      <View style={{height: 220}}>
+      <View style={{height: 270}}>
         <ImageSlider
           images={images}
           width={width}

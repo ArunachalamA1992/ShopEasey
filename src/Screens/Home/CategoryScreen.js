@@ -1,16 +1,17 @@
 import React from 'react';
-import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import Color from '../../Global/Color';
-import {categoryData} from '../../Config/Content';
-import {Manrope} from '../../Global/FontFamily';
+import { categoryData } from '../../Config/Content';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 
-const CategoryScreen = ({navigation}) => {
+const CategoryScreen = ({ navigation }) => {
   return (
-    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+    <View style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
       <FlatList
         data={categoryData}
         keyExtractor={(item, index) => item + index}
-        renderItem={({item, index}) => {
+        renderItem={({ item, index }) => {
           const lastItem = index === categoryData.length - 1;
           return (
             <TouchableOpacity
@@ -22,7 +23,7 @@ const CategoryScreen = ({navigation}) => {
                 borderColor: Color.lightgrey,
                 borderRadius: 10,
                 paddingBottom: 10,
-                flexDirection: 'row',
+                flexDirection: 'row', justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
               <View
@@ -32,7 +33,7 @@ const CategoryScreen = ({navigation}) => {
                   padding: 10,
                 }}>
                 <Image
-                  source={item.category_image}
+                  source={{ uri: item.category_image }}
                   style={{
                     width: 60,
                     height: 60,
@@ -40,7 +41,7 @@ const CategoryScreen = ({navigation}) => {
                   }}
                 />
               </View>
-              <View style={{marginHorizontal: 20}}>
+              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginHorizontal: 20 }}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -59,6 +60,14 @@ const CategoryScreen = ({navigation}) => {
                   }}>
                   {item.products_count} Products
                 </Text>
+              </View>
+              <View style={{ marginHorizontal: 10 }}>
+                <Iconviewcomponent
+                  Icontag={'Ionicons'}
+                  iconname={'chevron-forward-outline'}
+                  icon_size={20}
+                  icon_color={Color.lightgrey}
+                />
               </View>
             </TouchableOpacity>
           );

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -9,21 +9,22 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Badge, Button} from 'react-native-paper';
+import { Badge, Button } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import ImageView from '../../Components/imageView';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import moment from 'moment';
-import {products} from '../../Config/Content';
+import { products } from '../../Config/Content';
 import ItemCard from '../../Components/ItemCard';
+import { scr_height, scr_width } from '../../Utils/Dimensions';
 
-const ProductDetails = ({navigation, route}) => {
+const ProductDetails = ({ navigation, route }) => {
   const [itemData] = useState(route?.params?.item);
   const [resultDate, setResultDate] = useState(null);
   const [defaultRating, setDefaultRating] = useState(itemData?.shop?.rating);
@@ -74,17 +75,14 @@ const ProductDetails = ({navigation, route}) => {
       let result;
 
       if (Math.abs(daysAgo) > 0) {
-        result = `${Math.abs(daysAgo)} day${
-          Math.abs(daysAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(daysAgo)} day${Math.abs(daysAgo) !== 1 ? 's' : ''
+          } ago`;
       } else if (Math.abs(hoursAgo) > 0) {
-        result = `${Math.abs(hoursAgo)} hour${
-          Math.abs(hoursAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(hoursAgo)} hour${Math.abs(hoursAgo) !== 1 ? 's' : ''
+          } ago`;
       } else {
-        result = `${Math.abs(minutesAgo)} minute${
-          Math.abs(minutesAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(minutesAgo)} minute${Math.abs(minutesAgo) !== 1 ? 's' : ''
+          } ago`;
       }
       console.log('result', result);
       setResultDate(result);
@@ -137,7 +135,7 @@ const ProductDetails = ({navigation, route}) => {
   ]);
 
   return (
-    <View style={{flex: 1, backgroundColor: '#F5F5F5'}}>
+    <View style={{ width: scr_width, height: scr_height, backgroundColor: Color.white }}>
       <View
         style={{
           flexDirection: 'row',
@@ -145,13 +143,15 @@ const ProductDetails = ({navigation, route}) => {
           padding: 10,
           backgroundColor: Color.white,
         }}>
-        <Icon
-          name="arrow-back"
-          size={30}
-          color={Color.black}
-          onPress={() => navigation.goBack()}
-        />
-        <View style={{marginHorizontal: 10, flex: 1}}>
+        <TouchableOpacity onPress={() => navigation.replace("ProductList")} style={{ padding: 5 }}>
+          <Icon
+            name="arrow-back"
+            size={30}
+            color={Color.black}
+
+          />
+        </TouchableOpacity>
+        <View style={{ marginHorizontal: 10, flex: 1 }}>
           <Text
             style={{
               color: Color.black,
@@ -169,10 +169,10 @@ const ProductDetails = ({navigation, route}) => {
             {itemData?.type}
           </Text>
         </View>
-        <TouchableOpacity style={{marginHorizontal: 10}}>
+        <TouchableOpacity style={{ marginHorizontal: 10 }}>
           <Icon name="share-social" size={25} color={Color.black} />
         </TouchableOpacity>
-        <TouchableOpacity style={{marginHorizontal: 10}}>
+        <TouchableOpacity style={{ marginHorizontal: 10 }}>
           <Badge
             style={{
               position: 'absolute',
@@ -187,7 +187,7 @@ const ProductDetails = ({navigation, route}) => {
           </Badge>
           <AntDesign name="hearto" size={25} color={Color.black} />
         </TouchableOpacity>
-        <TouchableOpacity style={{marginHorizontal: 10}}>
+        <TouchableOpacity style={{ marginHorizontal: 10 }}>
           <Badge
             style={{
               position: 'absolute',
@@ -204,19 +204,20 @@ const ProductDetails = ({navigation, route}) => {
         </TouchableOpacity>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{}}>
+        <View style={{ width: '100%', alignItems: 'center', backgroundColor: Color.white, paddingVertical: 10 }}>
           <ImageView images={itemData?.images} />
           <View
             style={{
+              width: '95%', alignItems: 'center',
               backgroundColor: Color.white,
-              padding: 10,
+              marginTop: 50
             }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
               <Text
                 style={{
                   color: Color.cloudyGrey,
-                  fontSize: 14,
-                  fontFamily: Manrope.Bold,
+                  fontSize: 13,
+                  fontFamily: Manrope.Medium,
                 }}>
                 {itemData?.type} - {itemData?.category}
               </Text>
@@ -226,15 +227,15 @@ const ProductDetails = ({navigation, route}) => {
                   alignItems: 'center',
                   backgroundColor: Color.lightBlack,
                   paddingHorizontal: 10,
-                  borderRadius: 10,
-                  padding: 5,
+                  borderRadius: 2,
+                  padding: 7,
                   marginHorizontal: 10,
                 }}>
                 <FontAwesome6 name="award" size={14} color={Color.white} />
                 <Text
                   style={{
                     color: Color.white,
-                    fontSize: 12,
+                    fontSize: 10,
                     fontFamily: Manrope.Medium,
                     marginHorizontal: 5,
                   }}>
@@ -242,88 +243,86 @@ const ProductDetails = ({navigation, route}) => {
                 </Text>
               </View>
             </View>
-            <Text
-              style={{
-                color: Color.black,
-                fontSize: 16,
-                fontFamily: Manrope.Bold,
-              }}>
-              {itemData?.name}
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginVertical: 5,
-              }}>
-              <Text style={styles.productDiscountPrice}>
-                ${itemData.discountPrice}{' '}
-                <Text style={styles.productPrice}>${itemData.price}</Text>
+            <View style={{ width: '95%', marginVertical: 10, }}>
+              <Text style={{ color: Color.lightBlack, fontSize: 15, fontFamily: Manrope.SemiBold }}>
+                {itemData?.name}
               </Text>
-              <Text
+
+              <View style={[styles.customRatingBarStyle, { alignItems: 'center', marginTop: 1 }]}>
+                {maxRating.map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      key={index}
+                      onPress={() => handleRatingPress(item.rating)}
+                      style={{}}>
+                      <FontAwesome
+                        name={item.rating <= defaultRating ? 'star' : 'star-o'}
+                        size={14}
+                        color={Color.sunShade}
+                      />
+                    </TouchableOpacity>
+                  );
+                })}
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: Color.black,
+                    fontFamily: Manrope.Bold,
+                    marginHorizontal: 5,
+                  }}>
+                  {itemData?.shop?.rating}
+                </Text>
+              </View>
+              <View
                 style={{
-                  fontFamily: Manrope.ExtraBold,
-                  fontSize: 14,
-                  color: '#0FAD45',
-                  borderWidth: 1,
-                  borderColor: '#0FAD45',
-                  paddingHorizontal: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center', paddingVertical: 5
                 }}>
-                {discount}% OFF
-              </Text>
-            </View>
-            <View style={styles.customRatingBarStyle}>
-              {maxRating.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    key={index}
-                    onPress={() => handleRatingPress(item.rating)}
-                    style={{}}>
-                    <AntDesign
-                      name={item.rating <= defaultRating ? 'star' : 'staro'}
-                      size={16}
-                      color={Color.sunShade}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
+                <Text style={styles.productDiscountPrice}>
+                  ${itemData.discountPrice}{' '}
+                  <Text style={styles.productPrice}>${itemData.price}</Text>
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Manrope.ExtraBold,
+                    fontSize: 12,
+                    color: '#0FAD45',
+                    borderWidth: 1,
+                    borderColor: '#0FAD45',
+                    paddingHorizontal: 10,
+                  }}>
+                  {discount}% OFF
+                </Text>
+              </View>
               <Text
                 style={{
+                  fontFamily: Manrope.SemiBold,
                   fontSize: 12,
-                  color: Color.black,
-                  fontFamily: Manrope.Bold,
-                  marginHorizontal: 5,
+                  color: Color.red,
                 }}>
-                {itemData?.shop?.rating}
+                ( Only {itemData?.stocks} pending )
               </Text>
             </View>
-            <Text
-              style={{
-                fontFamily: Manrope.Medium,
-                fontSize: 14,
-                color: Color.red,
-              }}>
-              (Only {itemData?.stocks} pending)
-            </Text>
+
             <View
               style={{
+                width: '95%',
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginVertical: 5,
               }}>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Color.cloudyGrey,
-                  fontFamily: Manrope.Bold,
+                  fontFamily: Manrope.SemiBold,
                 }}>
                 Production :
               </Text>
               <Text
                 style={{
                   fontSize: 14,
-                  color: Color.black,
+                  color: Color.lightBlack,
                   fontFamily: Manrope.Bold,
                   marginRight: 10,
                 }}>
@@ -342,28 +341,29 @@ const ProductDetails = ({navigation, route}) => {
             </View>
             <View
               style={{
+                width: '95%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginVertical: 5,
               }}>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Color.cloudyGrey,
-                  fontFamily: Manrope.Bold,
+                  fontFamily: Manrope.SemiBold,
                   marginRight: 10,
                 }}>
                 Shipping :
               </Text>
               <FontAwesome5
                 name="shipping-fast"
-                size={20}
+                size={18}
                 color={Color.primary}
               />
               <Text
                 style={{
                   fontSize: 14,
-                  color: Color.black,
+                  color: Color.lightBlack,
                   fontFamily: Manrope.Bold,
                   marginHorizontal: 10,
                 }}>
@@ -373,27 +373,27 @@ const ProductDetails = ({navigation, route}) => {
             </View>
             <View
               style={{
-                marginRight: 5,
+                width: '95%', marginVertical: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
                 flexWrap: 'wrap',
               }}>
-              <Image source={Media.return} style={{width: 25, height: 25}} />
+              <Image source={Media.return} style={{ width: 20, height: 20 }} />
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 12,
                   color: Color.cloudyGrey,
-                  textAlign: 'center',
-                  marginLeft: 5,
+                  textAlign: 'justify',
+                  marginLeft: 5, letterSpacing: 0.5
                 }}>
                 15-Day Returns{' '}
               </Text>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => { }}>
                 <Text
                   style={{
                     fontSize: 14,
-                    color: Color.lightBlack,
-                    fontWeight: '600',
+                    color: Color.lightBlack, textAlign: 'justify',
+                    fontWeight: '600', letterSpacing: 0.5,
                     textDecorationLine: 'underline',
                   }}>
                   Terms & Conditions
@@ -401,19 +401,19 @@ const ProductDetails = ({navigation, route}) => {
               </TouchableOpacity>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 12,
                   color: Color.cloudyGrey,
-                  textAlign: 'center',
+                  textAlign: 'justify', letterSpacing: 0.5
                 }}>
                 {' '}
                 and{' '}
               </Text>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => { }} style={{ paddingTop: 5 }}>
                 <Text
                   style={{
                     fontSize: 14,
-                    color: Color.lightBlack,
-                    fontWeight: '600',
+                    color: Color.lightBlack, textAlign: 'justify',
+                    fontWeight: '600', letterSpacing: 0.5,
                     textDecorationLine: 'underline',
                   }}>
                   Privacy Policy
@@ -421,25 +421,27 @@ const ProductDetails = ({navigation, route}) => {
               </TouchableOpacity>
             </View>
           </View>
+          <View style={{ width: scr_width, paddingVertical: 5, marginVertical: 10, backgroundColor: Color.softGrey }}></View>
           <View
             style={{
+              width: '95%', alignItems: 'center',
               backgroundColor: Color.white,
-              padding: 10,
-              marginTop: 10,
+              // padding: 10,
             }}>
             <Text
               style={{
-                fontSize: 18,
+                width: '95%',
+                fontSize: 16,
                 color: Color.black,
-                fontFamily: Manrope?.Bold,
+                fontFamily: Manrope?.SemiBold,
                 marginVertical: 10,
               }}>
               Color :
             </Text>
             <View
               style={{
-                marginRight: 5,
-                flexDirection: 'row',
+                width: '100%',
+                flexDirection: 'row', justifyContent: 'center',
                 alignItems: 'center',
                 flexWrap: 'wrap',
               }}>
@@ -448,26 +450,24 @@ const ProductDetails = ({navigation, route}) => {
                   <TouchableOpacity
                     key={index}
                     style={{
-                      marginRight: 5,
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexWrap: 'wrap',
-                      marginRight: 5,
-                      marginTop: 10,
+                      margin: 5,
+                      // marginTop: 10,
                       borderWidth: 1,
                       borderColor: Color.lightgrey,
-                      padding: 5,
+                      padding: 10, paddingHorizontal: 10,
                       borderRadius: 5,
-                      backgroundColor:
-                        item?.quantity == 0 ? '#EEEEEE' : Color.white,
+                      // backgroundColor: item?.quantity == 0 ? '#EEEEEE' : Color.white,
                     }}
                     disable={item?.quantity == 0}>
                     <View
                       style={{
                         backgroundColor: item?.color,
-                        width: 15,
-                        height: 15,
+                        width: 16,
+                        height: 16,
                         borderRadius: 100,
                         borderWidth: 1,
                         borderColor: Color.cloudyGrey,
@@ -475,10 +475,10 @@ const ProductDetails = ({navigation, route}) => {
                     />
                     <Text
                       style={{
-                        fontSize: 16,
+                        fontSize: 12,
                         color: Color.black,
                         fontFamily: Manrope?.Bold,
-                        marginHorizontal: 5,
+                        marginHorizontal: 10,
                         textTransform: 'capitalize',
                       }}>
                       {item?.color}
@@ -488,49 +488,51 @@ const ProductDetails = ({navigation, route}) => {
               })}
             </View>
           </View>
+
+          <View style={{ width: scr_width, paddingVertical: 5, marginVertical: 10, backgroundColor: Color.softGrey }}></View>
+
           <View
             style={{
+              width: '95%',
               backgroundColor: Color.white,
               padding: 10,
-              marginTop: 10,
             }}>
             <Text
               style={{
-                fontSize: 18,
+                fontSize: 16, paddingHorizontal: 5,
                 color: Color.black,
-                fontFamily: Manrope?.Bold,
+                fontFamily: Manrope?.SemiBold,
               }}>
               Size :
             </Text>
             <View
               style={{
-                marginRight: 5,
+                width: '95%',
                 flexDirection: 'row',
-                flexWrap: 'wrap',
+                flexWrap: 'wrap', marginVertical: 10,
               }}>
               {itemData?.size?.map((item, index) => {
                 return (
                   <TouchableOpacity
                     key={index}
                     style={{
-                      marginRight: 5,
                       marginHorizontal: 10,
-                      marginTop: 10,
                     }}
                     disable={item?.quantity == 0}>
                     <View
                       style={{
-                        width: 40,
-                        height: 40,
+                        // width: 50,
+                        // height: 50,
+                        padding: 10, paddingHorizontal: 20,
                         alignItems: 'center',
                         justifyContent: 'center',
                         backgroundColor:
                           item?.quantity == 0 ? '#EEEEEE80' : '#EEEEEE',
-                        borderRadius: 10,
+                        borderRadius: 5,
                       }}>
                       <Text
                         style={{
-                          fontSize: 16,
+                          fontSize: 12,
                           color: Color.black,
                           fontFamily: Manrope?.Bold,
                           textAlign: 'center',
@@ -541,7 +543,7 @@ const ProductDetails = ({navigation, route}) => {
                     {item?.quantity == 0 && (
                       <Text
                         style={{
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Color.red,
                           fontFamily: Manrope?.Bold,
                           textAlign: 'center',
@@ -555,63 +557,64 @@ const ProductDetails = ({navigation, route}) => {
               })}
             </View>
           </View>
+
+          <View style={{ width: scr_width, paddingVertical: 5, marginVertical: 10, backgroundColor: Color.softGrey }}></View>
+
           <View
             style={{
-              backgroundColor: Color.white,
+              width: '100%',
+              backgroundColor: '#F0F9FB',
               padding: 10,
-              marginTop: 10,
+              // marginTop: 10,
             }}>
             <View
               style={{
-                marginTop: 10,
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'flex-start',
+                justifyContent: 'space-between',
               }}>
-              <View style={{alignItems: 'center'}}>
+              <View style={{ flex: 1.5, justifyContent: 'center', alignItems: 'center' }}>
                 <Image
                   source={Media.user}
                   style={{
-                    width: 70,
-                    height: 70,
+                    width: 100,
+                    height: 100,
                     resizeMode: 'cover',
                     borderRadius: 100,
                   }}
                 />
                 <Text
                   style={{
-                    fontSize: 15,
+                    fontSize: 12,
                     color: Color.white,
                     fontFamily: Manrope.Medium,
                     backgroundColor: Color.green,
-                    padding: 5,
-                    paddingHorizontal: 10,
-                    borderRadius: 5,
+                    padding: 7,
+                    paddingHorizontal: 15, letterSpacing: 0.5,
+                    borderRadius: 5, bottom: 10
                   }}>
                   Preferred
                 </Text>
               </View>
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                }}>
+              <View style={{ flex: 3, justifyContent: 'center', alignItems: 'flex-start' }}>
                 <Text
                   style={{
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Color.black,
-                    fontFamily: Manrope.Bold,
+                    fontFamily: Manrope.Bold, letterSpacing: 0.5,
                   }}>
                   {itemData?.shop?.name}
                 </Text>
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 12,
                     color: Color.lightBlack,
-                    fontFamily: Manrope.Medium,
+                    fontFamily: Manrope.Light, paddingVertical: 3
                   }}>
                   {resultDate}
                 </Text>
-                <View style={{...styles.customRatingBarStyle, marginTop: 5}}>
+                <View style={{ ...styles.customRatingBarStyle, marginTop: 5, alignItems: 'center' }}>
                   {maxRating.map((item, index) => {
                     return (
                       <TouchableOpacity
@@ -621,7 +624,7 @@ const ProductDetails = ({navigation, route}) => {
                         style={{}}>
                         <AntDesign
                           name={item.rating <= defaultRating ? 'star' : 'staro'}
-                          size={20}
+                          size={14}
                           color={Color.sunShade}
                         />
                       </TouchableOpacity>
@@ -629,7 +632,7 @@ const ProductDetails = ({navigation, route}) => {
                   })}
                   <Text
                     style={{
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Color.black,
                       fontFamily: Manrope.Bold,
                       marginHorizontal: 5,
@@ -641,11 +644,11 @@ const ProductDetails = ({navigation, route}) => {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    // marginVertical: 10,
+                    marginVertical: 10,
                   }}>
                   <Button
                     mode="contained"
-                    onPress={() => {}}
+                    onPress={() => { }}
                     style={{
                       backgroundColor: Color.primary,
                       borderRadius: 5,
@@ -654,7 +657,7 @@ const ProductDetails = ({navigation, route}) => {
                       <Feather
                         name="shopping-bag"
                         color={Color.white}
-                        size={20}
+                        size={18}
                       />
                     )}
                     textColor={Color.white}>
@@ -663,7 +666,7 @@ const ProductDetails = ({navigation, route}) => {
 
                   <Button
                     mode="contained"
-                    onPress={() => {}}
+                    onPress={() => { }}
                     style={{
                       marginHorizontal: 10,
                       borderRadius: 5,
@@ -678,8 +681,11 @@ const ProductDetails = ({navigation, route}) => {
               </View>
             </View>
           </View>
+
+
           <View
             style={{
+              width: '95%',
               backgroundColor: Color.white,
               padding: 10,
               marginTop: 10,
@@ -688,25 +694,25 @@ const ProductDetails = ({navigation, route}) => {
               style={{
                 fontSize: 16,
                 color: Color.black,
-                fontFamily: Manrope.Bold,
+                fontFamily: Manrope.SemiBold, letterSpacing: 0.5
               }}>
               Product Description
             </Text>
             <Text
               style={{
-                fontSize: 12,
-                color: Color.cloudyGrey,
-                textAlign: 'justify',
-                fontFamily: Manrope.Medium,
+                fontSize: 13,
+                color: Color.lightBlack,
+                textAlign: 'justify', paddingVertical: 5,
+                fontFamily: Manrope.Light, letterSpacing: 0.5, lineHeight: 22
               }}
               numberOfLines={numLines}
               onTextLayout={onDescriptionTextLayout}>
               {!discriptiontextShown
                 ? itemData?.description
-                    .split('\n')
-                    .join('')
-                    .substring(0, 120)
-                    .concat('...')
+                  .split('\n')
+                  .join('')
+                  .substring(0, 120)
+                  .concat('...')
                 : itemData?.description.split('\n').join('')}{' '}
               {showMoreButton || numLines >= 3 || numLines == undefined ? (
                 <Text
@@ -714,7 +720,7 @@ const ProductDetails = ({navigation, route}) => {
                   style={{
                     color: Color.primary,
                     fontFamily: Manrope.SemiBold,
-                    fontSize: 14,
+                    fontSize: 14, paddingVertical: 5
                   }}>
                   {discriptiontextShown ? 'Read Less' : 'Read More'}
                 </Text>
@@ -723,6 +729,7 @@ const ProductDetails = ({navigation, route}) => {
           </View>
           <View
             style={{
+              width: '95%',
               backgroundColor: Color.white,
               padding: 10,
               marginTop: 10,
@@ -731,34 +738,37 @@ const ProductDetails = ({navigation, route}) => {
               style={{
                 fontSize: 16,
                 color: Color.black,
-                fontFamily: Manrope.Bold,
+                fontFamily: Manrope.SemiBold, letterSpacing: 0.5
               }}>
               Product Ratings & Reviews
             </Text>
             <View style={styles.productRatingView}>
-              <FontAwesome name="star" size={15} color={Color.lightYellow} />
-              <Text
-                style={{
-                  fontFamily: Manrope.Bold,
-                  fontSize: 14,
-                  color: Color.black,
-                }}>
-                {itemData.rating}
+              <View style={{ backgroundColor: Color.green, borderRadius: 5, padding: 5, paddingHorizontal: 7, flexDirection: 'row', alignItems: 'center' }}>
+                <FontAwesome name="star" size={12} color={Color.lightYellow} />
                 <Text
                   style={{
                     fontFamily: Manrope.Bold,
-                    fontSize: 14,
-                    color: Color.cloudyGrey,
+                    fontSize: 12, paddingHorizontal: 5,
+                    color: Color.white, letterSpacing: 0.5
                   }}>
-                  {'  '}({itemData?.shop?.reviews} Reviews)
-                </Text>
+                  {itemData.rating} </Text>
+              </View>
+              <Text
+                style={{
+                  fontFamily: Manrope.Bold,
+                  fontSize: 12,
+                  color: Color.cloudyGrey, letterSpacing: 0.5
+                }}>
+                {'  '}({itemData?.shop?.reviews} Reviews)
               </Text>
+
             </View>
             <View
               style={{
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginVertical: 10,
+                marginVertical: 5,
               }}>
               {review_tab?.map((item, index) => {
                 return (
@@ -780,8 +790,8 @@ const ProductDetails = ({navigation, route}) => {
                     key={index}>
                     <Text
                       style={{
-                        fontFamily: Manrope?.Bold,
-                        fontSize: 14,
+                        fontFamily: Manrope?.Medium,
+                        fontSize: 12, paddingHorizontal: 10,
                         color: tabIndex == index ? Color.primary : Color.black,
                       }}>
                       {item?.name}
@@ -790,100 +800,166 @@ const ProductDetails = ({navigation, route}) => {
                 );
               })}
             </View>
-            {itemData?.reviews?.map((item, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderWidth: 1,
-                    borderColor: Color.lightgrey,
-                    borderRadius: 5,
-                    padding: 5,
-                    marginTop: 10,
-                  }}>
-                  <Image
-                    source={Media.user}
-                    style={{
-                      width: 70,
-                      height: 70,
-                      resizeMode: 'contain',
-                      borderRadius: 100,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flex: 1,
-                    }}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text
-                        style={{
-                          fontFamily: Manrope?.Bold,
-                          fontSize: 16,
-                          color: Color.black,
-                        }}>
-                        {item?.review}
-                      </Text>
-                      <View
-                        style={{
-                          ...styles.productRatingView,
-                          marginHorizontal: 10,
-                        }}>
-                        <FontAwesome
-                          name="star"
-                          size={15}
-                          color={Color.lightYellow}
-                        />
-                        <Text
+            <View
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                marginVertical: 5,
+              }}>
+              {itemData?.reviews?.map((item, index) => {
+                return (
+                  // <View
+                  //   key={index}
+                  //   style={{
+                  //     flex: 1,
+                  //     flexDirection: 'row',
+                  //     alignItems: 'center',
+                  //     borderWidth: 1,
+                  //     borderColor: Color.lightgrey,
+                  //     borderRadius: 5,
+                  //     padding: 5,
+                  //     marginTop: 10,
+                  //   }}>
+                  //   <Image
+                  //     source={Media.user}
+                  //     style={{
+                  //       width: 70,
+                  //       height: 70,
+                  //       resizeMode: 'contain',
+                  //       borderRadius: 100,
+                  //     }}
+                  //   />
+                  //   <View
+                  //     style={{
+                  //       flex: 1,
+                  //     }}>
+                  //     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  //       <Text
+                  //         style={{
+                  //           fontFamily: Manrope?.Bold,
+                  //           fontSize: 16,
+                  //           color: Color.black,
+                  //         }}>
+                  //         {item?.review}
+                  //       </Text>
+                  //       <View
+                  //         style={{
+                  //           ...styles.productRatingView,
+                  //           marginHorizontal: 10,
+                  //         }}>
+                  //         <FontAwesome
+                  //           name="star"
+                  //           size={15}
+                  //           color={Color.lightYellow}
+                  //         />
+                  //         <Text
+                  //           style={{
+                  //             fontFamily: Manrope.Bold,
+                  //             fontSize: 14,
+                  //             color: Color.black,
+                  //           }}>
+                  //           {itemData?.shop?.rating}
+                  //         </Text>
+                  //       </View>
+                  //     </View>
+                  //     <Text
+                  //       style={{
+                  //         flex: 1,
+                  //         fontFamily: Manrope.Medium,
+                  //         fontSize: 12,
+                  //         color: Color.cloudyGrey,
+                  //       }}>
+                  //       {item.content}
+                  //     </Text>
+                  //   </View>
+                  // </View>
+                  <View style={{ width: '100%', alignItems: 'center' }}>
+                    <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+                      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Image
+                          source={Media.user}
                           style={{
-                            fontFamily: Manrope.Bold,
-                            fontSize: 14,
-                            color: Color.black,
-                          }}>
-                          {itemData?.shop?.rating}
-                        </Text>
+                            width: 70,
+                            height: 70,
+                            resizeMode: 'contain',
+                            borderRadius: 100,
+                          }}
+                        />
+                      </View>
+                      <View style={{ flex: 3.5, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <View>
+                            <Text
+                              style={{
+                                fontFamily: Manrope?.Bold,
+                                fontSize: 14,
+                                color: Color.black, letterSpacing: 0.5,
+                              }}>
+                              {item?.review}
+                            </Text>
+                          </View>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#F1FBEF', borderRadius: 5, padding: 5, paddingHorizontal: 10, marginHorizontal: 10 }}>
+                            <FontAwesome
+                              name="star"
+                              size={13}
+                              color={Color.lightYellow}
+                            />
+                            <Text
+                              style={{
+                                fontFamily: Manrope.Bold,
+                                fontSize: 12,
+                                color: Color.black, paddingHorizontal: 5,
+                              }}>
+                              {itemData?.shop?.rating}
+                            </Text>
+                          </View>
+                        </View>
+                        <View style={{ width: '100%' }}>
+                          <Text
+                            style={{
+                              textAlign: 'justify',
+                              fontFamily: Manrope.Light,
+                              fontSize: 12,
+                              color: Color.cloudyGrey, letterSpacing: 0.5, lineHeight: 22
+                            }}>
+                            {item.content}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                    <Text
-                      style={{
-                        flex: 1,
-                        fontFamily: Manrope.Medium,
-                        fontSize: 12,
-                        color: Color.cloudyGrey,
-                      }}>
-                      {item.content}
-                    </Text>
+                    <View style={{ width: '100%', marginVertical: 10, backgroundColor: Color.softGrey, paddingVertical: 1 }}></View>
                   </View>
-                </View>
-              );
-            })}
-            <TouchableOpacity onPress={() => {}} style={{marginVertical: 20}}>
-              <Text
-                style={{
-                  fontFamily: Manrope?.Bold,
-                  fontSize: 16,
-                  color: Color.black,
-                  textDecorationLine: 'underline',
-                }}>
-                View All Reviews
-              </Text>
-            </TouchableOpacity>
+                );
+              })}
+            </View>
+            <View style={{ width: '100%', justifyContent: 'flex-end', alignItems: 'flex-end', marginVertical: 0 }}>
+              <TouchableOpacity onPress={() => { }}>
+                <Text
+                  style={{
+                    fontFamily: Manrope?.SemiBold,
+                    fontSize: 13,
+                    color: Color.lightBlack,
+                    textDecorationLine: 'underline', letterSpacing: 0.5
+                  }}>
+                  View All Reviews
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <View
             style={{
+              width: '95%', alignItems: 'center',
               backgroundColor: Color.white,
               padding: 10,
-              marginTop: 10,
+              marginBottom: 70,
             }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text
                 style={{
                   flex: 1,
                   fontSize: 16,
                   color: Color.black,
-                  fontFamily: Manrope.Bold,
+                  fontFamily: Manrope.SemiBold,
                 }}>
                 Recommended
               </Text>
@@ -900,13 +976,14 @@ const ProductDetails = ({navigation, route}) => {
               data={products}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return <ItemCard item={item} navigation={navigation} />;
               }}
             />
           </View>
-          <View
+          {/* <View
             style={{
+              width: '95%', alignItems: 'center',
               backgroundColor: Color.white,
               padding: 10,
               marginTop: 10,
@@ -924,14 +1001,14 @@ const ProductDetails = ({navigation, route}) => {
               data={products}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return <ItemCard item={item} navigation={navigation} />;
               }}
             />
-          </View>
+          </View> */}
         </View>
-      </ScrollView>
-    </View>
+      </ScrollView >
+    </View >
   );
 };
 
@@ -940,27 +1017,26 @@ export default ProductDetails;
 const styles = StyleSheet.create({
   productDiscountPrice: {
     color: Color.black,
-    fontFamily: Manrope.Bold,
-    fontSize: 18,
+    fontFamily: Manrope.SemiBold,
+    fontSize: 20,
     marginRight: 10,
   },
   productPrice: {
     color: Color.smokeyGrey,
-    fontFamily: Manrope.Medium,
+    fontFamily: Manrope.SemiBold,
     fontSize: 14,
-    paddingLeft: 25,
     textDecorationLine: 'line-through',
   },
   customRatingBarStyle: {
     flexDirection: 'row',
   },
   starImageStyle: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     resizeMode: 'cover',
   },
   productRatingView: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center', paddingVertical: 5
   },
 });
