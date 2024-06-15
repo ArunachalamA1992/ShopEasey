@@ -53,12 +53,12 @@ const ProductList = () => {
         </TouchableOpacity>
         <View style={styles.searchView}>
           <AntDesign name="search1" size={22} color={Color.cloudyGrey} />
-          <TextInput style={styles.searchInput} placeholder="Search...." />
+          <TextInput style={styles.searchInput} placeholder="Search...." placeholderTextColor={Color.cloudyGrey} />
         </View>
-        <TouchableOpacity style={{ marginHorizontal: 5 }}>
+        {/* <TouchableOpacity style={{ marginHorizontal: 5 }}>
           <AntDesign name="hearto" size={22} color={Color.white} />
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 5 }}>
+        </TouchableOpacity> */}
+        <TouchableOpacity style={{ marginHorizontal: 5, padding: 5 }}>
           <Badge
             style={{
               position: 'absolute',
@@ -67,7 +67,7 @@ const ProductList = () => {
               right: -10,
               backgroundColor: Color.white,
               color: Color.black,
-              fontFamily: Manrope.Bold,
+              fontFamily: Manrope.Bold
             }}>
             {0}
           </Badge>
@@ -103,7 +103,7 @@ const ProductList = () => {
               Filter
             </Text>
           </View>
-          <View style={{ flex: 4, width: '95%', alignItems: 'center' }}>
+          <View style={{ flex: 4, width: '100%' }}>
             <FlatList
               data={categoryList}
               horizontal
@@ -136,19 +136,23 @@ const ProductList = () => {
                   </TouchableOpacity>
                 );
               }}
+              style={{ width: '95%' }}
             />
           </View>
         </View>
-        <FlatList
-          data={products}
-          numColumns={2}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => {
-            return <ItemCard item={item} navigation={navigation} />;
-          }}
-        />
+        <View style={{ flex: 1, alignItems: 'center', paddingVertical: 10, backgroundColor: Color.softGrey }}>
+          <FlatList
+            data={products}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => {
+              return <ItemCard item={item} navigation={navigation} />;
+            }}
+            style={{ width: '95%', backgroundColor: Color.softGrey }}
+          />
+        </View>
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -164,15 +168,16 @@ const styles = StyleSheet.create({
   },
   searchView: {
     // flex: 1, 
-    width: '70%',
+    width: '75%',
     backgroundColor: Color.white,
     flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: 10,
-    height: 45,
+    height: 40,
     borderRadius: 50,
   },
-  searchInput: {},
+  searchInput: { width: '90%', fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold, textAlign: 'left', textAlignVertical: 'center' },
   CategoryContainer: {
     backgroundColor: Color.white,
     flexDirection: 'row',

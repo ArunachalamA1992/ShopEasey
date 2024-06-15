@@ -62,7 +62,7 @@ const ItemCard = props => {
       </ImageBackground>
       <View style={styles.contentView}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={styles.categoryName}>{item.type}</Text>
+          <Text style={styles.categoryName} numberOfLines={1}>{item.type}</Text>
           <Text
             style={{
               color: Color.red,
@@ -72,11 +72,17 @@ const ItemCard = props => {
             Sold 0/1
           </Text>
         </View>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productDiscountPrice}>
+
+
+        <Text style={styles.productName} numberOfLines={1}>{item.name}</Text>
+        <View style={{ width: '36%', flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={styles.productDiscountPrice} numberOfLines={1}>$ {item.discountPrice}</Text>
+          <Text style={styles.productPrice} numberOfLines={1}>${item.price}</Text>
+        </View>
+        {/* <Text style={styles.productDiscountPrice} numberOfLines={1}>
           ${item.discountPrice}{' '}
           <Text style={styles.productPrice}>${item.price}</Text>
-        </Text>
+        </Text> */}
         <View style={styles.productRatingView}>
           <FontAwesome name="star" size={12} color={Color.lightYellow} />
           <Text
@@ -109,13 +115,14 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   product: {
-    width: '100%',
-    margin: 5,
-    flex: 1,
+    width: 190,
+    height: 285, backgroundColor: Color.white,
+    margin: 5, borderRadius: 5, borderTopStartRadius: 10, borderTopRightRadius: 10,
+    // flex: 1,
   },
   Productimage: {
     width: '100%',
-    height: 170,
+    height: 170, borderTopStartRadius: 10, borderTopRightRadius: 10,
     justifyContent: 'space-between',
     resizeMode: 'contain',
   },
@@ -172,7 +179,7 @@ const styles = StyleSheet.create({
     color: Color.smokeyGrey,
     fontFamily: Manrope.Medium,
     fontSize: 12,
-    paddingLeft: 25, letterSpacing: 0.5,
+    paddingLeft: 5, letterSpacing: 0.5,
     textDecorationLine: 'line-through',
   },
   productRatingView: {

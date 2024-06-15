@@ -169,7 +169,7 @@ const MyOrders = () => {
 
     function renderOrderItem(item, index) {
         try {
-            console.log("kldgklsdkgkl  ", item.order_color);
+            // console.log("kldgklsdkgkl  ", item.order_color);
             const bgcolor = getColor(item.order_color);
             const statusBgColor = statusColor(item.order_status)
             return (

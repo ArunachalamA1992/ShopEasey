@@ -38,9 +38,9 @@ const Login = () => {
     return (
         <View style={styles.container}>
             <View style={{ flex: 3, width: '94%', justifyContent: 'flex-end', alignItems: 'flex-start', padding: 10 }}>
-                <Text style={{ textAlign: 'left', fontSize: 30, color: Color.black, fontFamily: Manrope.SemiBold, }}>Login to</Text>
+                <Text style={{ textAlign: 'left', fontSize: 28, color: Color.black, fontFamily: Manrope.SemiBold, }}>Login to</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ textAlign: 'left', fontSize: 40, color: Color.black, fontFamily: Manrope.SemiBold, }}>Shopeasey</Text>
+                    <Text style={{ textAlign: 'left', fontSize: 36, color: Color.black, fontFamily: Manrope.SemiBold, }}>Shopeasey</Text>
                     <Iconviewcomponent
                         Icontag={'MaterialIcons'}
                         iconname={'shopping-bag'}
@@ -71,8 +71,8 @@ const Login = () => {
                     {error && <Text style={styles.invalidLogin}>{error}</Text>}
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate("OTPScreen", { number })}
-                    style={{ width: '90%', height: 50, marginVertical: 10, backgroundColor: Color.primary, borderColor: Color.primary, borderWidth: 0.5, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
-                    <Text style={{ fontSize: 14, color: Color.white, fontFamily: Manrope.SemiBold, letterSpacing: 1, lineHeight: 22 }}>SUBMIT</Text>
+                    style={{ width: '90%', height: 50, marginVertical: 20, backgroundColor: Color.primary, borderColor: Color.primary, borderWidth: 0.5, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
+                    <Text style={{ fontSize: 16, color: Color.white, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22 }}>SUBMIT</Text>
                 </TouchableOpacity>
             </View>
             <View style={{ flex: 0.5, width: '90%', flexDirection: 'row', alignItems: 'center' }}>
@@ -99,11 +99,11 @@ const Login = () => {
                     <Text style={{ textAlign: 'justify', fontSize: 12, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22 }}>ShopEasey</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate("TermsandConditions")}>
                         <Text style={{ textAlign: 'justify', fontSize: 14, color: Color.primary, textDecorationLine: 'underline', fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22 }}>Terms and Conditions</Text>
                     </TouchableOpacity>
                     <Text style={{ textAlign: 'justify', fontSize: 12, paddingHorizontal: 5, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, lineHeight: 22 }}>and</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate("PrivacyPolicy")}>
                         <Text style={{ textAlign: 'justify', fontSize: 14, color: Color.primary, textDecorationLine: 'underline', fontFamily: Manrope.SemiBold, letterSpacing: 0.5, lineHeight: 22 }}>Privacy Policy</Text>
                     </TouchableOpacity>
                 </View>
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
         borderLeftColor: Color.Venus,
         borderLeftWidth: 1,
         color: Color.black,
-        fontSize: 16,
+        fontSize: 14,
         padding: 5,
         paddingTop: 5, paddingHorizontal: 10,
         fontFamily: Manrope.SemiBold,

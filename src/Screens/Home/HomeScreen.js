@@ -44,6 +44,7 @@ const HomeScreen = () => {
   const [height, setHeight] = useState(undefined);
 
   const [imageVisible, setImageVisible] = useState(false);
+
   const [OfferBanner] = useState([
     {
       id: '0',
@@ -997,7 +998,7 @@ const HomeScreen = () => {
                     width: scr_width,
                     backgroundColor: Color.white,
                   }}>
-                  <FlatList
+                  {/* <FlatList
                     data={OfferBanner}
                     horizontal
                     renderItem={({ item, index }) => {
@@ -1015,6 +1016,36 @@ const HomeScreen = () => {
                         </View>
                       );
                     }}
+                  /> */}
+                  <SwiperFlatList
+                    autoplay
+                    autoplayDelay={5}
+                    autoplayLoop
+                    index={1}
+                    showPagination
+                    data={OfferBanner}
+                    // paginationActiveColor={Color.primary}
+                    // paginationStyleItem={{
+                    //   width: 15,
+                    //   height: 3,
+                    //   marginTop: 35,
+                    //   marginHorizontal: 2,
+                    //   justifyContent: 'center',
+                    //   alignItems: 'center',
+                    // }}
+                    renderItem={({ item }) => (
+                      <View
+                        style={{ width: scr_width, flexDirection: 'row', alignItems: 'center' }}>
+                        <Image
+                          source={{ uri: item?.category_image }}
+                          style={{
+                            width: '100%',
+                            height: 420,
+                            resizeMode: 'cover',
+                          }}
+                        />
+                      </View>
+                    )}
                   />
                   <View
                     style={{
@@ -1203,8 +1234,8 @@ const HomeScreen = () => {
                     <Image
                       source={{ uri: Media.flash_sell_image }}
                       style={{
-                        width: 120,
-                        height: 80,
+                        width: 100,
+                        height: 60,
                         resizeMode: 'contain',
                       }}
                     />

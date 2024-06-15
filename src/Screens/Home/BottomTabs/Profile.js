@@ -164,7 +164,7 @@ const Profile = () => {
 
             <View style={{ width: '90%', height: 0.5, backgroundColor: Color.Venus, marginVertical: 10 }}></View>
 
-            <TouchableOpacity style={{ width: '100%', flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+            <TouchableOpacity onPress={() => navigation.navigate("FollowingSellers")} style={{ width: '100%', flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Iconviewcomponent
                   Icontag={'FontAwesome'}

@@ -22,6 +22,10 @@ import ProductDetails from './Screens/Home/ProductDetails';
 import CategoryScreen from './Screens/Home/CategoryScreen';
 import SearchScreen from './Screens/Home/SearchScreen';
 import { Manrope } from './Global/FontFamily';
+import PrivacyPolicy from './Screens/Sidemenu/PrivacyPolicy';
+import TermsandConditions from './Screens/Sidemenu/TermsandConditions';
+import FollowingSellers from './Screens/Profile/FollowingSellers';
+import SellerProfile from './Screens/Profile/SellerProfile';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -157,6 +161,88 @@ const MainApp = () => {
             ),
           })}
         />
+
+        <Stack.Screen
+          name="TermsandConditions"
+          component={TermsandConditions}
+          options={({ navigation, route }) => ({
+            headerTitle: 'Terms & Conditions',
+            headerTitleAlign: 'center',
+            headerTitleStyle: { color: Color.white },
+            headerStyle: { backgroundColor: Color.primary },
+            headerLeft: () => (
+              <View style={{ marginHorizontal: 10 }}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.white}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="PrivacyPolicy"
+          component={PrivacyPolicy}
+          options={({ navigation, route }) => ({
+            headerTitle: 'Privacy Policy',
+            headerTitleStyle: { color: Color.white },
+            headerStyle: { backgroundColor: Color.primary },
+            headerLeft: () => (
+              <View style={{ marginHorizontal: 10 }}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.white}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+
+        <Stack.Screen
+          name="FollowingSellers"
+          component={FollowingSellers}
+          options={({ navigation, route }) => ({
+            headerTitle: 'Following Sellers',
+            headerTitleAlign: 'center',
+            headerTitleStyle: { color: Color.black, fontFamily: Manrope.Bold, fontSize: 18 },
+            headerStyle: { backgroundColor: Color.primary },
+            headerLeft: () => (
+              <View style={{ marginHorizontal: 10 }}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.white}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="SellerProfile"
+          component={SellerProfile}
+          options={({ navigation, route }) => ({
+            headerTitle: 'Seller Profile',
+            headerTitleAlign: 'center',
+            headerTitleStyle: { color: Color.white, fontFamily: Manrope.Bold, fontSize: 18 },
+            headerStyle: { backgroundColor: Color.primary },
+            headerLeft: () => (
+              <View style={{ marginHorizontal: 10 }}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.white}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+
       </Stack.Navigator>
     </>
   );

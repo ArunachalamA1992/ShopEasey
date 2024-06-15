@@ -209,92 +209,91 @@ const MyCart = () => {
   const renderOrderItem = ({ item, index }) => {
     try {
       let totQuantity = item.order_price * item.qty
-      console.log("Quantity ================= :", item.order_price * item.qty);
+      // console.log("Quantity ================= :", item.order_price * item.qty);
       // setOrderTotalValue(totQuantity);
       return (
-        <View style={{ width: '100%', alignItems: 'center', margin: 5, }}>
-          <View style={{ width: '95%', alignItems: 'center', backgroundColor: Color.white }}>
-            <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Color.white }}>
-              <View style={{ width: 150, height: 170, justifyContent: 'center', alignItems: 'center', padding: 5 }}>
-                <Image
-                  source={{ uri: item.ordered_image }}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    resizeMode: 'contain',
-                  }}
-                />
+        <View style={{ width: '95%', alignItems: 'center', backgroundColor: Color.white, marginVertical: 5 }}>
+          <View style={{ width: '95%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Color.white, paddingVertical: 10 }}>
+            <View style={{ width: 150, height: 170, justifyContent: 'center', alignItems: 'center', padding: 5 }}>
+              <Image
+                source={{ uri: item.ordered_image }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  resizeMode: 'contain',
+                }}
+              />
+            </View>
+            <View style={{ width: '95%', justifyContent: 'center', alignItems: 'center', padding: 5 }}>
+              <View style={{ width: '100%', }}>
+                <View style={{ width: '95%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                    <Text style={{ fontSize: 12, color: Color.Venus, fontFamily: Manrope.SemiBold, letterSpacing: 0.5 }} numberOfLines={1}>Brand -</Text>
+                    <Text style={{ width: '80%', fontSize: 13, color: Color.lightBlack, fontFamily: Manrope.Medium, letterSpacing: 0.5, paddingHorizontal: 5 }} numberOfLines={1}>Polo</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => sale_toggleBottomView(item)}
+                    style={{ flex: 1, padding: 5 }}>
+                    <Iconviewcomponent
+                      Icontag={'AntDesign'}
+                      iconname={'delete'}
+                      icon_size={22}
+                      icon_color={Color.Venus}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Text style={{ width: '60%', fontSize: 13, color: Color.black, fontFamily: Manrope.Medium, letterSpacing: 0.5, paddingVertical: 5 }} numberOfLines={2}>{item.order_name}</Text>
               </View>
-              <View style={{ width: '95%', justifyContent: 'center', alignItems: 'center', padding: 5 }}>
-                <View style={{ width: '100%', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ flex: 0.5, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                      <Text style={{ fontSize: 12, color: Color.Venus, fontFamily: Manrope.SemiBold, letterSpacing: 0.5 }} numberOfLines={1}>Brand -</Text>
-                      <Text style={{ fontSize: 13, color: Color.lightBlack, fontFamily: Manrope.Medium, letterSpacing: 0.5, paddingHorizontal: 5 }} numberOfLines={1}>Polo</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => sale_toggleBottomView(item)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5, marginHorizontal: 20 }}>
-                      <Iconviewcomponent
-                        Icontag={'AntDesign'}
-                        iconname={'delete'}
-                        icon_size={22}
-                        icon_color={Color.Venus}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={{ fontSize: 13, color: Color.black, fontFamily: Manrope.Medium, letterSpacing: 0.5, paddingVertical: 5 }} numberOfLines={2}>{item.order_name}</Text>
-                </View>
 
-                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                  <Text style={styles.productDiscountPrice}>
-                    $ {item.order_price}{' '}
-                    <Text style={[styles.productPrice, { paddingHorizontal: 5 }]}>$ {item.order_disc_price}</Text>
-                  </Text>
-                  <View style={{ width: '100%', paddingHorizontal: 5 }}>
-                    <Text style={{ fontSize: 12, color: '#0FAD45', fontFamily: Manrope.Bold, letterSpacing: 0.5 }}>Save 55% OFF</Text>
+              <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ width: '36%', flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={styles.productDiscountPrice} numberOfLines={1}>$ {item.order_price}</Text>
+                  <Text style={styles.productPrice} numberOfLines={1}>${item.order_disc_price}</Text>
+                </View>
+                <View style={{ width: '100%', paddingHorizontal: 5 }}>
+                  <Text style={{ fontSize: 12, color: '#0FAD45', fontFamily: Manrope.Bold, letterSpacing: 0.5 }} numberOfLines={1}>Save 100% OFF</Text>
+                </View>
+              </View>
+              <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 5 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5 }}>Color - </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ paddingHorizontal: 5, fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5 }}>{item.order_color}</Text>
                   </View>
                 </View>
-                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 5 }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5 }}>Color - </Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <Text style={{ paddingHorizontal: 5, fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5 }}>{item.order_color}</Text>
-                    </View>
-                  </View>
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 }}>
-                    <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5 }}>Size - </Text>
-                    <Text style={{ fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold }}>{item.order_size}</Text>
-                  </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 }}>
+                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5 }}>Size - </Text>
+                  <Text style={{ fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold }}>{item.order_size}</Text>
                 </View>
-                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5 }}>Quantity</Text>
-                  <View style={{ width: 120, height: 35, marginHorizontal: 10, marginTop: 5, borderColor: Color.Venus, borderWidth: 0.5, borderRadius: 5, backgroundColor: Color.white, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => handleDecrease(item, index)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5, paddingHorizontal: 10 }}>
-                      <Iconviewcomponent
-                        Icontag={'Feather'}
-                        iconname={'minus'}
-                        icon_size={18}
-                        icon_color={Color.black}
-                      />
-                    </TouchableOpacity>
-                    <View style={{ width: 1, height: '95%', backgroundColor: Color.Venus }}></View>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5, paddingHorizontal: 10 }}>
-                      <Text style={{ fontSize: 16, color: Color.cloudyGrey, fontFamily: Manrope.SemiBold }}>{item.qty}</Text>
-                    </View>
-                    <View style={{ width: 1, height: '95%', backgroundColor: Color.Venus }}></View>
-                    <TouchableOpacity onPress={() => handleIncrease(item, index)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5, paddingHorizontal: 10 }}>
-                      <Iconviewcomponent
-                        Icontag={'Feather'}
-                        iconname={'plus'}
-                        icon_size={18}
-                        icon_color={Color.black}
-                      />
-                    </TouchableOpacity>
+              </View>
+              <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5 }}>Quantity</Text>
+                <View style={{ width: 120, height: 35, marginHorizontal: 10, marginTop: 5, borderColor: Color.Venus, borderWidth: 0.5, borderRadius: 5, backgroundColor: Color.white, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <TouchableOpacity onPress={() => handleDecrease(item, index)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5, paddingHorizontal: 10 }}>
+                    <Iconviewcomponent
+                      Icontag={'Feather'}
+                      iconname={'minus'}
+                      icon_size={18}
+                      icon_color={Color.black}
+                    />
+                  </TouchableOpacity>
+                  <View style={{ width: 1, height: '95%', backgroundColor: Color.Venus }}></View>
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5, paddingHorizontal: 10 }}>
+                    <Text style={{ fontSize: 16, color: Color.cloudyGrey, fontFamily: Manrope.SemiBold }}>{item.qty}</Text>
                   </View>
+                  <View style={{ width: 1, height: '95%', backgroundColor: Color.Venus }}></View>
+                  <TouchableOpacity onPress={() => handleIncrease(item, index)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5, paddingHorizontal: 10 }}>
+                    <Iconviewcomponent
+                      Icontag={'Feather'}
+                      iconname={'plus'}
+                      icon_size={18}
+                      icon_color={Color.black}
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
           </View>
-          <View style={{ width: '100%', height: 1, backgroundColor: Color.lightgrey, marginVertical: 10 }}></View>
+          {/* <View style={{ width: '100%', height: 1, backgroundColor: Color.lightgrey, marginVertical: 10 }}></View> */}
         </View>
       );
     } catch (error) {
@@ -358,7 +357,7 @@ const MyCart = () => {
 
               <View style={{ width: '95%', alignItems: 'center', backgroundColor: Color.white }}>
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Color.white }}>
-                  <View style={{ width: 150, height: 170, justifyContent: 'center', alignItems: 'center', padding: 5 }}>
+                  <View style={{ width: 130, height: 170, justifyContent: 'center', alignItems: 'center', padding: 5 }}>
                     <Image
                       source={{ uri: bottomData.ordered_image }}
                       style={{
@@ -378,14 +377,13 @@ const MyCart = () => {
                       </View>
                       <Text style={{ fontSize: 13, color: Color.black, fontFamily: Manrope.Medium, letterSpacing: 0.5, paddingVertical: 5 }} numberOfLines={2}>{bottomData.order_name}</Text>
                     </View>
-
-                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                      <Text style={styles.productDiscountPrice}>
-                        $ {bottomData.order_price}{' '}
-                        <Text style={[styles.productPrice, { paddingHorizontal: 5 }]}>$ {bottomData.order_disc_price}</Text>
-                      </Text>
+                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <View style={{ width: '40%', flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={[styles.productDiscountPrice, { width: '55%' }]} numberOfLines={1}>$ {bottomData.order_price}</Text>
+                        <Text style={styles.productPrice} numberOfLines={1}>${bottomData.order_disc_price}</Text>
+                      </View>
                       <View style={{ width: '100%', paddingHorizontal: 5 }}>
-                        <Text style={{ fontSize: 12, color: '#0FAD45', fontFamily: Manrope.Bold, letterSpacing: 0.5 }}>Save 55% OFF</Text>
+                        <Text style={{ fontSize: 12, color: '#0FAD45', fontFamily: Manrope.Bold, letterSpacing: 0.5 }} numberOfLines={1}>Save 100% OFF</Text>
                       </View>
                     </View>
                     <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 5 }}>
@@ -442,7 +440,7 @@ const MyCart = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Color.white, alignItems: 'center' }}>
+    <View style={{ flex: 1, backgroundColor: Color.softGrey, alignItems: 'center' }}>
       {/* <View style={{ width: '95%', alignItems: 'center' }}>
         <View style={{ width: '95%', flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 10, alignItems: 'center', backgroundColor: Color.mediumGrey }}>
           <View>
@@ -464,6 +462,7 @@ const MyCart = () => {
             keyExtractor={(item, index) => String(index)}
             renderItem={({ item, index }) => renderOrderItem({ item, index })}
             showsVerticalScrollIndicator={false}
+            style={{ width: '95%' }}
           />
         </ScrollView>
       </View>
@@ -474,7 +473,7 @@ const MyCart = () => {
             <Text style={{ fontSize: 18, color: Color.black, fontFamily: Manrope.Bold, letterSpacing: 0.5 }} numberOfLines={1}>$ {totalValue}</Text>
           </View>
           <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-            <TouchableOpacity style={{ width: '100%', height: 50, backgroundColor: Color.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
+            <TouchableOpacity onPress={() => navigation.navigate("OrderConfirmation")} style={{ width: '100%', height: 50, backgroundColor: Color.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
               <Text style={{ fontSize: 16, color: Color.white, fontFamily: Manrope.Bold, letterSpacing: 0.5 }}>Go to checkout</Text>
             </TouchableOpacity>
           </View>
@@ -504,7 +503,7 @@ const styles = StyleSheet.create({
     color: Color.black,
     fontFamily: Manrope.Bold,
     fontSize: 14,
-    marginRight: 10, letterSpacing: 0.5
+    marginRight: 5, letterSpacing: 0.5
   },
   productPrice: {
     color: Color.smokeyGrey,

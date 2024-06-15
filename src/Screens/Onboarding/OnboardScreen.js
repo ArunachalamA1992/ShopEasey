@@ -71,7 +71,7 @@ const OnboardScreen = () => {
               style={{
                 backgroundColor: 'white',
                 width: '100%',
-                height: 300,
+                height: 330,
                 minHeight: 200,
                 alignItems: 'center',
                 borderTopStartRadius: 20,
@@ -116,7 +116,7 @@ const OnboardScreen = () => {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         padding: 15,
-                        margin: 5,
+                        margin: 7,
                         backgroundColor:
                           selectname === item.name ? Color.primary : '#f3f3f3',
                       }}>
@@ -190,7 +190,7 @@ const OnboardScreen = () => {
           position: 'absolute',
           alignItems: 'center',
           bottom: 0,
-          height: 300,
+          height: 330,
           backgroundColor: Color.white,
           borderTopStartRadius: 30,
           borderTopRightRadius: 30,
@@ -199,7 +199,7 @@ const OnboardScreen = () => {
           <Text
             style={{
               textAlign: 'left',
-              fontSize: 24,
+              fontSize: 20,
               color: Color.black,
               fontFamily: Manrope.ExtraBold,
               paddingHorizontal: 10,
@@ -211,11 +211,10 @@ const OnboardScreen = () => {
           <Text
             style={{
               textAlign: 'justify',
-              fontSize: 15,
+              fontSize: 14,
               color: Color.cloudyGrey,
               fontFamily: Manrope.Medium,
               paddingHorizontal: 10,
-              letterSpacing: 0.5,
               lineHeight: 22,
             }}>
             Discover the joy of convenient and secure online shopping with
@@ -239,7 +238,7 @@ const OnboardScreen = () => {
             onPress={() => sale_toggleBottomView()}
             style={{
               width: '100%',
-              height: 45,
+              height: 50,
               marginVertical: 10,
               backgroundColor: Color.white,
               borderColor: Color.lightgrey,
@@ -283,7 +282,7 @@ const OnboardScreen = () => {
             onPress={() => navigation.navigate('OnboardTwo')}
             style={{
               width: '100%',
-              height: 45,
+              height: 50,
               marginVertical: 10,
               backgroundColor: Color.primary,
               borderColor: Color.lightgrey,
@@ -298,7 +297,7 @@ const OnboardScreen = () => {
                 color: Color.white,
                 fontFamily: Manrope.SemiBold,
                 letterSpacing: 0.5,
-                lineHeight: 22,
+                lineHeight: 22, textTransform: 'uppercase'
               }}>
               Get Started
             </Text>
@@ -315,14 +314,14 @@ const OnboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2c3e50',
+    backgroundColor: Color.white,
   },
   image: {
     width: scr_width,
     height: scr_height,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
 });
 

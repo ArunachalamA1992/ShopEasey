@@ -648,7 +648,7 @@ const ProductDetails = ({ navigation, route }) => {
                   }}>
                   <Button
                     mode="contained"
-                    onPress={() => { }}
+                    onPress={() => { navigation.replace("SellerProfile") }}
                     style={{
                       backgroundColor: Color.primary,
                       borderRadius: 5,
@@ -682,13 +682,71 @@ const ProductDetails = ({ navigation, route }) => {
             </View>
           </View>
 
-
           <View
             style={{
               width: '95%',
               backgroundColor: Color.white,
               padding: 10,
               marginTop: 10,
+            }}>
+            <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5 }}>
+              Product Details
+            </Text>
+            <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Category</Text>
+              </View>
+              <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Men polo t-shirt</Text>
+              </View>
+            </View>
+            <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Protection</Text>
+              </View>
+              <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Damage Protection</Text>
+              </View>
+            </View>
+            <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Material</Text>
+              </View>
+              <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Cotton</Text>
+              </View>
+            </View>
+            <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Brand</Text>
+              </View>
+              <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>U.S Polo</Text>
+              </View>
+            </View>
+            <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Material</Text>
+              </View>
+              <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Cotton</Text>
+              </View>
+            </View>
+            <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Country of Origin</Text>
+              </View>
+              <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Chennai, India</Text>
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              width: '95%',
+              backgroundColor: Color.white,
+              padding: 10,
             }}>
             <Text
               style={{

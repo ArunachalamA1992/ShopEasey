@@ -26,6 +26,9 @@ import MyOrders from './Screens/MyOrders/MyOrders';
 import AddAddress from './Screens/Address/AddAddress';
 import SelectAddress from './Screens/Address/SelectAddress';
 import ProfileView from './Screens/Profile/ProfileView';
+import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
+import FollowingSellers from './Screens/Profile/FollowingSellers';
+import SellerProfile from './Screens/Profile/SellerProfile';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -165,7 +168,14 @@ export const WishListStack = () => {
           headerTitleStyle: { color: Color.black, fontFamily: Manrope.Bold, fontSize: 18 },
           headerStyle: { backgroundColor: Color.white, elevation: 0 },
           headerLeft: () => (
-            <NavigationDrawerStructure navigation={navigation} home={true} />
+            <TouchableOpacity style={{ padding: 10 }} onPress={() => navigation.goBack()}>
+              <Iconviewcomponent
+                Icontag={'Ionicons'}
+                iconname={'arrow-back'}
+                icon_size={26}
+                icon_color={Color.black}
+              />
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <TouchableOpacity
@@ -243,6 +253,27 @@ export const MyCartStack = () => {
           //     />
           //   </TouchableOpacity>
           // ),
+        })}
+      />
+
+      <Stack.Screen
+        name="OrderConfirmation"
+        component={OrderConfirmation}
+        options={({ navigation, route }) => ({
+          tabBarStyle: { display: 'none' },
+          headerTitle: 'Order Confirmation',
+          headerTitleStyle: { color: Color.white },
+          headerStyle: { backgroundColor: Color.primary },
+          headerLeft: () => (
+            <View style={{ marginHorizontal: 10 }}>
+              <Icon
+                name="arrow-back"
+                size={30}
+                color={Color.white}
+                onPress={() => navigation.goBack()}
+              />
+            </View>
+          ),
         })}
       />
     </Stack.Navigator>
@@ -382,6 +413,46 @@ export const ProfileStack = () => {
         options={({ navigation, route }) => ({
           headerTitle: 'Add delivery address',
           headerTitleStyle: { color: Color.white },
+          headerStyle: { backgroundColor: Color.primary },
+          headerLeft: () => (
+            <View style={{ marginHorizontal: 10 }}>
+              <Icon
+                name="arrow-back"
+                size={30}
+                color={Color.white}
+                onPress={() => navigation.goBack()}
+              />
+            </View>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="FollowingSellers"
+        component={FollowingSellers}
+        options={({ navigation, route }) => ({
+          headerTitle: 'Following Sellers',
+          headerTitleAlign: 'center',
+          headerTitleStyle: { color: Color.black, fontFamily: Manrope.Bold, fontSize: 18 },
+          headerStyle: { backgroundColor: Color.primary },
+          headerLeft: () => (
+            <View style={{ marginHorizontal: 10 }}>
+              <Icon
+                name="arrow-back"
+                size={30}
+                color={Color.white}
+                onPress={() => navigation.goBack()}
+              />
+            </View>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="SellerProfile"
+        component={SellerProfile}
+        options={({ navigation, route }) => ({
+          headerTitle: 'Seller Profile',
+          headerTitleAlign: 'center',
+          headerTitleStyle: { color: Color.white, fontFamily: Manrope.Bold, fontSize: 18 },
           headerStyle: { backgroundColor: Color.primary },
           headerLeft: () => (
             <View style={{ marginHorizontal: 10 }}>
@@ -612,12 +683,19 @@ const TabNavigator = () => {
       <Tab.Screen
         name="MyCartTab"
         component={MyCartStack}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          // tabBarStyle: { display: 'none' },
+        }}
+
       />
       <Tab.Screen
         name="ProfileTab"
         component={ProfileStack}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          // tabBarStyle: { display: 'none' },
+        }}
       />
     </Tab.Navigator>
   );

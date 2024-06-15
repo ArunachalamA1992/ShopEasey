@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Color.lightBlack,
     fontFamily: Manrope.Bold,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   timerContainer: {
     flexDirection: 'row',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   timeBox: {
     borderWidth: 1, borderRadius: 5,
     borderColor: Color.cloudyGrey,
-    padding: 5, paddingHorizontal: 10,
+    padding: 7, paddingHorizontal: 12,
   },
   timeText: {
     fontSize: 14, color: Color.black,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   colon: {
     fontSize: 14, color: Color.black,
     fontFamily: Manrope.Bold,
-    marginHorizontal: 5,
+    marginHorizontal: 3,
   },
 });
 
