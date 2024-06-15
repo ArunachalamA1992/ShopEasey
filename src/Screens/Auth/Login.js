@@ -7,6 +7,11 @@ import { Iconviewcomponent } from '../../Components/Icontag';
 import { useNavigation } from '@react-navigation/native';
 import { Media } from '../../Global/Media';
 
+import {
+    GoogleSignin,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
+
 // create a component
 const Login = () => {
 
@@ -14,6 +19,72 @@ const Login = () => {
 
     const [number, setNumber] = useState('');
     const [error, setError] = useState(false);
+
+    useEffect(() => {
+        try {
+            GoogleSignin.configure({
+                scopes: ['email', 'profile'],
+                webClientId: '573868691501-50tudos3b49fgfjar4q841sjmhmmm12e.apps.googleusercontent.com',
+                offlineAccess: false,
+                // webClientId: '1080007356916-6amrf74qvgd060rprqqeegs06s168dn1.apps.googleusercontent.com',
+                // offlineAccess: true,
+                // hostedDomain: '',
+                // forceConsentPrompt: true,
+            });
+        } catch (error) {
+            console.log('error ----------- : ', error);
+        }
+    }, []);
+
+    const googleSignIn = async navigation => {
+        try {
+            const replace = navigation;
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            console.log('User info ============== :', JSON.stringify(userInfo));
+            // if (userInfo) {
+            //   var data = {
+            //     email: userInfo?.user?.email,
+            //   };
+            //   const updateProfiledata = await fetchData.login_with_gmail(data);
+            //   console.log(updateProfiledata);
+            //   if (updateProfiledata.message) {
+            //     dispatch(setUserData(updateProfiledata?.users));
+
+            //     setPercentage(percentage);
+            //     const UserLogin = {
+            //       ...updateProfiledata?.users,
+            //     };
+            //     await AsyncStorage.setItem(
+            //       'user_data',
+            //       JSON.stringify(updateProfiledata?.users),
+            //     );
+            //     await AsyncStorage.setItem(
+            //       'action_login_type',
+            //       JSON.stringify({ login_type: 'properties' }),
+            //     );
+            //     dispatch(setLoginType('properties'));
+            //     if (percentage == 100) {
+            //       replace('TabNavigator', UserLogin);
+            //     } else {
+            //       replace('TabNavigator', UserLogin);
+            //     }
+            //   }
+            // }
+        } catch (error) {
+            console.log('catch in google_Signing', error);
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation (e.g. sign in) is in progress already
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                // play services not available or outdated
+            } else {
+                // some other error happened
+            }
+        }
+    };
+
 
     const chkNumber = number => {
         setNumber(number);
@@ -83,7 +154,7 @@ const Login = () => {
             <View style={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
 
 
-                <TouchableOpacity
+                <TouchableOpacity onPress={() => googleSignIn()}
                     style={{ width: '90%', height: 50, flexDirection: 'row', marginVertical: 10, backgroundColor: Color.white, borderColor: Color.cloudyGrey, borderWidth: 0.5, justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
                     <Image
                         source={{ uri: Media.google_icon }}

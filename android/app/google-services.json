@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "573868691501",
+    "project_id": "shopeasey-8855b",
+    "storage_bucket": "shopeasey-8855b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573868691501:android:776bd7b34bfb80e69428a4",
+        "android_client_info": {
+          "package_name": "com.shopeasey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573868691501-mom7qj2eahmjocspbg61nrrmqkq40esp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shopeasey",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "573868691501-50tudos3b49fgfjar4q841sjmhmmm12e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi0wxP2QTmOcNdbfyHP3Qb_5C_gAgcJ1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573868691501-50tudos3b49fgfjar4q841sjmhmmm12e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
