@@ -26,6 +26,7 @@ import PrivacyPolicy from './Screens/Sidemenu/PrivacyPolicy';
 import TermsandConditions from './Screens/Sidemenu/TermsandConditions';
 import FollowingSellers from './Screens/Profile/FollowingSellers';
 import SellerProfile from './Screens/Profile/SellerProfile';
+import AddCard from './Screens/MyOrders/AddCard';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -227,6 +228,26 @@ const MainApp = () => {
           component={SellerProfile}
           options={({ navigation, route }) => ({
             headerTitle: 'Seller Profile',
+            headerTitleAlign: 'center',
+            headerTitleStyle: { color: Color.white, fontFamily: Manrope.Bold, fontSize: 18 },
+            headerStyle: { backgroundColor: Color.primary },
+            headerLeft: () => (
+              <View style={{ marginHorizontal: 10 }}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.white}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="AddCard"
+          component={AddCard}
+          options={({ navigation, route }) => ({
+            headerTitle: 'Add Card Details',
             headerTitleAlign: 'center',
             headerTitleStyle: { color: Color.white, fontFamily: Manrope.Bold, fontSize: 18 },
             headerStyle: { backgroundColor: Color.primary },
