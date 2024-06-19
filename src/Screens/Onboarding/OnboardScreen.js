@@ -1,49 +1,25 @@
-//import liraries
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import { scr_height, scr_width } from '../../Utils/Dimensions';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, Animated, TouchableOpacity} from 'react-native';
+import {scr_height, scr_width} from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
-import { BottomSheet } from 'react-native-btr';
-import { Iconviewcomponent } from '../../Components/Icontag';
-import { Media } from '../../Global/Media';
+import {Manrope} from '../../Global/FontFamily';
+import {useNavigation} from '@react-navigation/native';
+import {BottomSheet} from 'react-native-btr';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import {Media} from '../../Global/Media';
+import fetchData from '../../Config/fetchData';
+import {setCountryCode} from '../../Redux';
+import {useDispatch} from 'react-redux';
 
-// create a component
 const OnboardScreen = () => {
   const navigation = useNavigation();
 
-  const [selectname, setSelectName] = useState('India');
+  const [selectname, setSelectName] = useState('');
   const [selectImage, setSelectImage] = useState(Media.india_flag);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
-  const [countryData, setCountryData] = useState([
-    {
-      id: '0',
-      flag_image: Media.india_flag,
-      name: 'India',
-      sign: 'Indian Ruperr (₹)',
-    },
-    {
-      id: '1',
-      flag_image: Media.singapore_flag,
-      name: 'Singapore',
-      sign: 'Singapore Dollar (SGD)',
-    },
-    {
-      id: '2',
-      flag_image: Media.malay_flag,
-      name: 'Malaysia',
-      sign: 'Malaysian Ringgit (MYR)',
-    },
-  ]);
+  const [countryData, setCountryData] = useState([]);
   const imageScale = new Animated.Value(0.1);
+  const dispatch = useDispatch();
 
   Animated.timing(imageScale, {
     toValue: 1,
@@ -99,17 +75,20 @@ const OnboardScreen = () => {
                     Icontag={'AntDesign'}
                     iconname={'closecircleo'}
                     icon_size={22}
-                    iconstyle={{ color: Color.primary, marginRight: 10 }}
+                    iconstyle={{color: Color.primary, marginRight: 10}}
                   />
                 </TouchableOpacity>
               </View>
 
-              <View style={{ width: '100%', alignItems: 'center' }}>
+              <View style={{width: '100%', alignItems: 'center'}}>
                 {countryData.map((item, index) => {
                   return (
                     <TouchableOpacity
                       key={item + index}
-                      onPress={() => selectedPrice(item)}
+                      onPress={() => {
+                        selectedPrice(item);
+                        dispatch(setCountryCode(item));
+                      }}
                       style={{
                         width: '100%',
                         flexDirection: 'row',
@@ -118,40 +97,57 @@ const OnboardScreen = () => {
                         padding: 15,
                         margin: 7,
                         backgroundColor:
-                          selectname === item.name ? Color.primary : '#f3f3f3',
+                          selectname === item.country
+                            ? Color.primary
+                            : '#f3f3f3',
                       }}>
-                      <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                        <Image
-                          source={{ uri: item.flag_image }}
-                          style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                        />
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'flex-start',
+                          alignItems: 'flex-start',
+                        }}>
+                        {/* <Image
+                          source={{uri: item.country_image}}
+                          style={{width: 30, height: 30, resizeMode: 'contain'}}
+                        /> */}
                       </View>
-                      <View style={{ flex: 1.5, justifyContent: 'center', alignItems: 'center' }}>
+                      <View
+                        style={{
+                          flex: 1.5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
                         <Text
                           style={{
                             fontSize: 16,
                             color:
-                              selectname === item.name
+                              selectname === item.country
                                 ? Color.white
                                 : Color.black,
                             marginHorizontal: 10,
                             fontFamily: Manrope.Medium,
                           }}>
-                          {item.name}
+                          {item.country}
                         </Text>
                       </View>
-                      <View style={{ flex: 2, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                      <View
+                        style={{
+                          flex: 2,
+                          justifyContent: 'flex-end',
+                          alignItems: 'flex-end',
+                        }}>
                         <Text
                           style={{
                             fontSize: 16,
                             color:
-                              selectname === item.name
+                              selectname === item.country
                                 ? Color.white
                                 : Color.black,
                             marginHorizontal: 10,
                             fontFamily: Manrope.Medium,
                           }}>
-                          {item.sign}
+                          {item.currency_code}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -169,20 +165,30 @@ const OnboardScreen = () => {
 
   function selectedPrice(item, index) {
     try {
-      setSelectName(item.name);
-      setSelectImage(item.flag_image);
+      setSelectName(item.country);
+      setSelectImage(item.country_image);
       setSaleBottomSheetVisible(false);
     } catch (error) {
       console.log('catch in Home_interior select_City :', error);
     }
   }
 
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const onboard_data = await fetchData.list_countries({}, null);
+      setCountryData(onboard_data?.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Animated.Image
-        source={{ uri: Media.onboard_main }}
-        style={styles.image}
-      />
+      <Animated.Image source={{uri: Media.onboard_main}} style={styles.image} />
 
       <View
         style={{
@@ -195,7 +201,7 @@ const OnboardScreen = () => {
           borderTopStartRadius: 30,
           borderTopRightRadius: 30,
         }}>
-        <View style={{ width: '95%', padding: 10 }}>
+        <View style={{width: '95%', padding: 10}}>
           <Text
             style={{
               textAlign: 'left',
@@ -222,7 +228,7 @@ const OnboardScreen = () => {
             products.
           </Text>
         </View>
-        <View style={{ width: '95%', padding: 10 }}>
+        <View style={{width: '95%', padding: 10}}>
           <Text
             style={{
               fontSize: 14,
@@ -255,10 +261,10 @@ const OnboardScreen = () => {
                 alignItems: 'center',
                 paddingHorizontal: 10,
               }}>
-              <Image
-                source={{ uri: selectImage }}
-                style={{ width: 50, height: 50, resizeMode: 'contain' }}
-              />
+              {/* <Image
+                source={{uri: selectImage}}
+                style={{width: 50, height: 50, resizeMode: 'contain'}}
+              /> */}
               <Text
                 style={{
                   fontSize: 16,
@@ -266,14 +272,14 @@ const OnboardScreen = () => {
                   fontFamily: Manrope.SemiBold,
                   letterSpacing: 0.5,
                 }}>
-                {selectname}
+                {selectname == '' ? 'Select Your Country' : selectname}
               </Text>
 
               <Iconviewcomponent
                 Icontag={'Entypo'}
                 iconname={'chevron-small-down'}
                 icon_size={24}
-                iconstyle={{ color: Color.lightBlack, marginRight: 10 }}
+                iconstyle={{color: Color.lightBlack, marginRight: 10}}
               />
             </View>
           </TouchableOpacity>
@@ -297,7 +303,8 @@ const OnboardScreen = () => {
                 color: Color.white,
                 fontFamily: Manrope.SemiBold,
                 letterSpacing: 0.5,
-                lineHeight: 22, textTransform: 'uppercase'
+                lineHeight: 22,
+                textTransform: 'uppercase',
               }}>
               Get Started
             </Text>
@@ -310,7 +317,6 @@ const OnboardScreen = () => {
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -325,5 +331,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default OnboardScreen;

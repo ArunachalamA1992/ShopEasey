@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -9,27 +9,56 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
+import {Manrope} from '../../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Badge, Button } from 'react-native-paper';
+import {Badge, Button} from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import ImageView from '../../Components/imageView';
-import { Media } from '../../Global/Media';
+import {Media} from '../../Global/Media';
 import moment from 'moment';
-import { products } from '../../Config/Content';
+import {products} from '../../Config/Content';
 import ItemCard from '../../Components/ItemCard';
-import { scr_height, scr_width } from '../../Utils/Dimensions';
-import { Iconviewcomponent } from '../../Components/Icontag';
+import {scr_height, scr_width} from '../../Utils/Dimensions';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import fetchData from '../../Config/fetchData';
+import RenderHtml from 'react-native-render-html';
+import {useSelector} from 'react-redux';
+import common_fn from '../../Config/common_fn';
 
-const ProductDetails = ({ navigation, route }) => {
-  const [itemData] = useState(route?.params?.item);
+const ProductDetails = ({navigation, route}) => {
+  const [id] = useState(route?.params?.id);
+  const [singleData, setSingleData] = useState({});
   const [resultDate, setResultDate] = useState(null);
-  const [defaultRating, setDefaultRating] = useState(itemData?.shop?.rating);
+
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedVariantId, setSelectedVariantId] = useState(null);
+  const [sizeVisible, setSizeVisible] = useState(false);
+
+  const handleColorPress = (color, variantId) => {
+    setSelectedColor(color);
+    setSelectedVariantId(variantId);
+    setSelectedSize(null);
+    setSizeVisible(true);
+  };
+
+  const handleSizePress = (size, variantId) => {
+    setSelectedSize(size);
+    setSelectedVariantId(variantId);
+  };
+
+  const filteredSizes = singleData?.variants?.filter(
+    variant => !selectedColor || variant.color === selectedColor,
+  );
+
+  const [defaultRating, setDefaultRating] = useState(singleData?.shop?.rating);
   const [tabIndex, setIndex] = useState(0);
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
 
   const [maxRating, setMaxRating] = useState([
     {
@@ -60,10 +89,12 @@ const ProductDetails = ({ navigation, route }) => {
   ]);
 
   var discount = parseInt(
-    ((itemData?.price - itemData?.discountPrice) / itemData?.price) * 100,
+    ((singleData?.variants?.[0]?.org_price - singleData?.variants?.[0]?.price) /
+      singleData?.variants?.[0]?.org_price) *
+      100,
   );
   const currentDate = moment();
-  const yourDate = moment(itemData?.shop?.active);
+  const yourDate = moment(singleData?.vendor?.updated_at);
 
   useEffect(() => {
     const daysAgo = currentDate.diff(yourDate, 'days');
@@ -76,19 +107,22 @@ const ProductDetails = ({ navigation, route }) => {
       let result;
 
       if (Math.abs(daysAgo) > 0) {
-        result = `${Math.abs(daysAgo)} day${Math.abs(daysAgo) !== 1 ? 's' : ''
-          } ago`;
+        result = `${Math.abs(daysAgo)} day${
+          Math.abs(daysAgo) !== 1 ? 's' : ''
+        } ago`;
       } else if (Math.abs(hoursAgo) > 0) {
-        result = `${Math.abs(hoursAgo)} hour${Math.abs(hoursAgo) !== 1 ? 's' : ''
-          } ago`;
+        result = `${Math.abs(hoursAgo)} hour${
+          Math.abs(hoursAgo) !== 1 ? 's' : ''
+        } ago`;
       } else {
-        result = `${Math.abs(minutesAgo)} minute${Math.abs(minutesAgo) !== 1 ? 's' : ''
-          } ago`;
+        result = `${Math.abs(minutesAgo)} minute${
+          Math.abs(minutesAgo) !== 1 ? 's' : ''
+        } ago`;
       }
       console.log('result', result);
       setResultDate(result);
     }
-  }, [currentDate, yourDate, itemData]);
+  }, [currentDate, yourDate, singleData]);
 
   const handleRatingPress = item => {
     if (defaultRating === item) {
@@ -97,6 +131,7 @@ const ProductDetails = ({ navigation, route }) => {
       setDefaultRating(item);
     }
   };
+
   const [showMoreButton, setShowMoreButton] = useState(false);
   const [discriptiontextShown, setDiscriptiontextShown] = useState(false);
   const [numLines, setNumLines] = useState(undefined);
@@ -135,8 +170,39 @@ const ProductDetails = ({ navigation, route }) => {
     },
   ]);
 
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      var p_data = `id=${id}`;
+      const product_data = await fetchData.list_products(p_data, token);
+      setSingleData(product_data?.data?.[0]);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const setAdd_cart = async () => {
+    try {
+      var data = {
+        product_id: singleData?.id,
+        variant_id: selectedSize?.id,
+      };
+      const add_to_cart = await fetchData.add_to_cart(data, token);
+      console.log('add_to_cart', add_to_cart);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  console.log(singleData?.variants?.some(variant => variant.color == ''));
   return (
-    <View style={{ width: scr_width, height: scr_height, backgroundColor: Color.white }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: Color.white,
+      }}>
       <View
         style={{
           flexDirection: 'row',
@@ -144,22 +210,19 @@ const ProductDetails = ({ navigation, route }) => {
           padding: 10,
           backgroundColor: Color.white,
         }}>
-        <TouchableOpacity onPress={() => navigation.replace("ProductList")} style={{ padding: 5 }}>
-          <Icon
-            name="arrow-back"
-            size={30}
-            color={Color.black}
-
-          />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{padding: 5}}>
+          <Icon name="arrow-back" size={30} color={Color.black} />
         </TouchableOpacity>
-        <View style={{ marginHorizontal: 10, flex: 1 }}>
+        <View style={{marginHorizontal: 10, flex: 1}}>
           <Text
             style={{
               color: Color.black,
               fontSize: 14,
               fontFamily: Manrope.Bold,
             }}>
-            {itemData?.category}
+            {singleData?.category?.category_name}
           </Text>
           <Text
             style={{
@@ -167,13 +230,13 @@ const ProductDetails = ({ navigation, route }) => {
               fontSize: 12,
               fontFamily: Manrope.Medium,
             }}>
-            {itemData?.type}
+            {singleData?.type}
           </Text>
         </View>
-        <TouchableOpacity style={{ marginHorizontal: 10 }}>
+        <TouchableOpacity style={{marginHorizontal: 10}}>
           <Icon name="share-social" size={25} color={Color.black} />
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 10 }}>
+        <TouchableOpacity style={{marginHorizontal: 10}}>
           <Badge
             style={{
               position: 'absolute',
@@ -188,7 +251,7 @@ const ProductDetails = ({ navigation, route }) => {
           </Badge>
           <AntDesign name="hearto" size={25} color={Color.black} />
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 10 }}>
+        <TouchableOpacity style={{marginHorizontal: 10}}>
           <Badge
             style={{
               position: 'absolute',
@@ -204,24 +267,40 @@ const ProductDetails = ({ navigation, route }) => {
           <Feather name="shopping-cart" size={25} color={Color.black} />
         </TouchableOpacity>
       </View>
-      <View style={{ flex: 2, }}>
+      <View style={{flex: 1}}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ width: '100%', alignItems: 'center', backgroundColor: Color.white, paddingVertical: 10 }}>
-            <ImageView images={itemData?.images} />
+          <View
+            style={{
+              width: '100%',
+              backgroundColor: Color.white,
+              padding: 10,
+            }}>
+            {singleData?.variants?.[0]?.productImages?.length > 0 ? (
+              <ImageView images={singleData?.variants?.[0]?.productImages} />
+            ) : (
+              <Image
+                source={{uri: Media.no_image}}
+                style={{width: '100%', height: 250, resizeMode: 'contain'}}
+              />
+            )}
             <View
               style={{
-                width: '95%', alignItems: 'center',
                 backgroundColor: Color.white,
-                marginTop: 50
+                marginTop: 50,
               }}>
-              <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingTop: 10,
+                }}>
                 <Text
                   style={{
                     color: Color.cloudyGrey,
                     fontSize: 13,
                     fontFamily: Manrope.Medium,
                   }}>
-                  {itemData?.type} - {itemData?.category}
+                  {singleData?.type} - {singleData?.category?.category_name}
                 </Text>
                 <View
                   style={{
@@ -245,12 +324,21 @@ const ProductDetails = ({ navigation, route }) => {
                   </Text>
                 </View>
               </View>
-              <View style={{ width: '95%', marginVertical: 10, }}>
-                <Text style={{ color: Color.lightBlack, fontSize: 15, fontFamily: Manrope.SemiBold }}>
-                  {itemData?.name}
+              <View style={{width: '95%', marginVertical: 10}}>
+                <Text
+                  style={{
+                    color: Color.lightBlack,
+                    fontSize: 15,
+                    fontFamily: Manrope.SemiBold,
+                  }}>
+                  {singleData?.product_name}
                 </Text>
 
-                <View style={[styles.customRatingBarStyle, { alignItems: 'center', marginTop: 1 }]}>
+                <View
+                  style={[
+                    styles.customRatingBarStyle,
+                    {alignItems: 'center', marginTop: 1},
+                  ]}>
                   {maxRating.map((item, index) => {
                     return (
                       <TouchableOpacity
@@ -259,7 +347,9 @@ const ProductDetails = ({ navigation, route }) => {
                         onPress={() => handleRatingPress(item.rating)}
                         style={{}}>
                         <FontAwesome
-                          name={item.rating <= defaultRating ? 'star' : 'star-o'}
+                          name={
+                            item.rating <= defaultRating ? 'star' : 'star-o'
+                          }
                           size={14}
                           color={Color.sunShade}
                         />
@@ -273,17 +363,20 @@ const ProductDetails = ({ navigation, route }) => {
                       fontFamily: Manrope.Bold,
                       marginHorizontal: 5,
                     }}>
-                    {itemData?.shop?.rating}
+                    {singleData?.shop?.rating}
                   </Text>
                 </View>
                 <View
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center', paddingVertical: 5
+                    alignItems: 'center',
+                    paddingVertical: 5,
                   }}>
                   <Text style={styles.productDiscountPrice}>
-                    ${itemData.discountPrice}{' '}
-                    <Text style={styles.productPrice}>${itemData.price}</Text>
+                    ${singleData?.variants?.[0]?.price}{' '}
+                    <Text style={styles.productPrice}>
+                      ${singleData?.variants?.[0]?.org_price}
+                    </Text>
                   </Text>
                   <Text
                     style={{
@@ -303,7 +396,7 @@ const ProductDetails = ({ navigation, route }) => {
                     fontSize: 12,
                     color: Color.red,
                   }}>
-                  ( Only {itemData?.stocks} pending )
+                  ( Only {singleData?.variants?.[0]?.stock} pending )
                 </Text>
               </View>
 
@@ -375,27 +468,31 @@ const ProductDetails = ({ navigation, route }) => {
               </View>
               <View
                 style={{
-                  width: '95%', marginVertical: 10,
+                  width: '95%',
+                  marginVertical: 10,
                   flexDirection: 'row',
                   alignItems: 'center',
                   flexWrap: 'wrap',
                 }}>
-                <Image source={Media.return} style={{ width: 20, height: 20 }} />
+                <Image source={Media.return} style={{width: 20, height: 20}} />
                 <Text
                   style={{
                     fontSize: 12,
                     color: Color.cloudyGrey,
                     textAlign: 'justify',
-                    marginLeft: 5, letterSpacing: 0.5
+                    marginLeft: 5,
+                    letterSpacing: 0.5,
                   }}>
                   15-Day Returns{' '}
                 </Text>
-                <TouchableOpacity onPress={() => { }}>
+                <TouchableOpacity onPress={() => {}}>
                   <Text
                     style={{
                       fontSize: 14,
-                      color: Color.lightBlack, textAlign: 'justify',
-                      fontWeight: '600', letterSpacing: 0.5,
+                      color: Color.lightBlack,
+                      textAlign: 'justify',
+                      fontWeight: '600',
+                      letterSpacing: 0.5,
                       textDecorationLine: 'underline',
                     }}>
                     Terms & Conditions
@@ -405,17 +502,20 @@ const ProductDetails = ({ navigation, route }) => {
                   style={{
                     fontSize: 12,
                     color: Color.cloudyGrey,
-                    textAlign: 'justify', letterSpacing: 0.5
+                    textAlign: 'justify',
+                    letterSpacing: 0.5,
                   }}>
                   {' '}
                   and{' '}
                 </Text>
-                <TouchableOpacity onPress={() => { }} style={{ paddingTop: 5 }}>
+                <TouchableOpacity onPress={() => {}} style={{paddingTop: 5}}>
                   <Text
                     style={{
                       fontSize: 14,
-                      color: Color.lightBlack, textAlign: 'justify',
-                      fontWeight: '600', letterSpacing: 0.5,
+                      color: Color.lightBlack,
+                      textAlign: 'justify',
+                      fontWeight: '600',
+                      letterSpacing: 0.5,
                       textDecorationLine: 'underline',
                     }}>
                     Privacy Policy
@@ -423,141 +523,116 @@ const ProductDetails = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={{ width: scr_width, paddingVertical: 5, marginVertical: 10, backgroundColor: Color.softGrey }}></View>
             <View
               style={{
-                width: '95%', alignItems: 'center',
-                backgroundColor: Color.white,
-                // padding: 10,
-              }}>
-              <Text
-                style={{
-                  width: '95%',
-                  fontSize: 16,
-                  color: Color.black,
-                  fontFamily: Manrope?.SemiBold,
-                  marginVertical: 10,
-                }}>
-                Color :
-              </Text>
-              <View
-                style={{
-                  width: '100%',
-                  flexDirection: 'row', justifyContent: 'center',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                }}>
-                {itemData?.color?.map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexWrap: 'wrap',
-                        margin: 5,
-                        borderWidth: 1,
-                        borderColor: Color.lightgrey,
-                        padding: 10, paddingHorizontal: 10,
-                        borderRadius: 5,
-                      }}
-                      disable={item?.quantity == 0}>
-                      <View
-                        style={{
-                          backgroundColor: item?.color,
-                          width: 16,
-                          height: 16,
-                          borderRadius: 100,
-                          borderWidth: 1,
-                          borderColor: Color.cloudyGrey,
-                        }}
-                      />
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.black,
-                          fontFamily: Manrope?.Bold,
-                          marginHorizontal: 10,
-                          textTransform: 'capitalize',
-                        }}>
-                        {item?.color}
+                width: scr_width,
+                paddingVertical: 5,
+                marginVertical: 10,
+                backgroundColor: Color.softGrey,
+              }}></View>
+            {singleData?.variants?.length > 0 && (
+              <View>
+                <View style={styles.colorContainer}>
+                  <Text style={styles.label}>Color :</Text>
+                  <View style={styles.colorOptions}>
+                    {singleData?.variants?.map((item, index) => {
+                      if (item?.color && item?.color !== '') {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            style={[
+                              styles.colorOption,
+                              {
+                                borderColor:
+                                  selectedColor === item?.color
+                                    ? Color.primary // Example: Highlight selected color
+                                    : Color.lightgrey,
+                              },
+                            ]}
+                            onPress={() =>
+                              handleColorPress(item?.color, item?.id)
+                            }
+                            disabled={item?.stock == 0}>
+                            <View
+                              style={[
+                                styles.colorView,
+                                {backgroundColor: item?.color},
+                              ]}
+                            />
+                            <Text style={styles.colorNameText}>
+                              {common_fn.getColorName(item?.color)}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      }
+                      return null;
+                    })}
+                  </View>
+                </View>
+
+                <View style={styles.separator}></View>
+
+                {(sizeVisible ||
+                  !singleData?.variants?.some(variant => variant.color)) && (
+                  <View style={styles.sizeContainer}>
+                    <Text style={styles.sizeLabel}>Size :</Text>
+                    <View style={styles.sizeOptions}>
+                      {filteredSizes?.map((item, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          style={[
+                            styles.sizeOption,
+                            {
+                              backgroundColor:
+                                selectedSize === item?.size
+                                  ? Color.primary
+                                  : Color.white,
+                            },
+                          ]}
+                          onPress={() => handleSizePress(item?.size, item?.id)}
+                          disabled={item?.stock == 0}>
+                          <View
+                            style={[
+                              styles.sizeView,
+                              {
+                                backgroundColor:
+                                  item?.stock == 0 ? '#EEEEEE80' : '#EEEEEE',
+                              },
+                            ]}>
+                            <Text style={styles.sizeText}>{item?.size}</Text>
+                          </View>
+                          {item?.stock == 0 && (
+                            <Text style={styles.soldText}>sold</Text>
+                          )}
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                {!selectedSize &&
+                  !sizeVisible && ( // Show variant ID selection option if size is initially empty
+                    <View style={styles.selectVariantContainer}>
+                      <Text style={styles.selectVariantLabel}>
+                        Please select a color to choose variant:
                       </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-
-            <View style={{ width: scr_width, paddingVertical: 5, marginVertical: 10, backgroundColor: Color.softGrey }}></View>
-
-            <View
-              style={{
-                width: '95%',
-                backgroundColor: Color.white,
-                padding: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: 16, paddingHorizontal: 5,
-                  color: Color.black,
-                  fontFamily: Manrope?.SemiBold,
-                }}>
-                Size :
-              </Text>
-              <View
-                style={{
-                  width: '95%',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap', marginVertical: 10,
-                }}>
-                {itemData?.size?.map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      style={{
-                        marginHorizontal: 10,
-                      }}
-                      disable={item?.quantity == 0}>
-                      <View
-                        style={{
-                          padding: 10, paddingHorizontal: 20,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor:
-                            item?.quantity == 0 ? '#EEEEEE80' : '#EEEEEE',
-                          borderRadius: 5,
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: Color.black,
-                            fontFamily: Manrope?.Bold,
-                            textAlign: 'center',
-                          }}>
-                          {item?.size}
+                      <TouchableOpacity
+                        style={styles.selectVariantButton}
+                        onPress={() => setSelectedVariantId(selectedColor?.id)}>
+                        <Text style={styles.selectVariantButtonText}>
+                          Select Variant ID
                         </Text>
-                      </View>
-                      {item?.quantity == 0 && (
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: Color.red,
-                            fontFamily: Manrope?.Bold,
-                            textAlign: 'center',
-                            textTransform: 'uppercase',
-                          }}>
-                          sold
-                        </Text>
-                      )}
-                    </TouchableOpacity>
-                  );
-                })}
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
+                {selectedVariantId && (
+                  <Text style={styles.selectedVariantText}>
+                    Selected Variant ID: {selectedVariantId}
+                  </Text>
+                )}
               </View>
-            </View>
-
-            <View style={{ width: scr_width, paddingVertical: 5, marginVertical: 10, backgroundColor: Color.softGrey }}></View>
-
+            )}
             <View
               style={{
                 width: '100%',
@@ -571,7 +646,12 @@ const ProductDetails = ({ navigation, route }) => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
-                <View style={{ flex: 1.5, justifyContent: 'center', alignItems: 'center' }}>
+                <View
+                  style={{
+                    flex: 1.5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <Image
                     source={Media.user}
                     style={{
@@ -588,30 +668,44 @@ const ProductDetails = ({ navigation, route }) => {
                       fontFamily: Manrope.Medium,
                       backgroundColor: Color.green,
                       padding: 7,
-                      paddingHorizontal: 15, letterSpacing: 0.5,
-                      borderRadius: 5, bottom: 10
+                      paddingHorizontal: 15,
+                      letterSpacing: 0.5,
+                      borderRadius: 5,
+                      bottom: 10,
                     }}>
                     Preferred
                   </Text>
                 </View>
-                <View style={{ flex: 3, justifyContent: 'center', alignItems: 'flex-start' }}>
+                <View
+                  style={{
+                    flex: 3,
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                  }}>
                   <Text
                     style={{
                       fontSize: 14,
                       color: Color.black,
-                      fontFamily: Manrope.Bold, letterSpacing: 0.5,
+                      fontFamily: Manrope.Bold,
+                      letterSpacing: 0.5,
                     }}>
-                    {itemData?.shop?.name}
+                    {singleData?.vendor?.business_name}
                   </Text>
                   <Text
                     style={{
                       fontSize: 12,
                       color: Color.lightBlack,
-                      fontFamily: Manrope.Light, paddingVertical: 3
+                      fontFamily: Manrope.Light,
+                      paddingVertical: 3,
                     }}>
                     {resultDate}
                   </Text>
-                  <View style={{ ...styles.customRatingBarStyle, marginTop: 5, alignItems: 'center' }}>
+                  <View
+                    style={{
+                      ...styles.customRatingBarStyle,
+                      marginTop: 5,
+                      alignItems: 'center',
+                    }}>
                     {maxRating.map((item, index) => {
                       return (
                         <TouchableOpacity
@@ -620,7 +714,9 @@ const ProductDetails = ({ navigation, route }) => {
                           onPress={() => handleRatingPress(item.rating)}
                           style={{}}>
                           <AntDesign
-                            name={item.rating <= defaultRating ? 'star' : 'staro'}
+                            name={
+                              item.rating <= defaultRating ? 'star' : 'staro'
+                            }
                             size={14}
                             color={Color.sunShade}
                           />
@@ -634,7 +730,7 @@ const ProductDetails = ({ navigation, route }) => {
                         fontFamily: Manrope.Bold,
                         marginHorizontal: 5,
                       }}>
-                      {itemData?.shop?.rating}
+                      {singleData?.vendor?.rating}
                     </Text>
                   </View>
                   <View
@@ -645,7 +741,9 @@ const ProductDetails = ({ navigation, route }) => {
                     }}>
                     <Button
                       mode="contained"
-                      onPress={() => { navigation.replace("SellerProfile") }}
+                      onPress={() => {
+                        navigation.replace('SellerProfile');
+                      }}
                       style={{
                         backgroundColor: Color.primary,
                         borderRadius: 5,
@@ -663,7 +761,7 @@ const ProductDetails = ({ navigation, route }) => {
 
                     <Button
                       mode="contained"
-                      onPress={() => { }}
+                      onPress={() => {}}
                       style={{
                         marginHorizontal: 10,
                         borderRadius: 5,
@@ -686,55 +784,259 @@ const ProductDetails = ({ navigation, route }) => {
                 padding: 10,
                 marginTop: 10,
               }}>
-              <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: Color.black,
+                  fontFamily: Manrope.SemiBold,
+                  letterSpacing: 0.5,
+                }}>
                 Product Details
               </Text>
-              <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Category</Text>
+              <View
+                style={{
+                  width: '95%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Category
+                  </Text>
                 </View>
-                <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Men polo t-shirt</Text>
+                <View
+                  style={{
+                    flex: 2,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.lightBlack,
+                      fontFamily: Manrope.SemiBold,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Men polo t-shirt
+                  </Text>
                 </View>
               </View>
-              <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Protection</Text>
+              <View
+                style={{
+                  width: '95%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Protection
+                  </Text>
                 </View>
-                <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Damage Protection</Text>
+                <View
+                  style={{
+                    flex: 2,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.lightBlack,
+                      fontFamily: Manrope.SemiBold,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Damage Protection
+                  </Text>
                 </View>
               </View>
-              <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Material</Text>
+              <View
+                style={{
+                  width: '95%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Material
+                  </Text>
                 </View>
-                <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Cotton</Text>
+                <View
+                  style={{
+                    flex: 2,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.lightBlack,
+                      fontFamily: Manrope.SemiBold,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Cotton
+                  </Text>
                 </View>
               </View>
-              <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Brand</Text>
+              <View
+                style={{
+                  width: '95%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Brand
+                  </Text>
                 </View>
-                <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>U.S Polo</Text>
+                <View
+                  style={{
+                    flex: 2,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.lightBlack,
+                      fontFamily: Manrope.SemiBold,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    U.S Polo
+                  </Text>
                 </View>
               </View>
-              <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Material</Text>
+              <View
+                style={{
+                  width: '95%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Material
+                  </Text>
                 </View>
-                <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Cotton</Text>
+                <View
+                  style={{
+                    flex: 2,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.lightBlack,
+                      fontFamily: Manrope.SemiBold,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Cotton
+                  </Text>
                 </View>
               </View>
-              <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 12, color: Color.cloudyGrey, fontFamily: Manrope.Medium, letterSpacing: 0.5, padding: 5 }}>Country of Origin</Text>
+              <View
+                style={{
+                  width: '95%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Country of Origin
+                  </Text>
                 </View>
-                <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                  <Text style={{ fontSize: 14, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, padding: 5 }}>Chennai, India</Text>
+                <View
+                  style={{
+                    flex: 2,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.lightBlack,
+                      fontFamily: Manrope.SemiBold,
+                      letterSpacing: 0.5,
+                      padding: 5,
+                    }}>
+                    Chennai, India
+                  </Text>
                 </View>
               </View>
             </View>
@@ -749,38 +1051,48 @@ const ProductDetails = ({ navigation, route }) => {
                 style={{
                   fontSize: 16,
                   color: Color.black,
-                  fontFamily: Manrope.SemiBold, letterSpacing: 0.5
+                  fontFamily: Manrope.SemiBold,
+                  letterSpacing: 0.5,
                 }}>
                 Product Description
               </Text>
-              <Text
+              {/* <Text
                 style={{
                   fontSize: 13,
                   color: Color.lightBlack,
-                  textAlign: 'justify', paddingVertical: 5,
-                  fontFamily: Manrope.Light, letterSpacing: 0.5, lineHeight: 22
+                  textAlign: 'justify',
+                  paddingVertical: 5,
+                  fontFamily: Manrope.Light,
+                  letterSpacing: 0.5,
+                  lineHeight: 22,
                 }}
                 numberOfLines={numLines}
                 onTextLayout={onDescriptionTextLayout}>
                 {!discriptiontextShown
-                  ? itemData?.description
-                    .split('\n')
-                    .join('')
-                    .substring(0, 120)
-                    .concat('...')
-                  : itemData?.description.split('\n').join('')}{' '}
+                  ? singleData?.description
+                      .split('\n')
+                      .join('')
+                      .substring(0, 120)
+                      .concat('...')
+                  : singleData?.description.split('\n').join('')}{' '}
                 {showMoreButton || numLines >= 3 || numLines == undefined ? (
                   <Text
                     onPress={toggleTextShown}
                     style={{
                       color: Color.primary,
                       fontFamily: Manrope.SemiBold,
-                      fontSize: 14, paddingVertical: 5
+                      fontSize: 14,
+                      paddingVertical: 5,
                     }}>
                     {discriptiontextShown ? 'Read Less' : 'Read More'}
                   </Text>
                 ) : null}
-              </Text>
+              </Text> */}
+
+              <RenderHtml
+                contentWidth={300}
+                source={{html: singleData?.description}}
+              />
             </View>
             <View
               style={{
@@ -793,30 +1105,46 @@ const ProductDetails = ({ navigation, route }) => {
                 style={{
                   fontSize: 16,
                   color: Color.black,
-                  fontFamily: Manrope.SemiBold, letterSpacing: 0.5
+                  fontFamily: Manrope.SemiBold,
+                  letterSpacing: 0.5,
                 }}>
                 Product Ratings & Reviews
               </Text>
               <View style={styles.productRatingView}>
-                <View style={{ backgroundColor: Color.green, borderRadius: 5, padding: 5, paddingHorizontal: 7, flexDirection: 'row', alignItems: 'center' }}>
-                  <FontAwesome name="star" size={12} color={Color.lightYellow} />
+                <View
+                  style={{
+                    backgroundColor: Color.green,
+                    borderRadius: 5,
+                    padding: 5,
+                    paddingHorizontal: 7,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <FontAwesome
+                    name="star"
+                    size={12}
+                    color={Color.lightYellow}
+                  />
                   <Text
                     style={{
                       fontFamily: Manrope.Bold,
-                      fontSize: 12, paddingHorizontal: 5,
-                      color: Color.white, letterSpacing: 0.5
+                      fontSize: 12,
+                      paddingHorizontal: 5,
+                      color: Color.white,
+                      letterSpacing: 0.5,
                     }}>
-                    {itemData.rating} </Text>
+                    {singleData.rating}{' '}
+                  </Text>
                 </View>
                 <Text
                   style={{
                     fontFamily: Manrope.Bold,
                     fontSize: 12,
-                    color: Color.cloudyGrey, letterSpacing: 0.5
+                    color: Color.cloudyGrey,
+                    letterSpacing: 0.5,
                   }}>
-                  {'  '}({itemData?.shop?.reviews} Reviews)
+                  {'  '}({singleData?.shop?.reviews} Reviews)
                 </Text>
-
               </View>
               <View
                 style={{
@@ -846,8 +1174,10 @@ const ProductDetails = ({ navigation, route }) => {
                       <Text
                         style={{
                           fontFamily: Manrope?.Medium,
-                          fontSize: 12, paddingHorizontal: 10,
-                          color: tabIndex == index ? Color.primary : Color.black,
+                          fontSize: 12,
+                          paddingHorizontal: 10,
+                          color:
+                            tabIndex == index ? Color.primary : Color.black,
                         }}>
                         {item?.name}
                       </Text>
@@ -861,11 +1191,21 @@ const ProductDetails = ({ navigation, route }) => {
                   alignItems: 'center',
                   marginVertical: 5,
                 }}>
-                {itemData?.reviews?.map((item, index) => {
+                {singleData?.reviews?.map((item, index) => {
                   return (
-                    <View style={{ width: '100%', alignItems: 'center' }}>
-                      <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{width: '100%', alignItems: 'center'}}>
+                      <View
+                        style={{
+                          width: '95%',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
                           <Image
                             source={Media.user}
                             style={{
@@ -876,19 +1216,38 @@ const ProductDetails = ({ navigation, route }) => {
                             }}
                           />
                         </View>
-                        <View style={{ flex: 3.5, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View
+                          style={{
+                            flex: 3.5,
+                            justifyContent: 'flex-start',
+                            alignItems: 'flex-start',
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
                             <View>
                               <Text
                                 style={{
                                   fontFamily: Manrope?.Bold,
                                   fontSize: 14,
-                                  color: Color.black, letterSpacing: 0.5,
+                                  color: Color.black,
+                                  letterSpacing: 0.5,
                                 }}>
                                 {item?.review}
                               </Text>
                             </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#F1FBEF', borderRadius: 5, padding: 5, paddingHorizontal: 10, marginHorizontal: 10 }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                backgroundColor: '#F1FBEF',
+                                borderRadius: 5,
+                                padding: 5,
+                                paddingHorizontal: 10,
+                                marginHorizontal: 10,
+                              }}>
                               <FontAwesome
                                 name="star"
                                 size={13}
@@ -898,38 +1257,54 @@ const ProductDetails = ({ navigation, route }) => {
                                 style={{
                                   fontFamily: Manrope.Bold,
                                   fontSize: 12,
-                                  color: Color.black, paddingHorizontal: 5,
+                                  color: Color.black,
+                                  paddingHorizontal: 5,
                                 }}>
-                                {itemData?.shop?.rating}
+                                {singleData?.shop?.rating}
                               </Text>
                             </View>
                           </View>
-                          <View style={{ width: '100%' }}>
+                          <View style={{width: '100%'}}>
                             <Text
                               style={{
                                 textAlign: 'justify',
                                 fontFamily: Manrope.Light,
                                 fontSize: 12,
-                                color: Color.cloudyGrey, letterSpacing: 0.5, lineHeight: 22
+                                color: Color.cloudyGrey,
+                                letterSpacing: 0.5,
+                                lineHeight: 22,
                               }}>
                               {item.content}
                             </Text>
                           </View>
                         </View>
                       </View>
-                      <View style={{ width: '100%', marginVertical: 10, backgroundColor: Color.softGrey, paddingVertical: 1 }}></View>
+                      <View
+                        style={{
+                          width: '100%',
+                          marginVertical: 10,
+                          backgroundColor: Color.softGrey,
+                          paddingVertical: 1,
+                        }}></View>
                     </View>
                   );
                 })}
               </View>
-              <View style={{ width: '100%', justifyContent: 'flex-end', alignItems: 'flex-end', marginVertical: 0 }}>
-                <TouchableOpacity onPress={() => { }}>
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                  marginVertical: 0,
+                }}>
+                <TouchableOpacity onPress={() => {}}>
                   <Text
                     style={{
                       fontFamily: Manrope?.SemiBold,
                       fontSize: 13,
                       color: Color.lightBlack,
-                      textDecorationLine: 'underline', letterSpacing: 0.5
+                      textDecorationLine: 'underline',
+                      letterSpacing: 0.5,
                     }}>
                     View All Reviews
                   </Text>
@@ -938,11 +1313,12 @@ const ProductDetails = ({ navigation, route }) => {
             </View>
             <View
               style={{
-                width: '95%', alignItems: 'center',
+                width: '95%',
+                alignItems: 'center',
                 backgroundColor: Color.white,
                 padding: 10,
               }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text
                   style={{
                     flex: 1,
@@ -965,21 +1341,23 @@ const ProductDetails = ({ navigation, route }) => {
                 data={products}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item, index }) => {
+                renderItem={({item, index}) => {
                   return <ItemCard item={item} navigation={navigation} />;
                 }}
               />
             </View>
             <View
               style={{
-                width: '95%', alignItems: 'center',
+                width: '95%',
+                alignItems: 'center',
                 backgroundColor: Color.white,
                 padding: 10,
                 marginBottom: 10,
               }}>
               <Text
                 style={{
-                  flex: 1, width: '95%',
+                  flex: 1,
+                  width: '95%',
                   fontSize: 16,
                   color: Color.black,
                   fontFamily: Manrope.Bold,
@@ -990,36 +1368,88 @@ const ProductDetails = ({ navigation, route }) => {
                 data={products}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item, index }) => {
+                renderItem={({item, index}) => {
                   return <ItemCard item={item} navigation={navigation} />;
                 }}
               />
             </View>
           </View>
-        </ScrollView >
+        </ScrollView>
       </View>
-      <View style={{ flex: 0.43, width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: Color.lightgrey }}>
-        <TouchableOpacity activeOpacity={0.5} style={{ width: '45%', height: 50, bottom: 35, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: Color.white, borderWidth: 1, borderColor: Color.lightBlack }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginHorizontal: 10,
+        }}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={{
+            width: '50%',
+            height: 50,
+            bottom: 10,
+            marginHorizontal: 5,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 5,
+            backgroundColor: Color.white,
+            borderWidth: 1,
+            borderColor: Color.lightBlack,
+          }}
+          onPress={() => {
+            setAdd_cart();
+          }}>
           <Iconviewcomponent
             Icontag={'AntDesign'}
             iconname={'shoppingcart'}
             icon_size={20}
             icon_color={Color.black}
           />
-          <Text style={{ fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, paddingHorizontal: 10 }}>Add to Cart</Text>
+          <Text
+            style={{
+              fontSize: 14,
+              color: Color.black,
+              fontFamily: Manrope.SemiBold,
+              letterSpacing: 0.5,
+              paddingHorizontal: 10,
+            }}>
+            Add to Cart
+          </Text>
         </TouchableOpacity>
-        <View style={{ width: 4, height: '100%', backgroundColor: Color.lightgrey }}></View>
-        <TouchableOpacity activeOpacity={0.5} style={{ width: '45%', height: 50, bottom: 35, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: Color.primary }}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={{
+            width: '50%',
+            height: 50,
+            bottom: 10,
+            marginHorizontal: 5,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 5,
+            backgroundColor: Color.primary,
+          }}>
           <Iconviewcomponent
             Icontag={'Feather'}
             iconname={'shopping-bag'}
             icon_size={20}
             icon_color={Color.white}
           />
-          <Text style={{ fontSize: 14, color: Color.white, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, paddingHorizontal: 10 }}>Buy Now</Text>
+          <Text
+            style={{
+              fontSize: 14,
+              color: Color.white,
+              fontFamily: Manrope.SemiBold,
+              letterSpacing: 0.5,
+              paddingHorizontal: 10,
+            }}>
+            Buy Now
+          </Text>
         </TouchableOpacity>
       </View>
-    </View >
+    </View>
   );
 };
 
@@ -1048,6 +1478,96 @@ const styles = StyleSheet.create({
   },
   productRatingView: {
     flexDirection: 'row',
-    alignItems: 'center', paddingVertical: 5
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  colorContainer: {
+    flex: 1,
+    backgroundColor: Color.white,
+  },
+  label: {
+    width: '95%',
+    fontSize: 16,
+    color: Color.black,
+    fontFamily: Manrope.SemiBold,
+    marginVertical: 10,
+  },
+  colorOptions: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  colorOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginRight: 5,
+    borderWidth: 1,
+    borderColor: Color.lightgrey,
+    padding: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  colorView: {
+    width: 16,
+    height: 16,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: Color.cloudyGrey,
+  },
+  colorNameText: {
+    fontSize: 12,
+    color: Color.black,
+    fontFamily: Manrope.Bold,
+    marginHorizontal: 10,
+    textTransform: 'capitalize',
+  },
+  separator: {
+    width: '100%',
+    paddingVertical: 5,
+    marginVertical: 10,
+    backgroundColor: Color.softGrey,
+  },
+  sizeContainer: {
+    backgroundColor: Color.white,
+    padding: 10,
+  },
+  sizeLabel: {
+    fontSize: 16,
+    paddingHorizontal: 5,
+    color: Color.black,
+    fontFamily: Manrope.SemiBold,
+  },
+  sizeOptions: {
+    width: '95%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginVertical: 10,
+  },
+  sizeOption: {
+    marginHorizontal: 10,
+  },
+  sizeView: {
+    padding: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  sizeText: {
+    fontSize: 12,
+    color: Color.black,
+    fontFamily: Manrope.Bold,
+    textAlign: 'center',
+  },
+  soldText: {
+    fontSize: 12,
+    color: Color.red,
+    fontFamily: Manrope.Bold,
+    textAlign: 'center',
+    textTransform: 'uppercase',
   },
 });

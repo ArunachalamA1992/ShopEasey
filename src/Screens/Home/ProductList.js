@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -9,56 +9,65 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
-import { Badge } from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {Badge} from 'react-native-paper';
 import ItemCard from '../../Components/ItemCard';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { products } from '../../Config/Content';
+import {Manrope} from '../../Global/FontFamily';
+import fetchData from '../../Config/fetchData';
+import {useSelector} from 'react-redux';
 
-const ProductList = () => {
+const ProductList = ({route}) => {
+  const [category_id] = useState(route.params.category_id);
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState([]);
+  const [products, setProducts] = useState([]);
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
 
-  const categoryList = [
-    {
-      id: 1,
-      name: 'Indian wear',
-    },
-    {
-      id: 2,
-      name: 'Top wear',
-    },
-    {
-      id: 3,
-      name: 'Bottom wear',
-    },
-    {
-      id: 4,
-      name: 'Inner wear',
-    },
-  ];
-
+  const [subCategoryData, setSubCategoryData] = useState([]);
+  console.log('subCategoryData', subCategoryData);
   const handleCategory = item => {
     setSelectedCategory(item);
   };
 
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      var data = `${category_id}`;
+      const categories_data = await fetchData.categories(data, token);
+      setSubCategoryData(categories_data?.data?.sub_categories);
+      var p_data = `category_id=${category_id}`;
+      const product_data = await fetchData.list_products(p_data, token);
+      setProducts(product_data?.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <View style={styles.header}>
         <TouchableOpacity
-          style={{ marginHorizontal: 5 }}
+          style={{marginHorizontal: 5}}
           onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={25} color={Color.white} />
         </TouchableOpacity>
         <View style={styles.searchView}>
           <AntDesign name="search1" size={22} color={Color.cloudyGrey} />
-          <TextInput style={styles.searchInput} placeholder="Search...." placeholderTextColor={Color.cloudyGrey} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search...."
+            placeholderTextColor={Color.cloudyGrey}
+          />
         </View>
         {/* <TouchableOpacity style={{ marginHorizontal: 5 }}>
           <AntDesign name="hearto" size={22} color={Color.white} />
         </TouchableOpacity> */}
-        <TouchableOpacity style={{ marginHorizontal: 5, padding: 5 }}>
+        <TouchableOpacity style={{marginHorizontal: 5, padding: 5}}>
           <Badge
             style={{
               position: 'absolute',
@@ -67,30 +76,31 @@ const ProductList = () => {
               right: -10,
               backgroundColor: Color.white,
               color: Color.black,
-              fontFamily: Manrope.Bold
+              fontFamily: Manrope.Bold,
             }}>
             {0}
           </Badge>
           <Feather name="shopping-cart" size={22} color={Color.white} />
         </TouchableOpacity>
       </View>
-      <View style={{ flex: 1, backgroundColor: Color.white }}>
+      <View style={{flex: 1, backgroundColor: Color.white}}>
         <View
           style={{
             width: '100%',
             flexDirection: 'row',
             justifyContent: 'center',
-            alignItems: 'center', paddingVertical: 10
+            alignItems: 'center',
+            paddingVertical: 10,
           }}>
           <View
             style={{
-              flex: 1,
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: Color.black,
               padding: 10,
-              borderRadius: 5, marginHorizontal: 10
+              borderRadius: 5,
+              marginHorizontal: 10,
             }}>
             <Feather name="filter" size={16} color={Color.white} />
             <Text
@@ -103,15 +113,17 @@ const ProductList = () => {
               Filter
             </Text>
           </View>
-          <View style={{ flex: 4, width: '100%' }}>
+          <View style={{flex: 1}}>
             <FlatList
-              data={categoryList}
+              data={subCategoryData}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({ item, index }) => {
-                const isFocused = item.name === selectedCategory.name;
+              renderItem={({item, index}) => {
+                const isFocused =
+                  item.sub_category_name === selectedCategory.sub_category_name;
                 return (
                   <TouchableOpacity
+                    key={index}
                     style={{
                       backgroundColor: isFocused ? Color.primary : Color.white,
                       padding: 3,
@@ -122,7 +134,9 @@ const ProductList = () => {
                       margin: 5,
                       marginHorizontal: 5,
                     }}
-                    onPress={() => handleCategory(item)}>
+                    onPress={() => {
+                      handleCategory(item);
+                    }}>
                     <Text
                       style={{
                         textAlign: 'center',
@@ -131,28 +145,25 @@ const ProductList = () => {
                         color: isFocused ? Color.white : Color.lightBlack,
                         paddingVertical: 5,
                       }}>
-                      {item.name}
+                      {item?.sub_category_name}
                     </Text>
                   </TouchableOpacity>
                 );
               }}
-              style={{ width: '95%' }}
+              style={{width: '95%'}}
             />
           </View>
         </View>
-        <View style={{ flex: 1, alignItems: 'center', paddingVertical: 10, backgroundColor: Color.softGrey }}>
-          <FlatList
-            data={products}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => {
-              return <ItemCard item={item} navigation={navigation} />;
-            }}
-            style={{ width: '95%', backgroundColor: Color.softGrey }}
-          />
-        </View>
+        <FlatList
+          data={products}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item, index}) => {
+            return <ItemCard item={item} navigation={navigation} />;
+          }}
+        />
       </View>
-    </View >
+    </View>
   );
 };
 
@@ -167,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchView: {
-    // flex: 1, 
+    // flex: 1,
     width: '75%',
     backgroundColor: Color.white,
     flexDirection: 'row',
@@ -177,7 +188,14 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 50,
   },
-  searchInput: { width: '90%', fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold, textAlign: 'left', textAlignVertical: 'center' },
+  searchInput: {
+    width: '90%',
+    fontSize: 14,
+    color: Color.black,
+    fontFamily: Manrope.SemiBold,
+    textAlign: 'left',
+    textAlignVertical: 'center',
+  },
   CategoryContainer: {
     backgroundColor: Color.white,
     flexDirection: 'row',

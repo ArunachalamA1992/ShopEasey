@@ -35,7 +35,7 @@ export default class ImageZoom extends Component {
     } = this.state;
     var x = width * index;
     var val = 0;
-    switch (images.length) {
+    switch (images?.length) {
       case 1:
       case 2:
         val = 0;
@@ -60,10 +60,10 @@ export default class ImageZoom extends Component {
         break;
     }
     var scrollXVal = animScrollXVal.interpolate({
-      inputRange: [0, width * (images.length - 1)],
+      inputRange: [0, width * (images?.length - 1)],
       outputRange: [
         0,
-        (width / images.length) * (images.length - 1) - (100 + val),
+        (width / images?.length) * (images?.length - 1) - (100 + val),
       ],
       extrapolate: 'clamp',
     });
@@ -137,12 +137,12 @@ export default class ImageZoom extends Component {
           })}
         </View>
         <Animated.View style={{width, height: 50, justifyContent: 'center'}}>
-          {images.length > 0 && (
+          {images?.length > 0 && (
             <Animated.View
               style={{
                 backgroundColor: 'transparent',
                 opacity: animScrollBarOpacityVal,
-                width: width - (width / images.length + 1) - (90 + val),
+                width: width - (width / images?.length + 1) - (90 + val),
                 alignSelf: 'center',
               }}>
               <Animated.View
