@@ -204,6 +204,7 @@ const ProductDetails = ({ navigation, route }) => {
           <Feather name="shopping-cart" size={25} color={Color.black} />
         </TouchableOpacity>
       </View>
+
       <View style={{ flex: 2, }}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ width: '100%', alignItems: 'center', backgroundColor: Color.white, paddingVertical: 10 }}>
@@ -998,6 +999,7 @@ const ProductDetails = ({ navigation, route }) => {
           </View>
         </ScrollView >
       </View>
+
       <View style={{ flex: 0.43, width: '100%', height: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: Color.lightgrey }}>
         <TouchableOpacity activeOpacity={0.5} style={{ width: '45%', height: 50, bottom: 35, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: Color.white, borderWidth: 1, borderColor: Color.lightBlack }}>
           <Iconviewcomponent
@@ -1008,7 +1010,7 @@ const ProductDetails = ({ navigation, route }) => {
           />
           <Text style={{ fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, paddingHorizontal: 10 }}>Add to Cart</Text>
         </TouchableOpacity>
-        <View style={{ width: 4, height: '100%', backgroundColor: Color.lightgrey }}></View>
+        <View style={{ width: 8, height: '100%', backgroundColor: Color.lightgrey }}></View>
         <TouchableOpacity activeOpacity={0.5} style={{ width: '45%', height: 50, bottom: 35, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: Color.primary }}>
           <Iconviewcomponent
             Icontag={'Feather'}

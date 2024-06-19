@@ -335,6 +335,7 @@ export const ProfileStack = () => {
         name="ProfileView"
         component={ProfileView}
         options={({ navigation, route }) => ({
+          tabBarStyle: { display: 'none' },
           headerTitle: 'Profile View',
           headerTitleStyle: { color: Color.white },
           headerStyle: { backgroundColor: Color.primary },

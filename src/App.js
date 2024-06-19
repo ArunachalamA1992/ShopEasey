@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LogBox, StatusBar, View } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -27,6 +27,7 @@ import TermsandConditions from './Screens/Sidemenu/TermsandConditions';
 import FollowingSellers from './Screens/Profile/FollowingSellers';
 import SellerProfile from './Screens/Profile/SellerProfile';
 import AddCard from './Screens/MyOrders/AddCard';
+import firebase from '@react-native-firebase/app'
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -50,7 +51,31 @@ const MyDrawer = () => {
   );
 };
 
+const logAppOpen = async () => {
+  await analytics().logAppOpen();
+};
 const App = () => {
+
+  // Your Firebase config object
+  const firebaseConfig = {
+    apiKey: 'AIzaSyDi0wxP2QTmOcNdbfyHP3Qb_5C_gAgcJ1A',
+    authDomain: 'shopeasey-8855b.firebaseapp.com',
+    projectId: 'shopeasey-8855b',
+    appId: '1:573868691501:android:776bd7b34bfb80e69428a4',
+  };
+
+  useEffect(() => {
+    try {
+      logAppOpen();
+      // Initialize Firebase
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+    } catch (error) {
+      console.log("catch in useEffect_App: ", error);
+    }
+  }, [])
+
   return (
     <Provider store={Store}>
       <MyDrawer />

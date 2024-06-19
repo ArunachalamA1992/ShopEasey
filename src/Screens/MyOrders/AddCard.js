@@ -1,19 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import {
     Alert,
     StyleSheet,
     KeyboardAvoidingView,
-    Platform,
+    Platform, View, Text,
     SafeAreaView,
 } from 'react-native'
 import LottieView from 'lottie-react-native'
 import CreditCardForm, { Button, FormModel } from 'rn-credit-card'
 import { useNavigation } from '@react-navigation/native'
+import { Checkbox } from 'react-native-paper';
+import Color from '../../Global/Color'
+import { Manrope } from '../../Global/FontFamily'
 
 const AddCard = () => {
 
     const navigation = useNavigation();
+    const [checked, setChecked] = useState(false);
 
     const formMethods = useForm({
         // to trigger the validation on the blur event
@@ -28,7 +32,7 @@ const AddCard = () => {
     const { handleSubmit, formState } = formMethods
 
     function onSubmit(model) {
-        console.log("Success =============== :", JSON.stringify(model));
+        console.log("Success =============== :", checked + JSON.stringify(model));
         navigation.navigate("OrderConfirmation");
         // Alert.alert('Success: ' + JSON.stringify(model))
     }
@@ -49,6 +53,17 @@ const AddCard = () => {
                             },
                         }}
                     />
+                    <View style={{ width: '95%', flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+                        <Checkbox
+                            color={Color.primary} uncheckedColor={`#FA4616`}
+                            status={checked ? 'checked' : 'unchecked'}
+                            onPress={() => {
+                                setChecked(!checked);
+                            }}
+                            style={{ fontSize: 16 }}
+                        />
+                        <Text style={{ fontSize: 14, color: Color.black, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, textAlign: 'justify' }}>Save this card for faster checkout</Text>
+                    </View>
                 </KeyboardAvoidingView>
                 {/* {formState.isValid && ( */}
                 <Button

@@ -15,6 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { BottomSheet } from 'react-native-btr';
 import { Iconviewcomponent } from '../../Components/Icontag';
 import { Media } from '../../Global/Media';
+import analytics from '@react-native-firebase/analytics';
+
 
 // create a component
 const OnboardScreen = () => {
@@ -177,6 +179,20 @@ const OnboardScreen = () => {
     }
   }
 
+  // Inside your component
+  const handleSignUpButtonClick = () => {
+    console.log("Log Event Start");
+    // Track the "Sign Up" button click event
+
+    analytics().logEvent('bicket', {
+      id: '3745092',
+      item: 'Mens grey shirt',
+      description: ['round neck', 'long sleeved'],
+      size: 'L'
+    });
+    console.log("=========== Log ============ ");
+  };
+
   return (
     <View style={styles.container}>
       <Animated.Image
@@ -279,7 +295,8 @@ const OnboardScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('OnboardTwo')}
+            onPress={() => handleSignUpButtonClick()}
+            // onPress={() => navigation.navigate('OnboardTwo')}
             style={{
               width: '100%',
               height: 50,
