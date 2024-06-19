@@ -79,7 +79,7 @@ const OTPScreen = ({route, AppState}) => {
               },
               token,
             );
-      if (VerifyOTP?.message == 'Login Successfully') {
+      if (VerifyOTP?.status == true) {
         const UserLogin = {
           ...VerifyOTP?.data,
           token: VerifyOTP?.token,

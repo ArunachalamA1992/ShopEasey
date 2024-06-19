@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -9,21 +9,21 @@ import {
   FlatList,
   LayoutAnimation,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Divider } from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {Divider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { Iconviewcomponent } from '../Icontag';
-import { Media } from '../../Global/Media';
+import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../Icontag';
+import {Media} from '../../Global/Media';
 import common_fn from '../../Config/common_fn';
 
 const CustomDrawerContent = props => {
   const [itemSelected, setItemSelected] = useState('');
   const userData = useSelector(state => state.UserReducer.userData);
-  var { first_name, last_name, name, email, role } = userData;
+  var {first_name, last_name, name, email, role} = userData;
   const dispatch = useDispatch();
 
   const [visible, setVisible] = useState(false);
@@ -35,7 +35,7 @@ const CustomDrawerContent = props => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Color.white }}>
+    <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>
       <View
         // onPress={() => {
         //   props.navigation.navigate('ProfileTab');
@@ -44,24 +44,27 @@ const CustomDrawerContent = props => {
           backgroundColor: Color.primary,
           height: 250,
           alignItems: 'flex-start',
-          justifyContent: 'center', paddingTop: 20
+          justifyContent: 'center',
+          paddingTop: 20,
         }}>
         <Image
-          source={require('../../assets/logos/main_logo.png')}
+          source={Media.main_logo}
           style={{
             width: 80,
             height: 80,
             resizeMode: 'contain',
             borderRadius: 100,
-            marginTop: 30, marginHorizontal: 10
+            marginTop: 30,
+            marginHorizontal: 10,
           }}
         />
-        <View style={{ flex: 1, marginHorizontal: 10, paddingVertical: 10 }}>
+        <View style={{flex: 1, marginHorizontal: 10, paddingVertical: 10}}>
           <Text
             style={{
               fontSize: 18,
               color: Color.white,
-              fontFamily: Manrope.SemiBold, letterSpacing: 0.5,
+              fontFamily: Manrope.SemiBold,
+              letterSpacing: 0.5,
               textTransform: 'capitalize',
             }}
             numberOfLines={1}>
@@ -71,7 +74,8 @@ const CustomDrawerContent = props => {
             style={{
               fontSize: 14,
               color: Color.white,
-              fontFamily: Manrope.Medium, letterSpacing: 0.5,
+              fontFamily: Manrope.Medium,
+              letterSpacing: 0.5,
               marginVertical: 5,
             }}>
             +91 9876543210
@@ -80,7 +84,7 @@ const CustomDrawerContent = props => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ marginVertical: 10, marginBottom: 50 }}>
+        <View style={{marginVertical: 10, marginBottom: 50}}>
           <View
             style={{
               backgroundColor:
@@ -124,7 +128,6 @@ const CustomDrawerContent = props => {
             style={{
               backgroundColor:
                 itemSelected === 'favorite' ? Color.primary : Color.white,
-
             }}>
             <TouchableOpacity
               style={{
@@ -159,7 +162,7 @@ const CustomDrawerContent = props => {
               </Text>
             </TouchableOpacity>
           </View>
-          <Divider style={{ height: 1, marginVertical: 10 }} />
+          <Divider style={{height: 1, marginVertical: 10}} />
           <View
             style={{
               backgroundColor:
@@ -218,7 +221,7 @@ const CustomDrawerContent = props => {
               marginVertical: 5,
             }}>
             {visible && (
-              <View style={{ paddingHorizontal: 10 }}>
+              <View style={{paddingHorizontal: 10}}>
                 <View
                   style={{
                     backgroundColor:
@@ -561,7 +564,7 @@ const CustomDrawerContent = props => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 

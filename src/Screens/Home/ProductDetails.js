@@ -188,7 +188,7 @@ const ProductDetails = ({navigation, route}) => {
     try {
       var data = {
         product_id: singleData?.id,
-        variant_id: selectedSize?.id,
+        variant_id: selectedVariantId,
       };
       const add_to_cart = await fetchData.add_to_cart(data, token);
       console.log('add_to_cart', add_to_cart);
@@ -196,7 +196,7 @@ const ProductDetails = ({navigation, route}) => {
       console.log('error', error);
     }
   };
-  console.log(singleData?.variants?.some(variant => variant.color == ''));
+
   return (
     <View
       style={{
