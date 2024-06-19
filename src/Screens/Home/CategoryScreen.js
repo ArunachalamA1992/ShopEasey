@@ -1,21 +1,42 @@
-import React from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 import Color from '../../Global/Color';
-import { categoryData } from '../../Config/Content';
-import { Manrope } from '../../Global/FontFamily';
-import { Iconviewcomponent } from '../../Components/Icontag';
+import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import fetchData from '../../Config/fetchData';
+import {useSelector} from 'react-redux';
 
-const CategoryScreen = ({ navigation }) => {
+const CategoryScreen = ({navigation}) => {
+  const [categoryData, setCategoryData] = useState([]);
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const categories_data = await fetchData.categories(``, token);
+      setCategoryData(categories_data?.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
   return (
-    <View style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
+    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
       <FlatList
         data={categoryData}
         keyExtractor={(item, index) => item + index}
-        renderItem={({ item, index }) => {
+        renderItem={({item, index}) => {
           const lastItem = index === categoryData.length - 1;
           return (
             <TouchableOpacity
-              onPress={() => navigation.navigate('ProductList')}
+              onPress={() => {
+                navigation.navigate('ProductList', {
+                  category_id: item?.id,
+                });
+              }}
               style={{
                 margin: 10,
                 padding: 10,
@@ -23,7 +44,8 @@ const CategoryScreen = ({ navigation }) => {
                 borderColor: Color.lightgrey,
                 borderRadius: 10,
                 paddingBottom: 10,
-                flexDirection: 'row', justifyContent: 'space-between',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
               <View
@@ -33,15 +55,22 @@ const CategoryScreen = ({ navigation }) => {
                   padding: 10,
                 }}>
                 <Image
-                  source={{ uri: item.category_image }}
+                  source={{uri: item?.file}}
                   style={{
                     width: 60,
                     height: 60,
                     resizeMode: 'contain',
+                    borderRadius: 100,
                   }}
                 />
               </View>
-              <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', marginHorizontal: 20 }}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'flex-start',
+                  alignItems: 'flex-start',
+                  marginHorizontal: 20,
+                }}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -49,19 +78,19 @@ const CategoryScreen = ({ navigation }) => {
                     font: Manrope.ExtraBold,
                     paddingVertical: 5,
                   }}>
-                  {item.category_name}
+                  {item?.category_name}
                 </Text>
-                <Text
+                {/* <Text
                   style={{
                     fontSize: 14,
                     color: Color.cloudyGrey,
                     font: Manrope.SemiBold,
                     paddingVertical: 5,
                   }}>
-                  {item.products_count} Products
-                </Text>
+                  {item?.products_count} Products
+                </Text> */}
               </View>
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Iconviewcomponent
                   Icontag={'Ionicons'}
                   iconname={'chevron-forward-outline'}

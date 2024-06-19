@@ -32,6 +32,8 @@ import firebase from '@react-native-firebase/app'
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+LogBox.ignoreAllLogs;
+
 const MyDrawer = () => {
   return (
     <PaperProvider>
@@ -234,7 +236,11 @@ const MainApp = () => {
           options={({ navigation, route }) => ({
             headerTitle: 'Following Sellers',
             headerTitleAlign: 'center',
-            headerTitleStyle: { color: Color.black, fontFamily: Manrope.Bold, fontSize: 18 },
+            headerTitleStyle: {
+              color: Color.black,
+              fontFamily: Manrope.Bold,
+              fontSize: 18,
+            },
             headerStyle: { backgroundColor: Color.primary },
             headerLeft: () => (
               <View style={{ marginHorizontal: 10 }}>
@@ -254,7 +260,11 @@ const MainApp = () => {
           options={({ navigation, route }) => ({
             headerTitle: 'Seller Profile',
             headerTitleAlign: 'center',
-            headerTitleStyle: { color: Color.white, fontFamily: Manrope.Bold, fontSize: 18 },
+            headerTitleStyle: {
+              color: Color.white,
+              fontFamily: Manrope.Bold,
+              fontSize: 18,
+            },
             headerStyle: { backgroundColor: Color.primary },
             headerLeft: () => (
               <View style={{ marginHorizontal: 10 }}>
@@ -274,7 +284,11 @@ const MainApp = () => {
           options={({ navigation, route }) => ({
             headerTitle: 'Add Card Details',
             headerTitleAlign: 'center',
-            headerTitleStyle: { color: Color.white, fontFamily: Manrope.Bold, fontSize: 18 },
+            headerTitleStyle: {
+              color: Color.white,
+              fontFamily: Manrope.Bold,
+              fontSize: 18,
+            },
             headerStyle: { backgroundColor: Color.primary },
             headerLeft: () => (
               <View style={{ marginHorizontal: 10 }}>
@@ -288,7 +302,6 @@ const MainApp = () => {
             ),
           })}
         />
-
       </Stack.Navigator>
     </>
   );
@@ -296,4 +309,3 @@ const MainApp = () => {
 
 export default App;
 
-LogBox.ignoreAllLogs;

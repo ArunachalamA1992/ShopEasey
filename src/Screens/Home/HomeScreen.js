@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,31 +19,41 @@ import {
 } from 'react-native';
 import Color from '../../Global/Color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { Iconviewcomponent } from '../../Components/Icontag';
-import { Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
-import { SwiperFlatList } from 'react-native-swiper-flatlist';
-import { categoryData, products } from '../../Config/Content';
-import { Badge, Button } from 'react-native-paper';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import {Manrope} from '../../Global/FontFamily';
+import {useNavigation} from '@react-navigation/native';
+import {SwiperFlatList} from 'react-native-swiper-flatlist';
+import {categoryData, products} from '../../Config/Content';
+import {Badge, Button} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { scr_height, scr_width } from '../../Utils/Dimensions';
+import {scr_height, scr_width} from '../../Utils/Dimensions';
 import CountdownTimer from '../../Components/CountdownTimer';
 import ItemCard from '../../Components/ItemCard';
 import * as ImagePicker from 'react-native-image-picker';
-import { Media } from '../../Global/Media';
+import {Media} from '../../Global/Media';
+import fetchData from '../../Config/fetchData';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {setUserData} from '../../Redux';
+import {useDispatch, useSelector} from 'react-redux';
+import Geolocation from 'react-native-geolocation-service';
+import common_fn from '../../Config/common_fn';
+import axios from 'axios';
 
 LogBox.ignoreAllLogs();
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [netInfo_State, setNetinfo] = useState(true);
-  const [intialItem, setintialItem] = useState('');
+  const [currentCity, setCurrentCity] = useState('');
   const [height, setHeight] = useState(undefined);
-
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
   const [imageVisible, setImageVisible] = useState(false);
+  const [categoryData, setCategoryData] = useState([]);
 
   const [OfferBanner] = useState([
     {
@@ -57,7 +67,6 @@ const HomeScreen = () => {
       category_image: Media.hot_deal_two,
     },
   ]);
-
   const [hotDealsData] = useState([
     {
       id: 1,
@@ -137,31 +146,61 @@ const HomeScreen = () => {
   ]);
 
   const [shopSection] = useState([
-    { id: 1, title: 'Category Menu', data: ['Category Menu'] },
-    { id: 2, title: 'banners', data: ['banners'] },
-    { id: 3, title: 'hot deals', data: ['hot deals'] },
-    { id: 4, title: 'Trend Product', data: ['Trend Product'] },
-    { id: 5, title: 'Offer Banner', data: ['Offer Banner'] },
-    { id: 6, title: 'Flash Selling', data: ['Flash Selling'] },
-    { id: 6, title: 'product', data: ['product'] },
+    {id: 1, title: 'Category Menu', data: ['Category Menu']},
+    {id: 2, title: 'banners', data: ['banners']},
+    {id: 3, title: 'hot deals', data: ['hot deals']},
+    {id: 4, title: 'Trend Product', data: ['Trend Product']},
+    {id: 5, title: 'Offer Banner', data: ['Offer Banner']},
+    {id: 6, title: 'Flash Selling', data: ['Flash Selling']},
+    {id: 6, title: 'product', data: ['product']},
   ]);
 
   const [visibleData, setVisibleData] = useState(products?.slice(0, 4));
   const [showLoadMore, setShowLoadMore] = useState(products.length > 4);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setImageVisible(true);
-  //   }, 5000);
-  // }, [])
-
-
-
-
   const loadMoreItems = () => {
     const newVisibleData = products?.slice(0, visibleData.length + 8);
     setVisibleData(newVisibleData);
     setShowLoadMore(newVisibleData.length < products.length);
+  };
+
+  useEffect(() => {
+    currentGeolocation();
+  }, [currentCity, token]);
+
+  const currentGeolocation = async () => {
+    const locPermissionDenied = await common_fn.locationPermission();
+    if (locPermissionDenied) {
+      const timeoutId = setTimeout(() => {
+        console.error('Location request timed out');
+      }, 10000);
+
+      Geolocation.getCurrentPosition(
+        async position => {
+          clearTimeout(timeoutId);
+          const {latitude, longitude} = position.coords;
+
+          try {
+            const response = await axios.get(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+            );
+            const address = response?.data?.address;
+            console.log('address', address);
+            if (address) {
+              const city = `${address?.city},${address?.country_code}`;
+
+              setCurrentCity(city);
+            }
+          } catch (error) {
+            console.error('Error fetching city:', error);
+          }
+        },
+        error => {
+          clearTimeout(timeoutId); // Clear the timeout on error
+          console.error('Error getting location:', error);
+        },
+      );
+    }
   };
 
   const calculateTotalDiscountPercentage = type => {
@@ -218,15 +257,47 @@ const HomeScreen = () => {
       console.warn(err);
     }
   };
+
+  useEffect(() => {
+    getUserData();
+    getData();
+  }, []);
+
+  const getUserData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user_data');
+      if (value !== null) {
+        dispatch(setUserData(JSON.parse(value)));
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const categories_data = await fetchData.categories(``, token);
+      setCategoryData(categories_data?.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'dark-content'} />
       <View
         style={{
-          height: 110,
-          backgroundColor: Color.primary, marginBottom: 30
+          height: 80,
+          backgroundColor: Color.primary,
+          marginBottom: 30,
         }}>
-        <View style={{ width: '100%', alignItems: 'center', backgroundColor: Color.primary, }}>
+        <View
+          style={{
+            width: '100%',
+            alignItems: 'center',
+            backgroundColor: Color.primary,
+          }}>
           <View
             style={{
               padding: 20,
@@ -234,7 +305,7 @@ const HomeScreen = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <View style={{ flex: 1 }}>
+            <View style={{flex: 1}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -251,26 +322,27 @@ const HomeScreen = () => {
                     fontSize: 16,
                     color: Color.white,
                     marginHorizontal: 10,
-                    textTransform: 'capitalize', fontFamily: Manrope.Bold
+                    textTransform: 'capitalize',
+                    fontFamily: Manrope.Bold,
                   }}>
-                  Malaysia
+                  {currentCity}
                 </Text>
               </View>
             </View>
-            <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => { }}>
+            <TouchableOpacity style={{marginHorizontal: 10}} onPress={() => {}}>
               <Iconviewcomponent
                 Icontag={'Ionicons'}
                 iconname={'notifications-outline'}
                 icon_size={26}
                 icon_color={Color.white}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ marginHorizontal: 10 }}>
+            <TouchableOpacity style={{marginHorizontal: 10}}>
               <AntDesign name="hearto" size={22} color={Color.white} />
             </TouchableOpacity>
-            <TouchableOpacity style={{ marginHorizontal: 10 }}>
+            <TouchableOpacity style={{marginHorizontal: 10}}>
               <Badge
                 style={{
                   position: 'absolute',
@@ -287,15 +359,21 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View style={{ width: '100%', position: 'absolute', alignItems: 'center', top: 60 }}>
-          <TouchableOpacity activeOpacity={0.5}
+        <View
+          style={{
+            width: '100%',
+            position: 'absolute',
+            alignItems: 'center',
+            top: 40,
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.5}
             style={{
               backgroundColor: Color.white,
               flexDirection: 'row',
               marginVertical: 20,
               alignItems: 'center',
-              borderRadius: 40,
+              borderRadius: 10,
               width: '90%',
               height: 55,
               paddingHorizontal: 20,
@@ -355,368 +433,96 @@ const HomeScreen = () => {
         scrollEventThrottle={1}
         nestedScrollEnabled
         initialNumToRender={5}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           switch (item) {
             case 'Category Menu':
               return (
-                // <View
-                //   style={{
-                //     flexDirection: 'row',
-                //     flexWrap: 'wrap',
-                //     justifyContent: 'center',
-                //     alignItems: 'center', marginVertical: 10
-                //   }}>
-                //   {categoryData.slice(0, 8).map((item, index) => (
-                //     <TouchableOpacity
-                //       onPress={() => navigation.navigate('ProductList')}
-                //       style={{
-                //         justifyContent: 'center',
-                //         alignItems: 'center',
-                //         marginHorizontal: 10,
-                //       }}>
-                //       <View style={{ alignItems: 'center' }}>
-                //         <View
-                //           style={{
-                //             backgroundColor: '#E6F5F8',
-                //             borderRadius: 100,
-                //             width: 60,
-                //             height: 60,
-                //           }}>
-                //           <Image
-                //             source={item.category_image}
-                //             style={{
-                //               width: 60,
-                //               height: 60,
-                //               resizeMode: 'contain',
-                //             }}
-                //           />
-                //         </View>
-                //         <Text
-                //           style={{
-                //             textAlign: 'center',
-                //             fontSize: 12,
-                //             color: Color.black,
-                //             font: Manrope.SemiBold,
-                //             paddingVertical: 5,
-                //           }}>
-                //           {item.category_name.substring(0, 10).concat('...')}
-                //         </Text>
-                //       </View>
-                //     </TouchableOpacity>
-                //   ))}
-                //   <TouchableOpacity
-                //     onPress={() => navigation.navigate('category')}>
-                //     <View style={{
-                //       backgroundColor: '#E6F5F8',
-                //       borderRadius: 100,
-                //       width: 60,
-                //       height: 60,
-                //     }}>
-                //       <Image
-                //         source={require('../../assets/images/viewall.png')}
-                //         style={{
-                //           width: 60,
-                //           height: 60,
-                //           resizeMode: 'contain',
-                //         }}
-                //       />
-                //       <Text
-                //         style={{
-                //           textAlign: 'center',
-                //           fontSize: 12,
-                //           color: Color.black,
-                //           font: Manrope.SemiBold,
-                //           // paddingVertical: 5,
-                //         }}>
-                //         View All
-                //       </Text>
-                //     </View>
-                //   </TouchableOpacity>
-                // </View>
-                <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                  <View style={{ width: '95%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginTop: 20 }}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('ProductList')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-
-                      <View
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginVertical: 20,
+                  }}>
+                  {categoryData?.slice(0, 8)?.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                          navigation.navigate('ProductList', {
+                            category_id: item?.id,
+                          });
+                        }}
                         style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginHorizontal: 10,
+                          marginVertical: 10,
+                        }}>
+                        <View style={{alignItems: 'center'}}>
+                          <View
+                            style={{
+                              backgroundColor: '#E6F5F8',
+                              borderRadius: 100,
+                              width: 60,
+                              height: 60,
+                            }}>
+                            <Image
+                              source={{uri: item?.file}}
+                              style={{
+                                width: 60,
+                                height: 60,
+                                resizeMode: 'contain',
+                                borderRadius: 100,
+                              }}
+                            />
+                          </View>
+                          <Text
+                            style={{
+                              textAlign: 'center',
+                              fontSize: 12,
+                              color: Color.black,
+                              font: Manrope.SemiBold,
+                              paddingVertical: 5,
+                            }}>
+                            {item?.category_name.substring(0, 10).concat('...')}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('category');
+                    }}>
+                    <View
+                      style={{
+                        backgroundColor: '#E6F5F8',
+                        borderRadius: 100,
+                        width: 60,
+                        height: 60,
+                      }}>
+                      <Image
+                        source={require('../../assets/images/viewall.png')}
+                        style={{
                           width: 60,
                           height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.male_image }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
+                          resizeMode: 'contain',
+                        }}
+                      />
                       <Text
                         style={{
                           textAlign: 'center',
                           fontSize: 12,
                           color: Color.black,
                           font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}>
-                        Men
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('ProductList')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-
-                      <View
-                        style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 60,
-                          height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.female_image }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.black,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}>
-                        Women
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('ProductList')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-
-                      <View
-                        style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 60,
-                          height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.kutties_image }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.black,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}>
-                        Kid’s Wear
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('ProductList')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-
-                      <View
-                        style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 60,
-                          height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.snacks_image }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.black,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}>
-                        Snacks
-                      </Text>
-                    </TouchableOpacity>
-                  </View >
-                  <View style={{ width: '95%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginVertical: 10 }}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('ProductList')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-
-                      <View
-                        style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 60,
-                          height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.baby_care }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.black,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}>
-                        Baby Care
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('ProductList')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-
-                      <View
-                        style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 60,
-                          height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.care_image }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.black,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}>
-                        Personal Care
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('ProductList')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-                      <View
-                        style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 60,
-                          height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.kitchen_image }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.black,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}>
-                        Home kitchen
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('category')}
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginHorizontal: 10,
-                      }}>
-                      <View
-                        style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 60,
-                          height: 60,
-                        }}>
-                        <Image
-                          source={{ uri: Media.viewall_image }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.black,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
                         }}>
                         View All
                       </Text>
-                    </TouchableOpacity>
-                  </View >
-                </View >
+                    </View>
+                  </TouchableOpacity>
+                </View>
               );
             case 'banners':
               return (
@@ -743,13 +549,13 @@ const HomeScreen = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}
-                    renderItem={({ item }) => (
+                    renderItem={({item}) => (
                       <View
                         style={{
                           margin: 5,
                         }}>
                         <Image
-                          source={{ uri: item.ban_image }}
+                          source={{uri: item.ban_image}}
                           style={{
                             width: scr_width - 50,
                             height: 130,
@@ -764,7 +570,12 @@ const HomeScreen = () => {
               );
             case 'hot deals':
               return (
-                <View style={{ width: '95%', alignSelf: 'center', alignItems: 'center' }}>
+                <View
+                  style={{
+                    width: '95%',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                  }}>
                   <View
                     style={{
                       width: '95%',
@@ -774,8 +585,8 @@ const HomeScreen = () => {
                       marginTop: 20,
                     }}>
                     <Image
-                      source={{ uri: Media.hot_deal_image }}
-                      style={{ width: 100, height: 30, resizeMode: 'contain' }}
+                      source={{uri: Media.hot_deal_image}}
+                      style={{width: 100, height: 30, resizeMode: 'contain'}}
                     />
                     <View
                       style={{
@@ -798,12 +609,12 @@ const HomeScreen = () => {
                       </Text>
                     </View>
                   </View>
-                  <View style={{ width: '95%' }}>
+                  <View style={{width: '95%'}}>
                     <FlatList
                       data={hotDealsData}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({ item, index }) => {
+                      renderItem={({item, index}) => {
                         return (
                           <View
                             key={index}
@@ -814,7 +625,7 @@ const HomeScreen = () => {
                               marginVertical: 10,
                             }}>
                             <Image
-                              source={{ uri: item?.image }}
+                              source={{uri: item?.image}}
                               style={{
                                 width: 180,
                                 height: 120,
@@ -824,14 +635,19 @@ const HomeScreen = () => {
                           </View>
                         );
                       }}
-
                     />
                   </View>
                 </View>
               );
             case 'Trend Product':
               return (
-                <View style={{ width: '95%', alignSelf: 'center', alignItems: 'center', marginVertical: 10 }}>
+                <View
+                  style={{
+                    width: '95%',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    marginVertical: 10,
+                  }}>
                   <View
                     style={{
                       width: '95%',
@@ -922,9 +738,8 @@ const HomeScreen = () => {
                                 Best Seller
                               </Text>
                             </View>
-                            {calculateTotalDiscountPercentage(
-                              item?.ban_name,
-                            ) != 0 ?
+                            {calculateTotalDiscountPercentage(item?.ban_name) !=
+                            0 ? (
                               <View
                                 style={{
                                   flexDirection: 'row',
@@ -940,21 +755,24 @@ const HomeScreen = () => {
                                   style={{
                                     width: 60,
                                     height: 30,
-                                    resizeMode: 'contain'
+                                    resizeMode: 'contain',
                                   }}
                                 />
                                 <Text
                                   style={{
                                     color: Color.white,
-                                    fontSize: 12, right: 20,
-                                    fontFamily: Manrope.Medium, position: 'absolute'
+                                    fontSize: 12,
+                                    right: 20,
+                                    fontFamily: Manrope.Medium,
+                                    position: 'absolute',
                                   }}>
                                   {calculateTotalDiscountPercentage(
                                     item?.ban_name,
                                   )}{' '}
                                   %
                                 </Text>
-                              </View> : null}
+                              </View>
+                            ) : null}
                             <View
                               style={{
                                 width: '100%',
@@ -1033,11 +851,15 @@ const HomeScreen = () => {
                     //   justifyContent: 'center',
                     //   alignItems: 'center',
                     // }}
-                    renderItem={({ item }) => (
+                    renderItem={({item}) => (
                       <View
-                        style={{ width: scr_width, flexDirection: 'row', alignItems: 'center' }}>
+                        style={{
+                          width: scr_width,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
                         <Image
-                          source={{ uri: item?.category_image }}
+                          source={{uri: item?.category_image}}
                           style={{
                             width: '100%',
                             height: 420,
@@ -1131,13 +953,15 @@ const HomeScreen = () => {
                   </View>
                   <View
                     style={{
-                      width: '95%', alignItems: 'center', alignSelf: 'center',
+                      width: '95%',
+                      alignItems: 'center',
+                      alignSelf: 'center',
                       backgroundColor: '#E6F5F860',
                       padding: 10,
                     }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Image
-                        source={{ uri: Media.flash_sell_ban_one }}
+                        source={{uri: Media.flash_sell_ban_one}}
                         style={{
                           height: 100,
                           resizeMode: 'contain',
@@ -1146,7 +970,7 @@ const HomeScreen = () => {
                         }}
                       />
                       <Image
-                        source={{ uri: Media.flash_sell_ban_two }}
+                        source={{uri: Media.flash_sell_ban_two}}
                         style={{
                           height: 100,
                           resizeMode: 'contain',
@@ -1163,14 +987,15 @@ const HomeScreen = () => {
                         padding: 10,
                         borderWidth: 1,
                         borderColor: '#0095B6',
-                        borderRadius: 10, marginVertical: 10
+                        borderRadius: 10,
+                        marginVertical: 10,
                       }}>
                       <MCIcon
                         name="ticket-percent"
                         size={46}
                         color={'#0095B6'}
                       />
-                      <View style={{ flex: 1 }}>
+                      <View style={{flex: 1}}>
                         <Text
                           style={{
                             fontSize: 11,
@@ -1204,7 +1029,7 @@ const HomeScreen = () => {
                       </View>
                       <Button
                         mode="contained"
-                        onPress={() => { }}
+                        onPress={() => {}}
                         style={{
                           backgroundColor: Color.primary,
                           borderRadius: 5,
@@ -1220,19 +1045,20 @@ const HomeScreen = () => {
               return (
                 <View
                   style={{
-                    width: '95%', alignItems: 'center',
+                    width: '95%',
+                    alignItems: 'center',
                     backgroundColor: Color.white,
-                    marginHorizontal: 10, marginVertical: 10,
+                    marginHorizontal: 10,
+                    marginVertical: 10,
                   }}>
                   <View
                     style={{
                       width: '95%',
                       flexDirection: 'row',
                       alignItems: 'center',
-
                     }}>
                     <Image
-                      source={{ uri: Media.flash_sell_image }}
+                      source={{uri: Media.flash_sell_image}}
                       style={{
                         width: 100,
                         height: 60,
@@ -1252,18 +1078,20 @@ const HomeScreen = () => {
               return (
                 <View
                   style={{
-                    width: '95%', alignItems: 'center', alignSelf: 'center',
+                    width: '95%',
+                    alignItems: 'center',
+                    alignSelf: 'center',
                     backgroundColor: Color.white,
-                    marginBottom: 10
+                    marginBottom: 10,
                   }}>
                   <FlatList
                     data={visibleData}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
-                    renderItem={({ item, index }) => {
+                    renderItem={({item, index}) => {
                       return <ItemCard item={item} navigation={navigation} />;
                     }}
-                    style={{ width: '100%', }}
+                    style={{width: '100%'}}
                   />
                   {showLoadMore && (
                     <TouchableOpacity
@@ -1288,34 +1116,30 @@ const HomeScreen = () => {
           }
         }}
       />
-      {
-        netInfo_State ? null : (
-          <Animated.View
-            animation="fadeInRight"
-            style={{
-              flex: 1,
-              position: 'absolute',
-              zIndex: 9999,
-              width: '100%',
-              height: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: '#626262',
-              opacity: 0.5,
-              padding: 10,
-              marginTop: Platform.OS == 'ios' ? 80 : 0,
-            }}>
-            <Text style={{ color: 'white' }}>No Internet Connection</Text>
-          </Animated.View>
-        )
-      }
+      {netInfo_State ? null : (
+        <Animated.View
+          animation="fadeInRight"
+          style={{
+            flex: 1,
+            position: 'absolute',
+            zIndex: 9999,
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#626262',
+            opacity: 0.5,
+            padding: 10,
+            marginTop: Platform.OS == 'ios' ? 80 : 0,
+          }}>
+          <Text style={{color: 'white'}}>No Internet Connection</Text>
+        </Animated.View>
+      )}
 
-      <Modal
-        transparent={true}
-        animationType="fade"
-        visible={imageVisible}>
-        <View style={{ backgroundColor: Color.transparantBlack, flex: 1 }}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Modal transparent={true} animationType="fade" visible={imageVisible}>
+        <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <TouchableOpacity
               style={{
                 position: 'absolute',
@@ -1337,32 +1161,31 @@ const HomeScreen = () => {
             <Image
               source={require('../../assets/category/offer.png')}
               style={{
-                flex: 1, position: 'relative',
-                width: 250, justifyContent: "center", alignItems: "center",
+                flex: 1,
+                position: 'relative',
+                width: 250,
+                justifyContent: 'center',
+                alignItems: 'center',
                 height: 250,
                 // transform: [{ rotate: '10deg' }],
                 resizeMode: 'contain',
               }}
             />
-
           </View>
-
         </View>
       </Modal>
-
-
-
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.white, alignItems: 'center',
+    backgroundColor: Color.white,
+    alignItems: 'center',
   },
-  child: { width: Dimensions.get('window').width, justifyContent: 'center' },
-  text: { fontSize: 14, textAlign: 'center' },
+  child: {width: Dimensions.get('window').width, justifyContent: 'center'},
+  text: {fontSize: 14, textAlign: 'center'},
   categoryImage: {
     width: 80,
     height: 80,

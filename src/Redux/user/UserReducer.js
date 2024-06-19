@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   SET_ASYNC,
   SET_COMPLETE_PROFILE,
+  SET_COUNTRY_CODE,
   SET_NOTIFICATION_COUNT,
   SET_ONBOARD,
   SET_USER_DATA,
@@ -16,6 +17,7 @@ const initialState = {
   },
   onboardVisible: false,
   notificationCount: 0,
+  country: {},
 };
 
 const storeCartData = async UserState => {
@@ -73,15 +75,30 @@ const UserReducer = (state = initialState, action) => {
         ...state,
         notificationCount: action.payload,
       };
+    case SET_COUNTRY_CODE:
+      storeCartData({
+        ...state,
+        country: action.payload,
+      });
+      return {
+        ...state,
+        country: action.payload,
+      };
     case SET_ASYNC:
-      var {userData, profile_complete, onboardVisible, notificationCount} =
-        action.payload;
+      var {
+        userData,
+        profile_complete,
+        onboardVisible,
+        notificationCount,
+        country,
+      } = action.payload;
       return {
         ...state,
         userData,
         profile_complete,
         onboardVisible,
         notificationCount,
+        country,
       };
     default:
       return state;

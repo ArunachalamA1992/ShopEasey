@@ -76,7 +76,6 @@ export const api = {
     });
   },
   getpatchMethod: (url, token) => {
-    console.log(`baseUrl + url`, baseUrl + url);
     var headers = api.header(token);
     return new Promise((resolve, reject) => {
       axios
@@ -88,7 +87,6 @@ export const api = {
           },
         )
         .then(res => {
-          console.log('res.data', res);
           if (res.status == 200) {
             resolve(res.data);
           }
@@ -100,7 +98,6 @@ export const api = {
     });
   },
   deleteMethod: (url, token) => {
-    console.log('baseUrl + url', baseUrl + url);
     var headers = api.header(token);
     return new Promise((resolve, reject) => {
       axios

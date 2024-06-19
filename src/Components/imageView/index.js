@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Modal,
   View,
@@ -12,30 +12,30 @@ import ImageSlider from './ImageSlider';
 import ImageZoom from './imageZoom';
 import Color from '../../Global/Color';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 export default class ImageView extends Component {
   constructor(props) {
     super(props);
-    this.state = { visible: false, active: 0 };
+    this.state = {visible: false, active: 0};
   }
 
   render() {
-    var { images } = this.props;
-    var { visible, active } = this.state;
+    var {images} = this.props;
+    var {visible, active} = this.state;
     return (
-      <View style={{ height: 270 }}>
+      <View style={{height: 270}}>
         <ImageSlider
           images={images}
           width={width}
-          showModal={active => this.setState({ visible: true, active })}
+          showModal={active => this.setState({visible: true, active})}
         />
         <Modal
           transparent={true}
           animationType="slide"
           visible={visible}
-          onRequestClose={() => this.setState({ visible: false })}>
-          <View style={{ backgroundColor: Color.transparantBlack, flex: 1 }}>
-            <View style={{ flex: 1, justifyContent: 'center' }}>
+          onRequestClose={() => this.setState({visible: false})}>
+          <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
+            <View style={{flex: 1, justifyContent: 'center'}}>
               <ImageZoom
                 index={active}
                 images={images}
@@ -53,13 +53,14 @@ export default class ImageView extends Component {
                 alignItems: 'center',
                 top: Platform.OS == 'ios' ? 50 : 0,
               }}
-              onPress={() => this.setState({ visible: false })}>
+              onPress={() => this.setState({visible: false})}>
               <Text
                 style={{
                   opacity: 1,
                   color: Color.white,
                   fontWeight: 'bold',
-                  fontSize: 20, paddingHorizontal: 5
+                  fontSize: 20,
+                  paddingHorizontal: 5,
                 }}>
                 Close
               </Text>

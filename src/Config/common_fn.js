@@ -1,5 +1,12 @@
-import {Platform, ToastAndroid, LayoutAnimation, UIManager} from 'react-native';
-
+import {
+  Platform,
+  ToastAndroid,
+  LayoutAnimation,
+  UIManager,
+  PermissionsAndroid,
+} from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import {colors} from './hexColor';
 
 const common_fn = {
   showToast: msg => {
@@ -16,6 +23,34 @@ const common_fn = {
   AccordionAnimation: () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   },
+  locationPermission: () =>
+    new Promise(async (resolve, reject) => {
+      if (Platform.OS === 'ios') {
+        try {
+          const permissionStatus = await Geolocation.requestAuthorization(
+            'whenInUse',
+          );
+          if (permissionStatus === 'granted') {
+            return resolve('granted');
+          }
+          reject('Permission not granted');
+        } catch (error) {
+          return reject(error);
+        }
+      }
+      return PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      )
+        .then(granted => {
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            resolve('granted');
+          }
+          return reject('Location Permission denied');
+        })
+        .catch(error => {
+          return reject(error);
+        });
+    }),
   calculateProfileCompletion: (
     resume,
     skills,
@@ -96,6 +131,35 @@ const common_fn = {
     const uniqueID = customIDCounter.counter;
     customIDCounter.counter++;
     return uniqueID;
+  },
+  hexToRgb: hex => {
+    const bigint = parseInt(hex.slice(1), 16);
+    return {
+      r: (bigint >> 16) & 255,
+      g: (bigint >> 8) & 255,
+      b: bigint & 255,
+    };
+  },
+  colorDistance: (color1, color2) => {
+    return Math.sqrt(
+      Math.pow(color1.r - color2.r, 2) +
+        Math.pow(color1.g - color2.g, 2) +
+        Math.pow(color1.b - color2.b, 2),
+    );
+  },
+  getColorName: hexCode => {
+    const rgb = common_fn?.hexToRgb(hexCode);
+    let minDistance = Infinity;
+    let closestColor = 'Unknown Color';
+    colors.forEach(color => {
+      const colorRgb = common_fn?.hexToRgb(color.hex);
+      const distance = common_fn?.colorDistance(rgb, colorRgb);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestColor = color.name;
+      }
+    });
+    return closestColor;
   },
 };
 export default common_fn;
