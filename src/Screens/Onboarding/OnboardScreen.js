@@ -1,15 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Animated, TouchableOpacity} from 'react-native';
-import {scr_height, scr_width} from '../../Utils/Dimensions';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { scr_height, scr_width } from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
-import {BottomSheet} from 'react-native-btr';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {Media} from '../../Global/Media';
+import { Manrope } from '../../Global/FontFamily';
+import { useNavigation } from '@react-navigation/native';
+import { BottomSheet } from 'react-native-btr';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { Media } from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
-import {setCountryCode} from '../../Redux';
-import {useDispatch} from 'react-redux';
+import { setCountryCode } from '../../Redux';
+import { useDispatch } from 'react-redux';
 
 const OnboardScreen = () => {
   const navigation = useNavigation();
@@ -75,12 +75,12 @@ const OnboardScreen = () => {
                     Icontag={'AntDesign'}
                     iconname={'closecircleo'}
                     icon_size={22}
-                    iconstyle={{color: Color.primary, marginRight: 10}}
+                    iconstyle={{ color: Color.primary, marginRight: 10 }}
                   />
                 </TouchableOpacity>
               </View>
 
-              <View style={{width: '100%', alignItems: 'center'}}>
+              <View style={{ width: '100%', alignItems: 'center' }}>
                 {countryData.map((item, index) => {
                   return (
                     <TouchableOpacity
@@ -173,6 +173,19 @@ const OnboardScreen = () => {
     }
   }
 
+  // Inside your component
+  const handleSignUpButtonClick = () => {
+    console.log("Log Event Start");
+    // Track the "Sign Up" button click event
+
+    analytics().logEvent('bicket', {
+      id: '3745092',
+      item: 'Mens grey shirt',
+      description: ['round neck', 'long sleeved'],
+      size: 'L'
+    });
+    console.log("=========== Log ============ ");
+  }
   useEffect(() => {
     getData();
   }, []);
@@ -188,7 +201,7 @@ const OnboardScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.Image source={{uri: Media.onboard_main}} style={styles.image} />
+      <Animated.Image source={{ uri: Media.onboard_main }} style={styles.image} />
 
       <View
         style={{
@@ -201,7 +214,7 @@ const OnboardScreen = () => {
           borderTopStartRadius: 30,
           borderTopRightRadius: 30,
         }}>
-        <View style={{width: '95%', padding: 10}}>
+        <View style={{ width: '95%', padding: 10 }}>
           <Text
             style={{
               textAlign: 'left',
@@ -228,7 +241,7 @@ const OnboardScreen = () => {
             products.
           </Text>
         </View>
-        <View style={{width: '95%', padding: 10}}>
+        <View style={{ width: '95%', padding: 10 }}>
           <Text
             style={{
               fontSize: 14,
@@ -279,13 +292,14 @@ const OnboardScreen = () => {
                 Icontag={'Entypo'}
                 iconname={'chevron-small-down'}
                 icon_size={24}
-                iconstyle={{color: Color.lightBlack, marginRight: 10}}
+                iconstyle={{ color: Color.lightBlack, marginRight: 10 }}
               />
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('OnboardTwo')}
+            onPress={() => handleSignUpButtonClick()}
+            // onPress={() => navigation.navigate('OnboardTwo')}
             style={{
               width: '100%',
               height: 50,

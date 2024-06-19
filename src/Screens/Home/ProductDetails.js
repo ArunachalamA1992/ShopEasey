@@ -267,7 +267,8 @@ const ProductDetails = ({navigation, route}) => {
           <Feather name="shopping-cart" size={25} color={Color.black} />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1}}>
+
+      <View style={{ flex: 2, }}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
