@@ -26,7 +26,6 @@ const ProductList = ({route}) => {
   var {token} = userData;
 
   const [subCategoryData, setSubCategoryData] = useState([]);
-  console.log('subCategoryData', subCategoryData);
   const handleCategory = item => {
     setSelectedCategory(item);
   };

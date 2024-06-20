@@ -36,8 +36,7 @@ const ItemCard = props => {
               ? item?.variants?.[0]?.productImages?.[0]?.image
               : Media.no_image,
         }}
-        resizeMode="cover"
-        onError={error => console.log('Image loading error:', error)}>
+        resizeMode="cover">
         <View style={styles.imageTopView}>
           <View
             style={{

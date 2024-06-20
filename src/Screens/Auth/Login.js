@@ -21,10 +21,12 @@ import {
 } from '@react-native-google-signin/google-signin';
 import common_fn from '../../Config/common_fn';
 import fetchData from '../../Config/fetchData';
+import {useSelector} from 'react-redux';
 
 const Login = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const countryCode = useSelector(state => state.UserReducer.country);
 
   const [number, setNumber] = useState('');
   const [error, setError] = useState(false);
@@ -122,13 +124,9 @@ const Login = () => {
       if (number.length == 10) {
         var data = {
           mobile: number,
+          region_id: countryCode?.id,
         };
-        const login_data = await fetchData.login_with_otp(data);
-        console.log(
-          'login_data?.status',
-          login_data,
-          login_data?.status == true,
-        );
+        const login_data = await fetchData.login_with_otp(data, null);
         if (login_data?.status == true) {
           common_fn.showToast('OTP Sent to your Email');
           navigation.navigate('OTPScreen', {
@@ -161,13 +159,9 @@ const Login = () => {
       if (number.length == 10) {
         var data = {
           mobile: number,
+          region_id: countryCode?.id,
         };
-        const Register_data = await fetchData.Register_request_otp(data);
-        console.log(
-          'Register_data?.status',
-          Register_data,
-          Register_data?.status == true,
-        );
+        const Register_data = await fetchData.Register_request_otp(data, null);
         if (Register_data?.status == true) {
           common_fn.showToast('OTP Sent to your Email');
           navigation.navigate('OTPScreen', {
