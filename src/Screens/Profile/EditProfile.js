@@ -23,6 +23,11 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
 import { BottomSheet } from 'react-native-btr';
+import { baseUrl, base_image_url } from '../../Config/base_url';
+import { useSelector } from 'react-redux';
+import { Media } from '../../Global/Media';
+import axios from 'axios';
+import common_fn from '../../Config/common_fn';
 
 const genderData = [
     {
@@ -44,6 +49,10 @@ const genderData = [
 const EditProfile = () => {
     const navigation = useNavigation();
 
+    const userData = useSelector(state => state.UserReducer.userData);
+    console.log("USER =========== : ", userData);
+    var { name, profile, mobile, token } = userData;
+
     const [username, setUsername] = useState('');
     const [phone, setphone] = useState('');
     const [email, setEmail] = useState('');
@@ -59,6 +68,12 @@ const EditProfile = () => {
 
     const [selectgender, setSelectGender] = useState('Male');
     const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
+    const [selectBtm, setSelectBtm] = useState('');
+
+    useEffect(() => {
+        uploadProfileImage();
+    }, [profileImage?.length]);
+
 
     const handleValidEmail = val => {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -105,7 +120,8 @@ const EditProfile = () => {
             const isCameraPermitted = await requestCameraPermission();
             if (isCameraPermitted) {
                 launchCamera(options, async response => {
-                    //   setProfileImage(response?.assets);
+                    setProfileImage(response?.assets);
+                    await uploadProfileImage();
                 });
             } else {
                 console.log('Please grant camera permissions to capture image.');
@@ -125,10 +141,38 @@ const EditProfile = () => {
                 selectionLimit: 0,
             };
             launchImageLibrary(options, async response => {
-                // setProfileImage(response?.assets);
+                console.log("Gallery ======== : ", JSON.stringify(response));
+                setProfileImage(response?.assets);
+                await uploadProfileImage();
+                setSaleBottomSheetVisible(false);
             });
         } catch (error) {
             console.log('catch in Image_picker  ', error);
+        }
+    };
+
+    const uploadProfileImage = async () => {
+        try {
+            if (profileImage?.length > 0) {
+                const formData = new FormData();
+                const { uri, fileName, type } = profileImage?.[0];
+                formData.append('profile', { uri, type, name: fileName });
+                console.log('Image upload response:', JSON.stringify(formData));
+
+                const response = await axios.post(`${baseUrl}/api/auth/user/update_profile`,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
+                console.log('Image upload response:', response);
+                // common_fn.showToast(response?.data?.message);
+            }
+        } catch (error) {
+            console.log('Error uploading profile image:', error);
         }
     };
 
@@ -164,8 +208,10 @@ const EditProfile = () => {
     };
 
 
-    function sale_toggleBottomView() {
+    function sale_toggleBottomView(action) {
         try {
+            // console.log("click ============ : ", action);
+            setSelectBtm(action)
             setSaleBottomSheetVisible(!salebottomSheetVisible);
         } catch (error) {
             console.log('Catch in Ads sale_toggleBottomView :', error);
@@ -184,8 +230,8 @@ const EditProfile = () => {
                             style={{
                                 backgroundColor: 'white',
                                 width: '100%',
-                                height: 300,
-                                minHeight: 200,
+                                height: selectBtm == 'Profile' ? 180 : 300,
+                                minHeight: selectBtm == 'Profile' ? 150 : 200,
                                 alignItems: 'center',
                                 borderTopStartRadius: 20,
                                 borderTopEndRadius: 20,
@@ -195,37 +241,118 @@ const EditProfile = () => {
                                     width: '100%',
                                     flexDirection: 'row',
                                     padding: 15,
-                                    paddingStart: 30,
                                     backgroundColor: '#FBE9EF',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
                                     borderTopStartRadius: 30,
                                     borderTopEndRadius: 30,
                                 }}>
-                                <Text style={{ fontSize: 18, color: 'black', fontFamily: Manrope.SemiBold }}>Select Gender</Text>
+                                <Text style={{ width: '80%', fontSize: 16, color: 'black', fontFamily: Manrope.SemiBold }} numberOfLines={2}>{selectBtm == 'Profile' ? 'Please pick your image from camera or gallery' : 'Select Gender'}</Text>
                                 <TouchableOpacity
                                     onPress={() => setSaleBottomSheetVisible(false)}>
                                     <Iconviewcomponent
                                         Icontag={'AntDesign'}
                                         iconname={'closecircleo'}
-                                        icon_size={22}
+                                        icon_size={24}
                                         iconstyle={{ color: Color.primary, marginRight: 10 }}
                                     />
                                 </TouchableOpacity>
                             </View>
 
                             <View style={{ width: '100%', alignItems: 'center' }}>
-                                {genderData.map((item, index) => {
-                                    return (
-                                        <TouchableOpacity onPress={() => selectedPrice(item)} style={{ width: '100%', alignItems: 'center', backgroundColor: selectgender === item.gender_name ? Color.primary : Color.white }}>
-                                            <View style={{ width: '95%', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
-                                                <Text style={{ fontSize: 16, color: selectgender === item.gender_name ? Color.white : Color.lightBlack, fontFamily: Manrope.SemiBold, paddingVertical: 5 }}>{item.gender_name}</Text>
-                                            </View>
-                                            <View style={{ width: '95%', height: 0.5, backgroundColor: Color.cloudyGrey }}></View>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                                )}
+                                {selectBtm == 'Profile' ?
+                                    <View style={{ width: '95%' }}>
+                                        <View
+                                            style={{
+                                                alignItems: 'center',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                marginVertical: 10,
+                                            }}>
+                                            <TouchableOpacity
+                                                onPress={() => captureImage()}
+                                                style={{
+                                                    flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                                    borderWidth: 0.5, borderColor: Color.cloudyGrey, borderRadius: 5,
+                                                    paddingVertical: 10
+                                                }}>
+                                                <View style={{
+                                                    width: 40,
+                                                    height: 40,
+                                                    backgroundColor: Color.primary,
+                                                    padding: 10,
+                                                    borderRadius: 30,
+                                                }}>
+                                                    <Iconviewcomponent
+                                                        Icontag={'AntDesign'}
+                                                        icon_size={18}
+                                                        icon_color={'white'}
+                                                        iconname={'camera'}
+                                                    />
+                                                </View>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 16,
+                                                        color: Color.black,
+                                                        fontFamily: Manrope.SemiBold,
+                                                        marginHorizontal: 10,
+                                                    }}>
+                                                    Camera
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <View style={{ width: 2, height: '100%', backgroundColor: Color.white }}></View>
+
+                                            <TouchableOpacity
+                                                onPress={() => imagePicker()}
+                                                style={{
+                                                    flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                                    borderWidth: 0.5, borderColor: Color.cloudyGrey, borderRadius: 5,
+                                                    paddingVertical: 10
+                                                }}>
+                                                <View style={{
+                                                    width: 40,
+                                                    height: 40,
+                                                    backgroundColor: Color.primary,
+                                                    padding: 10,
+                                                    borderRadius: 30,
+                                                }}>
+                                                    <Iconviewcomponent
+                                                        Icontag={'AntDesign'}
+                                                        icon_size={18}
+                                                        icon_color={'white'}
+                                                        iconname={'picture'}
+                                                    />
+                                                </View>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 16,
+                                                        color: Color.black,
+                                                        fontFamily: Manrope.SemiBold,
+                                                        marginHorizontal: 10,
+                                                    }}>
+                                                    Gallery
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    : null}
+                                {selectBtm == 'Gender' ?
+                                    <View style={{ width: '100%' }}>
+                                        {
+                                            genderData.map((item, index) => {
+                                                return (
+                                                    <TouchableOpacity onPress={() => selectedPrice(item)} style={{ width: '100%', alignItems: 'center', backgroundColor: selectgender === item.gender_name ? Color.primary : Color.white }}>
+                                                        <View style={{ width: '95%', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+                                                            <Text style={{ fontSize: 16, color: selectgender === item.gender_name ? Color.white : Color.lightBlack, fontFamily: Manrope.SemiBold, paddingVertical: 5 }}>{item.gender_name}</Text>
+                                                        </View>
+                                                        <View style={{ width: '95%', height: 0.5, backgroundColor: Color.cloudyGrey }}></View>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
+                                            )
+                                        }
+                                    </View>
+                                    : null}
                             </View>
                         </View>
                     </BottomSheet>
@@ -252,19 +379,36 @@ const EditProfile = () => {
 
                 <View style={{ width: '100%', alignItems: 'center', padding: 10, marginVertical: 10 }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: Color.white, marginVertical: 10 }}>
-                        <TouchableOpacity onPress={() => {
-                            setImageVisible(true);
-                        }}>
-                            <Image
-                                source={require('../../assets/logos/profile.png')}
-                                style={{
-                                    width: 100,
-                                    height: 100,
-                                    resizeMode: 'contain',
-                                }}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ backgroundColor: '#DBF8FF', bottom: -10, left: 35, borderRadius: 40, padding: 10, position: 'absolute', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ width: 120, height: 120, backgroundColor: Color.white, elevation: 1, borderRadius: 100 }}>
+
+                            {profile != '' || profile != null ? (
+                                <Image
+                                    source={{ uri: profile }}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        resizeMode: 'contain',
+                                        borderRadius: 100,
+                                        borderWidth: 1,
+                                        borderColor: Color.lightgrey,
+                                    }}
+                                />
+                            ) : (
+                                <Image
+                                    source={Media.user}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        resizeMode: 'contain',
+                                        borderRadius: 100,
+                                        borderWidth: 1,
+                                        borderColor: Color.lightgrey,
+                                    }}
+                                />
+                            )}
+
+                        </View>
+                        <TouchableOpacity onPress={() => sale_toggleBottomView("Profile")} style={{ backgroundColor: '#DBF8FF', bottom: -10, left: 35, borderRadius: 40, padding: 10, position: 'absolute', justifyContent: 'center', alignItems: 'center' }}>
                             <Iconviewcomponent
                                 Icontag={'MaterialCommunityIcons'}
                                 iconname={'account-edit-outline'}
@@ -371,7 +515,7 @@ const EditProfile = () => {
 
                         <View style={{ width: '90%', alignItems: 'center', marginVertical: 10 }}>
                             <Text style={{ width: '100%', textAlign: 'left', paddingVertical: 10, fontSize: 14, color: Color.cloudyGrey, fontFamily: Manrope.Medium }}>Select Gender *</Text>
-                            <TouchableOpacity onPress={sale_toggleBottomView} style={[styles.NumberBoxConatiner, { flex: 1, alignItems: 'center' }]}>
+                            <TouchableOpacity onPress={() => sale_toggleBottomView("Gender")} style={[styles.NumberBoxConatiner, { flex: 1, alignItems: 'center' }]}>
                                 <Iconviewcomponent
                                     Icontag={'FontAwesome'}
                                     iconname={'transgender-alt'}
@@ -390,7 +534,16 @@ const EditProfile = () => {
 
                 </View>
 
-                <Modal transparent={true} animationType="slide" visible={imageVisible}>
+
+
+                <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    onConfirm={handleConfirm}
+                    onCancel={hideDatePicker}
+                />
+
+                {/* <Modal transparent={true} animationType="slide" visible={imageVisible}>
                     <Pressable
                         style={{
                             flex: 1,
@@ -493,17 +646,9 @@ const EditProfile = () => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                </Modal>
-
-                <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    onConfirm={handleConfirm}
-                    onCancel={hideDatePicker}
-                />
-
-                {sale_BottomSheetmenu()}
+                </Modal> */}
             </ScrollView>
+            {sale_BottomSheetmenu()}
         </View>
     );
 };
