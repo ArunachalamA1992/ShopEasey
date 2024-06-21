@@ -17,7 +17,7 @@ import {
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import OTPInput from '../../Components/OTPInput';
 import {Media} from '../../Global/Media';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -46,6 +46,7 @@ const OTPScreen = ({route, AppState}) => {
   const [seconds, setSeconds] = useState(30);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const countryCode = useSelector(state => state.UserReducer.country);
 
   const chkOTPError = OTP => {
     let reg = /^[6-9][0-9]*$/;
@@ -69,6 +70,7 @@ const OTPScreen = ({route, AppState}) => {
               {
                 mobile: number,
                 otp: otpCode,
+                region_id: countryCode?.id,
               },
               token,
             )
@@ -76,6 +78,7 @@ const OTPScreen = ({route, AppState}) => {
               {
                 mobile: number,
                 otp: otpCode,
+                region_id: countryCode?.id,
               },
               token,
             );

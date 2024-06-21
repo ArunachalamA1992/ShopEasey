@@ -272,16 +272,20 @@ export const MyCartStack = () => {
         name="OrderConfirmation"
         component={OrderConfirmation}
         options={({navigation, route}) => ({
-          tabBarStyle: {display: 'none'},
           headerTitle: 'Order Confirmation',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontFamily: Manrope.SemiBold,
+            textAlign: 'center',
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -429,15 +433,15 @@ export const ProfileStack = () => {
         name="AddAddress"
         component={AddAddress}
         options={({navigation, route}) => ({
-          headerTitle: 'Add delivery address',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitle: 'Add address',
+          headerTitleStyle: {color: Color.black, textAlign: 'center'},
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
