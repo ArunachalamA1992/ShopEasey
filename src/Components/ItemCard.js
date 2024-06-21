@@ -139,14 +139,14 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   product: {
-    width: 190,
+    // width: 190,
     height: 285,
     backgroundColor: Color.white,
     margin: 5,
     borderRadius: 5,
     borderTopStartRadius: 10,
     borderTopRightRadius: 10,
-    // flex: 1,
+    flex: 1,
   },
   Productimage: {
     width: '100%',

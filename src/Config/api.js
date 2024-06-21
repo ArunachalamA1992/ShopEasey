@@ -75,39 +75,14 @@ export const api = {
         .catch(err => reject(err));
     });
   },
-  getpatchMethod: (url, token) => {
-    var headers = api.header(token);
-    return new Promise((resolve, reject) => {
-      axios
-        .patch(
-          baseUrl + url,
-          {},
-          {
-            headers: headers,
-          },
-        )
-        .then(res => {
-          if (res.status == 200) {
-            resolve(res.data);
-          }
-        })
-        .catch(err => {
-          console.log('err', err);
-          reject(err);
-        });
-    });
-  },
   deleteMethod: (url, token) => {
+    console.log('baseUrl + url', baseUrl + url);
     var headers = api.header(token);
     return new Promise((resolve, reject) => {
       axios
-        .delete(
-          baseUrl + url,
-          {},
-          {
-            headers: headers,
-          },
-        )
+        .delete(baseUrl + url, {
+          headers: headers,
+        })
         .then(res => {
           if (res.status == 200) {
             resolve(res.data);

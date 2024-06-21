@@ -185,7 +185,6 @@ const HomeScreen = () => {
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
             );
             const address = response?.data?.address;
-            console.log('address', address);
             if (address) {
               const city = `${address?.city},${address?.country_code}`;
 
@@ -441,11 +440,11 @@ const HomeScreen = () => {
                   style={{
                     flexDirection: 'row',
                     flexWrap: 'wrap',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
                     marginVertical: 20,
                   }}>
-                  {categoryData?.slice(0, 8)?.map((item, index) => {
+                  {categoryData?.slice(0, 7)?.map((item, index) => {
                     return (
                       <TouchableOpacity
                         key={index}
@@ -495,28 +494,37 @@ const HomeScreen = () => {
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('category');
+                    }}
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginHorizontal: 10,
+                      marginVertical: 10,
                     }}>
-                    <View
-                      style={{
-                        backgroundColor: '#E6F5F8',
-                        borderRadius: 100,
-                        width: 60,
-                        height: 60,
-                      }}>
-                      <Image
-                        source={require('../../assets/images/viewall.png')}
+                    <View style={{alignItems: 'center'}}>
+                      <View
                         style={{
+                          backgroundColor: '#E6F5F8',
+                          borderRadius: 100,
                           width: 60,
                           height: 60,
-                          resizeMode: 'contain',
-                        }}
-                      />
+                        }}>
+                        <Image
+                          source={require('../../assets/images/viewall.png')}
+                          style={{
+                            width: 60,
+                            height: 60,
+                            resizeMode: 'contain',
+                          }}
+                        />
+                      </View>
                       <Text
                         style={{
                           textAlign: 'center',
                           fontSize: 12,
                           color: Color.black,
                           font: Manrope.SemiBold,
+                          paddingVertical: 5,
                         }}>
                         View All
                       </Text>
@@ -1182,7 +1190,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.white,
-    alignItems: 'center',
   },
   child: {width: Dimensions.get('window').width, justifyContent: 'center'},
   text: {fontSize: 14, textAlign: 'center'},

@@ -149,7 +149,6 @@ const ProductList = ({route}) => {
                   </TouchableOpacity>
                 );
               }}
-              style={{width: '95%'}}
             />
           </View>
         </View>

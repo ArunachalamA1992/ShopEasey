@@ -39,4 +39,16 @@ export default {
     let url = api_name + 'carts';
     return api.postMethod(url, data, token);
   },
+  list_cart: (data, token) => {
+    let url = api_name + 'carts';
+    return api.getMethod(url, token);
+  },
+  update_cart: (param, data, token) => {
+    let url = api_name + 'carts/' + param;
+    return api.putMethod(url, data, token);
+  },
+  delete_cart: (param, token) => {
+    let url = api_name + 'carts/' + param;
+    return api.deleteMethod(url, token);
+  },
 };
