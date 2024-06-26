@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Animated, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import {scr_height, scr_width} from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
@@ -11,12 +18,14 @@ import fetchData from '../../Config/fetchData';
 import {setCountryCode} from '../../Redux';
 import {useDispatch} from 'react-redux';
 import {getAnalytics} from '@react-native-firebase/analytics';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import common_fn from '../../Config/common_fn';
 
 const OnboardScreen = () => {
   const navigation = useNavigation();
 
   const [selectname, setSelectName] = useState('');
-  const [selectImage, setSelectImage] = useState(Media.india_flag);
+  const [selectImage, setSelectImage] = useState('');
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const [countryData, setCountryData] = useState([]);
   const imageScale = new Animated.Value(0.1);
@@ -36,6 +45,18 @@ const OnboardScreen = () => {
     }
   }
 
+  const onboardData = async item => {
+    try {
+      setSelectName(item.country);
+      setSelectImage(item.country_image);
+      dispatch(setCountryCode(item));
+      setSaleBottomSheetVisible(false);
+      await AsyncStorage.setItem('countryData', JSON.stringify(item));
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   function sale_BottomSheetmenu() {
     try {
       return (
@@ -46,17 +67,13 @@ const OnboardScreen = () => {
             onBackdropPress={sale_toggleBottomView}>
             <View
               style={{
-                backgroundColor: 'white',
-                width: '100%',
-                height: 330,
-                minHeight: 200,
+                backgroundColor: Color.white,
                 alignItems: 'center',
                 borderTopStartRadius: 20,
                 borderTopEndRadius: 20,
               }}>
               <View
                 style={{
-                  width: '100%',
                   padding: 20,
                   flexDirection: 'row',
                   justifyContent: 'space-between',
@@ -64,9 +81,10 @@ const OnboardScreen = () => {
                 }}>
                 <Text
                   style={{
-                    fontSize: 18,
+                    flex: 1,
+                    fontSize: 16,
                     color: Color.black,
-                    fontFamily: Manrope.Medium,
+                    fontFamily: Manrope.Bold,
                   }}>
                   Select Country
                 </Text>
@@ -76,103 +94,68 @@ const OnboardScreen = () => {
                   }}>
                   <Iconviewcomponent
                     Icontag={'AntDesign'}
-                    iconname={'closecircleo'}
+                    iconname={'closecircle'}
                     icon_size={22}
                     iconstyle={{color: Color.primary, marginRight: 10}}
                   />
                 </TouchableOpacity>
               </View>
 
-              <View style={{width: '100%', alignItems: 'center'}}>
-                {countryData.map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      key={item + index}
-                      onPress={() => {
-                        selectedPrice(item);
-                        dispatch(setCountryCode(item));
-                      }}
+              {countryData.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    key={item + index}
+                    onPress={() => {
+                      onboardData(item);
+                    }}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: 10,
+                      margin: 5,
+                      borderRadius: 10,
+                      backgroundColor:
+                        selectname === item.country ? Color.primary : '#f3f3f3',
+                    }}>
+                    <Image
+                      source={{uri: item.country_image}}
+                      style={{width: 30, height: 30, resizeMode: 'contain'}}
+                    />
+                    <Text
                       style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: 15,
-                        margin: 7,
-                        backgroundColor:
+                        flex: 1,
+                        fontSize: 14,
+                        color:
                           selectname === item.country
-                            ? Color.primary
-                            : '#f3f3f3',
+                            ? Color.white
+                            : Color.black,
+                        marginHorizontal: 10,
+                        fontFamily: Manrope.SemiBold,
                       }}>
-                      <View
-                        style={{
-                          flex: 1,
-                          justifyContent: 'flex-start',
-                          alignItems: 'flex-start',
-                        }}>
-                        {/* <Image
-                          source={{uri: item.country_image}}
-                          style={{width: 30, height: 30, resizeMode: 'contain'}}
-                        /> */}
-                      </View>
-                      <View
-                        style={{
-                          flex: 1.5,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            color:
-                              selectname === item.country
-                                ? Color.white
-                                : Color.black,
-                            marginHorizontal: 10,
-                            fontFamily: Manrope.Medium,
-                          }}>
-                          {item.country}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          flex: 2,
-                          justifyContent: 'flex-end',
-                          alignItems: 'flex-end',
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            color:
-                              selectname === item.country
-                                ? Color.white
-                                : Color.black,
-                            marginHorizontal: 10,
-                            fontFamily: Manrope.Medium,
-                          }}>
-                          {item.currency_code}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+                      {item.country}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color:
+                          selectname === item.country
+                            ? Color.white
+                            : Color.black,
+                        marginHorizontal: 10,
+                        fontFamily: Manrope.SemiBold,
+                      }}>
+                      {item.currency_code}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </BottomSheet>
         </View>
       );
     } catch (error) {
       console.log('catch in addImage_BottomSheet menu ', error);
-    }
-  }
-
-  function selectedPrice(item, index) {
-    try {
-      setSelectName(item.country);
-      setSelectImage(item.country_image);
-      setSaleBottomSheetVisible(false);
-    } catch (error) {
-      console.log('catch in Home_interior select_City :', error);
     }
   }
 
@@ -189,6 +172,7 @@ const OnboardScreen = () => {
     });
     console.log('=========== Log ============ ');
   };
+
   useEffect(() => {
     getData();
   }, []);
@@ -210,21 +194,19 @@ const OnboardScreen = () => {
         style={{
           width: '100%',
           position: 'absolute',
-          alignItems: 'center',
           bottom: 0,
           height: 330,
           backgroundColor: Color.white,
           borderTopStartRadius: 30,
           borderTopRightRadius: 30,
         }}>
-        <View style={{width: '95%', padding: 10}}>
+        <View style={{padding: 10}}>
           <Text
             style={{
               textAlign: 'left',
               fontSize: 20,
               color: Color.black,
               fontFamily: Manrope.ExtraBold,
-              paddingHorizontal: 10,
               paddingVertical: 5,
               letterSpacing: 1,
             }}>
@@ -234,24 +216,20 @@ const OnboardScreen = () => {
             style={{
               textAlign: 'justify',
               fontSize: 14,
-              color: Color.cloudyGrey,
+              color: '#777777',
               fontFamily: Manrope.Medium,
-              paddingHorizontal: 10,
-              lineHeight: 22,
             }}>
             Discover the joy of convenient and secure online shopping with
             Shopeasey, your trusted destination for a vast selection of
             products.
           </Text>
         </View>
-        <View style={{width: '95%', padding: 10}}>
+        <View style={{padding: 10}}>
           <Text
             style={{
               fontSize: 14,
               color: Color.lightBlack,
               fontFamily: Manrope.SemiBold,
-              letterSpacing: 0.5,
-              lineHeight: 22,
             }}>
             Select Your Region
           </Text>
@@ -259,34 +237,33 @@ const OnboardScreen = () => {
           <TouchableOpacity
             onPress={() => sale_toggleBottomView()}
             style={{
-              width: '100%',
               height: 50,
               marginVertical: 10,
               backgroundColor: Color.white,
               borderColor: Color.lightgrey,
-              borderWidth: 0.5,
+              borderWidth: 1,
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 5,
             }}>
             <View
               style={{
-                width: '100%',
+                paddingHorizontal: 10,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                paddingHorizontal: 10,
               }}>
-              {/* <Image
+              <Image
                 source={{uri: selectImage}}
-                style={{width: 50, height: 50, resizeMode: 'contain'}}
-              /> */}
+                style={{width: 30, height: 50, resizeMode: 'contain'}}
+              />
               <Text
                 style={{
-                  fontSize: 16,
+                  flex: 1,
+                  fontSize: 14,
                   color: Color.lightBlack,
-                  fontFamily: Manrope.SemiBold,
-                  letterSpacing: 0.5,
+                  fontFamily: Manrope.Bold,
+                  paddingHorizontal: 10,
                 }}>
                 {selectname == '' ? 'Select Your Country' : selectname}
               </Text>
@@ -301,15 +278,19 @@ const OnboardScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            // onPress={() => handleSignUpButtonClick()}
-            onPress={() => navigation.navigate('OnboardTwo')}
+            onPress={() => {
+              if (selectname != '') {
+                navigation.navigate('OnboardTwo');
+              } else {
+                common_fn.showToast('Please Select the Region');
+              }
+            }}
             style={{
-              width: '100%',
               height: 50,
               marginVertical: 10,
               backgroundColor: Color.primary,
               borderColor: Color.lightgrey,
-              borderWidth: 0.5,
+              borderWidth: 1,
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 5,
@@ -319,8 +300,6 @@ const OnboardScreen = () => {
                 fontSize: 14,
                 color: Color.white,
                 fontFamily: Manrope.SemiBold,
-                letterSpacing: 0.5,
-                lineHeight: 22,
                 textTransform: 'uppercase',
               }}>
               Get Started

@@ -13,15 +13,37 @@ import Color from '../Global/Color';
 import {Manrope} from '../Global/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
 import {Media} from '../Global/Media';
+import {useSelector} from 'react-redux';
+import common_fn from '../Config/common_fn';
+import fetchData from '../Config/fetchData';
 
 const ItemCard = props => {
+  const countryCode = useSelector(state => state.UserReducer.country);
   const {item, navigation} = props;
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
   var discount = parseInt(
     ((item?.variants?.[0]?.org_price - item?.variants?.[0]?.price) /
       item?.variants?.[0]?.org_price) *
       100,
   );
 
+  const toggle_WishList = async single => {
+    try {
+      var data = {
+        product_id: single?.id,
+        variant_id: single?.variants[0]?.id,
+      };
+      const wishlist = await fetchData.toggle_wishlists(data, token);
+      console.log('wishlist-------------------', wishlist);
+      if (wishlist?.status == true) {
+      } else {
+        common_fn.showToast(wishlist?.message);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
   return (
     <TouchableOpacity
       style={styles.product}
@@ -38,16 +60,27 @@ const ItemCard = props => {
         }}
         resizeMode="cover">
         <View style={styles.imageTopView}>
-          <View
-            style={{
-              backgroundColor: Color.lightYellow,
-              borderRadius: 5,
-              paddingHorizontal: 10,
-              padding: 3,
-            }}>
-            <Text style={styles.offerText}>{discount}% off</Text>
-          </View>
+          {discount > 0 ? (
+            <View
+              style={{
+                backgroundColor: Color.lightYellow,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                padding: 3,
+              }}>
+              <Text style={styles.offerText}>{discount}% off</Text>
+            </View>
+          ) : (
+            <View style={{flex: 1}} />
+          )}
           <TouchableOpacity
+            onPress={() => {
+              if (token != undefined) {
+                toggle_WishList(item);
+              } else {
+                navigation.navigate('Auth');
+              }
+            }}
             style={{
               backgroundColor: '#FFFFFF80',
               width: 25,
@@ -56,7 +89,11 @@ const ItemCard = props => {
               justifyContent: 'center',
               borderRadius: 100,
             }}>
-            <AntDesign name="hearto" size={16} color={Color.black} />
+            <AntDesign
+              name={item?.variants?.[0]?.is_wishlisted ? 'heart' : 'hearto'}
+              size={16}
+              color={Color.black}
+            />
           </TouchableOpacity>
         </View>
         <LinearGradient
@@ -66,6 +103,17 @@ const ItemCard = props => {
           colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
           <Octicons name="location" size={15} color={Color.white} />
           <Text style={styles.locationText}>{item?.location}</Text>
+          {/* <Text
+            style={{
+              color: Color.white,
+              fontSize: 12,
+              fontFamily: Manrope.Medium,
+              backgroundColor: Color.cloudyGrey,
+              borderRadius: 50,
+              padding: 5,
+            }}>
+            {item?.variants?.length} Variants
+          </Text> */}
         </LinearGradient>
       </ImageBackground>
       <View style={styles.contentView}>
@@ -95,10 +143,12 @@ const ItemCard = props => {
         <View
           style={{width: '36%', flexDirection: 'row', alignItems: 'center'}}>
           <Text style={styles.productDiscountPrice} numberOfLines={1}>
-            $ {item?.variants?.[0]?.price}
+            {countryCode?.symbol}
+            {item?.variants?.[0]?.price}
           </Text>
           <Text style={styles.productPrice} numberOfLines={1}>
-            ${item?.variants?.[0]?.org_price}
+            {countryCode?.symbol}
+            {item?.variants?.[0]?.org_price}
           </Text>
         </View>
         {/* <Text style={styles.productDiscountPrice} numberOfLines={1}>
@@ -171,8 +221,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 10,
+    padding: 5,
   },
   locationText: {
+    flex: 1,
     color: Color.white,
     fontSize: 10,
     fontFamily: Manrope.Bold,

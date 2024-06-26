@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TextInput,
   Keyboard,
+  SafeAreaView,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
@@ -189,7 +190,7 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View
         style={{
           flex: 1,
@@ -200,7 +201,7 @@ const Login = () => {
         <Text
           style={{
             textAlign: 'left',
-            fontSize: 28,
+            fontSize: 25,
             color: Color.black,
             fontFamily: Manrope.SemiBold,
           }}>
@@ -210,7 +211,7 @@ const Login = () => {
           <Text
             style={{
               textAlign: 'left',
-              fontSize: 36,
+              fontSize: 30,
               color: Color.black,
               fontFamily: Manrope.Bold,
             }}>
@@ -219,7 +220,7 @@ const Login = () => {
           <Iconviewcomponent
             Icontag={'MaterialIcons'}
             iconname={'shopping-bag'}
-            icon_size={50}
+            icon_size={40}
             iconstyle={{color: Color.primary, marginHorizontal: 5}}
           />
         </View>
@@ -368,7 +369,7 @@ const Login = () => {
               fontSize: 16,
               color: Color.black,
               fontFamily: Manrope.Bold,
-              paddingHorizontal: 10,
+              // paddingHorizontal: 10,
             }}>
             Don't Have An Account?
           </Text>
@@ -411,7 +412,7 @@ const Login = () => {
               fontSize: 16,
               color: Color.black,
               fontFamily: Manrope.Bold,
-              paddingHorizontal: 10,
+              // paddingHorizontal: 10,
             }}>
             You Already have an account
           </Text>
@@ -444,9 +445,9 @@ const Login = () => {
       )}
       <View
         style={{
-          marginTop: 50,
-          justifyContent: 'flex-end',
-          padding: 10,
+          marginTop: 20,
+          // justifyContent: 'flex-end',
+          // padding: 10,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
@@ -517,7 +518,7 @@ const Login = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

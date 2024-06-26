@@ -27,6 +27,14 @@ export default {
     let url = api_name + 'categories/' + data;
     return api.getMethod(url, token);
   },
+  sub_categories: (data, token) => {
+    let url = api_name + 'sub_categories/' + data;
+    return api.getMethod(url, token);
+  },
+  sub_sub_categories: (data, token) => {
+    let url = api_name + 'sub_sub_categories/' + data;
+    return api.getMethod(url, token);
+  },
   list_products: (data, token) => {
     let url = api_name + 'products?' + data;
     return api.getMethod(url, token);
@@ -50,5 +58,29 @@ export default {
   delete_cart: (param, token) => {
     let url = api_name + 'carts/' + param;
     return api.deleteMethod(url, token);
+  },
+  toggle_wishlists: (data, token) => {
+    let url = api_name + 'wishlists';
+    return api.postMethod(url, data, token);
+  },
+  list_wishlist: (data, token) => {
+    let url = api_name + 'wishlists';
+    return api.getMethod(url, token);
+  },
+  list_address: (data, token) => {
+    let url = api_name + 'address';
+    return api.getMethod(url, token);
+  },
+  add_address: (data, token) => {
+    let url = api_name + 'address';
+    return api.postMethod(url, data, token);
+  },
+  update_address: (param, data, token) => {
+    let url = api_name + 'address/' + param;
+    return api.putMethod(url, data, token);
+  },
+  get_state_data: (data, token) => {
+    let url = api_name + 'address/state?' + data;
+    return api.getMethod(url, token);
   },
 };

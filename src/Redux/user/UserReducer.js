@@ -3,6 +3,7 @@ import {
   SET_ASYNC,
   SET_COMPLETE_PROFILE,
   SET_COUNTRY_CODE,
+  SET_DATA_COUNT,
   SET_NOTIFICATION_COUNT,
   SET_ONBOARD,
   SET_USER_DATA,
@@ -18,6 +19,10 @@ const initialState = {
   onboardVisible: false,
   notificationCount: 0,
   country: {},
+  count: {
+    wishlist: 0,
+    cart: 0,
+  },
 };
 
 const storeCartData = async UserState => {
@@ -84,6 +89,21 @@ const UserReducer = (state = initialState, action) => {
         ...state,
         country: action.payload,
       };
+    case SET_DATA_COUNT:
+      storeCartData({
+        ...state,
+        count: {
+          wishlist: action.payload.wishlist,
+          cart: action.payload.cart,
+        },
+      });
+      return {
+        ...state,
+        count: {
+          wishlist: action.payload.wishlist,
+          cart: action.payload.cart,
+        },
+      };
     case SET_ASYNC:
       var {
         userData,
@@ -91,6 +111,7 @@ const UserReducer = (state = initialState, action) => {
         onboardVisible,
         notificationCount,
         country,
+        count,
       } = action.payload;
       return {
         ...state,
@@ -99,6 +120,7 @@ const UserReducer = (state = initialState, action) => {
         onboardVisible,
         notificationCount,
         country,
+        count,
       };
     default:
       return state;

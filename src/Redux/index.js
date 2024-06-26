@@ -5,4 +5,5 @@ export {
   setOnBoardVisible,
   setNotificationCount,
   setCountryCode,
+  setDataCount,
 } from './user/UserAction';

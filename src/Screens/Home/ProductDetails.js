@@ -5,6 +5,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -28,32 +29,39 @@ import {scr_height, scr_width} from '../../Utils/Dimensions';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
 import RenderHtml from 'react-native-render-html';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import common_fn from '../../Config/common_fn';
+import {setDataCount} from '../../Redux/user/UserAction';
 
 const ProductDetails = ({navigation, route}) => {
   const [id] = useState(route?.params?.id);
   const [singleData, setSingleData] = useState({});
   const [resultDate, setResultDate] = useState(null);
+  const countryCode = useSelector(state => state.UserReducer.country);
+  const dataCount = useSelector(state => state.UserReducer.count);
+  var {wishlist, cart} = dataCount;
 
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariantId, setSelectedVariantId] = useState(null);
   const [sizeVisible, setSizeVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [wishlistVariantId, setWishlistVariantId] = useState(null);
 
   const handleColorPress = (color, variantId) => {
     setSelectedColor(color);
     setSelectedVariantId(variantId);
     setSelectedSize(null);
     setSizeVisible(true);
+    setWishlistVariantId(variantId);
   };
 
   const handleSizePress = (size, variantId) => {
     setSelectedSize(size);
     setSelectedVariantId(variantId);
+    setWishlistVariantId(variantId);
   };
-
+  const dispatch = useDispatch();
   const filteredSizes = singleData?.variants?.filter(
     variant => !selectedColor || variant.color === selectedColor,
   );
@@ -175,6 +183,7 @@ const ProductDetails = ({navigation, route}) => {
 
   useEffect(() => {
     getData();
+    getCountData();
   }, []);
 
   const getData = async () => {
@@ -208,6 +217,59 @@ const ProductDetails = ({navigation, route}) => {
       }
     } catch (error) {
       console.log('error', error);
+    }
+  };
+
+  const toggle_WishList = async single => {
+    try {
+      const wishlist_id =
+        wishlistVariantId != null
+          ? wishlistVariantId
+          : singleData?.variants?.[0]?.id || null;
+      if (wishlistVariantId != null) {
+        var data = {
+          product_id: single?.id,
+          variant_id: wishlist_id,
+        };
+        const wishlist = await fetchData.toggle_wishlists(data, token);
+        if (wishlist?.status == true) {
+          common_fn.showToast(wishlist?.message);
+          setModalVisible(false);
+          getCountData();
+          getData();
+        } else {
+          common_fn.showToast(wishlist?.message);
+          setModalVisible(false);
+        }
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const getCountData = async () => {
+    try {
+      const getWislist = await fetchData.list_wishlist(``, token);
+      const getCart = await fetchData.list_cart(``, token);
+      dispatch(
+        setDataCount({
+          wishlist: getWislist?.count,
+          cart: getCart?.count,
+        }),
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const share_product = async id => {
+    const jobDeepLink = `https://shopeasey.com/product/${id}`;
+    const message = `Check out this Product: ${jobDeepLink}`;
+
+    try {
+      await Share.share({message});
+    } catch (error) {
+      console.error(error.message);
     }
   };
 
@@ -247,10 +309,18 @@ const ProductDetails = ({navigation, route}) => {
             {singleData?.type}
           </Text>
         </View>
-        <TouchableOpacity style={{marginHorizontal: 10}}>
+        <TouchableOpacity
+          style={{marginHorizontal: 10}}
+          onPress={() => {
+            share_product(singleData?.id);
+          }}>
           <Icon name="share-social" size={25} color={Color.black} />
         </TouchableOpacity>
-        <TouchableOpacity style={{marginHorizontal: 10}}>
+        <TouchableOpacity
+          style={{marginHorizontal: 10}}
+          onPress={() => {
+            navigation.navigate('WishListTab');
+          }}>
           <Badge
             style={{
               position: 'absolute',
@@ -261,11 +331,15 @@ const ProductDetails = ({navigation, route}) => {
               color: Color.white,
               fontFamily: Manrope.Bold,
             }}>
-            {0}
+            {wishlist}
           </Badge>
           <AntDesign name="hearto" size={25} color={Color.black} />
         </TouchableOpacity>
-        <TouchableOpacity style={{marginHorizontal: 10}}>
+        <TouchableOpacity
+          style={{marginHorizontal: 10}}
+          onPress={() => {
+            navigation.navigate('MyCartTab');
+          }}>
           <Badge
             style={{
               position: 'absolute',
@@ -276,7 +350,7 @@ const ProductDetails = ({navigation, route}) => {
               color: Color.white,
               fontFamily: Manrope.Bold,
             }}>
-            {0}
+            {cart}
           </Badge>
           <Feather name="shopping-cart" size={25} color={Color.black} />
         </TouchableOpacity>
@@ -290,6 +364,34 @@ const ProductDetails = ({navigation, route}) => {
               backgroundColor: Color.white,
               padding: 10,
             }}>
+            <TouchableOpacity
+              onPress={() => {
+                if (token != undefined) {
+                  toggle_WishList(singleData);
+                } else {
+                  navigation.navigate('Auth');
+                }
+              }}
+              style={{
+                position: 'absolute',
+                right: 10,
+                top: 10,
+                zIndex: 1,
+                backgroundColor: '#FFFFFF80',
+                width: 25,
+                height: 25,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 100,
+              }}>
+              <AntDesign
+                name={
+                  singleData?.variants?.[0]?.is_wishlisted ? 'heart' : 'hearto'
+                }
+                size={20}
+                color={Color.black}
+              />
+            </TouchableOpacity>
             {singleData?.variants?.[0]?.productImages?.length > 0 ? (
               <ImageView images={singleData?.variants?.[0]?.productImages} />
             ) : (
@@ -388,9 +490,11 @@ const ProductDetails = ({navigation, route}) => {
                     paddingVertical: 5,
                   }}>
                   <Text style={styles.productDiscountPrice}>
-                    ${singleData?.variants?.[0]?.price}{' '}
+                    {countryCode?.symbol}
+                    {singleData?.variants?.[0]?.price}{' '}
                     <Text style={styles.productPrice}>
-                      ${singleData?.variants?.[0]?.org_price}
+                      {countryCode?.symbol}
+                      {singleData?.variants?.[0]?.org_price}
                     </Text>
                   </Text>
                   <Text
@@ -759,7 +863,11 @@ const ProductDetails = ({navigation, route}) => {
                           borderColor: Color.lightBlack,
                         }}
                         onPress={() => {
-                          setAdd_cart();
+                          if (token != undefined) {
+                            setAdd_cart();
+                          } else {
+                            navigation.navigate('Auth');
+                          }
                         }}>
                         <Iconviewcomponent
                           Icontag={'AntDesign'}
@@ -1579,7 +1687,11 @@ const ProductDetails = ({navigation, route}) => {
             borderColor: Color.lightBlack,
           }}
           onPress={() => {
-            setAdd_cart();
+            if (token != undefined) {
+              setAdd_cart();
+            } else {
+              navigation.navigate('Auth');
+            }
           }}>
           <Iconviewcomponent
             Icontag={'AntDesign'}

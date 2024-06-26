@@ -18,6 +18,7 @@ export const CheckboxData = ({label, checked, onPress}) => {
 };
 
 export const RadioData = ({label, checked, onPress}) => {
+  console.log('checked', checked);
   return (
     <TouchableOpacity style={styles.checkboxContainer} onPress={onPress}>
       <Icon

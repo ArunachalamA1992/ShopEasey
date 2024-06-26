@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Dimensions,
   FlatList,
   StyleSheet,
   Text,
@@ -16,29 +17,69 @@ import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import fetchData from '../../Config/fetchData';
 import {useSelector} from 'react-redux';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
+const {height} = Dimensions.get('screen');
 const ProductList = ({route}) => {
   const [category_id] = useState(route.params.category_id);
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
+  const [CategoryData, setCategoryData] = useState([]);
+  const [currentLevel, setCurrentLevel] = useState(false);
+  const [sub_cat_id, setSub_cat_id] = useState(0);
 
-  const [subCategoryData, setSubCategoryData] = useState([]);
-  const handleCategory = item => {
-    setSelectedCategory(item);
+  const handleCategory = async item => {
+    try {
+      if (currentLevel == false) {
+        setCurrentLevel(true);
+        setSelectedCategory(item);
+        const categories_data = await fetchData.sub_categories(
+          `${item.id}`,
+          token,
+        );
+        setCategoryData(categories_data?.data?.SubSubCategories);
+        setSub_cat_id(item?.id);
+        var sub_p_data = `category_id=${category_id}&sub_category_id=${item?.id}`;
+        const product_data = await fetchData.list_products(sub_p_data, token);
+        setProducts(product_data?.data);
+      } else {
+        setSelectedCategory(item);
+        // const categories_data = await fetchData.sub_sub_categories(
+        //   `${item.id}`,
+        //   token,
+        // );
+        // setCategoryData(categories_data?.data);
+        var sub_sub_p_data = `category_id=${category_id}&sub_category_id=${sub_cat_id}&sub_sub_category_id=${item?.id}`;
+        const product_data = await fetchData.list_products(
+          sub_sub_p_data,
+          token,
+        );
+        setProducts(product_data?.data);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    setLoading(true);
+    getData()
+      .then(() => setLoading(false))
+      .catch(error => {
+        setLoading(false);
+      });
+  }, [category_id]);
 
   const getData = async () => {
     try {
       var data = `${category_id}`;
       const categories_data = await fetchData.categories(data, token);
-      setSubCategoryData(categories_data?.data?.sub_categories);
+      setCurrentLevel(false);
+      setCategoryData(categories_data?.data?.sub_categories);
       var p_data = `category_id=${category_id}`;
       const product_data = await fetchData.list_products(p_data, token);
       setProducts(product_data?.data);
@@ -82,85 +123,227 @@ const ProductList = ({route}) => {
           <Feather name="shopping-cart" size={22} color={Color.white} />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1, backgroundColor: Color.white}}>
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingVertical: 10,
-          }}>
+      {loading ? (
+        <View style={{marginHorizontal: 5}}>
+          <SkeletonPlaceholder>
+            <SkeletonPlaceholder.Item
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <SkeletonPlaceholder.Item
+                width={80}
+                height={40}
+                borderRadius={10}
+                marginTop={10}
+                marginRight={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={80}
+                height={40}
+                borderRadius={10}
+                marginTop={10}
+                marginRight={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={80}
+                height={40}
+                borderRadius={10}
+                marginTop={10}
+                marginRight={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={80}
+                height={40}
+                borderRadius={10}
+                marginTop={10}
+                marginRight={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={80}
+                height={40}
+                borderRadius={10}
+                marginTop={10}
+                marginRight={10}
+              />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'45%'}
+                height={200}
+                borderRadius={10}
+                marginTop={10}
+                marginHorizontal={10}
+              />
+            </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+        </View>
+      ) : (
+        <View style={{flex: 1, backgroundColor: Color.white}}>
           <View
             style={{
+              width: '100%',
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: Color.black,
-              padding: 10,
-              borderRadius: 5,
-              marginHorizontal: 10,
+              paddingVertical: 10,
             }}>
-            <Feather name="filter" size={16} color={Color.white} />
-            <Text
+            <View
               style={{
-                fontSize: 14,
-                color: Color.white,
-                fontFamily: Manrope.Medium,
-                paddingHorizontal: 10,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: Color.black,
+                padding: 10,
+                borderRadius: 5,
+                marginHorizontal: 10,
               }}>
-              Filter
-            </Text>
-          </View>
-          <View style={{flex: 1}}>
-            <FlatList
-              data={subCategoryData}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => {
-                const isFocused =
-                  item.sub_category_name === selectedCategory.sub_category_name;
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={{
-                      backgroundColor: isFocused ? Color.primary : Color.white,
-                      padding: 3,
-                      paddingHorizontal: 10,
-                      borderRadius: 50,
-                      borderWidth: 1,
-                      borderColor: isFocused ? Color.primary : Color.cloudyGrey,
-                      margin: 5,
-                      marginHorizontal: 5,
-                    }}
-                    onPress={() => {
-                      handleCategory(item);
-                    }}>
-                    <Text
+              <Feather name="filter" size={16} color={Color.white} />
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: Color.white,
+                  fontFamily: Manrope.Medium,
+                  paddingHorizontal: 10,
+                }}>
+                Filter
+              </Text>
+            </View>
+            <View style={{flex: 1}}>
+              <FlatList
+                data={CategoryData}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({item, index}) => {
+                  const isFocused = currentLevel
+                    ? item.sub_sub_category_name ===
+                      selectedCategory?.sub_sub_category_name
+                    : item.sub_category_name ===
+                      selectedCategory?.sub_category_name;
+
+                  return (
+                    <TouchableOpacity
+                      key={index}
                       style={{
-                        textAlign: 'center',
-                        fontSize: 13,
-                        fontFamily: Manrope.SemiBold,
-                        color: isFocused ? Color.white : Color.lightBlack,
-                        paddingVertical: 5,
+                        backgroundColor: isFocused
+                          ? Color.primary
+                          : Color.white,
+                        padding: 3,
+                        paddingHorizontal: 10,
+                        borderRadius: 50,
+                        borderWidth: 1,
+                        borderColor: isFocused
+                          ? Color.primary
+                          : Color.cloudyGrey,
+                        margin: 5,
+                      }}
+                      onPress={() => {
+                        handleCategory(item);
                       }}>
-                      {item?.sub_category_name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              }}
-            />
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontSize: 13,
+                          fontFamily: Manrope.SemiBold,
+                          color: isFocused ? Color.white : Color.lightBlack,
+                          paddingVertical: 5,
+                        }}>
+                        {currentLevel
+                          ? item.sub_sub_category_name
+                          : item.sub_category_name}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </View>
           </View>
+          <FlatList
+            data={products}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item, index}) => {
+              return <ItemCard item={item} navigation={navigation} />;
+            }}
+            ListEmptyComponent={() => {
+              return (
+                <View
+                  style={{
+                    flex: 1,
+                    height: height / 1.5,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: Manrope.SemiBold,
+                      fontSize: 14,
+                      color: Color.black,
+                    }}>
+                    No Products Found
+                  </Text>
+                </View>
+              );
+            }}
+          />
         </View>
-        <FlatList
-          data={products}
-          numColumns={2}
-          showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => {
-            return <ItemCard item={item} navigation={navigation} />;
-          }}
-        />
-      </View>
+      )}
     </View>
   );
 };

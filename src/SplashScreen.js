@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Color from './Global/Color';
-import {setUserData} from './Redux';
+import {setCountryCode, setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({navigation}) => {
@@ -40,6 +40,14 @@ const SplashScreen = ({navigation}) => {
 
   const getloginData = async () => {
     try {
+      const countryData = await AsyncStorage.getItem('countryData');
+      console.log('countryData', countryData);
+      if (countryData === null) {
+        navigation.replace('OnboardScreen');
+        return;
+      }
+      dispatch(setCountryCode(JSON.parse(countryData)));
+
       const value = await AsyncStorage.getItem('UserState');
       if (value !== null) {
         const {onboardVisible} = JSON.parse(value);

@@ -2,6 +2,7 @@ import {
   SET_ASYNC,
   SET_COMPLETE_PROFILE,
   SET_COUNTRY_CODE,
+  SET_DATA_COUNT,
   SET_NOTIFICATION_COUNT,
   SET_ONBOARD,
   SET_USER_DATA,
@@ -45,6 +46,13 @@ export const setNotificationCount = param => {
 export const setCountryCode = param => {
   return {
     type: SET_COUNTRY_CODE,
+    payload: param,
+  };
+};
+
+export const setDataCount = param => {
+  return {
+    type: SET_DATA_COUNT,
     payload: param,
   };
 };

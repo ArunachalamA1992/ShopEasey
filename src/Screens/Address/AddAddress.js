@@ -1,6 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -8,102 +7,50 @@ import {
   TouchableOpacity,
   View,
   TextInput,
-  ToastAndroid,
+  FlatList,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import {BottomSheet} from 'react-native-btr';
 import {Media} from '../../Global/Media';
 import {CheckboxData, RadioData} from '../../Components/RadioButton';
+import {useSelector} from 'react-redux';
+import fetchData from '../../Config/fetchData';
+import common_fn from '../../Config/common_fn';
 
-const AddAddress = () => {
+const AddAddress = ({route}) => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('');
-  const [phone, setphone] = useState('');
-  const [alterphone, setAlterPhone] = useState('');
-  const [houseAddr, setHouseAddr] = useState('');
-  const [landAddr, setLandAddr] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [pincode, setPincode] = useState('');
-  const [landmark, setLandmark] = useState('');
+  const [itemData] = useState(route.params.item);
+  const [CheckOut] = useState(route.params.CheckOut);
+  const [status] = useState(route.params.status);
+  const [username, setUsername] = useState(itemData?.name);
+  const [phone, setphone] = useState(itemData?.phone);
+  const [houseAddr, setHouseAddr] = useState(itemData?.address_line1);
+  const [landAddr, setLandAddr] = useState(itemData?.address_line1);
+  const [pincode, setPincode] = useState(itemData?.pincode);
+  const [landmark, setLandmark] = useState(itemData?.landmark);
   const [selectedAddItem, setSelectedAddItem] = useState('Home');
-
+  const countryCode = useSelector(state => state.UserReducer.country);
   const [selectType, setSelectType] = useState('State');
-  const [selectname, setSelectName] = useState('Tamil Nadu');
-  const [cityName, setCityName] = useState('Chennai');
-  const [selectImage, setSelectImage] = useState(Media.india_flag);
-  const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
+  const [selectState, setSelectState] = useState({});
+  const [selectCity, setSelectCity] = useState({});
   const [selectAddressType, setSelectAddressType] = useState({});
-  const [defaultAddress, setDefaultAddress] = useState(false);
+  const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
+  const [defaultAddress, setDefaultAddress] = useState(itemData?.is_default);
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
+  const [stateData, setStateData] = useState([]);
+  const [cityData, setCityData] = useState([]);
+  const [stateloadMore, setStateLoadMore] = useState(false);
+  const [statePage, setStatePage] = useState(1);
+  const [stateendReached, setStateEndReached] = useState(false);
+  const [cityloadMore, setCityLoadMore] = useState(false);
+  const [cityPage, setCityPage] = useState(1);
+  const [cityendReached, setCityEndReached] = useState(false);
 
-  const [stateData, setStateData] = useState([
-    {
-      id: '0',
-      state_name: 'Tamil Nadu',
-      state_sign: 'Indian Ruperr (₹)',
-    },
-    {
-      id: '1',
-      state_name: 'Andhra Pradesh',
-      state_sign: 'Singapore Dollar (SGD)',
-    },
-    {
-      id: '2',
-      state_name: 'Kerala',
-      state_sign: 'Malaysian Ringgit (MYR)',
-    },
-    {
-      id: '3',
-      state_name: 'Karnataka',
-      state_sign: 'Malaysian Ringgit (MYR)',
-    },
-    {
-      id: '4',
-      state_name: 'Jammu & Kashmir',
-      state_sign: 'Malaysian Ringgit (MYR)',
-    },
-    {
-      id: '5',
-      state_name: 'Maharashtra',
-      state_sign: 'Malaysian Ringgit (MYR)',
-    },
-  ]);
-
-  const [cityData, setCityData] = useState([
-    {
-      id: '0',
-      city_name: 'Chennai',
-    },
-    {
-      id: '1',
-      city_name: 'Coimbatore',
-    },
-    {
-      id: '2',
-      city_name: 'Salem',
-    },
-    {
-      id: '3',
-      city_name: 'Tiruchy',
-    },
-    {
-      id: '4',
-      city_name: 'Madurai',
-    },
-    {
-      id: '5',
-      city_name: 'Erode',
-    },
-    {
-      id: '6',
-      city_name: 'Thiruvannamalai',
-    },
-  ]);
-
-  function addAddressClick() {
+  async function addAddressClick() {
     try {
       if (
         username != '' &&
@@ -113,41 +60,75 @@ const AddAddress = () => {
         pincode != '' &&
         selectedAddItem != ''
       ) {
-        console.log(
-          'Username ======= :' +
-            username +
-            '\n' +
-            'phone =========== ' +
-            phone +
-            '\n' +
-            'alter phone ========' +
-            alterphone +
-            '\n' +
-            'houseAddr ======= ' +
-            houseAddr +
-            '\n' +
-            'landAddr ======== ' +
-            landAddr +
-            '\n' +
-            'city ========= ' +
-            cityName +
-            '\n' +
-            'state ========== ' +
-            selectname +
-            '\n' +
-            'pincode ========== ' +
-            pincode +
-            '\n' +
-            'selectedAddItem ========== ' +
-            selectedAddItem,
-        );
-        ToastAndroid.show(
-          'Your address is updated successfully',
-          ToastAndroid.SHORT,
-        );
-        navigation.navigate('SelectAddress');
+        var data = {
+          name: username,
+          phone: phone,
+          address_line1: houseAddr,
+          address_line2: landAddr,
+          city_id: selectCity?.city_id,
+          state_id: selectState?.state_id,
+          country: countryCode?.country,
+          pincode: pincode,
+          landmark: landmark,
+          address_type: selectAddressType?.name,
+          is_default: defaultAddress == true ? 1 : 0,
+        };
+        const add_address = await fetchData.add_address(data, token);
+        console.log('add_address', add_address);
+        if (add_address?.status == true) {
+          navigation.dispatch(
+            StackActions.replace('OrderConfirmation', {CheckOut}),
+          );
+          common_fn.showToast(add_address?.message);
+        } else {
+          common_fn.showToast(add_address?.message);
+        }
       } else {
-        ToastAndroid.show('Please enter mandatory fields', ToastAndroid.SHORT);
+        common_fn.showToast('Please enter mandatory fields');
+      }
+    } catch (error) {
+      console.log('catch in addAddress_Click ', error);
+    }
+  }
+
+  async function updateAddressClick() {
+    try {
+      if (
+        username != '' &&
+        phone != '' &&
+        houseAddr != '' &&
+        landAddr != '' &&
+        pincode != '' &&
+        selectedAddItem != ''
+      ) {
+        var data = {
+          name: username,
+          phone: phone,
+          address_line1: houseAddr,
+          address_line2: landAddr,
+          city_id: selectCity?.city_id,
+          state_id: selectState?.state_id,
+          country: countryCode?.country,
+          pincode: pincode,
+          landmark: landmark,
+          address_type: selectAddressType?.name,
+          is_default: defaultAddress == true ? 1 : 0,
+        };
+        var param = itemData?.id;
+        const update_address = await fetchData.update_address(
+          param,
+          data,
+          token,
+        );
+        console.log('update_address', update_address?.status == true);
+        if (update_address?.status == true) {
+          navigation.goBack();
+          common_fn.showToast(update_address?.message);
+        } else {
+          common_fn.showToast(update_address?.message);
+        }
+      } else {
+        common_fn.showToast('Please enter mandatory fields');
       }
     } catch (error) {
       console.log('catch in addAddress_Click ', error);
@@ -162,6 +143,111 @@ const AddAddress = () => {
       console.log('Catch in Ads sale_toggleBottomView :', error);
     }
   }
+
+  useEffect(() => {
+    if (itemData?.address_type) {
+      setSelectAddressType({name: itemData.address_type});
+    }
+    if (itemData?.city) {
+      setSelectCity({city_id: itemData?.city_id, city: itemData.city});
+    }
+    if (itemData?.state) {
+      setSelectState({state_id: itemData?.state_id, state: itemData.state});
+    }
+  }, [itemData]);
+
+  const [addressType, setAddressType] = useState([
+    {
+      id: 1,
+      name: 'Home',
+      icon: '',
+    },
+    {
+      id: 2,
+      name: 'Office',
+      icon: '',
+    },
+    {
+      id: 3,
+      name: 'Shop',
+      icon: '',
+    },
+    {
+      id: 4,
+      name: 'Other',
+      icon: '',
+    },
+  ]);
+
+  useEffect(() => {
+    getData();
+    getCityData();
+  }, [token, selectState]);
+
+  const getData = async () => {
+    try {
+      const getState = await fetchData.get_state_data(``, token);
+      setStateData(getState?.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const getCityData = async () => {
+    try {
+      var data = `state_id=${selectState?.state_id}`;
+      const getCity = await fetchData.get_state_data(data, token);
+      setCityData(getCity?.data[0]?.cities);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const loadMoreStateData = async () => {
+    if (stateloadMore || stateendReached) {
+      return;
+    }
+    setStateLoadMore(true);
+    try {
+      const nextPage = page + 1;
+      var data = 'page=' + nextPage;
+      const response = await fetchData.get_state_data(data, token);
+      if (response?.data.length > 0) {
+        setStatePage(nextPage);
+        const updatedData = [...stateData, ...response?.data];
+        setStateData(updatedData);
+      } else {
+        setStateEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setStateLoadMore(false);
+    }
+  };
+
+  const loadMoreCityData = async () => {
+    if (cityloadMore || cityendReached) {
+      return;
+    }
+    setCityLoadMore(true);
+    try {
+      const nextPage = page + 1;
+      var data = `state_id=${selectState?.state_id}&page=${nextPage}`;
+      const response = await fetchData.get_state_data(data, token);
+      if (response?.data.length > 0) {
+        setCityPage(nextPage);
+        const updatedData = [...cityData, ...response?.data];
+        setCityData(updatedData);
+      } else {
+        setCityEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setStateLoadMore(false);
+    }
+  };
 
   function sale_BottomSheetmenu() {
     try {
@@ -210,12 +296,19 @@ const AddAddress = () => {
               <View style={{flex: 1, alignItems: 'center'}}>
                 <ScrollView style={{flex: 1}}>
                   {selectType == 'State' ? (
-                    <View style={{width: '100%', alignItems: 'center'}}>
-                      {stateData.map((item, index) => {
+                    // <View style={{width: '100%', alignItems: 'center'}}>
+                    <FlatList
+                      data={stateData}
+                      keyExtractor={(item, index) => item + index}
+                      showsVerticalScrollIndicator={false}
+                      renderItem={({item, index}) => {
                         return (
                           <TouchableOpacity
                             key={item + index}
-                            onPress={() => selectedState(item)}
+                            onPress={() => {
+                              setSelectState(item);
+                              setSaleBottomSheetVisible(false);
+                            }}
                             style={{
                               width: '100%',
                               flexDirection: 'row',
@@ -224,7 +317,7 @@ const AddAddress = () => {
                               padding: 10,
                               margin: 5,
                               backgroundColor:
-                                selectname === item.state_name
+                                selectState?.state === item.state
                                   ? Color.primary
                                   : '#f3f3f3',
                             }}>
@@ -238,26 +331,38 @@ const AddAddress = () => {
                                 style={{
                                   fontSize: 16,
                                   color:
-                                    selectname === item.state_name
+                                    selectState?.state === item.state
                                       ? Color.white
                                       : Color.black,
                                   fontFamily: Manrope.Medium,
                                 }}>
-                                {item.state_name}
+                                {item.state}
                               </Text>
                             </View>
                           </TouchableOpacity>
                         );
-                      })}
-                    </View>
-                  ) : null}
+                      }}
+                      onEndReached={() => {
+                        loadMoreStateData();
+                      }}
+                      onEndReachedThreshold={3}
+                    />
+                  ) : // </View>
+                  null}
                   {selectType == 'City' ? (
-                    <View style={{width: '100%', alignItems: 'center'}}>
-                      {cityData.map((item, index) => {
+                    // <View style={{width: '100%', alignItems: 'center'}}>
+                    <FlatList
+                      data={cityData}
+                      keyExtractor={(item, index) => item + index}
+                      showsVerticalScrollIndicator={false}
+                      renderItem={({item, index}) => {
                         return (
                           <TouchableOpacity
                             key={item + index}
-                            onPress={() => selectedCity(item)}
+                            onPress={() => {
+                              setSelectCity(item);
+                              setSaleBottomSheetVisible(false);
+                            }}
                             style={{
                               width: '100%',
                               flexDirection: 'row',
@@ -266,7 +371,7 @@ const AddAddress = () => {
                               padding: 10,
                               margin: 5,
                               backgroundColor:
-                                cityName === item.city_name
+                                selectCity?.city === item.city
                                   ? Color.primary
                                   : '#f3f3f3',
                             }}>
@@ -280,19 +385,24 @@ const AddAddress = () => {
                                 style={{
                                   fontSize: 16,
                                   color:
-                                    cityName === item.city_name
+                                    selectCity?.city === item.city
                                       ? Color.white
                                       : Color.black,
                                   fontFamily: Manrope.Medium,
                                 }}>
-                                {item.city_name}
+                                {item.city}
                               </Text>
                             </View>
                           </TouchableOpacity>
                         );
-                      })}
-                    </View>
-                  ) : null}
+                      }}
+                      onEndReached={() => {
+                        loadMoreCityData();
+                      }}
+                      onEndReachedThreshold={3}
+                    />
+                  ) : // </View>
+                  null}
                 </ScrollView>
               </View>
             </View>
@@ -303,49 +413,6 @@ const AddAddress = () => {
       console.log('catch in addImage_BottomSheet menu ', error);
     }
   }
-
-  function selectedState(item, index) {
-    try {
-      setSelectName(item.state_name);
-      // setSelectImage(item.flag_image);
-      setSaleBottomSheetVisible(false);
-    } catch (error) {
-      console.log('catch in Home_interior select_City :', error);
-    }
-  }
-
-  function selectedCity(item, index) {
-    try {
-      setCityName(item.city_name);
-      // setSelectImage(item.flag_image);
-      setSaleBottomSheetVisible(false);
-    } catch (error) {
-      console.log('catch in Home_interior select_City :', error);
-    }
-  }
-
-  const [addressType, setAddressType] = useState([
-    {
-      id: 1,
-      name: 'Home',
-      icon: '',
-    },
-    {
-      id: 2,
-      name: 'Office',
-      icon: '',
-    },
-    {
-      id: 3,
-      name: 'Shop',
-      icon: '',
-    },
-    {
-      id: 4,
-      name: 'Other',
-      icon: '',
-    },
-  ]);
 
   return (
     <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
@@ -414,7 +481,7 @@ const AddAddress = () => {
               />
             </View>
           </View>
-          <View
+          {/* <View
             style={{
               marginVertical: 10,
             }}>
@@ -440,7 +507,7 @@ const AddAddress = () => {
                 returnKeyType="next"
               />
             </View>
-          </View>
+          </View> */}
           <View
             style={{
               marginVertical: 10,
@@ -519,7 +586,7 @@ const AddAddress = () => {
                     alignItems: 'center',
                   }}>
                   <Image
-                    source={{uri: Media.india_flag}}
+                    source={{uri: countryCode?.country_image}}
                     style={{width: 30, height: 30, resizeMode: 'contain'}}
                   />
                   <Text
@@ -529,7 +596,7 @@ const AddAddress = () => {
                       fontFamily: Manrope.SemiBold,
                       marginHorizontal: 10,
                     }}>
-                    India
+                    {countryCode?.country}
                   </Text>
                 </View>
               </View>
@@ -547,7 +614,16 @@ const AddAddress = () => {
               <TouchableOpacity
                 onPress={() => sale_toggleBottomView('State')}
                 style={styles.NumberBoxConatiner}>
-                <Text>{selectname}</Text>
+                <Text
+                  style={{
+                    fontFamily: Manrope.SemiBold,
+                    fontSize: 14,
+                    color: Color.cloudyGrey,
+                  }}>
+                  {selectState?.state != ''
+                    ? selectState?.state
+                    : 'Select State'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -571,7 +647,14 @@ const AddAddress = () => {
               <TouchableOpacity
                 onPress={() => sale_toggleBottomView('City')}
                 style={styles.NumberBoxConatiner}>
-                <Text>{cityName}</Text>
+                <Text
+                  style={{
+                    fontFamily: Manrope.SemiBold,
+                    fontSize: 14,
+                    color: Color.cloudyGrey,
+                  }}>
+                  {selectCity?.city != '' ? selectCity?.city : 'Select City'}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={{width: '45%', marginVertical: 10}}>
@@ -589,7 +672,7 @@ const AddAddress = () => {
                   style={styles.numberTextBox}
                   placeholder="Enter Pincode"
                   placeholderTextColor={Color.cloudyGrey}
-                  value={pincode}
+                  value={pincode?.toString()}
                   onChangeText={value => {
                     setPincode(value);
                   }}
@@ -649,7 +732,7 @@ const AddAddress = () => {
                   <RadioData
                     key={index}
                     label={option.name}
-                    checked={selectAddressType?.id == option.id}
+                    checked={selectAddressType?.name == option.name}
                     onPress={() => {
                       setSelectAddressType(option);
                     }}
@@ -661,13 +744,15 @@ const AddAddress = () => {
 
           <CheckboxData
             label={'Mark As Default Address'}
-            checked={!defaultAddress}
+            checked={defaultAddress}
             onPress={() => {
               setDefaultAddress(!defaultAddress);
             }}
           />
           <TouchableOpacity
-            onPress={() => addAddressClick()}
+            onPress={() => {
+              status == 'ADD' ? addAddressClick() : updateAddressClick();
+            }}
             style={{
               height: 50,
               backgroundColor: Color.primary,
@@ -682,7 +767,7 @@ const AddAddress = () => {
                 color: Color.white,
                 fontFamily: Manrope.Medium,
               }}>
-              Add Address
+              {status == 'ADD' ? 'Add Address' : 'Update'}
             </Text>
           </TouchableOpacity>
 

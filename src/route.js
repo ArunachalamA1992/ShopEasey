@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {Badge} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import HomeScreen from './Screens/Home/HomeScreen';
 import Color from './Global/Color';
 import {Iconviewcomponent} from './Components/Icontag';
@@ -29,6 +29,8 @@ import ProfileView from './Screens/Profile/ProfileView';
 import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
 import FollowingSellers from './Screens/Profile/FollowingSellers';
 import SellerProfile from './Screens/Profile/SellerProfile';
+import {setDataCount} from './Redux';
+import fetchData from './Config/fetchData';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -518,6 +520,32 @@ export const Auth = () => {
 };
 
 const TabNavigator = () => {
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
+  const dataCount = useSelector(state => state.UserReducer.count);
+  var {wishlist, cart} = dataCount;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getCountData();
+  }, [token]);
+
+  const getCountData = async () => {
+    try {
+      const getWislist = await fetchData.list_wishlist(``, token);
+      const getCart = await fetchData.list_cart(``, token);
+      dispatch(
+        setDataCount({
+          wishlist: getWislist?.count,
+          cart: getCart?.count,
+        }),
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -708,23 +736,23 @@ const TabNavigator = () => {
       <Tab.Screen
         name="WishListTab"
         component={WishListStack}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          tabBarBadge: wishlist,
+        }}
       />
       <Tab.Screen
         name="MyCartTab"
         component={MyCartStack}
         options={{
           headerShown: false,
-          // tabBarStyle: { display: 'none' },
+          tabBarBadge: cart,
         }}
       />
       <Tab.Screen
         name="ProfileTab"
         component={ProfileStack}
-        options={{
-          headerShown: false,
-          // tabBarStyle: { display: 'none' },
-        }}
+        options={{headerShown: false}}
       />
     </Tab.Navigator>
   );

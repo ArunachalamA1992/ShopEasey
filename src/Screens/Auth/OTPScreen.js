@@ -13,6 +13,7 @@ import {
   PermissionsAndroid,
   Modal,
   Button,
+  Alert,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
@@ -47,6 +48,59 @@ const OTPScreen = ({route, AppState}) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const countryCode = useSelector(state => state.UserReducer.country);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      }
+
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(interval);
+        } else {
+          setSeconds(30);
+          setMinutes(minutes - 1);
+        }
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [seconds]);
+
+  const ResendOTP = async number => {
+    setSeconds(30);
+    const ResendOtpVerify =
+      loginType == ''
+        ? await fetchData.login_verify_otp(
+            {
+              mobile: number,
+              otp: otpCode,
+              region_id: countryCode?.id,
+            },
+            token,
+          )
+        : await fetchData.Register_verify_otp(
+            {
+              mobile: number,
+              otp: otpCode,
+              region_id: countryCode?.id,
+            },
+            token,
+          );
+    if (ResendOtpVerify?.status == true) {
+      if (Platform.OS === 'android') {
+        common_fn.showToast(ResendOtpVerify?.message);
+      } else {
+        Alert.alert(ResendOtpVerify?.message);
+      }
+    } else {
+      var msg = ResendOtpVerify?.message;
+      setError(msg);
+    }
+  };
 
   const chkOTPError = OTP => {
     let reg = /^[6-9][0-9]*$/;
@@ -349,9 +403,7 @@ const OTPScreen = ({route, AppState}) => {
               </View>
             ) : (
               <View style={styles.noReceivecodeView}>
-                <TouchableOpacity
-                //  onPress={() => ResendOTP(number)}
-                >
+                <TouchableOpacity onPress={() => ResendOTP(number)}>
                   <Text style={styles.resendOtp}>Resend OTP</Text>
                 </TouchableOpacity>
               </View>

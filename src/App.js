@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
-import {LogBox, StatusBar, View} from 'react-native';
+import {Linking, LogBox, StatusBar, View} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {Provider} from 'react-redux';
+import {Provider, useDispatch} from 'react-redux';
 
 import {Provider as PaperProvider} from 'react-native-paper';
 import {navigationRef} from '../RootNavigation';
@@ -29,6 +29,8 @@ import SellerProfile from './Screens/Profile/SellerProfile';
 import AddCard from './Screens/MyOrders/AddCard';
 import firebase from '@react-native-firebase/app';
 import AddAddress from './Screens/Address/AddAddress';
+import {setUserData} from './Redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -36,9 +38,70 @@ const Drawer = createDrawerNavigator();
 LogBox.ignoreAllLogs;
 
 const MyDrawer = () => {
+  const dispatch = useDispatch();
+
+  const linking = {
+    prefixes: ['https://shopeasey.com/product', 'shopeasey://'],
+    config: {
+      initialRouteName: 'Home',
+      screens: {
+        Home: {
+          path: 'home',
+        },
+        ProductDetails: {
+          path: '/:id',
+        },
+      },
+    },
+  };
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('user_data');
+        if (value !== null) {
+          dispatch(setUserData(JSON.parse(value)));
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+
+    getUserData();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleDeepLink = ({url}) => {
+      try {
+        const route = url.replace(/.*?:\/\//g, '');
+        const id = route.match(/\/([^\/]+)\/?$/)[1];
+      } catch (error) {
+        console.error('Error handling deep link:', error);
+      }
+    };
+
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    const handleInitialUrl = async () => {
+      try {
+        const initialUrl = await Linking.getInitialURL();
+        if (initialUrl) {
+          handleDeepLink({url: initialUrl});
+        }
+      } catch (error) {
+        console.error('Error handling initial URL:', error);
+      }
+    };
+
+    handleInitialUrl();
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   return (
     <PaperProvider>
-      <NavigationContainer ref={navigationRef}>
+      <NavigationContainer ref={navigationRef} linking={linking}>
         <Drawer.Navigator
           initialRouteName="Home"
           screenOptions={{swipeEnabled: false}}
@@ -46,6 +109,11 @@ const MyDrawer = () => {
           <Drawer.Screen
             name="Home"
             component={MainApp}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ProductDetails"
+            component={ProductDetails}
             options={{headerShown: false}}
           />
         </Drawer.Navigator>
@@ -57,8 +125,8 @@ const MyDrawer = () => {
 const logAppOpen = async () => {
   await analytics().logAppOpen();
 };
+
 const App = () => {
-  // Your Firebase config object
   const firebaseConfig = {
     apiKey: 'AIzaSyDi0wxP2QTmOcNdbfyHP3Qb_5C_gAgcJ1A',
     authDomain: 'shopeasey-8855b.firebaseapp.com',
@@ -69,7 +137,6 @@ const App = () => {
   useEffect(() => {
     try {
       logAppOpen();
-      // Initialize Firebase
       if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
       }
@@ -88,7 +155,7 @@ const App = () => {
 const MainApp = () => {
   return (
     <>
-      <StatusBar backgroundColor={Color.primary} />
+      <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
           name="Splash"

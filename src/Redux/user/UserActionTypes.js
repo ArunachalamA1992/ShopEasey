@@ -4,3 +4,4 @@ export const SET_ASYNC = 'SET_ASYNC';
 export const SET_ONBOARD = 'SET_ONBOARD';
 export const SET_NOTIFICATION_COUNT = 'SET_NOTIFICATION_COUNT';
 export const SET_COUNTRY_CODE = 'SET_COUNTRY_CODE';
+export const SET_DATA_COUNT = 'SET_DATA_COUNT';
