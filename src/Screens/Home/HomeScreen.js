@@ -22,7 +22,6 @@ import {Iconviewcomponent} from '../../Components/Icontag';
 import {Manrope} from '../../Global/FontFamily';
 import {useNavigation} from '@react-navigation/native';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import {products} from '../../Config/Content';
 import {Badge, Button} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -41,6 +40,7 @@ import Geolocation from 'react-native-geolocation-service';
 import common_fn from '../../Config/common_fn';
 import axios from 'axios';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import PostCompletedModal from '../MyOrders/OrderCompletionModal';
 
 LogBox.ignoreAllLogs();
 const {width} = Dimensions.get('window');
@@ -50,6 +50,11 @@ const HomeScreen = () => {
   const [netInfo_State, setNetinfo] = useState(true);
   const [currentCity, setCurrentCity] = useState('');
   const [height, setHeight] = useState(undefined);
+  const [FlashOffers, setFlashOffers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loadMore, setLoadMore] = useState(false);
+  const [Page, setPage] = useState(1);
+  const [endReached, setEndReached] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
@@ -135,12 +140,12 @@ const HomeScreen = () => {
     {
       id: '1',
       ban_name: 'Ethnic Wear',
-      ban_image: require('../../assets/images/onboard_shop.png'),
+      ban_image: Media.onboard_main,
     },
     {
       id: '2',
       ban_name: 'Kid’s Wear',
-      ban_image: require('../../assets/images/kutties.png'),
+      ban_image: Media.kutties_image,
     },
     {
       id: '3',
@@ -159,13 +164,19 @@ const HomeScreen = () => {
     {id: 6, title: 'product', data: ['product']},
   ]);
 
-  const [visibleData, setVisibleData] = useState(products?.slice(0, 4));
+  const [visibleData, setVisibleData] = useState(products.slice(0, 4));
   const [showLoadMore, setShowLoadMore] = useState(products.length > 4);
 
+  useEffect(() => {
+    setVisibleData(products.slice(0, 4));
+    setShowLoadMore(products.length > 4);
+  }, [products]);
+
   const loadMoreItems = () => {
-    const newVisibleData = products?.slice(0, visibleData.length + 8);
-    setVisibleData(newVisibleData);
-    setShowLoadMore(newVisibleData.length < products.length);
+    const currentLength = visibleData.length;
+    const nextBatch = products.slice(currentLength, currentLength + 8);
+    setVisibleData([...visibleData, ...nextBatch]);
+    setShowLoadMore(currentLength + 8 < products.length);
   };
 
   useEffect(() => {
@@ -263,6 +274,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getUserData();
+    getFlashDeals();
     setLoading(true);
     getData()
       .then(() => setLoading(false))
@@ -277,6 +289,18 @@ const HomeScreen = () => {
       if (value !== null) {
         dispatch(setUserData(JSON.parse(value)));
       }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const getFlashDeals = async () => {
+    try {
+      const getFlashDeals = await fetchData.flash_Offers(``, token);
+      setFlashOffers(getFlashDeals?.data);
+      var data = `project=offer`;
+      const get_products = await fetchData.list_products(data, token);
+      setProducts(get_products?.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -297,12 +321,11 @@ const HomeScreen = () => {
 
   const getCountData = async () => {
     try {
-      const getWislist = await fetchData.list_wishlist(``, token);
-      const getCart = await fetchData.list_cart(``, token);
+      const getData = await fetchData.profile_data(``, token);
       dispatch(
         setDataCount({
-          wishlist: getWislist?.count,
-          cart: getCart?.count,
+          wishlist: getData?.data?.wishlist_count,
+          cart: getData?.data?.cart_count,
         }),
       );
     } catch (error) {
@@ -310,6 +333,28 @@ const HomeScreen = () => {
     }
   };
 
+  const loadMoreData = async () => {
+    if (loadMore || endReached) {
+      return;
+    }
+    setLoadMore(true);
+    try {
+      const nextPage = Page + 1;
+      var data = `project=offer&page=${nextPage}`;
+      const response = await fetchData.list_products(data, token);
+      if (response?.data.length > 0) {
+        setPage(nextPage);
+        const updatedData = [...products, ...response?.data];
+        setProducts(updatedData);
+      } else {
+        setEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadMore(false);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'dark-content'} />
@@ -1417,34 +1462,51 @@ const HomeScreen = () => {
                   );
                 case 'Flash Selling':
                   return (
-                    <View
-                      style={{
-                        backgroundColor: Color.white,
-                        marginHorizontal: 10,
-                        marginVertical: 10,
-                        padding: 10,
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}>
-                        <Image
-                          source={{uri: Media.flash_sell_image}}
+                    FlashOffers?.length > 0 &&
+                    FlashOffers?.map((item, index) => {
+                      const expirationDate = new Date(item?.expired_at);
+                      const currentDate = new Date();
+                      const difference =
+                        expirationDate.getTime() - currentDate.getTime();
+                      const seconds = Math.floor(difference / 1000) % 60;
+                      const minutes = Math.floor(difference / (1000 * 60)) % 60;
+                      const hours =
+                        Math.floor(difference / (1000 * 60 * 60)) % 24;
+                      const days = Math.floor(
+                        difference / (1000 * 60 * 60 * 24),
+                      );
+                      return (
+                        <View
+                          key={index}
                           style={{
-                            width: 100,
-                            height: 60,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                        <CountdownTimer
-                          days={0}
-                          hours={1}
-                          minutes={5}
-                          seconds={1}
-                        />
-                      </View>
-                    </View>
+                            backgroundColor: Color.white,
+                            marginHorizontal: 10,
+                            marginVertical: 10,
+                            padding: 10,
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
+                            <Image
+                              source={{uri: item.logo}}
+                              style={{
+                                width: 100,
+                                height: 60,
+                                resizeMode: 'contain',
+                              }}
+                            />
+                            <CountdownTimer
+                              days={days}
+                              hours={hours}
+                              minutes={minutes}
+                              seconds={seconds}
+                            />
+                          </View>
+                        </View>
+                      );
+                    })
                   );
                 case 'product':
                   return (
@@ -1463,6 +1525,10 @@ const HomeScreen = () => {
                             <ItemCard item={item} navigation={navigation} />
                           );
                         }}
+                        onEndReached={() => {
+                          loadMoreData();
+                        }}
+                        onEndReachedThreshold={3}
                       />
                       {showLoadMore && (
                         <TouchableOpacity
@@ -1547,6 +1613,7 @@ const HomeScreen = () => {
           </View>
         </View>
       </Modal>
+      <PostCompletedModal navigation={navigation} />
     </SafeAreaView>
   );
 };

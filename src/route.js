@@ -58,14 +58,18 @@ export const HomeStack = () => {
         options={({navigation, route}) => ({
           headerTitle: 'About Us',
           headerTitleAlign: 'center',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -78,14 +82,18 @@ export const HomeStack = () => {
         options={({navigation, route}) => ({
           headerTitle: 'Contact Us',
           headerTitleAlign: 'center',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -98,14 +106,18 @@ export const HomeStack = () => {
         options={({navigation, route}) => ({
           headerTitle: 'FAQs',
           headerTitleAlign: 'center',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -118,14 +130,18 @@ export const HomeStack = () => {
         options={({navigation, route}) => ({
           headerTitle: 'Terms & Conditions',
           headerTitleAlign: 'center',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -137,14 +153,19 @@ export const HomeStack = () => {
         component={PrivacyPolicy}
         options={({navigation, route}) => ({
           headerTitle: 'Privacy Policy',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -172,18 +193,16 @@ export const WishListStack = () => {
             fontFamily: Manrope.Bold,
             fontSize: 18,
           },
-          headerStyle: {backgroundColor: Color.white, elevation: 0},
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
-            <TouchableOpacity
-              style={{padding: 10}}
-              onPress={() => navigation.goBack()}>
-              <Iconviewcomponent
-                Icontag={'Ionicons'}
-                iconname={'arrow-back'}
-                icon_size={26}
-                icon_color={Color.black}
+            <View style={{marginHorizontal: 10}}>
+              <Icon
+                name="arrow-back"
+                size={30}
+                color={Color.black}
+                onPress={() => navigation.goBack()}
               />
-            </TouchableOpacity>
+            </View>
           ),
           headerRight: () => (
             <TouchableOpacity
@@ -231,18 +250,16 @@ export const MyCartStack = () => {
             fontFamily: Manrope.Bold,
             fontSize: 18,
           },
-          headerStyle: {backgroundColor: Color.white, elevation: 0},
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
-            <TouchableOpacity
-              style={{padding: 10}}
-              onPress={() => navigation.goBack()}>
-              <Iconviewcomponent
-                Icontag={'Ionicons'}
-                iconname={'arrow-back'}
-                icon_size={26}
-                icon_color={Color.black}
+            <View style={{marginHorizontal: 10}}>
+              <Icon
+                name="arrow-back"
+                size={30}
+                color={Color.black}
+                onPress={() => navigation.goBack()}
               />
-            </TouchableOpacity>
+            </View>
           ),
           // headerRight: () => (
           //   <TouchableOpacity
@@ -278,8 +295,8 @@ export const MyCartStack = () => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             color: Color.black,
-            fontFamily: Manrope.SemiBold,
-            textAlign: 'center',
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
           },
           headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
@@ -315,19 +332,16 @@ export const ProfileStack = () => {
             fontFamily: Manrope.Bold,
             fontSize: 18,
           },
-          headerStyle: {backgroundColor: Color.white, elevation: 0},
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
-            // <NavigationDrawerStructure navigation={navigation} home={true} />
-            <TouchableOpacity
-              style={{padding: 10}}
-              onPress={() => navigation.goBack()}>
-              <Iconviewcomponent
-                Icontag={'Ionicons'}
-                iconname={'arrow-back'}
-                icon_size={26}
-                icon_color={Color.black}
+            <View style={{marginHorizontal: 10}}>
+              <Icon
+                name="arrow-back"
+                size={30}
+                color={Color.black}
+                onPress={() => navigation.goBack()}
               />
-            </TouchableOpacity>
+            </View>
           ),
           // headerRight: () => (
           //   <TouchableOpacity
@@ -360,14 +374,19 @@ export const ProfileStack = () => {
         component={ProfileView}
         options={({navigation, route}) => ({
           headerTitle: 'Profile View',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -379,14 +398,19 @@ export const ProfileStack = () => {
         component={EditProfile}
         options={({navigation, route}) => ({
           headerTitle: 'Edit Profile',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -398,14 +422,19 @@ export const ProfileStack = () => {
         component={MyOrders}
         options={({navigation, route}) => ({
           headerTitle: 'My Orders',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -417,14 +446,19 @@ export const ProfileStack = () => {
         component={SelectAddress}
         options={({navigation, route}) => ({
           headerTitle: 'Select Delivery Address',
-          headerTitleStyle: {color: Color.white},
-          headerStyle: {backgroundColor: Color.primary},
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -436,7 +470,12 @@ export const ProfileStack = () => {
         component={AddAddress}
         options={({navigation, route}) => ({
           headerTitle: 'Add address',
-          headerTitleStyle: {color: Color.black, textAlign: 'center'},
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
           headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
@@ -458,16 +497,16 @@ export const ProfileStack = () => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             color: Color.black,
-            fontFamily: Manrope.Bold,
             fontSize: 18,
+            fontFamily: Manrope.Bold,
           },
-          headerStyle: {backgroundColor: Color.primary},
+          headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
             <View style={{marginHorizontal: 10}}>
               <Icon
                 name="arrow-back"
                 size={30}
-                color={Color.white}
+                color={Color.black}
                 onPress={() => navigation.goBack()}
               />
             </View>
@@ -482,8 +521,8 @@ export const ProfileStack = () => {
           headerTitleAlign: 'center',
           headerTitleStyle: {
             color: Color.black,
-            fontFamily: Manrope.Bold,
             fontSize: 18,
+            fontFamily: Manrope.Bold,
           },
           headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
@@ -533,12 +572,11 @@ const TabNavigator = () => {
 
   const getCountData = async () => {
     try {
-      const getWislist = await fetchData.list_wishlist(``, token);
-      const getCart = await fetchData.list_cart(``, token);
+      const getData = await fetchData.profile_data(``, token);
       dispatch(
         setDataCount({
-          wishlist: getWislist?.count,
-          cart: getCart?.count,
+          wishlist: getData?.data?.wishlist_count,
+          cart: getData?.data?.cart_count,
         }),
       );
     } catch (error) {

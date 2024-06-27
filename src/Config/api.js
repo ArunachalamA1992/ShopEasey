@@ -38,7 +38,7 @@ export const api = {
       axios
         .post(baseUrl + url, data, {headers: headers})
         .then(res => {
-          if (res.status == 200) {
+          if (res.status == 200 || res.status == 201) {
             resolve(res.data);
           }
         })

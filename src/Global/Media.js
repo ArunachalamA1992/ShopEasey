@@ -121,4 +121,6 @@ export const Media = {
 
   no_image:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/no_image.png',
+  LottieCheck: require('../assets/LottieCheck.json'),
+  LottieCancelled: require('../assets/LottieCancelled.json'),
 };

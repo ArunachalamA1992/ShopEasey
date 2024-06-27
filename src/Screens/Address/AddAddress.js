@@ -245,7 +245,7 @@ const AddAddress = ({route}) => {
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setStateLoadMore(false);
+      setCityLoadMore(false);
     }
   };
 

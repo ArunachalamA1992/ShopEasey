@@ -31,6 +31,8 @@ import firebase from '@react-native-firebase/app';
 import AddAddress from './Screens/Address/AddAddress';
 import {setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyOrders from './Screens/MyOrders/MyOrders';
+import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -376,6 +378,54 @@ const MainApp = () => {
             headerTitle: 'Add address',
             headerTitleAlign: 'center',
             headerTitleStyle: {color: Color.black, textAlign: 'center'},
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="MyOrders"
+          component={MyOrders}
+          options={({navigation, route}) => ({
+            headerTitle: 'My Orders',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="OrderConfirmation"
+          component={OrderConfirmation}
+          options={({navigation, route}) => ({
+            headerTitle: 'Order Confirmation',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
             headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
               <View style={{marginHorizontal: 10}}>

@@ -20,51 +20,14 @@ import {Iconviewcomponent} from '../../Components/Icontag';
 import {BottomSheet} from 'react-native-btr';
 import {Checkbox} from 'react-native-paper';
 import common_fn from '../../Config/common_fn';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import FIcon from 'react-native-vector-icons/FontAwesome';
+import {Media} from '../../Global/Media';
+import {setOrderSuccessVisible} from '../../Redux';
 
 let dummyText =
   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-
-const orderData = [
-  {
-    order_id: '#0095',
-    order_status: 'shipped',
-    order_name: 'Blended Cotton Navy Shirt Men',
-    order_color: 'Blue',
-    order_size: 'M',
-    order_quantity: '1',
-    order_price: '350.00',
-  },
-  {
-    order_id: '#000',
-    order_status: 'shipped',
-    order_name: 'Blended Cotton Navy',
-    order_color: 'White',
-    order_size: 'M',
-    order_quantity: '1',
-    order_price: '350.00',
-  },
-  {
-    order_id: '#000',
-    order_status: 'shipped',
-    order_name: 'Blended Cotton Navy',
-    order_color: 'White',
-    order_size: 'M',
-    order_quantity: '1',
-    order_price: '350.00',
-  },
-  {
-    order_id: '#000',
-    order_status: 'shipped',
-    order_name: 'Blended Cotton Navy',
-    order_color: 'White',
-    order_size: 'M',
-    order_quantity: '1',
-    order_price: '350.00',
-  },
-];
 
 LogBox.ignoreAllLogs();
 
@@ -72,9 +35,9 @@ const OrderConfirmation = ({navigation, route}) => {
   const [CheckOut] = useState(route.params.CheckOut);
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
-  const [intialItem, setintialItem] = useState('');
-  const [height, setHeight] = useState(undefined);
-  const [selectaddr, setSelectAddr] = useState('Paypal');
+  const [selectPayment, setSelectPayment] = useState(null);
+  const [selectAddress, setSelectAddress] = useState({});
+  const [tax, setTax] = useState(0);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
@@ -83,6 +46,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const [monthYear, setMonthYear] = useState('');
   const [cvvNumber, setCVVNumber] = useState('');
   const [checked, setChecked] = useState(false);
+  const dispatch = useDispatch();
 
   const [shopSection] = useState([
     {id: 1, title: 'Delivery Address', data: ['Delivery Address']},
@@ -90,6 +54,19 @@ const OrderConfirmation = ({navigation, route}) => {
     {id: 3, title: 'Coupon', data: ['Coupon']},
     {id: 4, title: 'Price Details', data: ['Price Details']},
     {id: 5, title: 'Place Order', data: ['Place Order']},
+  ]);
+
+  const [paymentMethod] = useState([
+    {
+      id: 1,
+      name: 'paypal',
+      icon: 'paypal',
+    },
+    {
+      id: 2,
+      name: 'cash on delivery',
+      icon: 'rupee',
+    },
   ]);
 
   const [showMoreButton, setShowMoreButton] = useState(false);
@@ -113,6 +90,12 @@ const OrderConfirmation = ({navigation, route}) => {
     },
     [discriptiontextShown],
   );
+
+  useEffect(() => {
+    if (address.length > 0) {
+      setSelectAddress(address[0]);
+    }
+  }, [address]);
 
   const toggleTextShown = () => {
     setDiscriptiontextShown(!discriptiontextShown);
@@ -150,7 +133,7 @@ const OrderConfirmation = ({navigation, route}) => {
     setLoading(true);
     getCartData()
       .then(() => setLoading(false))
-      .catch(error => {
+      .catch(() => {
         setLoading(false);
       });
   }, [token]);
@@ -158,10 +141,54 @@ const OrderConfirmation = ({navigation, route}) => {
   const getCartData = async () => {
     try {
       const getaddress = await fetchData.list_address(``, token);
-      console.log('getaddress?.data----------', getaddress);
       setAddress(getaddress?.data);
     } catch (error) {
       console.log('error------', error);
+    }
+  };
+
+  const Sub_total = CheckOut?.reduce((accumulator, item) => {
+    return accumulator + (item.variant?.price * item?.quantity || 0);
+  }, 0);
+
+  const discount_price = CheckOut?.reduce((accumulator, item) => {
+    return (
+      accumulator +
+      ((item.variant?.org_price - item.variant?.price) * item?.quantity || 0)
+    );
+  }, 0);
+
+  const postOrder = async () => {
+    try {
+      var total_price = Sub_total + tax;
+      if (selectPayment?.name == 'cash on delivery') {
+        var data = {
+          address_id: selectAddress?.id,
+          region_id: countryCode?.id,
+          total: total_price,
+          sub_total: Sub_total,
+          tax: tax,
+          payment_method: 'COD',
+          products: CheckOut?.map(item => ({
+            product_id: item?.product?.id,
+            variant_id: item?.variant?.id,
+            quantity: item?.quantity,
+            price: item?.variant?.price,
+          })),
+        };
+        const post_order = await fetchData.postOrder(data, token);
+        if (post_order?.status == true) {
+          common_fn.showToast(post_order?.message);
+          navigation.replace('TabNavigator');
+          dispatch(setOrderSuccessVisible(true));
+        } else {
+          common_fn.showToast(post_order?.message);
+        }
+      } else {
+        common_fn.showToast('Online Payment');
+      }
+    } catch (error) {
+      console.log('error', error);
     }
   };
 
@@ -395,14 +422,6 @@ const OrderConfirmation = ({navigation, route}) => {
     }
   }
 
-  var total_price = CheckOut?.reduce((accumulator, item) => {
-    return accumulator + (item.variant?.price * item?.quantity || 0);
-  }, 0);
-
-  var discount_price = CheckOut?.reduce((accumulator, item) => {
-    return accumulator + (item.variant?.org_price - item?.variant?.price || 0);
-  }, 0);
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'dark-content'} />
@@ -456,8 +475,26 @@ const OrderConfirmation = ({navigation, route}) => {
               return (
                 <View
                   key={index}
-                  style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-                  <View style={{flex: 1, paddingHorizontal: 20}}>
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    paddingHorizontal: 20,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => setSelectAddress(item)}
+                    style={{marginRight: 10, marginTop: 10}}>
+                    <Iconviewcomponent
+                      Icontag={'Ionicons'}
+                      iconname={
+                        item?.id == selectAddress?.id
+                          ? 'radio-button-on'
+                          : 'radio-button-off-sharp'
+                      }
+                      icon_size={22}
+                      iconstyle={{color: Color.lightBlack}}
+                    />
+                  </TouchableOpacity>
+                  <View style={{flex: 1}}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -557,10 +594,10 @@ const OrderConfirmation = ({navigation, route}) => {
             </TouchableOpacity>
 
             {isExpanded ? (
-              <View style={{width: '100%', alignItems: 'center'}}>
+              <View style={{width: '100%'}}>
                 <View
                   style={{
-                    width: '100%',
+                    flex: 1,
                     alignItems: 'center',
                     paddingHorizontal: 10,
                     backgroundColor: Color.white,
@@ -576,194 +613,95 @@ const OrderConfirmation = ({navigation, route}) => {
                     return (
                       <View
                         style={{
-                          height: 150,
-                          alignItems: 'center',
+                          backgroundColor: Color.white,
+                          marginTop: 10,
+                          borderWidth: 1,
+                          borderColor: Color.lightgrey,
+                          borderRadius: 10,
+                          flexDirection: 'row',
+                          padding: 10,
                         }}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}>
-                          <View
-                            style={{
-                              flex: 1,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
+                        <View style={{flex: 1}}>
+                          {item?.variant?.productImages?.length > 0 ? (
                             <Image
-                              source={require('../../assets/category/cat_men.png')}
+                              source={{
+                                uri: item?.variant?.productImages?.[0]?.image,
+                              }}
                               style={{
-                                width: '100%',
-                                height: '100%',
-                                resizeMode: 'contain',
+                                width: 150,
+                                height: 170,
+                                resizeMode: 'cover',
+                                borderRadius: 10,
                               }}
                             />
-                          </View>
+                          ) : (
+                            <Image
+                              source={{uri: Media.no_image}}
+                              style={{
+                                width: 150,
+                                height: 170,
+                                resizeMode: 'contain',
+                                borderRadius: 10,
+                              }}
+                            />
+                          )}
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.red,
+                              fontFamily: Manrope.SemiBold,
+                              position: 'absolute',
+                              bottom: 10,
+                              right: 30,
+                              textAlign: 'center',
+                            }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
+                        </View>
+                        <View
+                          style={{
+                            flex: 1,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.black,
+                              fontFamily: Manrope.SemiBold,
+                            }}>
+                            {item?.product?.product_name}
+                          </Text>
                           <View
                             style={{
-                              flex: 3,
-                              justifyContent: 'center',
+                              marginVertical: 10,
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
                               alignItems: 'center',
-                              padding: 10,
                             }}>
-                            <View
-                              style={{
-                                width: '100%',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                              }}>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'flex-start',
-                                  alignItems: 'center',
-                                }}>
-                                <Text
-                                  style={{
-                                    fontSize: 12,
-                                    color: Color.cloudyGrey,
-                                    fontFamily: Manrope.Medium,
-                                    letterSpacing: 0.5,
-                                  }}>
-                                  Brand :
-                                </Text>
-                                {/* <Text
-                                    style={{
-                                      fontSize: 13,
-                                      color: Color.lightBlack,
-                                      fontFamily: Manrope.Bold,
-                                      paddingHorizontal: 5,
-                                      letterSpacing: 0.5,
-                                    }}>
-                                    US-Polo
-                                  </Text> */}
-                              </View>
-                            </View>
-                            <View
-                              style={{
-                                width: '100%',
-                                justifyContent: 'flex-start',
-                                alignItems: 'flex-start',
-                                paddingVertical: 3,
-                              }}>
-                              <Text
-                                style={{
-                                  fontSize: 14,
-                                  color: Color.lightBlack,
-                                  fontFamily: Manrope.SemiBold,
-                                  letterSpacing: 0.5,
-                                }}
-                                numberOfLines={2}>
-                                {item?.product?.product_name}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                width: '100%',
-                                flexDirection: 'row',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                                paddingVertical: 3,
-                              }}>
-                              <Text
-                                style={{
-                                  fontSize: 16,
-                                  color: Color.black,
-                                  fontFamily: Manrope.Bold,
-                                  letterSpacing: 0.5,
-                                }}>
-                                {countryCode?.symbol}
-                                {item?.variant?.price}
-                              </Text>
+                            <Text style={styles.productDiscountPrice}>
+                              {countryCode?.symbol}
+                              {item?.variant?.price}{' '}
                               <Text style={styles.productPrice}>
                                 {countryCode?.symbol}
                                 {item?.variant?.org_price}
                               </Text>
-                              <Text
-                                style={{
-                                  fontSize: 14,
-                                  color: '#0FAD45',
-                                  fontFamily: Manrope.SemiBold,
-                                  paddingHorizontal: 10,
-                                }}>
-                                Save {discount}% OFF
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                flex: 1,
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                flexWrap: 'wrap',
-                                paddingVertical: 3,
-                              }}>
-                              {item?.variant?.size != '' && (
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'center',
-                                    marginRight: 5,
-                                  }}>
-                                  <Text
-                                    style={{
-                                      fontSize: 12,
-                                      color: Color.cloudyGrey,
-                                      fontFamily: Manrope.Medium,
-                                      letterSpacing: 0.5,
-                                    }}>
-                                    Size-{' '}
-                                  </Text>
-                                  <Text
-                                    style={{
-                                      fontSize: 14,
-                                      color: Color.black,
-                                      fontFamily: Manrope.SemiBold,
-                                    }}>
-                                    {item?.variant?.size}
-                                  </Text>
-                                </View>
-                              )}
-                              {item?.variant?.color && (
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'center',
-                                    marginRight: 5,
-                                  }}>
-                                  <Text
-                                    style={{
-                                      fontSize: 12,
-                                      color: Color.cloudyGrey,
-                                      fontFamily: Manrope.Medium,
-                                      letterSpacing: 0.5,
-                                    }}>
-                                    Color-{' '}
-                                  </Text>
-                                  <View
-                                    style={{
-                                      flexDirection: 'row',
-                                      alignItems: 'center',
-                                    }}>
-                                    <Text
-                                      style={{
-                                        paddingHorizontal: 5,
-                                        fontSize: 14,
-                                        color: Color.black,
-                                        fontFamily: Manrope.SemiBold,
-                                        letterSpacing: 0.5,
-                                      }}>
-                                      {common_fn.getColorName(
-                                        item?.variant?.color,
-                                      )}
-                                    </Text>
-                                  </View>
-                                </View>
-                              )}
+                            </Text>
+                          </View>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: '#0FAD45',
+                              fontFamily: Manrope.Bold,
+                              letterSpacing: 0.5,
+                            }}
+                            numberOfLines={1}>
+                            Save {discount}% OFF
+                          </Text>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              flexWrap: 'wrap',
+                            }}>
+                            {item?.variant?.size != '' && (
                               <View
                                 style={{
                                   flexDirection: 'row',
@@ -778,7 +716,7 @@ const OrderConfirmation = ({navigation, route}) => {
                                     fontFamily: Manrope.Medium,
                                     letterSpacing: 0.5,
                                   }}>
-                                  Qty-{' '}
+                                  Size-{' '}
                                 </Text>
                                 <Text
                                   style={{
@@ -786,18 +724,73 @@ const OrderConfirmation = ({navigation, route}) => {
                                     color: Color.black,
                                     fontFamily: Manrope.SemiBold,
                                   }}>
-                                  {item?.quantity}
+                                  {item?.variant?.size}
                                 </Text>
                               </View>
+                            )}
+                            {item?.variant?.color && (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'flex-start',
+                                  alignItems: 'center',
+                                  marginRight: 5,
+                                }}>
+                                <Text
+                                  style={{
+                                    fontSize: 12,
+                                    color: Color.cloudyGrey,
+                                    fontFamily: Manrope.Medium,
+                                    letterSpacing: 0.5,
+                                  }}>
+                                  Color-{' '}
+                                </Text>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}>
+                                  <Text
+                                    style={{
+                                      paddingHorizontal: 5,
+                                      fontSize: 14,
+                                      color: Color.black,
+                                      fontFamily: Manrope.SemiBold,
+                                      letterSpacing: 0.5,
+                                    }}>
+                                    {common_fn.getColorName(
+                                      item?.variant?.color,
+                                    )}
+                                  </Text>
+                                </View>
+                              </View>
+                            )}
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                marginRight: 5,
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                Qty-{' '}
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 14,
+                                  color: Color.black,
+                                  fontFamily: Manrope.SemiBold,
+                                }}>
+                                {item?.quantity}
+                              </Text>
                             </View>
                           </View>
                         </View>
-                        <View
-                          style={{
-                            width: '100%',
-                            height: 1,
-                            backgroundColor: Color.lightgrey,
-                          }}></View>
                       </View>
                     );
                   })}
@@ -897,7 +890,7 @@ const OrderConfirmation = ({navigation, route}) => {
               }}>
               Payment Method
             </Text>
-            <View
+            {/* <View
               style={{
                 marginVertical: 10,
               }}>
@@ -972,167 +965,58 @@ const OrderConfirmation = ({navigation, route}) => {
                 width: '100%',
                 height: 0.5,
                 backgroundColor: Color.cloudyGrey,
-              }}></View>
+              }}></View> */}
 
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
                 paddingVertical: 10,
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                {/* <Image
-                                        source={require('../../assets/category/paypal.png')}
-                                        style={{
-                                            width: 35,
-                                            height: 35,
-                                            resizeMode: 'contain',
-                                        }}
-                                    /> */}
-                <Iconviewcomponent
-                  Icontag={'FontAwesome'}
-                  iconname={'rupee'}
-                  icon_size={12}
-                  icon_color={Color.white}
-                />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: Color.black,
-                    paddingHorizontal: 10,
-                    fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
-                  }}>
-                  Paypal
-                </Text>
-              </View>
-              {selectaddr == 'Paypal' ? (
-                <TouchableOpacity
-                  onPress={() => setSelectAddr('Paypal')}
-                  style={{marginEnd: 20}}>
-                  <Iconviewcomponent
-                    Icontag={'Fontisto'}
-                    iconname={'radio-btn-active'}
-                    icon_size={22}
-                    iconstyle={{color: Color.primary}}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => setSelectAddr('Paypal')}
-                  style={{marginEnd: 20}}>
-                  <Iconviewcomponent
-                    Icontag={'Fontisto'}
-                    iconname={'radio-btn-passive'}
-                    icon_size={22}
-                    iconstyle={{color: Color.lightBlack}}
-                  />
-                </TouchableOpacity>
-              )}
+              {paymentMethod?.map(item => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: 20,
+                      marginHorizontal: 20,
+                    }}>
+                    <Iconviewcomponent
+                      Icontag={'FontAwesome'}
+                      iconname={item?.icon}
+                      icon_size={22}
+                      iconstyle={{color: Color.primary}}
+                    />
+                    <Text
+                      style={{
+                        flex: 1,
+                        fontSize: 14,
+                        color: Color.black,
+                        paddingHorizontal: 10,
+                        fontFamily: Manrope.Medium,
+                        letterSpacing: 0.5,
+                        textTransform: 'capitalize',
+                      }}>
+                      {item?.name}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => setSelectPayment(item)}
+                      style={{marginEnd: 20}}>
+                      <Iconviewcomponent
+                        Icontag={'Ionicons'}
+                        iconname={
+                          item?.name == selectPayment?.name
+                            ? 'radio-button-on'
+                            : 'radio-button-off-sharp'
+                        }
+                        icon_size={22}
+                        iconstyle={{color: Color.lightBlack}}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
             </View>
-            <View
-              style={{
-                width: '100%',
-                height: 0.5,
-                backgroundColor: Color.cloudyGrey,
-                marginVertical: 10,
-              }}></View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                paddingVertical: 10,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingStart: 10,
-                }}>
-                <View
-                  style={{
-                    padding: 5,
-                    paddingHorizontal: 8,
-                    backgroundColor: Color.primary,
-                    borderRadius: 40,
-                  }}>
-                  <Iconviewcomponent
-                    Icontag={'FontAwesome'}
-                    iconname={'rupee'}
-                    icon_size={12}
-                    icon_color={Color.white}
-                  />
-                </View>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: Color.black,
-                    paddingHorizontal: 10,
-                    fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
-                  }}>
-                  Cash on delivery
-                </Text>
-              </View>
-              {selectaddr == 'Cash' ? (
-                <TouchableOpacity
-                  onPress={() => setSelectAddr('Cash')}
-                  style={{marginEnd: 20}}>
-                  <Iconviewcomponent
-                    Icontag={'Fontisto'}
-                    iconname={'radio-btn-active'}
-                    icon_size={22}
-                    iconstyle={{color: Color.primary}}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => setSelectAddr('Cash')}
-                  style={{marginEnd: 20}}>
-                  <Iconviewcomponent
-                    Icontag={'Fontisto'}
-                    iconname={'radio-btn-passive'}
-                    icon_size={22}
-                    iconstyle={{color: Color.lightBlack}}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* <View style={{ width: '95%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <View style={{ padding: 5, paddingHorizontal: 10, backgroundColor: Color.primary, borderRadius: 40 }}>
-                                        <Iconviewcomponent
-                                            Icontag={'FontAwesome'}
-                                            iconname={'rupee'}
-                                            icon_size={14}
-                                            icon_color={Color.white}
-                                        />
-                                    </View>
-                                    <Text style={{ fontSize: 16, color: Color.lightBlack, paddingHorizontal: 10, fontFamily: Manrope.Medium, letterSpacing: 0.5 }}>Cash on delivery</Text>
-                                </View>
-                                {selectaddr == "Cash" ?
-                                    <TouchableOpacity onPress={() => setSelectAddr("Cash")} style={{ marginEnd: 20 }}>
-                                        <Iconviewcomponent
-                                            Icontag={'Fontisto'}
-                                            iconname={'radio-btn-active'}
-                                            icon_size={24}
-                                            iconstyle={{ color: Color.primary }}
-                                        />
-                                    </TouchableOpacity> :
-                                    <TouchableOpacity onPress={() => setSelectAddr("Cash")} style={{ marginEnd: 20 }}>
-                                        <Iconviewcomponent
-                                            Icontag={'Fontisto'}
-                                            iconname={'radio-btn-passive'}
-                                            icon_size={24}
-                                            iconstyle={{ color: Color.lightBlack }}
-                                        />
-                                    </TouchableOpacity>}
-                            </View> */}
           </View>
-
           <View
             style={{
               width: '100%',
@@ -1193,7 +1077,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {total_price}
+                  {Sub_total}
                 </Text>
               </View>
               <View
@@ -1227,6 +1111,36 @@ const OrderConfirmation = ({navigation, route}) => {
                   numberOfLines={2}>
                   {countryCode?.symbol}
                   {discount_price}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  paddingHorizontal: 10,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingVertical: 3,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    textAlign: 'left',
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Medium,
+                  }}>
+                  Tax
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    textAlign: 'right',
+                    color: Color.black,
+                    fontFamily: Manrope.Bold,
+                    paddingHorizontal: 5,
+                  }}
+                  numberOfLines={2}>
+                  {tax}
                 </Text>
               </View>
               <View
@@ -1290,7 +1204,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {total_price}
+                  {Sub_total}
                 </Text>
               </View>
             </View>
@@ -1381,12 +1295,18 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {total_price}
+            {Sub_total}
           </Text>
         </View>
         <View style={{flex: 1}}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('OrderConfirmation', {CheckOut})}
+            onPress={() => {
+              if (selectPayment && selectPayment.name) {
+                postOrder();
+              } else {
+                common_fn.showToast('Please select the payment method');
+              }
+            }}
             style={{
               width: '100%',
               height: 45,
@@ -1407,7 +1327,7 @@ const OrderConfirmation = ({navigation, route}) => {
         </View>
       </View>
 
-      {sale_BottomSheetmenu()}
+      {/* {sale_BottomSheetmenu()} */}
     </SafeAreaView>
   );
 };
@@ -1416,13 +1336,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-  },
-  productPrice: {
-    color: Color.smokeyGrey,
-    fontFamily: Manrope.SemiBold,
-    fontSize: 12,
-    paddingHorizontal: 5,
-    textDecorationLine: 'line-through',
   },
   NumberBoxConatiner: {
     display: 'flex',
@@ -1441,6 +1354,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Manrope.Medium,
     letterSpacing: 0.5,
+  },
+  productRatingView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  productDiscountPrice: {
+    color: Color.black,
+    fontFamily: Manrope.Bold,
+    fontSize: 16,
+    marginRight: 5,
+    letterSpacing: 0.5,
+  },
+  productPrice: {
+    color: Color.smokeyGrey,
+    fontFamily: Manrope.SemiBold,
+    fontSize: 14,
+    letterSpacing: 0.5,
+    textDecorationLine: 'line-through',
   },
 });
 

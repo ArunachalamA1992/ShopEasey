@@ -14,33 +14,31 @@ import {Manrope} from '../../../Global/FontFamily';
 import {useNavigation} from '@react-navigation/native';
 import {Iconviewcomponent} from '../../../Components/Icontag';
 import {BottomSheet} from 'react-native-btr';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../../Config/fetchData';
 import {Media} from '../../../Global/Media';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import common_fn from '../../../Config/common_fn';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {setDataCount} from '../../../Redux';
 
 const {height} = Dimensions.get('screen');
+
 const MyCart = ({}) => {
   const navigation = useNavigation();
-
   const [defaultRating, setDefaultRating] = useState(0);
   const [selectedData, setSelectedData] = useState([]);
   const [CheckOut, setCheckOut] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [addressData, setAddressCount] = useState(0);
   const [bottomData, setBottomData] = useState('');
-  const [totalValue, setTotalValue] = useState(0);
-  const [ordertotalValue, setOrderTotalValue] = useState(0);
-  const [totalQuantity, setTotalQuantity] = useState(0);
   const [loading, setLoading] = useState(false);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
-  const [refresh, setRefresh] = useState('');
   const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
+  const dispatch = useDispatch();
 
   const [maxRating, setMaxRating] = useState([
     {
@@ -70,22 +68,6 @@ const MyCart = ({}) => {
     },
   ]);
 
-  useEffect(() => {
-    let totalQuantity = 0;
-    let totalPrice = 0;
-    setTotalQuantity(totalQuantity);
-    setTotalValue(totalPrice);
-  }, [cartData]);
-
-  function sale_toggleBottomView(item) {
-    try {
-      setBottomData(item);
-      setSaleBottomSheetVisible(!salebottomSheetVisible);
-    } catch (error) {
-      console.log('Catch in Ads sale_toggleBottomView :', error);
-    }
-  }
-
   const toggle_WishList = async () => {
     try {
       var data = {
@@ -104,13 +86,104 @@ const MyCart = ({}) => {
     }
   };
 
+  useEffect(() => {
+    getCountData();
+    setLoading(true);
+    getCartData()
+      .then(() => setLoading(false))
+      .catch(error => {
+        setLoading(false);
+      });
+  }, [token]);
+
+  const getCartData = async () => {
+    try {
+      const getCart = await fetchData.list_cart(``, token);
+      setCartData(getCart?.data);
+      const getaddress = await fetchData.list_address(``, token);
+      setAddressCount(getaddress?.count);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const updateCartData = async (id, status, quantity) => {
+    try {
+      var param = `${id}`;
+      var data = {
+        quantity: 0,
+      };
+      if (status == 'plus') {
+        data.quantity += quantity + 1;
+      } else {
+        data.quantity += quantity - 1;
+      }
+      const update_cart = await fetchData.update_cart(param, data, token);
+      if (update_cart?.status == true) {
+        common_fn.showToast(update_cart?.message);
+        getCartData();
+      } else {
+        common_fn.showToast(update_cart?.message);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const deleteCartData = async () => {
+    try {
+      var param = `${bottomData?.id}`;
+      const delete_cart = await fetchData.delete_cart(param, token);
+      common_fn.showToast(delete_cart?.message);
+      setSaleBottomSheetVisible(false);
+      getCartData();
+      getCountData();
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const handleCheckboxToggle = item => {
+    if (selectedData?.includes(item?.id)) {
+      setSelectedData(selectedData.filter(id => id !== item.id));
+      setCheckOut(
+        CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+      );
+    } else {
+      setSelectedData([...selectedData, item.id]);
+      setCheckOut([...CheckOut, item]);
+    }
+  };
+
+  var total_price = cartData.reduce((accumulator, item) => {
+    return accumulator + (item.variant?.price * item?.quantity || 0);
+  }, 0);
+
+  const getCountData = async () => {
+    try {
+      const getData = await fetchData.profile_data(``, token);
+      dispatch(
+        setDataCount({
+          wishlist: getData?.data?.wishlist_count,
+          cart: getData?.data?.cart_count,
+        }),
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   function sale_BottomSheetmenu() {
     try {
       return (
         <BottomSheet
           visible={salebottomSheetVisible}
-          onBackButtonPress={sale_toggleBottomView}
-          onBackdropPress={sale_toggleBottomView}>
+          onBackButtonPress={() => {
+            setSaleBottomSheetVisible(false);
+          }}
+          onBackdropPress={() => {
+            setSaleBottomSheetVisible(false);
+          }}>
           <View
             style={{
               backgroundColor: 'white',
@@ -146,9 +219,7 @@ const MyCart = ({}) => {
               }}>
               <TouchableOpacity
                 onPress={async () => {
-                  var param = `${id}`;
-                  const delete_cart = await fetchData.delete_cart(param, token);
-                  common_fn.showToast(delete_cart?.message);
+                  deleteCartData();
                 }}
                 style={{
                   flex: 1,
@@ -196,79 +267,6 @@ const MyCart = ({}) => {
       console.log('catch in addImage_BottomSheet menu ', error);
     }
   }
-
-  const removeItem = id => {
-    const newData = cartData?.filter(item => item.order_id !== id);
-    setCartData(newData);
-    setSaleBottomSheetVisible(false);
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    getCartData()
-      .then(() => setLoading(false))
-      .catch(error => {
-        setLoading(false);
-      });
-  }, [token]);
-
-  const getCartData = async () => {
-    try {
-      const getCart = await fetchData.list_cart(``, token);
-      setCartData(getCart?.data);
-      const getaddress = await fetchData.list_address(``, token);
-      setAddressCount(getaddress?.count);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  const updateCartData = async (id, status, quantity) => {
-    try {
-      var param = `${id}`;
-      var data = {
-        quantity: 0,
-      };
-      if (status == 'plus') {
-        data.quantity += quantity + 1;
-      } else {
-        data.quantity += quantity - 1;
-      }
-      const update_cart = await fetchData.update_cart(param, data, token);
-      if (update_cart?.status == true) {
-        common_fn.showToast(update_cart?.message);
-        getCartData();
-      } else {
-        common_fn.showToast(update_cart?.message);
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  const deleteCartData = async item => {
-    try {
-      sale_toggleBottomView(item);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  const handleCheckboxToggle = item => {
-    if (selectedData.includes(item.id)) {
-      setSelectedData(selectedData.filter(id => id !== item.id));
-      setCheckOut(
-        CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
-      );
-    } else {
-      setSelectedData([...selectedData, item.id]);
-      setCheckOut([...CheckOut, item]);
-    }
-  };
-
-  var total_price = cartData.reduce((accumulator, item) => {
-    return accumulator + (item.variant?.price * item?.quantity || 0);
-  }, 0);
 
   return (
     <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
@@ -339,7 +337,7 @@ const MyCart = ({}) => {
                     alignItems: 'center',
                     padding: 10,
                   }}>
-                  <View>
+                  <View style={{flex: 1}}>
                     <TouchableOpacity
                       onPress={() => {
                         handleCheckboxToggle(item);
@@ -347,8 +345,8 @@ const MyCart = ({}) => {
                       style={{
                         position: 'absolute',
                         zIndex: 1,
-                        top: 10,
-                        left: 10,
+                        top: -10,
+                        left: -10,
                       }}>
                       <MCIcon
                         name={
@@ -356,7 +354,7 @@ const MyCart = ({}) => {
                             ? 'checkbox-marked'
                             : 'checkbox-blank-outline'
                         }
-                        size={20}
+                        size={25}
                         color={
                           selectedData.includes(item.id)
                             ? Color.primary
@@ -364,14 +362,28 @@ const MyCart = ({}) => {
                         }
                       />
                     </TouchableOpacity>
-                    <Image
-                      source={{uri: Media.no_image}}
-                      style={{
-                        width: 150,
-                        height: 170,
-                        resizeMode: 'contain',
-                      }}
-                    />
+                    {item?.variant?.productImages?.length > 0 ? (
+                      <Image
+                        source={{uri: item?.variant?.productImages?.[0]?.image}}
+                        // source={{uri: Media.no_image}}
+                        style={{
+                          width: 150,
+                          height: 170,
+                          resizeMode: 'cover',
+                          borderRadius: 10,
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        source={{uri: Media.no_image}}
+                        style={{
+                          width: 150,
+                          height: 170,
+                          resizeMode: 'contain',
+                          borderRadius: 10,
+                        }}
+                      />
+                    )}
                     <Text
                       style={{
                         fontSize: 14,
@@ -496,7 +508,10 @@ const MyCart = ({}) => {
                         ) : (
                           <TouchableOpacity
                             onPress={() => {
-                              deleteCartData(item);
+                              setBottomData(item);
+                              setSaleBottomSheetVisible(
+                                !salebottomSheetVisible,
+                              );
                             }}
                             style={{
                               // flex: 1,

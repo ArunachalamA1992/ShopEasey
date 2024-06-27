@@ -16,8 +16,9 @@ import ItemCard from '../../Components/ItemCard';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {setDataCount} from '../../Redux';
 
 const {height} = Dimensions.get('screen');
 const ProductList = ({route}) => {
@@ -27,43 +28,16 @@ const ProductList = ({route}) => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  const {token} = userData;
+  const dispatch = useDispatch();
   const [CategoryData, setCategoryData] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(false);
   const [sub_cat_id, setSub_cat_id] = useState(0);
-
-  const handleCategory = async item => {
-    try {
-      if (currentLevel == false) {
-        setCurrentLevel(true);
-        setSelectedCategory(item);
-        const categories_data = await fetchData.sub_categories(
-          `${item.id}`,
-          token,
-        );
-        setCategoryData(categories_data?.data?.SubSubCategories);
-        setSub_cat_id(item?.id);
-        var sub_p_data = `category_id=${category_id}&sub_category_id=${item?.id}`;
-        const product_data = await fetchData.list_products(sub_p_data, token);
-        setProducts(product_data?.data);
-      } else {
-        setSelectedCategory(item);
-        // const categories_data = await fetchData.sub_sub_categories(
-        //   `${item.id}`,
-        //   token,
-        // );
-        // setCategoryData(categories_data?.data);
-        var sub_sub_p_data = `category_id=${category_id}&sub_category_id=${sub_cat_id}&sub_sub_category_id=${item?.id}`;
-        const product_data = await fetchData.list_products(
-          sub_sub_p_data,
-          token,
-        );
-        setProducts(product_data?.data);
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
+  const dataCount = useSelector(state => state.UserReducer.count);
+  const {wishlist, cart} = dataCount;
+  const [loadMore, setLoadMore] = useState(false);
+  const [Page, setPage] = useState(1);
+  const [endReached, setEndReached] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -71,7 +45,9 @@ const ProductList = ({route}) => {
       .then(() => setLoading(false))
       .catch(error => {
         setLoading(false);
+        console.log('Error loading data:', error);
       });
+    getCountData();
   }, [category_id]);
 
   const getData = async () => {
@@ -80,11 +56,86 @@ const ProductList = ({route}) => {
       const categories_data = await fetchData.categories(data, token);
       setCurrentLevel(false);
       setCategoryData(categories_data?.data?.sub_categories);
-      var p_data = `category_id=${category_id}`;
-      const product_data = await fetchData.list_products(p_data, token);
-      setProducts(product_data?.data);
+      loadInitialProducts(category_id);
     } catch (error) {
       console.log('error', error);
+    }
+  };
+
+  const loadInitialProducts = async (
+    catId,
+    subCatId = null,
+    subSubCatId = null,
+  ) => {
+    try {
+      setPage(1);
+      setEndReached(false);
+      let query = `category_id=${catId}`;
+      if (subCatId) query += `&sub_category_id=${subCatId}`;
+      if (subSubCatId) query += `&sub_sub_category_id=${subSubCatId}`;
+      const product_data = await fetchData.list_products(query, token);
+      setProducts(product_data?.data);
+    } catch (error) {
+      console.log('Error loading products:', error);
+    }
+  };
+
+  const getCountData = async () => {
+    try {
+      const getData = await fetchData.profile_data(``, token);
+      dispatch(
+        setDataCount({
+          wishlist: getData?.data?.wishlist_count,
+          cart: getData?.data?.cart_count,
+        }),
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const handleCategory = async item => {
+    try {
+      setSelectedCategory(item);
+      setCurrentLevel(currentLevel ? false : true);
+      setSub_cat_id(item?.id);
+      const categories_data = currentLevel
+        ? await fetchData.sub_sub_categories(`${item.id}`, token)
+        : await fetchData.sub_categories(`${item.id}`, token);
+      setCategoryData(categories_data?.data);
+      loadInitialProducts(
+        category_id,
+        currentLevel ? sub_cat_id : item.id,
+        currentLevel ? item.id : null,
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const loadMoreData = async () => {
+    if (loadMore || endReached) {
+      return;
+    }
+    setLoadMore(true);
+    try {
+      const nextPage = Page + 1;
+      let query = `category_id=${category_id}&page=${nextPage}`;
+      if (currentLevel) query += `&sub_category_id=${sub_cat_id}`;
+      if (selectedCategory?.id)
+        query += `&sub_sub_category_id=${selectedCategory?.id}`;
+      const response = await fetchData.list_products(query, token);
+      if (response?.data.length > 0) {
+        setPage(nextPage);
+        const updatedData = [...products, ...response?.data];
+        setProducts(updatedData);
+      } else {
+        setEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadMore(false);
     }
   };
 
@@ -92,9 +143,9 @@ const ProductList = ({route}) => {
     <View style={{flex: 1}}>
       <View style={styles.header}>
         <TouchableOpacity
-          style={{marginHorizontal: 5}}
+          style={{marginRight: 10}}
           onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={25} color={Color.white} />
+          <AntDesign name="arrowleft" size={30} color={Color.white} />
         </TouchableOpacity>
         <View style={styles.searchView}>
           <AntDesign name="search1" size={22} color={Color.cloudyGrey} />
@@ -104,21 +155,30 @@ const ProductList = ({route}) => {
             placeholderTextColor={Color.cloudyGrey}
           />
         </View>
-        {/* <TouchableOpacity style={{ marginHorizontal: 5 }}>
+        <TouchableOpacity
+          style={{marginRight: 10}}
+          onPress={() => {
+            navigation.navigate('WishListTab');
+          }}>
           <AntDesign name="hearto" size={22} color={Color.white} />
-        </TouchableOpacity> */}
-        <TouchableOpacity style={{marginHorizontal: 5, padding: 5}}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{marginRight: 10, padding: 5}}
+          onPress={() => {
+            navigation.navigate('MyCartTab');
+          }}>
           <Badge
             style={{
               position: 'absolute',
               zIndex: 1,
-              top: -10,
-              right: -10,
-              backgroundColor: Color.white,
-              color: Color.black,
+              top: -5,
+              right: -5,
+              backgroundColor: Color.red,
+              color: Color.white,
               fontFamily: Manrope.Bold,
+              fontSize: 12,
             }}>
-            {0}
+            {cart}
           </Badge>
           <Feather name="shopping-cart" size={22} color={Color.white} />
         </TouchableOpacity>
@@ -251,7 +311,7 @@ const ProductList = ({route}) => {
                 alignItems: 'center',
                 backgroundColor: Color.black,
                 padding: 10,
-                borderRadius: 5,
+                borderRadius: 50,
                 marginHorizontal: 10,
               }}>
               <Feather name="filter" size={16} color={Color.white} />
@@ -321,6 +381,10 @@ const ProductList = ({route}) => {
             renderItem={({item, index}) => {
               return <ItemCard item={item} navigation={navigation} />;
             }}
+            onEndReached={() => {
+              loadMoreData();
+            }}
+            onEndReachedThreshold={3}
             ListEmptyComponent={() => {
               return (
                 <View
@@ -359,8 +423,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchView: {
-    // flex: 1,
-    width: '75%',
+    flex: 1,
+    // width: '75%',
     backgroundColor: Color.white,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -368,6 +432,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 40,
     borderRadius: 50,
+    marginRight: 10,
   },
   searchInput: {
     width: '90%',

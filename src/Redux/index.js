@@ -7,3 +7,8 @@ export {
   setCountryCode,
   setDataCount,
 } from './user/UserAction';
+
+export {
+  setOrderCancelVisible,
+  setOrderSuccessVisible,
+} from './Order/OrderAction';

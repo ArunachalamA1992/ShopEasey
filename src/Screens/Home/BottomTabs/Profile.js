@@ -13,7 +13,7 @@ import {Manrope} from '../../../Global/FontFamily';
 import {Iconviewcomponent} from '../../../Components/Icontag';
 import {useNavigation} from '@react-navigation/native';
 import {Media} from '../../../Global/Media';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {setUserData} from '../../../Redux';
@@ -21,75 +21,456 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
-  console.log('Token ===========  :', token);
 
   const [loading, setLoading] = useState(false);
-  const [profileData, setProfileData] = useState('');
+  const [profileData, setProfileData] = useState({});
 
   useEffect(() => {
-    try {
-      // setLoading(true);
-      // getData().finally(() => setLoading(false));
-      setTimeout(() => {
-        getData();
-      }, 3000);
-    } catch (error) {
-      console.log('catch in Profile_View :', error);
-    }
+    setLoading(true);
+    getData().finally(() => {
+      setLoading(false);
+    });
   }, [token]);
 
   const getData = async () => {
     try {
       const profile = await fetchData.profile_data(``, token);
       setProfileData(profile.data);
+      setLoading(false);
     } catch (error) {
       console.log('error', error);
     }
   };
-  console.log('Profile ================ : ', profileData.profile);
 
   return (
     <View style={{flex: 1, backgroundColor: Color.white}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {loading ? (
-          <View>
+          <View style={{padding: 10}}>
             <SkeletonPlaceholder>
-              <SkeletonPlaceholder.Item style={{}}>
-                <SkeletonPlaceholder.Item width="100%" height={150} />
+              <SkeletonPlaceholder.Item
+                style={{flexDirection: 'row', alignItems: 'center'}}>
                 <SkeletonPlaceholder.Item
-                  width="100%"
-                  height={150}
-                  borderRadius={10}
-                  style={{marginTop: 10}}
+                  width={100}
+                  height={100}
+                  borderRadius={100}
+                  marginTop={10}
                 />
-                <SkeletonPlaceholder.Item
-                  width="100%"
-                  height={150}
-                  borderRadius={10}
-                  style={{marginTop: 10}}
-                />
-                <SkeletonPlaceholder.Item
-                  width="100%"
-                  height={150}
-                  borderRadius={10}
-                  style={{marginTop: 10}}
-                />
-                <SkeletonPlaceholder.Item
-                  width="100%"
-                  height={150}
-                  borderRadius={10}
-                  style={{marginTop: 10}}
-                />
-                <SkeletonPlaceholder.Item
-                  width="100%"
-                  height={150}
-                  borderRadius={10}
-                  style={{marginTop: 10}}
-                />
+                <SkeletonPlaceholder.Item style={{marginHorizontal: 10}}>
+                  <SkeletonPlaceholder.Item
+                    width={150}
+                    height={10}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <SkeletonPlaceholder.Item
+                    width={250}
+                    height={10}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
               </SkeletonPlaceholder.Item>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
+              <View>
+                <SkeletonPlaceholder.Item
+                  width={'100%'}
+                  height={1}
+                  borderRadius={100}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SkeletonPlaceholder.Item
+                    width={50}
+                    height={50}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                  <View style={{flex: 1}}>
+                    <SkeletonPlaceholder.Item
+                      width={150}
+                      height={20}
+                      borderRadius={10}
+                      marginTop={10}
+                      marginHorizontal={10}
+                    />
+                  </View>
+                  <SkeletonPlaceholder.Item
+                    width={30}
+                    height={30}
+                    borderRadius={100}
+                    marginTop={10}
+                  />
+                </SkeletonPlaceholder.Item>
+              </View>
             </SkeletonPlaceholder>
           </View>
         ) : (
@@ -122,7 +503,7 @@ const Profile = () => {
                   />
                 ) : (
                   <Image
-                    source={{uri: Media.profile_image}}
+                    source={{uri: Media.user}}
                     style={{
                       width: 100,
                       height: 100,
@@ -147,7 +528,9 @@ const Profile = () => {
                     letterSpacing: 0.5,
                   }}
                   numberOfLines={2}>
-                  {profileData.first_name + ' ' + profileData.last_name}
+                  {profileData.first_name && profileData.last_name
+                    ? profileData.first_name + ' ' + profileData.last_name
+                    : '--------'}
                 </Text>
                 <Text
                   style={{

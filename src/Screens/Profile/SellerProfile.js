@@ -9,15 +9,11 @@ import {
   Image,
   SafeAreaView,
   TouchableOpacity,
-  Platform,
-  Dimensions,
   LogBox,
   StatusBar,
   FlatList,
-  PermissionsAndroid,
-  Pressable,
   ImageBackground,
-  Modal,
+  ToastAndroid,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
@@ -25,17 +21,38 @@ import {Media} from '../../Global/Media';
 import CountdownTimer from '../../Components/CountdownTimer';
 import {scr_width} from '../../Utils/Dimensions';
 import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {products} from '../../Config/Content';
 import ItemCard from '../../Components/ItemCard';
 import {TextStroke} from '../../Utils/TextStroke';
+import moment from 'moment';
+import {useSelector} from 'react-redux';
 
 LogBox.ignoreAllLogs();
 
 // create a component
 const SellerProfile = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [netInfo_State, setNetinfo] = useState(true);
+
+  // console.log("data ============== : ", route.params);
+
+  const [vendor_id] = useState(route.params.data.vendor_id);
+  const [profile_image] = useState(route.params.data.profile);
+  const [firstName] = useState(route.params.data.first_name);
+  const [lastName] = useState(route.params.data.last_name);
+  const [mobileNumber] = useState(route.params.data.mobile);
+  const [emailAddress] = useState(route.params.data.email);
+  const [createDate] = useState(route.params.data.created_at);
+  const [followStatus] = useState(route.params.data.is_follow);
+  const [productCount] = useState(route.params.data.product_count);
+  const [followCount] = useState(route.params.data.follow_count);
+  const [ratings] = useState(route.params.data.rating);
+  const [socialLinks] = useState(route.params.data.social_links);
+
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
 
   const [defaultRating, setDefaultRating] = useState('4');
   const [visibleData, setVisibleData] = useState(products);
@@ -150,11 +167,68 @@ const SellerProfile = () => {
     // },
   ]);
 
+  const currentDate = moment();
+  const yourDate = moment(createDate);
+  const [resultDate, setResultDate] = useState(null);
+
+  useEffect(() => {
+    const daysAgo = currentDate.diff(yourDate, 'days');
+    const hoursAgo = currentDate.diff(yourDate, 'hours');
+    const minutesAgo = currentDate.diff(yourDate, 'minutes');
+
+    if (daysAgo === 0 && hoursAgo === 0 && minutesAgo === 0) {
+      setResultDate('Just now');
+    } else {
+      let result;
+
+      if (Math.abs(daysAgo) > 0) {
+        result = `${Math.abs(daysAgo)} day${
+          Math.abs(daysAgo) !== 1 ? 's' : ''
+        } ago`;
+      } else if (Math.abs(hoursAgo) > 0) {
+        result = `${Math.abs(hoursAgo)} hour${
+          Math.abs(hoursAgo) !== 1 ? 's' : ''
+        } ago`;
+      } else {
+        result = `${Math.abs(minutesAgo)} minute${
+          Math.abs(minutesAgo) !== 1 ? 's' : ''
+        } ago`;
+      }
+
+      setResultDate(result);
+    }
+  }, [currentDate, yourDate]);
+
   const handleRatingPress = item => {
     if (defaultRating === item) {
       setDefaultRating(null);
     } else {
       setDefaultRating(item);
+    }
+  };
+
+  const followStatusClick = async () => {
+    try {
+      // const myHeaders = new Headers();
+      // myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTk0Njk4MDgsImV4cCI6MTcxOTcyOTAwOH0.LRoLafMH5SboZ_Ny6mlVOQF37eH23EV9E2OYcxS7fjM");
+
+      // const formdata = new FormData();
+
+      // const requestOptions = {
+      //   method: "PUT",
+      //   headers: myHeaders,
+      //   body: formdata,
+      //   redirect: "follow"
+      // };
+
+      // fetch("http://192.168.0.178:5000/api/follow/1", requestOptions)
+      //   .then((response) => response.text())
+      //   .then((result) => console.log("1111111111111 ========= ", result))
+      //   .catch((error) => console.error(error));
+
+      ToastAndroid.show('Still progresss', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log('catch in followStatusClick : ', error);
     }
   };
 
@@ -184,21 +258,34 @@ const SellerProfile = () => {
                   }}>
                   <View style={{width: '95%', alignItems: 'center'}}>
                     <View style={{width: '95%', paddingVertical: 10}}>
-                      <Image
-                        source={{uri: Media.male_image}}
-                        style={{
-                          width: 60,
-                          height: 60,
-                          resizeMode: 'contain',
-                        }}
-                      />
+                      {profile_image != null ? (
+                        <Image
+                          source={{uri: profile_image}}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            resizeMode: 'contain',
+                            borderRadius: 100,
+                          }}
+                        />
+                      ) : (
+                        <Image
+                          source={{uri: Media.user}}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            resizeMode: 'contain',
+                            borderRadius: 100,
+                          }}
+                        />
+                      )}
                     </View>
                     <View
                       style={{
                         width: '95%',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        paddingVertical: 5,
+                        paddingVertical: 10,
                       }}>
                       <View
                         style={{
@@ -214,7 +301,29 @@ const SellerProfile = () => {
                               fontFamily: Manrope.SemiBold,
                               letterSpacing: 0.5,
                             }}>
-                            Shopeasey
+                            {firstName + ' ' + lastName}
+                          </Text>
+
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.lightBlack,
+                              fontFamily: Manrope.Medium,
+                              letterSpacing: 0.5,
+                              paddingVertical: 5,
+                            }}
+                            numberOfLines={2}>
+                            {emailAddress}
+                          </Text>
+
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.lightBlack,
+                              fontFamily: Manrope.Medium,
+                              letterSpacing: 0.5,
+                            }}>
+                            {mobileNumber}
                           </Text>
                         </View>
                         <View
@@ -231,7 +340,7 @@ const SellerProfile = () => {
                               fontFamily: Manrope.SemiBold,
                               letterSpacing: 0.5,
                             }}>
-                            1.2 k
+                            {followCount}
                             <Text
                               style={{
                                 fontSize: 12,
@@ -257,7 +366,7 @@ const SellerProfile = () => {
                               fontFamily: Manrope.SemiBold,
                               letterSpacing: 0.5,
                             }}>
-                            500 +
+                            {productCount}
                             <Text
                               style={{
                                 fontSize: 12,
@@ -277,23 +386,44 @@ const SellerProfile = () => {
                           justifyContent: 'flex-end',
                           alignItems: 'flex-end',
                         }}>
-                        <View
-                          style={{
-                            padding: 7,
-                            paddingHorizontal: 20,
-                            backgroundColor: Color.shop_green,
-                            borderRadius: 3,
-                          }}>
-                          <Text
+                        {followStatus == true ? (
+                          <View
                             style={{
-                              fontSize: 12,
-                              color: Color.white,
-                              fontFamily: Manrope.Medium,
-                              letterSpacing: 0.5,
+                              padding: 7,
+                              paddingHorizontal: 20,
+                              backgroundColor: Color.shop_green,
+                              borderRadius: 3,
                             }}>
-                            Following
-                          </Text>
-                        </View>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.white,
+                                fontFamily: Manrope.Medium,
+                                letterSpacing: 0.5,
+                              }}>
+                              Following
+                            </Text>
+                          </View>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => followStatusClick()}
+                            style={{
+                              padding: 7,
+                              paddingHorizontal: 20,
+                              backgroundColor: Color.shop_green,
+                              borderRadius: 3,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.white,
+                                fontFamily: Manrope.Medium,
+                                letterSpacing: 0.5,
+                              }}>
+                              Follow
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                       </View>
                     </View>
                     <View
@@ -327,7 +457,7 @@ const SellerProfile = () => {
                           fontFamily: Manrope.Medium,
                           marginHorizontal: 5,
                         }}>
-                        4
+                        {ratings}
                       </Text>
                     </View>
                   </View>
@@ -365,9 +495,15 @@ const SellerProfile = () => {
                         lineHeight: 22,
                         paddingVertical: 10,
                       }}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
+                      ShopEasey is one of the fast-growing authorized dealers,
+                      with our wings widespread in India, Singapore, and
+                      Malaysia. Presenting in simple verbs, ShopEasey is a
+                      one-stop shop for all customer requirements. ShopEasey
+                      aims to give customers in India, Singapore, and Malaysia a
+                      hassle-free and enjoyable shopping experience by offering
+                      a large selection of goods from top-tier brands & genuine
+                      handmade retailers. The brand focuses on delivering
+                      quality products to its consumers with reliable services.
                     </Text>
                   </View>
                   <View
@@ -402,7 +538,7 @@ const SellerProfile = () => {
                           letterSpacing: 0.5,
                         }}
                         numberOfLines={1}>
-                        5 Years ago
+                        {resultDate}
                       </Text>
                     </View>
                     <View
@@ -429,7 +565,7 @@ const SellerProfile = () => {
                           letterSpacing: 0.5,
                         }}
                         numberOfLines={1}>
-                        Total 200+ Products
+                        Total {productCount}+ Products
                       </Text>
                     </View>
                     <View
@@ -1119,7 +1255,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.softGrey,
-    alignItems: 'center',
   },
 });
 

@@ -49,9 +49,9 @@ const EditProfile = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const userData = route.params.profileData;
-  console.log('USER =========== :', userData.mobile);
   const rootuserData = useSelector(state => state.UserReducer.userData);
   var {token} = rootuserData;
+  console.log('USER =========== :', token);
 
   const [firstName, setfirstName] = useState(userData.first_name);
   const [lastName, setLastName] = useState(userData.last_name);
@@ -208,10 +208,7 @@ const EditProfile = () => {
           'requestOptions  ------------ ',
           JSON.stringify(requestOptions),
         );
-        fetch(
-          'http://13.202.107.102:5000/api/auth/user/update_profile',
-          requestOptions,
-        )
+        fetch(`${baseUrl}/api/auth/user/update_profile`, requestOptions)
           .then(response => response.json())
           .then(result => {
             console.log('Result ===========   ', result);

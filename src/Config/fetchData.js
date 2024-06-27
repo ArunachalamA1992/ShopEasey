@@ -83,4 +83,36 @@ export default {
     let url = api_name + 'address/state?' + data;
     return api.getMethod(url, token);
   },
+  postOrder: (data, token) => {
+    let url = api_name + 'orders';
+    return api.postMethod(url, data, token);
+  },
+  list_order: (data, token) => {
+    let url = api_name + 'orders/user?' + data;
+    return api.getMethod(url, token);
+  },
+  list_status: (data, token) => {
+    let url = api_name + 'orders/status';
+    return api.getMethod(url, token);
+  },
+  profile_data: (data, token) => {
+    let url = api_name + 'users/user/get';
+    return api.getMethod(url, token);
+  },
+  update_profile: (data, token) => {
+    let url = api_name + 'auth/user/update_profile';
+    return api.putMethod(url, data, token);
+  },
+  flash_Offers: (data, token) => {
+    let url = api_name + 'products/offer';
+    return api.getMethod(url, token);
+  },
+  seller_list: (data, token) => {
+    let url = api_name + 'follow/sellers';
+    return api.getMethod(url, token);
+  },
+  seller_follow_status: (data, token) => {
+    let url = api_name + 'follow/';
+    return api.postMethod(url, data, token);
+  },
 };
