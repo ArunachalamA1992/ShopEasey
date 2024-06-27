@@ -13,13 +13,14 @@ import Color from '../Global/Color';
 import {Manrope} from '../Global/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
 import {Media} from '../Global/Media';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import common_fn from '../Config/common_fn';
 import fetchData from '../Config/fetchData';
+import {setDataCount} from '../Redux';
 
 const ItemCard = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
-  const {item, navigation} = props;
+  const {item, navigation, getData} = props;
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   var discount = parseInt(
@@ -27,6 +28,7 @@ const ItemCard = props => {
       item?.variants?.[0]?.org_price) *
       100,
   );
+  const dispatch = useDispatch();
 
   const toggle_WishList = async single => {
     try {
@@ -35,11 +37,27 @@ const ItemCard = props => {
         variant_id: single?.variants[0]?.id,
       };
       const wishlist = await fetchData.toggle_wishlists(data, token);
-      console.log('wishlist-------------------', wishlist);
       if (wishlist?.status == true) {
+        common_fn.showToast(wishlist?.message);
+        getData();
+        getCountData();
       } else {
         common_fn.showToast(wishlist?.message);
       }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const getCountData = async () => {
+    try {
+      const getData = await fetchData.profile_data(``, token);
+      dispatch(
+        setDataCount({
+          wishlist: getData?.data?.wishlist_count,
+          cart: getData?.data?.cart_count,
+        }),
+      );
     } catch (error) {
       console.log('error', error);
     }
@@ -91,7 +109,7 @@ const ItemCard = props => {
             }}>
             <AntDesign
               name={item?.variants?.[0]?.is_wishlisted ? 'heart' : 'hearto'}
-              size={16}
+              size={18}
               color={Color.black}
             />
           </TouchableOpacity>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -22,6 +22,7 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import common_fn from '../../../Config/common_fn';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {setDataCount} from '../../../Redux';
+import {RefreshControl} from 'react-native-gesture-handler';
 
 const {height} = Dimensions.get('screen');
 
@@ -39,6 +40,7 @@ const MyCart = ({}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const dispatch = useDispatch();
+  const [refreshing, setRefreshing] = useState(false);
 
   const [maxRating, setMaxRating] = useState([
     {
@@ -78,6 +80,7 @@ const MyCart = ({}) => {
       if (wishlist?.status == true) {
         common_fn.showToast(wishlist?.message);
         getCartData();
+        getCountData();
       } else {
         common_fn.showToast(wishlist?.message);
       }
@@ -96,7 +99,12 @@ const MyCart = ({}) => {
       });
   }, [token]);
 
-  const getCartData = async () => {
+  const getCartData = useCallback(async (isRefreshing = false) => {
+    if (isRefreshing) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     try {
       const getCart = await fetchData.list_cart(``, token);
       setCartData(getCart?.data);
@@ -104,7 +112,18 @@ const MyCart = ({}) => {
       setAddressCount(getaddress?.count);
     } catch (error) {
       console.log('error', error);
+    } finally {
+      if (isRefreshing) {
+        setRefreshing(false);
+      } else {
+        setLoading(false);
+      }
     }
+  });
+
+  const handleRefresh = () => {
+    getCartData(true);
+    getCountData();
   };
 
   const updateCartData = async (id, status, quantity) => {
@@ -122,6 +141,7 @@ const MyCart = ({}) => {
       if (update_cart?.status == true) {
         common_fn.showToast(update_cart?.message);
         getCartData();
+        getCountData();
       } else {
         common_fn.showToast(update_cart?.message);
       }
@@ -611,6 +631,12 @@ const MyCart = ({}) => {
                 </View>
               );
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
+            }
             ListEmptyComponent={() => {
               return (
                 <View
@@ -679,17 +705,21 @@ const MyCart = ({}) => {
                 }}>
                 <TouchableOpacity
                   onPress={() => {
-                    addressData > 0
-                      ? CheckOut?.length > 0
-                        ? navigation.navigate('OrderConfirmation', {CheckOut})
-                        : common_fn.showToast(
-                            'Please Select Atlieast one product to checkbox',
-                          )
-                      : navigation.navigate('AddAddress', {
+                    if (CheckOut?.length > 0) {
+                      if (addressData > 0) {
+                        navigation.navigate('OrderConfirmation', {CheckOut});
+                      } else {
+                        navigation.navigate('AddAddress', {
                           item: {},
                           CheckOut: CheckOut,
                           status: 'ADD',
                         });
+                      }
+                    } else {
+                      common_fn.showToast(
+                        'Please select at least one product to checkout',
+                      );
+                    }
                   }}
                   style={{
                     width: '100%',

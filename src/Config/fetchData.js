@@ -60,7 +60,7 @@ export default {
     return api.deleteMethod(url, token);
   },
   toggle_wishlists: (data, token) => {
-    let url = api_name + 'wishlists';
+    let url = api_name + 'wishlists/toggle';
     return api.postMethod(url, data, token);
   },
   list_wishlist: (data, token) => {

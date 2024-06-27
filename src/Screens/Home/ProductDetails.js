@@ -1812,7 +1812,13 @@ const ProductDetails = ({navigation, route}) => {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={({item, index}) => {
-                      return <ItemCard item={item} navigation={navigation} />;
+                      return (
+                        <ItemCard
+                          item={item}
+                          navigation={navigation}
+                          getData={getData}
+                        />
+                      );
                     }}
                   />
                 </View>
@@ -1839,7 +1845,13 @@ const ProductDetails = ({navigation, route}) => {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={({item, index}) => {
-                      return <ItemCard item={item} navigation={navigation} />;
+                      return (
+                        <ItemCard
+                          item={item}
+                          navigation={navigation}
+                          getData={getData}
+                        />
+                      );
                     }}
                   />
                 </View>

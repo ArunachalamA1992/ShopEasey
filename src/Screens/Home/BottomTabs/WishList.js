@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   ImageBackground,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,7 +12,7 @@ import {
 import Color from '../../../Global/Color';
 import {Manrope} from '../../../Global/FontFamily';
 import fetchData from '../../../Config/fetchData';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import ItemCard from '../../../Components/ItemCard';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import common_fn from '../../../Config/common_fn';
@@ -20,6 +21,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {Media} from '../../../Global/Media';
+import {setDataCount} from '../../../Redux';
 
 const {height} = Dimensions.get('screen');
 const WishList = ({navigation}) => {
@@ -27,6 +29,8 @@ const WishList = ({navigation}) => {
   const [WishlistData, setWishlistData] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
+  const dispatch = useDispatch();
+  const [refreshing, setRefreshing] = useState(false);
 
   const countryCode = useSelector(state => state.UserReducer.country);
 
@@ -39,30 +43,79 @@ const WishList = ({navigation}) => {
       });
   }, [token]);
 
-  const getWishlistData = async () => {
-    try {
-      const getWislist = await fetchData.list_wishlist(``, token);
-      console.log('getWislist?.data', getWislist?.data);
-      setWishlistData(getWislist?.data);
-    } catch (error) {
-      console.log('error', error);
+  const getWishlistData = useCallback(
+    async (isRefreshing = false) => {
+      if (isRefreshing) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
+      console.log('Fetching wishlist data with token:', token);
+      try {
+        const getWishlist = await fetchData.list_wishlist('', token);
+        console.log('Wishlist data received:-------------------', getWishlist);
+        if (getWishlist?.status == true) {
+          setWishlistData(getWishlist.data);
+        }
+      } catch (error) {
+        console.log('Error fetching wishlist data:', error);
+      } finally {
+        if (isRefreshing) {
+          setRefreshing(false);
+        } else {
+          setLoading(false);
+        }
+      }
+    },
+    [token],
+  );
+  useEffect(() => {
+    if (token) {
+      console.log('Token is present, fetching wishlist data...');
+      getWishlistData();
+    } else {
+      console.log('Token is not present, skipping data fetch.');
     }
+  }, [getWishlistData, token]);
+
+  const handleRefresh = () => {
+    getWishlistData(true);
+    getCountData();
   };
 
-  const toggle_WishList = async single => {
+  const toggleWishlist = async single => {
+    console.log('Toggling wishlist for product:', single?.product?.id);
     try {
-      var data = {
+      const data = {
         product_id: single?.product?.id,
         variant_id: single?.variant?.id,
       };
       const wishlist = await fetchData.toggle_wishlists(data, token);
-      console.log('wishlist-------------------', wishlist);
-      if (wishlist?.status == true) {
-        common_fn.showToast(wishlist?.message);
+      console.log('Wishlist toggle response:', wishlist);
+      common_fn.showToast(wishlist?.message);
+      if (wishlist?.status === true) {
+        handleRefresh();
         getWishlistData();
-      } else {
-        common_fn.showToast(wishlist?.message);
+        getCountData();
       }
+    } catch (error) {
+      console.log('Error toggling wishlist:', error);
+    }
+  };
+
+  useEffect(() => {
+    getCountData();
+  }, [token, getCountData, userData]);
+
+  const getCountData = async () => {
+    try {
+      const getData = await fetchData.profile_data(``, token);
+      dispatch(
+        setDataCount({
+          wishlist: getData?.data?.wishlist_count,
+          cart: getData?.data?.cart_count,
+        }),
+      );
     } catch (error) {
       console.log('error', error);
     }
@@ -169,8 +222,8 @@ const WishList = ({navigation}) => {
                   style={styles.Productimage}
                   source={{
                     uri:
-                      item?.variant?.productImages?.length > 0
-                        ? item?.variant?.productImages?.image
+                      item?.variants?.[0]?.productImages?.length > 0
+                        ? item?.variants?.[0]?.productImages?.[0]?.image
                         : Media.no_image,
                   }}
                   resizeMode="cover">
@@ -191,7 +244,7 @@ const WishList = ({navigation}) => {
                     <TouchableOpacity
                       onPress={() => {
                         if (token != undefined) {
-                          toggle_WishList(item);
+                          toggleWishlist(item);
                         } else {
                           navigation.navigate('Auth');
                         }
@@ -283,6 +336,29 @@ const WishList = ({navigation}) => {
                   </View>
                 </View>
               </TouchableOpacity>
+            );
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+          ListEmptyComponent={() => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  height: height / 1.5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Manrope.SemiBold,
+                    fontSize: 14,
+                    color: Color.black,
+                  }}>
+                  No Wishlist
+                </Text>
+              </View>
             );
           }}
         />

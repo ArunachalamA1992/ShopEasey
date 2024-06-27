@@ -57,23 +57,23 @@ const OnboardTwo = () => {
             Shopeasey.
           </Text>
         </View>
-        <View style={{alignItems: 'center'}}>
+        <View style={{alignItems: 'center', padding: 15}}>
           <View
             style={{
-              width: '90%',
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
             <View
               style={{
-                width: '40%',
+                width: '50%',
                 flexDirection: 'row',
                 backgroundColor: '#F0F9FB',
                 borderRadius: 5,
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 10,
+                marginHorizontal: 5,
               }}>
               <Image
                 source={{uri: Media.coupon_icon}}
@@ -84,7 +84,6 @@ const OnboardTwo = () => {
                   fontSize: 14,
                   color: Color.black,
                   fontFamily: Manrope.SemiBold,
-                  letterSpacing: 0.5,
                   lineHeight: 22,
                   paddingHorizontal: 10,
                 }}>
@@ -93,13 +92,14 @@ const OnboardTwo = () => {
             </View>
             <View
               style={{
-                width: '40%',
+                width: '50%',
                 flexDirection: 'row',
                 backgroundColor: '#F0F9FB',
                 borderRadius: 5,
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 10,
+                marginHorizontal: 5,
               }}>
               <Image
                 source={{uri: Media.voucher_icon}}

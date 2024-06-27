@@ -170,7 +170,7 @@ const HomeScreen = () => {
   useEffect(() => {
     setVisibleData(products.slice(0, 4));
     setShowLoadMore(products.length > 4);
-  }, [products]);
+  }, []);
 
   const loadMoreItems = () => {
     const currentLength = visibleData.length;
@@ -274,13 +274,16 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getUserData();
-    getFlashDeals();
     setLoading(true);
     getData()
       .then(() => setLoading(false))
       .catch(error => {
         setLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    getFlashDeals();
   }, []);
 
   const getUserData = async () => {
@@ -317,7 +320,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getCountData();
-  }, [token]);
+  }, [token, getCountData, userData]);
 
   const getCountData = async () => {
     try {
@@ -800,62 +803,8 @@ const HomeScreen = () => {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         marginTop: 10,
-                        padding: 10,
+                        // padding: 10,
                       }}>
-                      {/* <FlatList
-                    data={categoryData?.slice(0, 7)}
-                    numColumns={4}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({item, index}) => {
-                      return (
-                        <TouchableOpacity
-                          key={index}
-                          onPress={() => {
-                            navigation.navigate('ProductList', {
-                              category_id: item?.id,
-                            });
-                          }}
-                          style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginHorizontal: 10,
-                            marginVertical: 10,
-                          }}>
-                          <View style={{alignItems: 'center'}}>
-                            <View
-                              style={{
-                                backgroundColor: '#E6F5F8',
-                                borderRadius: 100,
-                                width: 50,
-                                height: 50,
-                              }}>
-                              <Image
-                                source={{uri: item?.file}}
-                                style={{
-                                  width: 50,
-                                  height: 50,
-                                  resizeMode: 'contain',
-                                  borderRadius: 100,
-                                }}
-                              />
-                            </View>
-                            <Text
-                              style={{
-                                textAlign: 'center',
-                                fontSize: 12,
-                                color: Color.black,
-                                font: Manrope.SemiBold,
-                                paddingVertical: 5,
-                              }}>
-                              {item?.category_name
-                                .substring(0, 10)
-                                .concat('...')}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    }}
-                  /> */}
                       {categoryData?.slice(0, 7)?.map((item, index) => {
                         return (
                           <TouchableOpacity
@@ -868,7 +817,8 @@ const HomeScreen = () => {
                             style={{
                               justifyContent: 'center',
                               alignItems: 'center',
-                              marginHorizontal: 10,
+                              // marginHorizontal: 10,
+                              width: '25%',
                               marginVertical: 10,
                             }}>
                             <View style={{alignItems: 'center'}}>
@@ -912,8 +862,9 @@ const HomeScreen = () => {
                         style={{
                           justifyContent: 'center',
                           alignItems: 'center',
-                          marginHorizontal: 10,
+                          // marginHorizontal: 10,
                           marginVertical: 10,
+                          width: '25%',
                         }}>
                         <View style={{alignItems: 'center'}}>
                           <View
@@ -1522,7 +1473,11 @@ const HomeScreen = () => {
                         showsVerticalScrollIndicator={false}
                         renderItem={({item, index}) => {
                           return (
-                            <ItemCard item={item} navigation={navigation} />
+                            <ItemCard
+                              item={item}
+                              navigation={navigation}
+                              getData={getFlashDeals}
+                            />
                           );
                         }}
                         onEndReached={() => {
