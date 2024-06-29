@@ -103,7 +103,7 @@ export default class ImageSlider extends Component {
                   borderRadius: 50,
                   position: 'absolute',
                   left: 20,
-                  top: 100,
+                  top: 140,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
@@ -119,7 +119,7 @@ export default class ImageSlider extends Component {
                   borderRadius: 50,
                   position: 'absolute',
                   right: 20,
-                  top: 100,
+                  top: 140,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>

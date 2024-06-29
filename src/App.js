@@ -205,16 +205,6 @@ const MainApp = () => {
           })}
         />
         <Stack.Screen
-          name="ProductList"
-          component={ProductList}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ProductDetails"
-          component={ProductDetails}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
           name="category"
           component={CategoryScreen}
           options={({navigation, route}) => ({
@@ -233,6 +223,16 @@ const MainApp = () => {
               </View>
             ),
           })}
+        />
+        <Stack.Screen
+          name="ProductList"
+          component={ProductList}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ProductDetails"
+          component={ProductDetails}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="Search"

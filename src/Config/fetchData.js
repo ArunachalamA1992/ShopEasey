@@ -39,6 +39,10 @@ export default {
     let url = api_name + 'products?' + data;
     return api.getMethod(url, token);
   },
+  single_property: (data, token) => {
+    let url = api_name + 'products/get/' + data;
+    return api.getMethod(url, token);
+  },
   upload_assets: (data, token) => {
     let url = api_name + 'common/upload_assets';
     return api.postMethod(url, data, token);
@@ -108,11 +112,15 @@ export default {
     return api.getMethod(url, token);
   },
   seller_list: (data, token) => {
-    let url = api_name + 'follow/sellers';
+    let url = api_name + 'follow/sellers?' + data;
     return api.getMethod(url, token);
   },
   seller_follow_status: (data, token) => {
     let url = api_name + 'follow/';
     return api.postMethod(url, data, token);
+  },
+  get_banner: (data, token) => {
+    let url = api_name + 'banner/mobile?' + data;
+    return api.getMethod(url, token);
   },
 };

@@ -24,7 +24,7 @@ import ImageView from '../../Components/imageView';
 import {Media} from '../../Global/Media';
 import moment from 'moment';
 import {products} from '../../Config/Content';
-import ItemCard from '../../Components/ItemCard';
+import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
 import {scr_height, scr_width} from '../../Utils/Dimensions';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
@@ -33,8 +33,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import common_fn from '../../Config/common_fn';
 import {setDataCount} from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {useNavigation} from '@react-navigation/native';
 
-const ProductDetails = ({navigation, route}) => {
+const ProductDetails = ({route}) => {
+  const navigation = useNavigation();
   const [id] = useState(route?.params?.id);
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -42,6 +44,7 @@ const ProductDetails = ({navigation, route}) => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
+  const [topPicks, setTopPicks] = useState([]);
 
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -195,9 +198,12 @@ const ProductDetails = ({navigation, route}) => {
 
   const getData = async () => {
     try {
-      var p_data = `id=${id}`;
-      const product_data = await fetchData.list_products(p_data, token);
-      setSingleData(product_data?.data?.[0]);
+      var p_data = `${id}`;
+      const product_data = await fetchData.single_property(p_data, token);
+      setSingleData(product_data?.data);
+      var top_picks_data = `project=top-picks`;
+      const top_picks = await fetchData.list_products(top_picks_data, token);
+      setTopPicks(top_picks?.data);
       setLoading(false);
     } catch (error) {
       console.log('error', error);
@@ -549,7 +555,11 @@ const ProductDetails = ({navigation, route}) => {
                         : 'hearto'
                     }
                     size={20}
-                    color={Color.black}
+                    color={
+                      singleData?.variants?.[0]?.is_wishlisted
+                        ? Color.red
+                        : Color.black
+                    }
                   />
                 </TouchableOpacity>
                 {singleData?.variants?.[0]?.productImages?.length > 0 ? (
@@ -1101,20 +1111,17 @@ const ProductDetails = ({navigation, route}) => {
                 )}
                 <View
                   style={{
-                    width: '100%',
                     backgroundColor: '#F0F9FB',
                     padding: 10,
                   }}>
                   <View
                     style={{
-                      width: '100%',
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                     }}>
                     <View
                       style={{
-                        flex: 1.5,
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}>
@@ -1144,7 +1151,7 @@ const ProductDetails = ({navigation, route}) => {
                     </View>
                     <View
                       style={{
-                        flex: 3,
+                        flex: 1,
                         justifyContent: 'center',
                         alignItems: 'flex-start',
                       }}>
@@ -1210,7 +1217,9 @@ const ProductDetails = ({navigation, route}) => {
                         <Button
                           mode="contained"
                           onPress={() => {
-                            navigation.replace('SellerProfile');
+                            navigation.navigate('SellerProfile', {
+                              vendor_id: singleData?.vendor?.id,
+                            });
                           }}
                           style={{
                             backgroundColor: Color.primary,
@@ -1226,7 +1235,6 @@ const ProductDetails = ({navigation, route}) => {
                           textColor={Color.white}>
                           View Shop
                         </Button>
-
                         <Button
                           mode="contained"
                           onPress={() => {}}
@@ -1245,7 +1253,7 @@ const ProductDetails = ({navigation, route}) => {
                   </View>
                 </View>
 
-                <View
+                {/* <View
                   style={{
                     width: '95%',
                     backgroundColor: Color.white,
@@ -1507,12 +1515,10 @@ const ProductDetails = ({navigation, route}) => {
                       </Text>
                     </View>
                   </View>
-                </View>
+                </View> */}
 
                 <View
                   style={{
-                    width: '95%',
-                    backgroundColor: Color.white,
                     padding: 10,
                   }}>
                   <Text
@@ -1520,7 +1526,6 @@ const ProductDetails = ({navigation, route}) => {
                       fontSize: 16,
                       color: Color.black,
                       fontFamily: Manrope.SemiBold,
-                      letterSpacing: 0.5,
                     }}>
                     Product Description
                   </Text>
@@ -1558,14 +1563,12 @@ const ProductDetails = ({navigation, route}) => {
               </Text> */}
 
                   <RenderHtml
-                    contentWidth={300}
+                    contentWidth={'100%'}
                     source={{html: singleData?.description}}
                   />
                 </View>
                 <View
                   style={{
-                    width: '95%',
-                    backgroundColor: Color.white,
                     padding: 10,
                     marginTop: 10,
                   }}>
@@ -1783,12 +1786,14 @@ const ProductDetails = ({navigation, route}) => {
                 </View>
                 <View
                   style={{
-                    width: '95%',
-                    alignItems: 'center',
-                    backgroundColor: Color.white,
                     padding: 10,
                   }}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginVertical: 10,
+                    }}>
                     <Text
                       style={{
                         flex: 1,
@@ -1808,15 +1813,14 @@ const ProductDetails = ({navigation, route}) => {
                     </Text>
                   </View>
                   <FlatList
-                    data={products}
+                    data={topPicks}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={({item, index}) => {
                       return (
-                        <ItemCard
+                        <ItemCardHorizontal
                           item={item}
                           navigation={navigation}
-                          getData={getData}
                         />
                       );
                     }}
@@ -1824,16 +1828,12 @@ const ProductDetails = ({navigation, route}) => {
                 </View>
                 <View
                   style={{
-                    width: '95%',
-                    alignItems: 'center',
-                    backgroundColor: Color.white,
                     padding: 10,
                     marginBottom: 10,
                   }}>
                   <Text
                     style={{
                       flex: 1,
-                      width: '95%',
                       fontSize: 16,
                       color: Color.black,
                       fontFamily: Manrope.Bold,
@@ -1841,15 +1841,14 @@ const ProductDetails = ({navigation, route}) => {
                     YOU MAY ALSO LIKE
                   </Text>
                   <FlatList
-                    data={products}
+                    data={topPicks}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={({item, index}) => {
                       return (
-                        <ItemCard
+                        <ItemCardHorizontal
                           item={item}
                           navigation={navigation}
-                          getData={getData}
                         />
                       );
                     }}

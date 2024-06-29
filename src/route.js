@@ -31,6 +31,8 @@ import FollowingSellers from './Screens/Profile/FollowingSellers';
 import SellerProfile from './Screens/Profile/SellerProfile';
 import {setDataCount} from './Redux';
 import fetchData from './Config/fetchData';
+import ProductList from './Screens/Home/ProductList';
+import ProductDetails from './Screens/Home/ProductDetails';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,15 +44,16 @@ export const HomeStack = () => {
         name="Home"
         component={HomeScreen}
         options={{headerShown: false}}
-        // options={({ navigation }) => ({
-        //   // headerTitle: props => <LogoTitle {...props} />,
-        //   headerTitleAlign: 'left',
-        //   headerTintColor: Color.white,
-        //   headerStyle: { backgroundColor: Color.white, elevation: 1 },
-        //   headerLeft: () => (
-        //     <NavigationDrawerStructure navigation={navigation} />
-        //   ),
-        // })}
+      />
+      <Stack.Screen
+        name="ProductList"
+        component={ProductList}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ProductDetails"
+        component={ProductDetails}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="AboutUs"
@@ -261,32 +264,8 @@ export const MyCartStack = () => {
               />
             </View>
           ),
-          // headerRight: () => (
-          //   <TouchableOpacity
-          //     style={{ right: 10 }}
-          //     onPress={() => {
-          //       navigation.navigate('Notification');
-          //     }}>
-          //     <Badge
-          //       badgeStyle={{
-          //         backgroundColor: Color.primary,
-          //         position: 'absolute',
-          //         right: 0,
-          //         zIndex: 1,
-          //       }}>
-          //       {notificationCount}
-          //     </Badge>
-          //     <Iconviewcomponent
-          //       Icontag={'Ionicons'}
-          //       iconname={'notifications-outline'}
-          //       icon_size={26}
-          //       icon_color={Color.black}
-          //     />
-          //   </TouchableOpacity>
-          // ),
         })}
       />
-
       <Stack.Screen
         name="OrderConfirmation"
         component={OrderConfirmation}

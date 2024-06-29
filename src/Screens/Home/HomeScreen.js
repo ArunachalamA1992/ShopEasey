@@ -167,11 +167,6 @@ const HomeScreen = () => {
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
   const [showLoadMore, setShowLoadMore] = useState(products.length > 4);
 
-  useEffect(() => {
-    setVisibleData(products.slice(0, 4));
-    setShowLoadMore(products.length > 4);
-  }, []);
-
   const loadMoreItems = () => {
     const currentLength = visibleData.length;
     const nextBatch = products.slice(currentLength, currentLength + 8);
@@ -304,6 +299,8 @@ const HomeScreen = () => {
       var data = `project=offer`;
       const get_products = await fetchData.list_products(data, token);
       setProducts(get_products?.data);
+      setVisibleData(get_products?.data?.slice(0, 4));
+      setShowLoadMore(get_products?.data?.length > 4);
     } catch (error) {
       console.log('error', error);
     }
@@ -313,6 +310,9 @@ const HomeScreen = () => {
     try {
       const categories_data = await fetchData.categories(``, token);
       setCategoryData(categories_data?.data);
+      // var banner_data = `seller=home_page`;
+      // const getBannerData = await fetchData.get_banner(banner_data, token);
+      // setBannerData(getBannerData?.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -349,6 +349,8 @@ const HomeScreen = () => {
         setPage(nextPage);
         const updatedData = [...products, ...response?.data];
         setProducts(updatedData);
+        // setVisibleData(updatedData?.slice(0, 4));
+        // setShowLoadMore(updatedData?.length > 4);
       } else {
         setEndReached(true);
       }
@@ -358,6 +360,7 @@ const HomeScreen = () => {
       setLoadMore(false);
     }
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'dark-content'} />
@@ -1473,11 +1476,7 @@ const HomeScreen = () => {
                         showsVerticalScrollIndicator={false}
                         renderItem={({item, index}) => {
                           return (
-                            <ItemCard
-                              item={item}
-                              navigation={navigation}
-                              getData={getFlashDeals}
-                            />
+                            <ItemCard item={item} navigation={navigation} />
                           );
                         }}
                         onEndReached={() => {

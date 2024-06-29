@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     fontFamily: Manrope.Medium,
   },
   resendOtp: {
-    color: Color.red,
+    color: Color.primary,
     fontSize: 14,
     fontFamily: Manrope.SemiBold,
     textDecorationLine: 'underline',

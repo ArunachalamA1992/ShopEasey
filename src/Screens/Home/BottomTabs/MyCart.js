@@ -81,6 +81,7 @@ const MyCart = ({}) => {
         common_fn.showToast(wishlist?.message);
         getCartData();
         getCountData();
+        setSaleBottomSheetVisible(false);
       } else {
         common_fn.showToast(wishlist?.message);
       }

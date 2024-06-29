@@ -123,7 +123,7 @@ const EditProfile = () => {
       const isCameraPermitted = await requestCameraPermission();
       if (isCameraPermitted) {
         launchCamera(options, async response => {
-          setProfileImage(response?.assets);
+          setProfileImage(response?.assets[0]);
           // await uploadProfileImage();
         });
       } else {
@@ -144,7 +144,7 @@ const EditProfile = () => {
         selectionLimit: 0,
       };
       launchImageLibrary(options, async response => {
-        setProfileImage(response?.assets[0].uri);
+        setProfileImage(response?.assets[0]);
         // await uploadProfileImage();
         setSaleBottomSheetVisible(false);
       });

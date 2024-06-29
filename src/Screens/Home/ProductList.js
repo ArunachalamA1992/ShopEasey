@@ -379,13 +379,7 @@ const ProductList = ({route}) => {
             numColumns={2}
             showsVerticalScrollIndicator={false}
             renderItem={({item, index}) => {
-              return (
-                <ItemCard
-                  item={item}
-                  navigation={navigation}
-                  getData={getData}
-                />
-              );
+              return <ItemCard item={item} navigation={navigation} />;
             }}
             onEndReached={() => {
               loadMoreData();

@@ -211,131 +211,134 @@ const WishList = ({navigation}) => {
                 item?.variant?.org_price) *
                 100,
             );
-
             return (
-              <TouchableOpacity
-                style={styles.product}
-                onPress={() => {
-                  navigation.replace('ProductDetails', {id: item?.id});
-                }}>
-                <ImageBackground
-                  style={styles.Productimage}
-                  source={{
-                    uri:
-                      item?.variants?.[0]?.productImages?.length > 0
-                        ? item?.variants?.[0]?.productImages?.[0]?.image
-                        : Media.no_image,
-                  }}
-                  resizeMode="cover">
-                  <View style={styles.imageTopView}>
-                    {discount > 0 ? (
-                      <View
+              <View style={{width: '50%'}}>
+                <TouchableOpacity
+                  style={styles.product}
+                  onPress={() => {
+                    navigation.replace('ProductDetails', {id: item?.id});
+                  }}>
+                  <ImageBackground
+                    style={styles.Productimage}
+                    source={{
+                      uri:
+                        item?.variants?.[0]?.productImages?.length > 0
+                          ? item?.variants?.[0]?.productImages?.[0]?.image
+                          : Media.no_image,
+                    }}
+                    resizeMode="cover">
+                    <View style={styles.imageTopView}>
+                      {discount > 0 ? (
+                        <View
+                          style={{
+                            backgroundColor: Color.lightYellow,
+                            borderRadius: 5,
+                            paddingHorizontal: 10,
+                            padding: 3,
+                          }}>
+                          <Text style={styles.offerText}>{discount}% off</Text>
+                        </View>
+                      ) : (
+                        <View style={{flex: 1}} />
+                      )}
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (token != undefined) {
+                            toggleWishlist(item);
+                          } else {
+                            navigation.navigate('Auth');
+                          }
+                        }}
                         style={{
-                          backgroundColor: Color.lightYellow,
-                          borderRadius: 5,
-                          paddingHorizontal: 10,
-                          padding: 3,
+                          backgroundColor: '#FFFFFF80',
+                          width: 25,
+                          height: 25,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 100,
                         }}>
-                        <Text style={styles.offerText}>{discount}% off</Text>
-                      </View>
-                    ) : (
-                      <View style={{flex: 1}} />
-                    )}
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (token != undefined) {
-                          toggleWishlist(item);
-                        } else {
-                          navigation.navigate('Auth');
-                        }
-                      }}
-                      style={{
-                        backgroundColor: '#FFFFFF80',
-                        width: 25,
-                        height: 25,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 100,
-                      }}>
-                      <AntDesign name="heart" size={16} color={Color.black} />
-                    </TouchableOpacity>
-                  </View>
-                  <LinearGradient
-                    style={styles.locationView}
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 0}}
-                    colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
-                    <Octicons name="location" size={15} color={Color.white} />
-                    <Text style={styles.locationText}>{item?.location}</Text>
-                  </LinearGradient>
-                </ImageBackground>
-                <View style={styles.contentView}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text
-                      style={{
-                        flex: 1,
-                        color: Color.cloudyGrey,
-                        fontSize: 14,
-                        fontFamily: Manrope.Medium,
-                      }}>
-                      {item?.type} - {item?.product?.category?.category_name}
-                    </Text>
-                    <Text
-                      style={{
-                        color: Color.red,
-                        fontSize: 11,
-                        fontFamily: Manrope.Medium,
-                      }}>
-                      Sold {item?.variant?.sold} / {item?.variant?.stock}
-                    </Text>
-                  </View>
-
-                  <Text style={styles.productName} numberOfLines={1}>
-                    {item?.product?.product_name}
-                  </Text>
-                  <View
-                    style={{
-                      width: '36%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={styles.productDiscountPrice} numberOfLines={1}>
-                      {countryCode?.symbol}
-                      {item?.variant?.price}
-                    </Text>
-                    <Text style={styles.productPrice} numberOfLines={1}>
-                      {countryCode?.symbol}
-                      {item?.variant?.org_price}
-                    </Text>
-                  </View>
-                  <View style={styles.productRatingView}>
-                    <FontAwesome
-                      name="star"
-                      size={12}
-                      color={Color.lightYellow}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: Manrope.Bold,
-                        fontSize: 12,
-                        paddingHorizontal: 5,
-                        color: Color.black,
-                      }}>
-                      {item?.rating}
+                        <AntDesign name="heart" size={16} color={Color.red} />
+                      </TouchableOpacity>
+                    </View>
+                    <LinearGradient
+                      style={styles.locationView}
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
+                      colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
+                      <Octicons name="location" size={15} color={Color.white} />
+                      <Text style={styles.locationText}>{item?.location}</Text>
+                    </LinearGradient>
+                  </ImageBackground>
+                  <View style={styles.contentView}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
                         style={{
-                          fontFamily: Manrope.SemiBold,
-                          fontSize: 10,
+                          flex: 1,
                           color: Color.cloudyGrey,
-                          letterSpacing: 0.5,
+                          fontSize: 14,
+                          fontFamily: Manrope.Medium,
                         }}>
-                        {' '}
-                        ({item?.shop?.reviews} Reviews)
+                        {item?.type} - {item?.product?.category?.category_name}
                       </Text>
+                      <Text
+                        style={{
+                          color: Color.red,
+                          fontSize: 11,
+                          fontFamily: Manrope.Medium,
+                        }}>
+                        Sold {item?.variant?.sold} / {item?.variant?.stock}
+                      </Text>
+                    </View>
+
+                    <Text style={styles.productName} numberOfLines={1}>
+                      {item?.product?.product_name}
                     </Text>
+                    <View
+                      style={{
+                        width: '36%',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={styles.productDiscountPrice}
+                        numberOfLines={1}>
+                        {countryCode?.symbol}
+                        {item?.variant?.price}
+                      </Text>
+                      <Text style={styles.productPrice} numberOfLines={1}>
+                        {countryCode?.symbol}
+                        {item?.variant?.org_price}
+                      </Text>
+                    </View>
+                    <View style={styles.productRatingView}>
+                      <FontAwesome
+                        name="star"
+                        size={12}
+                        color={Color.lightYellow}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: Manrope.Bold,
+                          fontSize: 12,
+                          paddingHorizontal: 5,
+                          color: Color.black,
+                        }}>
+                        {item?.rating}
+                        <Text
+                          style={{
+                            fontFamily: Manrope.SemiBold,
+                            fontSize: 10,
+                            color: Color.cloudyGrey,
+                            letterSpacing: 0.5,
+                          }}>
+                          {' '}
+                          ({item?.shop?.reviews} Reviews)
+                        </Text>
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             );
           }}
           refreshControl={
