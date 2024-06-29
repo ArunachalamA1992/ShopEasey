@@ -42,7 +42,7 @@ const PostCompletedModal = ({}) => {
             style={styles.closeModal}
             onPress={() => {
               if (orderSuccessModal) {
-                dispatch(setOrderCancelVisible(false));
+                dispatch(setOrderSuccessVisible(false));
               } else {
                 dispatch(setOrderCancelVisible(false));
               }
@@ -65,7 +65,7 @@ const PostCompletedModal = ({}) => {
             onPress={() => {
               if (orderSuccessModal) {
                 navigation.navigate('MyOrders');
-                dispatch(setOrderCancelVisible(false));
+                dispatch(setOrderSuccessVisible(false));
               } else {
                 dispatch(setOrderCancelVisible(false));
               }

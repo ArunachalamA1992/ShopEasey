@@ -188,7 +188,13 @@ const OnboardScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.Image source={{uri: Media.onboard_main}} style={styles.image} />
+      <Animated.Image
+        // source={{
+        //   uri: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_shop.png',
+        // }}
+        source={require('../../assets/images/onboard_shop.png')}
+        style={styles.image}
+      />
 
       <View
         style={{

@@ -92,7 +92,7 @@ export default {
     return api.postMethod(url, data, token);
   },
   list_order: (data, token) => {
-    let url = api_name + 'orders/user?' + data;
+    let url = api_name + 'orders?' + data;
     return api.getMethod(url, token);
   },
   list_status: (data, token) => {
@@ -115,12 +115,20 @@ export default {
     let url = api_name + 'follow/sellers?' + data;
     return api.getMethod(url, token);
   },
-  seller_follow_status: (data, token) => {
-    let url = api_name + 'follow/';
-    return api.postMethod(url, data, token);
+  post_follow: (param, data, token) => {
+    let url = api_name + 'follow/' + param;
+    return api.putMethod(url, data, token);
   },
   get_banner: (data, token) => {
     let url = api_name + 'banner/mobile?' + data;
     return api.getMethod(url, token);
+  },
+  get_review: (data, token) => {
+    let url = api_name + 'review/' + data;
+    return api.getMethod(url, token);
+  },
+  verify_pay: (data, token, header) => {
+    let url = api_name + 'orders/verify';
+    return api.postMethod(url, data, token, header);
   },
 };

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Color from '../../../Global/Color';
 import {Manrope} from '../../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {Iconviewcomponent} from '../../../Components/Icontag';
 import {BottomSheet} from 'react-native-btr';
 import {useDispatch, useSelector} from 'react-redux';
@@ -100,27 +100,27 @@ const MyCart = ({}) => {
       });
   }, [token]);
 
-  const getCartData = useCallback(async (isRefreshing = false) => {
-    if (isRefreshing) {
-      setRefreshing(true);
-    } else {
-      setLoading(true);
-    }
-    try {
-      const getCart = await fetchData.list_cart(``, token);
-      setCartData(getCart?.data);
-      const getaddress = await fetchData.list_address(``, token);
-      setAddressCount(getaddress?.count);
-    } catch (error) {
-      console.log('error', error);
-    } finally {
+  const getCartData = useCallback(
+    async (isRefreshing = false) => {
       if (isRefreshing) {
-        setRefreshing(false);
-      } else {
-        setLoading(false);
+        setRefreshing(true);
       }
-    }
-  });
+      try {
+        const getCart = await fetchData.list_cart(``, token);
+        setCartData(getCart?.data);
+        const getaddress = await fetchData.list_address(``, token);
+        setAddressCount(getaddress?.count);
+        setLoading(false);
+      } catch (error) {
+        console.log('error', error);
+      } finally {
+        if (isRefreshing) {
+          setRefreshing(false);
+        }
+      }
+    },
+    [token],
+  );
 
   const handleRefresh = () => {
     getCartData(true);

@@ -160,31 +160,6 @@ const SellerProfile = ({route}) => {
     }
   };
 
-  const followStatusClick = async () => {
-    try {
-      // const myHeaders = new Headers();
-      // myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTk0Njk4MDgsImV4cCI6MTcxOTcyOTAwOH0.LRoLafMH5SboZ_Ny6mlVOQF37eH23EV9E2OYcxS7fjM");
-
-      // const formdata = new FormData();
-
-      // const requestOptions = {
-      //   method: "PUT",
-      //   headers: myHeaders,
-      //   body: formdata,
-      //   redirect: "follow"
-      // };
-
-      // fetch("http://192.168.0.178:5000/api/follow/1", requestOptions)
-      //   .then((response) => response.text())
-      //   .then((result) => console.log("1111111111111 ========= ", result))
-      //   .catch((error) => console.error(error));
-
-      ToastAndroid.show('Still progresss', ToastAndroid.SHORT);
-    } catch (error) {
-      console.log('catch in followStatusClick : ', error);
-    }
-  };
-
   useEffect(() => {
     getData();
     getFlashDeals();
@@ -201,6 +176,17 @@ const SellerProfile = ({route}) => {
       var arrival_data = `vendor_id=${vendor_id}`;
       const get_Arrival = await fetchData.list_products(arrival_data, token);
       setNewArrivals(get_Arrival?.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const setFollowProfile = async id => {
+    try {
+      var param = `${id}`;
+      const setFollow = await fetchData.post_follow(param, {}, token);
+      console.log('setFollow---------------', setFollow);
+      getData();
     } catch (error) {
       console.log('error', error);
     }
@@ -378,44 +364,28 @@ const SellerProfile = ({route}) => {
                         justifyContent: 'flex-end',
                         alignItems: 'flex-end',
                       }}>
-                      {sellerData?.is_follow == true ? (
-                        <View
+                      <TouchableOpacity
+                        onPress={() => {
+                          setFollowProfile(vendor_id);
+                        }}
+                        style={{
+                          padding: 7,
+                          paddingHorizontal: 20,
+                          backgroundColor: Color.shop_green,
+                          borderRadius: 3,
+                        }}>
+                        <Text
                           style={{
-                            padding: 7,
-                            paddingHorizontal: 20,
-                            backgroundColor: Color.shop_green,
-                            borderRadius: 3,
+                            fontSize: 12,
+                            color: Color.white,
+                            fontFamily: Manrope.Medium,
+                            letterSpacing: 0.5,
                           }}>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              color: Color.white,
-                              fontFamily: Manrope.Medium,
-                              letterSpacing: 0.5,
-                            }}>
-                            Following
-                          </Text>
-                        </View>
-                      ) : (
-                        <TouchableOpacity
-                          onPress={() => followStatusClick()}
-                          style={{
-                            padding: 7,
-                            paddingHorizontal: 20,
-                            backgroundColor: Color.shop_green,
-                            borderRadius: 3,
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              color: Color.white,
-                              fontFamily: Manrope.Medium,
-                              letterSpacing: 0.5,
-                            }}>
-                            Follow
-                          </Text>
-                        </TouchableOpacity>
-                      )}
+                          {sellerData?.is_follow == true
+                            ? 'Following'
+                            : 'Follow'}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>

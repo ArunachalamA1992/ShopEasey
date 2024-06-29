@@ -24,7 +24,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {Media} from '../../Global/Media';
-import {setOrderSuccessVisible} from '../../Redux';
+import {setOrderCancelVisible, setOrderSuccessVisible} from '../../Redux';
+import RazorpayCheckout from 'react-native-razorpay';
 
 let dummyText =
   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
@@ -48,19 +49,11 @@ const OrderConfirmation = ({navigation, route}) => {
   const [checked, setChecked] = useState(false);
   const dispatch = useDispatch();
 
-  const [shopSection] = useState([
-    {id: 1, title: 'Delivery Address', data: ['Delivery Address']},
-    {id: 2, title: 'Order Items', data: ['Order Items']},
-    {id: 3, title: 'Coupon', data: ['Coupon']},
-    {id: 4, title: 'Price Details', data: ['Price Details']},
-    {id: 5, title: 'Place Order', data: ['Place Order']},
-  ]);
-
   const [paymentMethod] = useState([
     {
       id: 1,
-      name: 'paypal',
-      icon: 'paypal',
+      name: 'online',
+      icon: 'online',
     },
     {
       id: 2,
@@ -160,36 +153,73 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const postOrder = async () => {
     try {
-      var total_price = Sub_total + tax;
-      if (selectPayment?.name == 'cash on delivery') {
-        var data = {
-          address_id: selectAddress?.id,
-          region_id: countryCode?.id,
-          total: total_price,
-          sub_total: Sub_total,
-          tax: tax,
-          payment_method: 'COD',
-          products: CheckOut?.map(item => ({
-            product_id: item?.product?.id,
-            variant_id: item?.variant?.id,
-            quantity: item?.quantity,
-            price: item?.variant?.price,
-          })),
-        };
-        const post_order = await fetchData.postOrder(data, token);
-        if (post_order?.status == true) {
-          common_fn.showToast(post_order?.message);
-          navigation.replace('TabNavigator');
-          dispatch(setOrderSuccessVisible(true));
-        } else {
-          common_fn.showToast(post_order?.message);
-        }
+      const total_price = Sub_total + tax;
+      const data = {
+        address_id: selectAddress?.id,
+        region_id: countryCode?.id,
+        total: total_price,
+        sub_total: Sub_total,
+        tax: 10,
+        payment_method:
+          selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
+        products: CheckOut?.map(item => ({
+          product_id: item?.product?.id,
+          variant_id: item?.variant?.id,
+          quantity: item?.quantity,
+          price: item?.variant?.price,
+          tax: 10,
+        })),
+      };
+
+      const post_order = await fetchData.postOrder(data, token);
+
+      if (selectPayment?.name === 'cash on delivery') {
+        handleCODOrder(post_order);
       } else {
-        common_fn.showToast('Online Payment');
+        handleOnlineOrder(post_order);
       }
     } catch (error) {
-      console.log('error', error);
+      console.error('Error in postOrder:', error);
+      common_fn.showToast(
+        'An error occurred while placing the order. Please try again.',
+      );
     }
+  };
+
+  const handleCODOrder = post_order => {
+    if (post_order?.status === true) {
+      common_fn.showToast(post_order?.message);
+      navigation.replace('TabNavigator');
+      dispatch(setOrderSuccessVisible(true));
+    } else {
+      common_fn.showToast(post_order?.message);
+      dispatch(setOrderCancelVisible(true));
+    }
+  };
+
+  const handleOnlineOrder = post_order => {
+    RazorpayCheckout.open(post_order?.data)
+      .then(async ({razorpay_signature, razorpay_payment_id}) => {
+        const data = {
+          unique_order_id: post_order?.unique_order_id,
+          order_id: post_order?.data?.order_id,
+          payment_id: razorpay_payment_id,
+        };
+        const placeOrder = await fetchData.verify_pay(
+          data,
+          token,
+          razorpay_signature,
+        );
+        dispatch(setOrderSuccessVisible(true));
+        navigation?.replace('TabNavigator');
+        common_fn.showToast(post_order?.message);
+      })
+      .catch(error => {
+        console.error('Error in RazorpayCheckout:', error);
+        dispatch(setOrderCancelVisible(true));
+        common_fn.showToast('Payment failed. Please try again.');
+        navigation?.replace('TabNavigator');
+      });
   };
 
   function sale_BottomSheetmenu() {
@@ -890,83 +920,6 @@ const OrderConfirmation = ({navigation, route}) => {
               }}>
               Payment Method
             </Text>
-            {/* <View
-              style={{
-                marginVertical: 10,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingStart: 5,
-                  }}>
-                  <View style={{marginEnd: 0, alignItems: 'center'}}>
-                    <Image
-                      source={require('../../assets/category/master_card.png')}
-                      style={{
-                        width: 35,
-                        height: 35,
-                        resizeMode: 'contain',
-                      }}
-                    />
-                  </View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: Color.black,
-                      fontFamily: Manrope.Medium,
-                      letterSpacing: 0.5,
-                      paddingHorizontal: 10,
-                    }}>
-                    Credit / Debit Card
-                  </Text>
-                </View>
-                <View style={{marginEnd: 10}}>
-                  <TouchableOpacity>
-                    <Iconviewcomponent
-                      Icontag={'AntDesign'}
-                      iconname={'pluscircleo'}
-                      icon_size={24}
-                      icon_color={Color.primary}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('AddCard')}
-                activeOpacity={0.5}
-                style={{
-                  marginVertical: 10,
-                  height: 45,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: Color.primary,
-                  borderRadius: 5,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: Color.white,
-                    fontFamily: Manrope.Bold,
-                  }}>
-                  Add Card
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                width: '100%',
-                height: 0.5,
-                backgroundColor: Color.cloudyGrey,
-              }}></View> */}
-
             <View
               style={{
                 paddingVertical: 10,
@@ -978,14 +931,14 @@ const OrderConfirmation = ({navigation, route}) => {
                       flexDirection: 'row',
                       alignItems: 'center',
                       marginTop: 20,
-                      marginHorizontal: 20,
+                      marginHorizontal: 10,
                     }}>
-                    <Iconviewcomponent
+                    {/* <Iconviewcomponent
                       Icontag={'FontAwesome'}
                       iconname={item?.icon}
                       icon_size={22}
                       iconstyle={{color: Color.primary}}
-                    />
+                    /> */}
                     <Text
                       style={{
                         flex: 1,

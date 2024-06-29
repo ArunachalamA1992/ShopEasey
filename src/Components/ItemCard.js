@@ -17,11 +17,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import common_fn from '../Config/common_fn';
 import fetchData from '../Config/fetchData';
 import {setDataCount} from '../Redux';
+import {ActivityIndicator} from 'react-native-paper';
 
 const ItemCard = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const {item: initialItem, navigation} = props;
   const userData = useSelector(state => state.UserReducer.userData);
+  const [loadingWishlist, setLoadingWishlist] = useState(null);
   const {token} = userData;
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
@@ -47,6 +49,7 @@ const ItemCard = props => {
   };
 
   const toggle_WishList = async single => {
+    setLoadingWishlist(single?.id);
     try {
       const data = {
         product_id: single?.id,
@@ -62,6 +65,8 @@ const ItemCard = props => {
       }
     } catch (error) {
       console.log('error', error);
+    } finally {
+      setLoadingWishlist(null);
     }
   };
 
@@ -79,6 +84,7 @@ const ItemCard = props => {
     }
   };
 
+  const isLoading = loadingWishlist === item.id;
   return (
     <View style={{width: '50%'}}>
       <TouchableOpacity
@@ -125,13 +131,17 @@ const ItemCard = props => {
                 justifyContent: 'center',
                 borderRadius: 100,
               }}>
-              <AntDesign
-                name={item?.variants?.[0]?.is_wishlisted ? 'heart' : 'hearto'}
-                size={18}
-                color={
-                  item?.variants?.[0]?.is_wishlisted ? Color.red : Color.black
-                }
-              />
+              {isLoading ? (
+                <ActivityIndicator size="small" color={Color.red} />
+              ) : (
+                <AntDesign
+                  name={item?.variants?.[0]?.is_wishlisted ? 'heart' : 'hearto'}
+                  size={18}
+                  color={
+                    item?.variants?.[0]?.is_wishlisted ? Color.red : Color.black
+                  }
+                />
+              )}
             </TouchableOpacity>
           </View>
           <LinearGradient
@@ -178,13 +188,12 @@ const ItemCard = props => {
           <Text style={styles.productName} numberOfLines={1}>
             {item?.product_name}
           </Text>
-          <View
-            style={{width: '36%', flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={styles.productDiscountPrice} numberOfLines={1}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.productDiscountPrice}>
               {countryCode?.symbol}
               {item?.variants?.[0]?.price}
             </Text>
-            <Text style={styles.productPrice} numberOfLines={1}>
+            <Text style={styles.productPrice}>
               {countryCode?.symbol}
               {item?.variants?.[0]?.org_price}
             </Text>
@@ -291,9 +300,9 @@ export const ItemCardHorizontal = props => {
         backgroundColor: Color.white,
         margin: 5,
         borderRadius: 5,
-        borderTopStartRadius: 10,
-        borderTopRightRadius: 10,
         flex: 1,
+        borderWidth: 1,
+        borderColor: Color.lightgrey,
       }}
       onPress={() => {
         navigation.navigate('ProductDetails', {id: item?.id});
@@ -371,13 +380,12 @@ export const ItemCardHorizontal = props => {
         <Text style={styles.productName} numberOfLines={1}>
           {item?.product_name}
         </Text>
-        <View
-          style={{width: '36%', flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={styles.productDiscountPrice} numberOfLines={1}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.productDiscountPrice}>
             {countryCode?.symbol}
             {item?.variants?.[0]?.price}
           </Text>
-          <Text style={styles.productPrice} numberOfLines={1}>
+          <Text style={styles.productPrice}>
             {countryCode?.symbol}
             {item?.variants?.[0]?.org_price}
           </Text>
@@ -421,18 +429,18 @@ const styles = StyleSheet.create({
   },
   product: {
     // width: 190,
-    height: 285,
+    height: 300,
     backgroundColor: Color.white,
     margin: 5,
     borderRadius: 5,
-    borderTopStartRadius: 10,
-    borderTopRightRadius: 10,
+    borderWidth: 1,
+    borderColor: Color.lightgrey,
     flex: 1,
   },
   Productimage: {
     width: '100%',
     height: 170,
-    borderTopStartRadius: 10,
+    borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     justifyContent: 'space-between',
     resizeMode: 'contain',
@@ -462,12 +470,12 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   contentView: {
-    borderLeftWidth: 1,
-    borderLeftColor: Color.lightgrey,
-    borderRightWidth: 1,
-    borderRightColor: Color.lightgrey,
-    borderBottomWidth: 1,
-    borderBottomColor: Color.lightgrey,
+    // borderLeftWidth: 1,
+    // borderLeftColor: Color.lightgrey,
+    // borderRightWidth: 1,
+    // borderRightColor: Color.lightgrey,
+    // borderBottomWidth: 1,
+    // borderBottomColor: Color.lightgrey,
     padding: 10,
     borderBottomEndRadius: 10,
     borderBottomLeftRadius: 10,

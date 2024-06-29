@@ -41,22 +41,20 @@ const ProductList = ({route}) => {
 
   useEffect(() => {
     setLoading(true);
-    getData()
-      .then(() => setLoading(false))
-      .catch(error => {
-        setLoading(false);
-        console.log('Error loading data:', error);
-      });
+    getData();
     getCountData();
   }, [category_id]);
 
   const getData = async () => {
     try {
       var data = `${category_id}`;
+      loadInitialProducts(category_id);
       const categories_data = await fetchData.categories(data, token);
+      // let query = `category_id=${category_id}`;
+      // const product_data = await fetchData.list_products(query, token);
+      // setProducts(product_data?.data);
       setCurrentLevel(false);
       setCategoryData(categories_data?.data?.sub_categories);
-      loadInitialProducts(category_id);
     } catch (error) {
       console.log('error', error);
     }
@@ -68,6 +66,7 @@ const ProductList = ({route}) => {
     subSubCatId = null,
   ) => {
     try {
+      setLoading(true);
       setPage(1);
       setEndReached(false);
       let query = `category_id=${catId}`;
@@ -77,6 +76,8 @@ const ProductList = ({route}) => {
       setProducts(product_data?.data);
     } catch (error) {
       console.log('Error loading products:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -160,6 +161,19 @@ const ProductList = ({route}) => {
           onPress={() => {
             navigation.navigate('WishListTab');
           }}>
+          <Badge
+            style={{
+              position: 'absolute',
+              zIndex: 1,
+              top: -10,
+              right: -10,
+              backgroundColor: Color.red,
+              color: Color.white,
+              fontFamily: Manrope.Bold,
+              fontSize: 12,
+            }}>
+            {wishlist}
+          </Badge>
           <AntDesign name="hearto" size={22} color={Color.white} />
         </TouchableOpacity>
         <TouchableOpacity

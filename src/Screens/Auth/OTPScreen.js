@@ -171,6 +171,8 @@ const OTPScreen = ({route, AppState}) => {
           style={{
             flex: 1,
             backgroundColor: Color.white,
+            justifyContent: 'center',
+            padding: 10,
           }}>
           <Modal visible={visible} transparent={true} animationType="slide">
             <View
@@ -337,10 +339,8 @@ const OTPScreen = ({route, AppState}) => {
 
           <View
             style={{
-              flex: 2,
-              width: '100%',
               justifyContent: 'center',
-              alignItems: 'center',
+              // alignItems: 'center',
             }}>
             <Text
               style={{
@@ -360,19 +360,9 @@ const OTPScreen = ({route, AppState}) => {
                 fontFamily: Manrope.Regular,
                 letterSpacing: 0.5,
                 paddingTop: 10,
+                textAlign: 'center',
               }}>
-              Enter the verification code we sent to your
-            </Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: Color.cloudyGrey,
-                  fontFamily: Manrope.Regular,
-                  letterSpacing: 0.5,
-                }}>
-                number{' '}
-              </Text>
+              Enter the verification code we sent to your number{' '}
               <Text
                 style={{
                   fontSize: 16,
@@ -380,9 +370,12 @@ const OTPScreen = ({route, AppState}) => {
                   fontFamily: Manrope.Medium,
                   letterSpacing: 0.5,
                 }}>
-                +91 {number?.substring(0, 5).concat('*****')}
+                {countryCode?.mobile_prefix}
+                {number?.substring(0, 2).concat('*****') +
+                  number.substring(7, 9) +
+                  number.substring(9)}
               </Text>
-            </View>
+            </Text>
             <Text style={styles.invalidLogin}>{error}</Text>
             <View style={styles.otpInputView}>
               <OTPInput
@@ -409,10 +402,9 @@ const OTPScreen = ({route, AppState}) => {
               </View>
             )}
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => VerifyOTP(navigation)}
               style={{
-                width: '80%',
                 height: 50,
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -428,23 +420,22 @@ const OTPScreen = ({route, AppState}) => {
                 }}>
                 Verify
               </Text>
-            </TouchableOpacity>
-            {/* <Button
-                            title={'Submit'}
-                            titleStyle={{}}
-                            buttonStyle={{
-                                height: 50,
-                                backgroundColor: Color.primary,
-                                borderRadius: 10,
-                                marginVertical: 10,
-                            }}
-                            onPress={() => {
-                                // VerifyOTP(navigation);
-                                // checkPermmissions()
-                            }}
-                            loading={loading}
-                        /> */}
+            </TouchableOpacity> */}
           </View>
+          <Button
+            title={'Confirm'}
+            titleStyle={{}}
+            buttonStyle={{
+              height: 50,
+              width: '100%',
+              backgroundColor: Color.primary,
+              borderRadius: 20,
+              marginVertical: 10,
+            }}
+            color={Color.primary}
+            onPress={() => VerifyOTP(navigation)}
+            loading={loading}
+          />
         </View>
       </DismissKeyboard>
     </ScrollView>
@@ -458,7 +449,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   otpInputView: {
-    width: '100%',
     marginVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -475,7 +465,7 @@ const styles = StyleSheet.create({
     fontFamily: Manrope.Medium,
   },
   resendOtp: {
-    color: Color.primary,
+    color: Color.black,
     fontSize: 14,
     fontFamily: Manrope.SemiBold,
     textDecorationLine: 'underline',

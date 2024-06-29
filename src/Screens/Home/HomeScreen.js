@@ -140,12 +140,12 @@ const HomeScreen = () => {
     {
       id: '1',
       ban_name: 'Ethnic Wear',
-      ban_image: Media.onboard_main,
+      ban_image: require('../../assets/images/casual.png'),
     },
     {
       id: '2',
       ban_name: 'Kid’s Wear',
-      ban_image: Media.kutties_image,
+      ban_image: require('../../assets/images/casual.png'),
     },
     {
       id: '3',
@@ -735,9 +735,9 @@ const HomeScreen = () => {
                   flexDirection: 'row',
                   marginVertical: 20,
                   alignItems: 'center',
-                  borderRadius: 5,
+                  borderRadius: 50,
                   width: '90%',
-                  height: 55,
+                  height: 50,
                   paddingHorizontal: 20,
                   borderWidth: 1,
                   borderColor: Color.lightgrey,
@@ -748,7 +748,7 @@ const HomeScreen = () => {
                 <Iconviewcomponent
                   Icontag={'AntDesign'}
                   iconname={'search1'}
-                  icon_size={25}
+                  icon_size={20}
                   icon_color={Color.black}
                 />
                 <Text
@@ -765,7 +765,7 @@ const HomeScreen = () => {
                 <MCIcon
                   color={Color.lightBlack}
                   name="microphone"
-                  size={25}
+                  size={20}
                   style={{
                     marginHorizontal: 5,
                   }}
@@ -777,7 +777,7 @@ const HomeScreen = () => {
                   <MCIcon
                     color={Color.lightBlack}
                     name="camera-outline"
-                    size={25}
+                    size={20}
                     style={{
                       marginHorizontal: 5,
                     }}
@@ -786,7 +786,6 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-
           <Animated.SectionList
             sections={shopSection}
             scrollEnabled={true}
@@ -829,14 +828,14 @@ const HomeScreen = () => {
                                 style={{
                                   backgroundColor: '#E6F5F8',
                                   borderRadius: 100,
-                                  width: 50,
-                                  height: 50,
+                                  width: 65,
+                                  height: 65,
                                 }}>
                                 <Image
                                   source={{uri: item?.file}}
                                   style={{
-                                    width: 50,
-                                    height: 50,
+                                    width: 65,
+                                    height: 65,
                                     resizeMode: 'contain',
                                     borderRadius: 100,
                                   }}
@@ -851,7 +850,7 @@ const HomeScreen = () => {
                                   paddingVertical: 5,
                                 }}>
                                 {item?.category_name
-                                  .substring(0, 5)
+                                  .substring(0, 10)
                                   .concat('...')}
                               </Text>
                             </View>
@@ -874,14 +873,14 @@ const HomeScreen = () => {
                             style={{
                               backgroundColor: '#E6F5F8',
                               borderRadius: 100,
-                              width: 50,
-                              height: 50,
+                              width: 65,
+                              height: 65,
                             }}>
                             <Image
                               source={require('../../assets/images/viewall.png')}
                               style={{
-                                width: 50,
-                                height: 50,
+                                width: 65,
+                                height: 65,
                                 resizeMode: 'contain',
                               }}
                             />
@@ -983,34 +982,32 @@ const HomeScreen = () => {
                           </Text>
                         </View>
                       </View>
-                      <View style={{width: '95%'}}>
-                        <FlatList
-                          data={hotDealsData}
-                          horizontal
-                          showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
-                            return (
-                              <View
-                                key={index}
+                      <FlatList
+                        data={hotDealsData}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        renderItem={({item, index}) => {
+                          return (
+                            <View
+                              key={index}
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginRight: 10,
+                                marginVertical: 10,
+                              }}>
+                              <Image
+                                source={{uri: item?.image}}
                                 style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                  marginRight: 10,
-                                  marginVertical: 10,
-                                }}>
-                                <Image
-                                  source={{uri: item?.image}}
-                                  style={{
-                                    width: 180,
-                                    height: 120,
-                                    resizeMode: 'contain',
-                                  }}
-                                />
-                              </View>
-                            );
-                          }}
-                        />
-                      </View>
+                                  width: 180,
+                                  height: 120,
+                                  resizeMode: 'contain',
+                                }}
+                              />
+                            </View>
+                          );
+                        }}
+                      />
                     </View>
                   );
                 case 'Trend Product':
@@ -1051,7 +1048,6 @@ const HomeScreen = () => {
                       </View>
                       <View
                         style={{
-                          width: '95%',
                           flexDirection: 'row',
                           alignItems: 'center',
                           marginVertical: 10,
@@ -1060,9 +1056,6 @@ const HomeScreen = () => {
                           horizontal
                           showsHorizontalScrollIndicator={false}>
                           {trendData.map((item, index) => {
-                            // console.log("lsdglksdklgkl  ", calculateTotalDiscountPercentage(
-                            //   item?.ban_name,
-                            // ));
                             return (
                               <View
                                 style={{
@@ -1070,8 +1063,6 @@ const HomeScreen = () => {
                                   height: 170,
                                   justifyContent: 'center',
                                   alignItems: 'center',
-                                  // borderTopStartRadius: 10,
-                                  // borderTopRightRadius: 10,
                                   margin: 5,
                                 }}>
                                 <Image
@@ -1155,8 +1146,6 @@ const HomeScreen = () => {
                                     flexDirection: 'row',
                                     padding: 5,
                                     bottom: 2,
-                                    // borderBottomStartRadius: 10,
-                                    // borderBottomRightRadius: 10,
                                   }}>
                                   <Text
                                     style={{
@@ -1212,7 +1201,7 @@ const HomeScreen = () => {
                         autoplayDelay={5}
                         autoplayLoop
                         index={1}
-                        showPagination
+                        // showPagination
                         data={OfferBanner}
                         // paginationActiveColor={Color.primary}
                         // paginationStyleItem={{

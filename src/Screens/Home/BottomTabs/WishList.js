@@ -22,11 +22,13 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {Media} from '../../../Global/Media';
 import {setDataCount} from '../../../Redux';
+import {ActivityIndicator} from 'react-native-paper';
 
 const {height} = Dimensions.get('screen');
 const WishList = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [WishlistData, setWishlistData] = useState([]);
+  const [loadingWishlist, setLoadingWishlist] = useState(null);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const dispatch = useDispatch();
@@ -47,28 +49,25 @@ const WishList = ({navigation}) => {
     async (isRefreshing = false) => {
       if (isRefreshing) {
         setRefreshing(true);
-      } else {
-        setLoading(true);
       }
       console.log('Fetching wishlist data with token:', token);
       try {
         const getWishlist = await fetchData.list_wishlist('', token);
-        console.log('Wishlist data received:-------------------', getWishlist);
         if (getWishlist?.status == true) {
           setWishlistData(getWishlist.data);
         }
+        setLoading(false);
       } catch (error) {
         console.log('Error fetching wishlist data:', error);
       } finally {
         if (isRefreshing) {
           setRefreshing(false);
-        } else {
-          setLoading(false);
         }
       }
     },
     [token],
   );
+
   useEffect(() => {
     if (token) {
       console.log('Token is present, fetching wishlist data...');
@@ -84,7 +83,7 @@ const WishList = ({navigation}) => {
   };
 
   const toggleWishlist = async single => {
-    console.log('Toggling wishlist for product:', single?.product?.id);
+    setLoadingWishlist(single?.product?.id);
     try {
       const data = {
         product_id: single?.product?.id,
@@ -100,6 +99,8 @@ const WishList = ({navigation}) => {
       }
     } catch (error) {
       console.log('Error toggling wishlist:', error);
+    } finally {
+      setLoadingWishlist(null);
     }
   };
 
@@ -211,12 +212,13 @@ const WishList = ({navigation}) => {
                 item?.variant?.org_price) *
                 100,
             );
+            const isLoading = loadingWishlist === item.product.id;
             return (
               <View style={{width: '50%'}}>
                 <TouchableOpacity
                   style={styles.product}
                   onPress={() => {
-                    navigation.replace('ProductDetails', {id: item?.id});
+                    navigation.navigate('ProductDetails', {id: item?.id});
                   }}>
                   <ImageBackground
                     style={styles.Productimage}
@@ -257,7 +259,11 @@ const WishList = ({navigation}) => {
                           justifyContent: 'center',
                           borderRadius: 100,
                         }}>
-                        <AntDesign name="heart" size={16} color={Color.red} />
+                        {isLoading ? (
+                          <ActivityIndicator size="small" color={Color.red} />
+                        ) : (
+                          <AntDesign name="heart" size={16} color={Color.red} />
+                        )}
                       </TouchableOpacity>
                     </View>
                     <LinearGradient
@@ -295,17 +301,14 @@ const WishList = ({navigation}) => {
                     </Text>
                     <View
                       style={{
-                        width: '36%',
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}>
-                      <Text
-                        style={styles.productDiscountPrice}
-                        numberOfLines={1}>
+                      <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
                         {item?.variant?.price}
                       </Text>
-                      <Text style={styles.productPrice} numberOfLines={1}>
+                      <Text style={styles.productPrice}>
                         {countryCode?.symbol}
                         {item?.variant?.org_price}
                       </Text>
@@ -382,15 +385,13 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     margin: 5,
     borderRadius: 5,
-    borderTopStartRadius: 10,
-    borderTopRightRadius: 10,
     flex: 1,
+    borderWidth: 1,
+    borderColor: Color.lightgrey,
   },
   Productimage: {
     width: '100%',
     height: 170,
-    borderTopStartRadius: 10,
-    borderTopRightRadius: 10,
     justifyContent: 'space-between',
     resizeMode: 'contain',
   },
@@ -417,12 +418,12 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   contentView: {
-    borderLeftWidth: 1,
-    borderLeftColor: Color.lightgrey,
-    borderRightWidth: 1,
-    borderRightColor: Color.lightgrey,
-    borderBottomWidth: 1,
-    borderBottomColor: Color.lightgrey,
+    // borderLeftWidth: 1,
+    // borderLeftColor: Color.lightgrey,
+    // borderRightWidth: 1,
+    // borderRightColor: Color.lightgrey,
+    // borderBottomWidth: 1,
+    // borderBottomColor: Color.lightgrey,
     padding: 10,
     borderBottomEndRadius: 10,
     borderBottomLeftRadius: 10,
