@@ -25,7 +25,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const {height} = Dimensions.get('screen');
 
-const Placed = ({token, index}) => {
+const Placed = ({token, index, navigation}) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -328,6 +328,9 @@ const Placed = ({token, index}) => {
                     borderTopWidth: 1,
                     borderColor: Color.lightgrey,
                     borderStyle: 'dashed',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('TrackingDetails', {orderData: item});
                   }}>
                   <Text
                     style={{
@@ -374,7 +377,7 @@ const Placed = ({token, index}) => {
   );
 };
 
-const Pending = ({token, index}) => {
+const Pending = ({token, index, navigation}) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -724,7 +727,7 @@ const Pending = ({token, index}) => {
   );
 };
 
-const Proccesed = ({token, index}) => {
+const Proccesed = ({token, index, navigation}) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1074,7 +1077,7 @@ const Proccesed = ({token, index}) => {
   );
 };
 
-const OnShipping = ({token, index}) => {
+const OnShipping = ({token, index, navigation}) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1423,7 +1426,7 @@ const OnShipping = ({token, index}) => {
   );
 };
 
-const ArrivedOrders = ({token, index}) => {
+const ArrivedOrders = ({token, index, navigation}) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1772,7 +1775,7 @@ const ArrivedOrders = ({token, index}) => {
   );
 };
 
-const CancelledOrders = ({token, index}) => {
+const CancelledOrders = ({token, index, navigation}) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -2120,8 +2123,7 @@ const CancelledOrders = ({token, index}) => {
   );
 };
 
-const MyOrders = () => {
-  const navigation = useNavigation();
+const MyOrders = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState([]);
   const countryCode = useSelector(state => state.UserReducer.country);
@@ -2166,55 +2168,55 @@ const MyOrders = () => {
       case 'placed':
         return (
           <Placed
-            navigation={navigation}
             token={token}
             index={index}
             countryCode={countryCode}
+            navigation={navigation}
           />
         );
       case 'pending':
         return (
           <Pending
-            navigation={navigation}
             token={token}
             index={index}
             countryCode={countryCode}
+            navigation={navigation}
           />
         );
       case 'processed':
         return (
           <Proccesed
-            navigation={navigation}
             token={token}
             index={index}
             countryCode={countryCode}
+            navigation={navigation}
           />
         );
       case 'onshipping':
         return (
           <OnShipping
-            navigation={navigation}
             token={token}
             index={index}
             countryCode={countryCode}
+            navigation={navigation}
           />
         );
       case 'arrivedorders':
         return (
           <ArrivedOrders
-            navigation={navigation}
             token={token}
             index={index}
             countryCode={countryCode}
+            navigation={navigation}
           />
         );
       case 'cancelledorders':
         return (
           <CancelledOrders
-            navigation={navigation}
             token={token}
             index={index}
             countryCode={countryCode}
+            navigation={navigation}
           />
         );
     }

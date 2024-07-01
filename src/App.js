@@ -33,6 +33,7 @@ import {setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrders from './Screens/MyOrders/MyOrders';
 import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
+import TrackOrder from './Screens/MyOrders/TrackOrder';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -396,6 +397,30 @@ const MainApp = () => {
           component={MyOrders}
           options={({navigation, route}) => ({
             headerTitle: 'My Orders',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="TrackingDetails"
+          component={TrackOrder}
+          options={({navigation, route}) => ({
+            headerTitle: 'Tracking Details',
             headerTitleAlign: 'center',
             headerTitleStyle: {
               color: Color.black,

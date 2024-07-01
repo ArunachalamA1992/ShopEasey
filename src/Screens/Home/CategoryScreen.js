@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import {Iconviewcomponent} from '../../Components/Icontag';
@@ -7,9 +14,13 @@ import fetchData from '../../Config/fetchData';
 import {useSelector} from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
+const {height} = Dimensions.get('screen');
 const CategoryScreen = ({navigation}) => {
   const [categoryData, setCategoryData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadMore, setLoadMore] = useState(false);
+  const [Page, setPage] = useState(1);
+  const [endReached, setEndReached] = useState(false);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
@@ -28,6 +39,29 @@ const CategoryScreen = ({navigation}) => {
       setCategoryData(categories_data?.data);
     } catch (error) {
       console.log('error', error);
+    }
+  };
+
+  const loadMoreData = async () => {
+    if (loadMore || endReached) {
+      return;
+    }
+    setLoadMore(true);
+    try {
+      const nextPage = Page + 1;
+      let query = `page=${nextPage}`;
+      const response = await fetchData.categories(query, token);
+      if (response?.data.length > 0) {
+        setPage(nextPage);
+        const updatedData = [...categoryData, ...response?.data];
+        setCategoryData(updatedData);
+      } else {
+        setEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadMore(false);
     }
   };
   return (
@@ -130,17 +164,17 @@ const CategoryScreen = ({navigation}) => {
                 }}>
                 <View
                   style={{
-                    backgroundColor: '#FCECE8',
+                    // backgroundColor: '#D9EDFF',
                     borderRadius: 10,
-                    padding: 10,
+                    // padding: 10,
                   }}>
                   <Image
                     source={{uri: item?.file}}
                     style={{
-                      width: 60,
-                      height: 60,
+                      width: 90,
+                      height: 90,
                       resizeMode: 'contain',
-                      borderRadius: 100,
+                      borderRadius: 10,
                     }}
                   />
                 </View>
@@ -181,7 +215,31 @@ const CategoryScreen = ({navigation}) => {
               </TouchableOpacity>
             );
           }}
+          onEndReached={() => {
+            loadMoreData();
+          }}
+          onEndReachedThreshold={3}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  height: height / 1.5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Manrope.SemiBold,
+                    fontSize: 14,
+                    color: Color.black,
+                  }}>
+                  No Categories Found
+                </Text>
+              </View>
+            );
+          }}
         />
       )}
     </View>

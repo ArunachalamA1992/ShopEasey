@@ -47,7 +47,7 @@ const ProductList = ({route}) => {
 
   const getData = async () => {
     try {
-      var data = `${category_id}`;
+      var data = `/${category_id}`;
       loadInitialProducts(category_id);
       const categories_data = await fetchData.categories(data, token);
       // let query = `category_id=${category_id}`;

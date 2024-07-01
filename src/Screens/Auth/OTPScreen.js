@@ -49,6 +49,16 @@ const OTPScreen = ({route, AppState}) => {
   const dispatch = useDispatch();
   const countryCode = useSelector(state => state.UserReducer.country);
 
+  const isEmail = input => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(input);
+  };
+
+  const isMobile = input => {
+    const mobileRegex = /^[0-9]{10}$/;
+    return mobileRegex.test(input);
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (seconds > 0) {
@@ -118,24 +128,19 @@ const OTPScreen = ({route, AppState}) => {
   const VerifyOTP = async () => {
     setLoading(true);
     if (otpCode.length == 4) {
+      var data = {
+        otp: otpCode,
+        region_id: countryCode?.id,
+      };
+      if (isEmail(number)) {
+        data.email = number;
+      } else if (isMobile(number)) {
+        data.mobile = number;
+      }
       const VerifyOTP =
         loginType == ''
-          ? await fetchData.login_verify_otp(
-              {
-                mobile: number,
-                otp: otpCode,
-                region_id: countryCode?.id,
-              },
-              token,
-            )
-          : await fetchData.Register_verify_otp(
-              {
-                mobile: number,
-                otp: otpCode,
-                region_id: countryCode?.id,
-              },
-              token,
-            );
+          ? await fetchData.login_verify_otp(data, token)
+          : await fetchData.Register_verify_otp(data, token);
       if (VerifyOTP?.status == true) {
         const UserLogin = {
           ...VerifyOTP?.data,
@@ -370,7 +375,7 @@ const OTPScreen = ({route, AppState}) => {
                   fontFamily: Manrope.Medium,
                   letterSpacing: 0.5,
                 }}>
-                {countryCode?.mobile_prefix}
+                {isMobile(number) && countryCode?.mobile_prefix}
                 {number?.substring(0, 2).concat('*****') +
                   number.substring(7, 9) +
                   number.substring(9)}

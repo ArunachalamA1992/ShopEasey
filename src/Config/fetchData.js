@@ -24,7 +24,7 @@ export default {
     return api.getMethod(url, token);
   },
   categories: (data, token) => {
-    let url = api_name + 'categories/' + data;
+    let url = api_name + 'categories' + data;
     return api.getMethod(url, token);
   },
   sub_categories: (data, token) => {
@@ -108,7 +108,7 @@ export default {
     return api.putMethod(url, data, token);
   },
   flash_Offers: (data, token) => {
-    let url = api_name + 'products/offer';
+    let url = api_name + 'products/offer-products';
     return api.getMethod(url, token);
   },
   seller_list: (data, token) => {

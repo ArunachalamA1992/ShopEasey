@@ -33,6 +33,16 @@ const Login = () => {
   const [error, setError] = useState(false);
   const [loginType, setLoginType] = useState('');
 
+  const isEmail = input => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(input);
+  };
+
+  const isMobile = input => {
+    const mobileRegex = /^[0-9]{10}$/;
+    return mobileRegex.test(input);
+  };
+
   useEffect(() => {
     try {
       GoogleSignin.configure({
@@ -122,11 +132,17 @@ const Login = () => {
   const loginVerify = async () => {
     try {
       setLoading(true);
-      if (number.length == 10) {
+      const numberIsEmail = isEmail(number);
+      const numberIsMobile = isMobile(number);
+      if (numberIsEmail || (numberIsMobile && number.length === 10)) {
         var data = {
-          mobile: number,
           region_id: countryCode?.id,
         };
+        if (isEmail(number)) {
+          data.email = number;
+        } else if (isMobile(number)) {
+          data.mobile = number;
+        }
         const login_data = await fetchData.login_with_otp(data, null);
         if (login_data?.status == true) {
           common_fn.showToast('OTP Sent to your Email');
@@ -157,11 +173,18 @@ const Login = () => {
   const RegisterVerify = async () => {
     try {
       setLoading(true);
-      if (number.length == 10) {
+      setLoading(true);
+      const numberIsEmail = isEmail(number);
+      const numberIsMobile = isMobile(number);
+      if (numberIsEmail || (numberIsMobile && number.length === 10)) {
         var data = {
-          mobile: number,
           region_id: countryCode?.id,
         };
+        if (isEmail(number)) {
+          data.email = number;
+        } else if (isMobile(number)) {
+          data.mobile = number;
+        }
         const Register_data = await fetchData.Register_request_otp(data, null);
         if (Register_data?.status == true) {
           common_fn.showToast('OTP Sent to your Email');
@@ -237,21 +260,22 @@ const Login = () => {
             fontFamily: Manrope.Bold,
             marginTop: 10,
           }}>
-          Mobile Number
+          Mobile Number/Email
         </Text>
         <View style={{marginVertical: 10}}>
           <View style={styles.NumberBoxConatiner}>
             {/* <Text style={styles.numberCountryCode}>+91</Text> */}
             <TextInput
-              placeholder="Enter Your Mobile number"
+              placeholder="Mobile number or Email"
               placeholderTextColor={Color.cloudyGrey}
               value={number}
-              keyboardType="phone-pad"
-              maxLength={10}
-              autoFocus={number.length == 10 ? false : true}
-              onChangeText={number => {
-                chkNumber(number);
-                chkNumberError(number);
+              maxLength={isMobile(number) ? 10 : undefined}
+              autoFocus={
+                isMobile(number) && number.length === 10 ? false : true
+              }
+              onChangeText={input => {
+                chkNumber(input);
+                chkNumberError(input);
               }}
               style={styles.numberTextBox}
             />

@@ -29,7 +29,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {scr_width} from '../../Utils/Dimensions';
 import CountdownTimer from '../../Components/CountdownTimer';
-import ItemCard from '../../Components/ItemCard';
+import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
 import * as ImagePicker from 'react-native-image-picker';
 import {Media} from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
@@ -60,6 +60,7 @@ const HomeScreen = () => {
   var {token} = userData;
   const [imageVisible, setImageVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
+  const [trendingProducts, setTrendingProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
@@ -158,10 +159,11 @@ const HomeScreen = () => {
     {id: 1, title: 'Category Menu', data: ['Category Menu']},
     {id: 2, title: 'banners', data: ['banners']},
     {id: 3, title: 'hot deals', data: ['hot deals']},
-    {id: 4, title: 'Trend Product', data: ['Trend Product']},
-    {id: 5, title: 'Offer Banner', data: ['Offer Banner']},
-    {id: 6, title: 'Flash Selling', data: ['Flash Selling']},
-    {id: 6, title: 'product', data: ['product']},
+    {id: 4, title: 'Trend Brands', data: ['Trend Brands']},
+    {id: 5, title: 'Trend Product', data: ['Trend Product']},
+    {id: 6, title: 'Offer Banner', data: ['Offer Banner']},
+    {id: 7, title: 'Flash Selling', data: ['Flash Selling']},
+    {id: 8, title: 'product', data: ['product']},
   ]);
 
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
@@ -296,6 +298,7 @@ const HomeScreen = () => {
     try {
       const getFlashDeals = await fetchData.flash_Offers(``, token);
       setFlashOffers(getFlashDeals?.data);
+      console.log('getFlashDeals?.data', getFlashDeals?.data);
       var data = `project=offer`;
       const get_products = await fetchData.list_products(data, token);
       setProducts(get_products?.data);
@@ -308,8 +311,13 @@ const HomeScreen = () => {
 
   const getData = async () => {
     try {
-      const categories_data = await fetchData.categories(``, token);
+      const categories_data = await fetchData.categories(`?limit=12`, token);
       setCategoryData(categories_data?.data);
+      const trending_products = await fetchData.list_products(
+        `is_trending=true`,
+        token,
+      );
+      setTrendingProducts(trending_products?.data);
       // var banner_data = `seller=home_page`;
       // const getBannerData = await fetchData.get_banner(banner_data, token);
       // setBannerData(getBannerData?.data);
@@ -807,7 +815,7 @@ const HomeScreen = () => {
                         marginTop: 10,
                         // padding: 10,
                       }}>
-                      {categoryData?.slice(0, 7)?.map((item, index) => {
+                      {categoryData?.slice(0, 11)?.map((item, index) => {
                         return (
                           <TouchableOpacity
                             key={index}
@@ -1010,7 +1018,7 @@ const HomeScreen = () => {
                       />
                     </View>
                   );
-                case 'Trend Product':
+                case 'Trend Brands':
                   return (
                     <View
                       style={{
@@ -1028,13 +1036,11 @@ const HomeScreen = () => {
                             fontSize: 16,
                             color: Color.black,
                             textAlign: 'justify',
-                            lineHeight: 25,
                             fontFamily: Manrope.Bold,
                           }}>
-                          Trending Products
+                          Trending Brands
                         </Text>
-                        <TouchableOpacity
-                          onPress={() => navigation.navigate('ProductList')}>
+                        <TouchableOpacity>
                           <Text
                             style={{
                               fontSize: 14,
@@ -1170,32 +1176,61 @@ const HomeScreen = () => {
                       </View>
                     </View>
                   );
+                case 'Trend Product':
+                  return (
+                    trendingProducts?.length > 0 && (
+                      <View
+                        style={{
+                          padding: 10,
+                          marginTop: 10,
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginVertical: 10,
+                          }}>
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontSize: 16,
+                              color: Color.black,
+                              fontFamily: Manrope.SemiBold,
+                            }}>
+                            Trending Products
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.cloudyGrey,
+                              fontFamily: Manrope.Bold,
+                            }}>
+                            View All
+                          </Text>
+                        </View>
+                        <FlatList
+                          data={trendingProducts}
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          renderItem={({item, index}) => {
+                            return (
+                              <ItemCardHorizontal
+                                item={item}
+                                navigation={navigation}
+                              />
+                            );
+                          }}
+                        />
+                      </View>
+                    )
+                  );
                 case 'Offer Banner':
                   return (
                     <View
                       style={{
-                        width: scr_width,
+                        marginTop: 10,
                         backgroundColor: Color.white,
                       }}>
-                      {/* <FlatList
-                    data={OfferBanner}
-                    horizontal
-                    renderItem={({ item, index }) => {
-                      return (
-                        <View
-                          style={{ width: scr_width, flexDirection: 'row', alignItems: 'center' }}>
-                          <Image
-                            source={{ uri: item?.category_image }}
-                            style={{
-                              width: '100%',
-                              height: 420,
-                              resizeMode: 'cover',
-                            }}
-                          />
-                        </View>
-                      );
-                    }}
-                  /> */}
                       <SwiperFlatList
                         autoplay
                         autoplayDelay={5}
@@ -1314,36 +1349,38 @@ const HomeScreen = () => {
                       </View>
                       <View
                         style={{
-                          width: '95%',
-                          alignItems: 'center',
-                          alignSelf: 'center',
                           backgroundColor: '#E6F5F860',
                           padding: 10,
                         }}>
                         <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}>
                           <Image
                             source={{uri: Media.flash_sell_ban_one}}
                             style={{
+                              width: '45%',
                               height: 100,
                               resizeMode: 'contain',
-                              flex: 1,
                               marginHorizontal: 5,
+                              borderRadius: 10,
                             }}
                           />
                           <Image
                             source={{uri: Media.flash_sell_ban_two}}
                             style={{
+                              width: '45%',
                               height: 100,
                               resizeMode: 'contain',
-                              flex: 1,
                               marginHorizontal: 5,
+                              borderRadius: 10,
                             }}
                           />
                         </View>
                         <View
                           style={{
-                            flex: 1,
                             flexDirection: 'row',
                             alignItems: 'center',
                             padding: 10,
@@ -1363,7 +1400,6 @@ const HomeScreen = () => {
                                 fontSize: 11,
                                 color: '#0FAD45',
                                 fontFamily: Manrope.Medium,
-                                letterSpacing: 0.5,
                                 paddingHorizontal: 2,
                               }}>
                               Live offer
@@ -1373,7 +1409,6 @@ const HomeScreen = () => {
                                 fontSize: 16,
                                 color: Color.black,
                                 fontFamily: Manrope.Bold,
-                                letterSpacing: 0.5,
                                 paddingHorizontal: 2,
                               }}>
                               30% OFF
@@ -1383,7 +1418,6 @@ const HomeScreen = () => {
                                 fontSize: 12,
                                 color: Color.lightBlack,
                                 fontFamily: Manrope.Medium,
-                                letterSpacing: 0.5,
                                 paddingHorizontal: 2,
                               }}>
                               Min spent 2000$ of cart value

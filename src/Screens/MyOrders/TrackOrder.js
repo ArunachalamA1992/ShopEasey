@@ -1,0 +1,450 @@
+import React, {useEffect, useState} from 'react';
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import Color from '../../Global/Color';
+import common_fn from '../../Config/common_fn';
+import {Media} from '../../Global/Media';
+import {Manrope} from '../../Global/FontFamily';
+import StepIndicator from 'react-native-step-indicator';
+import FOIcon from 'react-native-vector-icons/Fontisto';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {Button, Divider} from 'react-native-paper';
+import fetchData from '../../Config/fetchData';
+import {useSelector} from 'react-redux';
+import {SafeAreaView} from 'react-native-safe-area-context';
+
+const customStyles = {
+  stepIndicatorSize: 25,
+  separatorStrokeWidth: 2,
+  stepIndicatorLabelFontSize: 15,
+  labelColor: Color.cloudyGrey,
+  labelSize: 15,
+  currentStepIndicatorSize: 30,
+  currentStepStrokeWidth: 3,
+  stepStrokeCurrentColor: Color.white,
+  stepIndicatorCurrentColor: Color.white,
+  currentStepIndicatorLabelFontSize: 14,
+  stepIndicatorLabelCurrentColor: Color.white,
+  currentStepLabelColor: Color.black,
+  separatorFinishedColor: Color.primary,
+  stepIndicatorFinishedColor: Color.white,
+  stepIndicatorLabelFinishedColor: Color.white,
+  finishedStepLabelColor: Color.black,
+  separatorUnFinishedColor: Color.lightgrey,
+  stepIndicatorUnFinishedColor: Color.white,
+  stepIndicatorLabelUnFinishedColor: Color.white,
+};
+
+const TrackOrder = ({navigation, route}) => {
+  const [orderData] = useState(route.params.orderData);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const [orderStatus, setOrderStatus] = useState([]);
+  const bgcolor = common_fn.getColorName(orderData?.variants?.color);
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
+
+  const filteredOrderData = orderStatus?.filter(
+    order => !['missing', 'pending', 'cancelled']?.includes(order.status),
+  );
+
+  const labels = filteredOrderData?.map(order => order.status);
+  const currentPosition = filteredOrderData.findIndex(
+    order => order.status === orderData?.status,
+  );
+
+  useEffect(() => {
+    setOrderLoading(true);
+    myorderData()
+      .then(() => setOrderLoading(false))
+      .catch(error => {
+        console.log('Error fetching data:', error);
+        setOrderLoading(false);
+      });
+  }, [token]);
+
+  const myorderData = async () => {
+    try {
+      const order_status = await fetchData.list_status(``, token);
+      setOrderStatus(order_status?.data);
+      setOrderLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  return (
+    <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{padding: 10, backgroundColor: Color.white}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              padding: 10,
+              backgroundColor: Color.white,
+            }}>
+            {orderData?.variants?.productImages?.length > 0 ? (
+              <Image
+                source={{uri: orderData?.variants?.productImages?.[0]?.image}}
+                style={{
+                  width: 100,
+                  height: 130,
+                  resizeMode: 'cover',
+                  borderRadius: 10,
+                }}
+              />
+            ) : (
+              <Image
+                source={{uri: Media.no_image}}
+                style={{
+                  width: 100,
+                  height: 130,
+                  resizeMode: 'cover',
+                  borderRadius: 10,
+                }}
+              />
+            )}
+            <View style={{flex: 1, marginHorizontal: 10}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Medium,
+                  }}>
+                  Order ID #{orderData?.order?.id}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: Color.white,
+                    padding: 5,
+                    paddingHorizontal: 10,
+                    borderRadius: 5,
+                    backgroundColor: Color.green,
+                    fontFamily: Manrope.SemiBold,
+                    textTransform: 'capitalize',
+                    marginHorizontal: 10,
+                  }}>
+                  {orderData?.status}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: Color.lightBlack,
+                  fontFamily: Manrope.SemiBold,
+                  letterSpacing: 0.5,
+                }}
+                numberOfLines={1}>
+                {orderData?.products?.product_name}
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  paddingVertical: 3,
+                }}>
+                {orderData?.variants?.color != '' && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                      borderRightWidth: 1,
+                      borderRightColor: Color.lightgrey,
+                      paddingHorizontal: 5,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: Color.cloudyGrey,
+                        fontFamily: Manrope.Medium,
+                        marginRight: 5,
+                      }}>
+                      Color
+                    </Text>
+                    <View
+                      style={{
+                        width: 15,
+                        height: 15,
+                        backgroundColor: bgcolor,
+                        borderRadius: 30,
+                        borderWidth: 1,
+                        borderColor: Color.primary,
+                      }}></View>
+                  </View>
+                )}
+                {orderData?.variants?.size != '' && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                      marginHorizontal: 5,
+                      borderRightWidth: 1,
+                      borderRightColor: Color.lightgrey,
+                      paddingHorizontal: 5,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: Color.cloudyGrey,
+                        fontFamily: Manrope.Medium,
+                        marginRight: 5,
+                      }}>
+                      Size -
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: Color.cloudyGrey,
+                        fontFamily: Manrope.Medium,
+                      }}>
+                      {orderData?.variants?.size}
+                    </Text>
+                  </View>
+                )}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                    }}>
+                    Quantity -{' '}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.black,
+                      fontFamily: Manrope.SemiBold,
+                    }}>
+                    {orderData?.quantity}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'flex-start',
+                  alignItems: 'flex-start',
+                  paddingVertical: 3,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Bold,
+                  }}>
+                  {orderData?.order?.region_id == 454
+                    ? '$'
+                    : orderData?.order?.region_id == 453
+                    ? 'RM'
+                    : '₹'}
+                  {orderData?.price}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{marginTop: 10, backgroundColor: Color.white, padding: 10}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: Manrope.SemiBold,
+              paddingVertical: 5,
+              color: Color.black,
+            }}>
+            Order Details
+          </Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+                paddingVertical: 5,
+                color: Color.black,
+              }}>
+              Name:
+            </Text>
+            <Text
+              style={{
+                color: Color.black,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+              }}>
+              Gokul Raj
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+                paddingVertical: 5,
+                color: Color.black,
+              }}>
+              Order Id:
+            </Text>
+            <Text
+              style={{
+                color: Color.black,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+              }}>
+              123456
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+                paddingVertical: 5,
+                color: Color.black,
+              }}>
+              Tracking Id:
+            </Text>
+            <Text
+              style={{
+                color: Color.black,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+              }}>
+              AMKRTSUWYSGW
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+                paddingVertical: 5,
+                color: Color.black,
+              }}>
+              Expected Delivery:
+            </Text>
+            <Text
+              style={{
+                color: Color.black,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+              }}>
+              05 June 2024
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{marginTop: 10, padding: 10, backgroundColor: Color.white}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: Manrope.SemiBold,
+              paddingVertical: 5,
+              color: Color.black,
+            }}>
+            Order Status
+          </Text>
+          <View
+            style={{
+              height: 300,
+              borderWidth: 1,
+              borderColor: Color.lightgrey,
+              padding: 10,
+              borderRadius: 10,
+            }}>
+            <StepIndicator
+              customStyles={customStyles}
+              currentPosition={currentPosition}
+              stepCount={filteredOrderData.length}
+              labels={labels}
+              direction="vertical"
+              renderStepIndicator={({position, stepStatus}) => {
+                switch (stepStatus) {
+                  case 'current':
+                    return (
+                      <FOIcon
+                        name="radio-btn-active"
+                        size={20}
+                        color={Color.primary}
+                      />
+                    );
+                  case 'finished':
+                    return (
+                      <FOIcon
+                        name="radio-btn-active"
+                        size={20}
+                        color={Color.primary}
+                      />
+                    );
+                  case 'unfinished':
+                    return (
+                      <FOIcon
+                        name="radio-btn-active"
+                        size={20}
+                        color={Color.lightgrey}
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              }}
+            />
+            <Divider style={{height: 1, marginVertical: 10}} />
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginVertical: 5,
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: Manrope.Bold,
+                  color: Color.primary,
+                  textAlign: 'center',
+                }}>
+                View More
+              </Text>
+              <Icon name="chevron-forward" size={18} color={Color.primary} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <Button
+          mode="contained"
+          onPress={() => {}}
+          style={{
+            backgroundColor: Color.white,
+            borderRadius: 10,
+            margin: 10,
+            borderWidth: 1,
+            borderColor: Color.primary,
+          }}
+          textColor={Color.primary}>
+          Cancel Order
+        </Button>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default TrackOrder;
