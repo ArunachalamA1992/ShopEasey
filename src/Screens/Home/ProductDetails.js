@@ -2225,22 +2225,32 @@ const ProductDetails = ({route}) => {
   const [selectedVariantData, setSelectedVariantData] = useState({});
   const [productImages, setProductImages] = useState([]);
 
-  const handleColorPress = item => {
+  const handleColorPress = async item => {
+    setLoading(true);
     setSelectedColor(item?.color);
     setSelectedVariantId(item?.id);
-    setSelectedVariantData(item);
-    setSelectedSize(null);
-    setSizeVisible(true);
-    setWishlistVariantId(item?.id);
-    setProductImages(item?.productImages);
+    // setSelectedVariantData(item);
+    // setSelectedSize(null);
+    // setSizeVisible(true);
+    // setWishlistVariantId(item?.id);
+    // setProductImages(item?.productImages);
+    try {
+      var param = id;
+      var data = `color=${item?.color}`;
+      console.log('data', data);
+      const color_change = await fetchData.single_property(param, data, token);
+      setSingleData(color_change?.data);
+      setLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSizePress = item => {
     setSelectedSize(item?.size);
     setSelectedVariantId(item?.id);
-    setWishlistVariantId(item?.id);
-    setSelectedVariantData(item);
-    setProductImages(item?.productImages);
   };
   const dispatch = useDispatch();
   const filteredSizes = singleData?.variants_list?.color?.filter(
@@ -2281,9 +2291,7 @@ const ProductDetails = ({route}) => {
   ]);
 
   var discount = parseInt(
-    ((selectedVariantData?.org_price - selectedVariantData?.price) /
-      selectedVariantData?.org_price) *
-      100,
+    ((singleData?.org_price - singleData?.price) / singleData?.org_price) * 100,
   );
   const currentDate = moment();
   const yourDate = moment(singleData?.updated_at);
@@ -2371,8 +2379,8 @@ const ProductDetails = ({route}) => {
 
   const getData = async () => {
     try {
-      var p_data = `${id}`;
-      const product_data = await fetchData.single_property(p_data, token);
+      var param = `${id}`;
+      const product_data = await fetchData.single_property(param, ``, token);
       setSingleData(product_data?.data);
       setProductImages(product_data?.data?.productImages);
       setSelectedVariantData(product_data?.data?.variants_list?.[0]);
@@ -2420,10 +2428,22 @@ const ProductDetails = ({route}) => {
 
   const setAdd_cart = async () => {
     try {
-      if (selectedVariantId != null) {
+      const colorVariants = singleData?.variants_list?.color || [];
+      const sizeVariants = singleData?.variants_list?.size || [];
+
+      const isColorSelected = selectedColor != null;
+      const isSizeSelected = selectedSize != null;
+
+      const noVariants =
+        colorVariants.length === 0 && sizeVariants.length === 0;
+      const isSelectionValid =
+        (colorVariants.length === 0 || isColorSelected) &&
+        (sizeVariants.length === 0 || isSizeSelected);
+
+      if (noVariants || isSelectionValid) {
         var data = {
-          product_id: singleData?.id,
-          variant_id: selectedVariantId,
+          product_id: singleData?.product_id,
+          variant_id: singleData?.id,
         };
         const add_to_cart = await fetchData.add_to_cart(data, token);
         if (add_to_cart?.status == true) {
@@ -2446,12 +2466,46 @@ const ProductDetails = ({route}) => {
 
   const setBuyNow = () => {
     try {
-      if (selectedVariantId != null) {
+      const colorVariants = singleData?.variants_list?.color || [];
+      const sizeVariants = singleData?.variants_list?.size || [];
+
+      const isColorSelected = selectedColor != null;
+      const isSizeSelected = selectedSize != null;
+
+      const noVariants =
+        colorVariants.length === 0 && sizeVariants.length === 0;
+      const isSelectionValid =
+        (colorVariants.length === 0 || isColorSelected) &&
+        (sizeVariants.length === 0 || isSizeSelected);
+
+      if (noVariants || isSelectionValid) {
         var CheckOut = [
           {
             quantity: 1,
-            product: singleData,
-            variant: selectedVariantData,
+            product: singleData?.product,
+            variant: {
+              id: singleData?.id,
+              product_id: singleData?.product_id,
+              size: singleData?.size,
+              color: singleData?.color,
+              color_code: singleData?.color_code,
+              color_group: singleData?.color_group,
+              material: singleData?.material,
+              package_unit: singleData?.package_unit,
+              package_content: singleData?.package_content,
+              package_weight: singleData?.package_weight,
+              org_price: singleData?.org_price,
+              price: singleData?.price,
+              stock: singleData?.stock,
+              sold: singleData?.sold,
+              status: singleData?.status,
+              created_at: singleData?.created_at,
+              updated_at: singleData?.updated_at,
+              is_wishlisted: singleData?.is_wishlisted,
+              in_cart: singleData?.in_cart,
+              productImages: singleData?.productImages,
+              offer: singleData?.offer,
+            },
           },
         ];
         navigation.navigate('OrderConfirmation', {CheckOut});
@@ -2467,10 +2521,7 @@ const ProductDetails = ({route}) => {
 
   const toggle_WishList = async single => {
     try {
-      const wishlist_id =
-        selectedVariantId != null
-          ? selectedVariantId
-          : selectedVariantData?.id || null;
+      const wishlist_id = single?.id;
       var data = {
         product_id: single?.id,
         variant_id: wishlist_id,
@@ -2517,6 +2568,7 @@ const ProductDetails = ({route}) => {
   const hasNonEmptyColor = singleData?.variants_list?.color?.some(
     item => item?.color && item?.color !== '',
   );
+  console.log('singleData?.productImages', singleData?.productImages?.[0]?.id);
   return (
     <View
       style={{
@@ -2758,19 +2810,13 @@ const ProductDetails = ({route}) => {
                     borderRadius: 100,
                   }}>
                   <AntDesign
-                    name={
-                      selectedVariantData?.is_wishlisted ? 'heart' : 'hearto'
-                    }
+                    name={singleData?.is_wishlisted ? 'heart' : 'hearto'}
                     size={20}
-                    color={
-                      selectedVariantData?.is_wishlisted
-                        ? Color.red
-                        : Color.black
-                    }
+                    color={singleData?.is_wishlisted ? Color.red : Color.black}
                   />
                 </TouchableOpacity>
-                {productImages?.length > 0 ? (
-                  <ImageView images={productImages} />
+                {singleData?.productImages?.length > 0 ? (
+                  <ImageView images={singleData?.productImages} />
                 ) : (
                   <Image
                     source={{uri: Media.no_image}}
@@ -2909,10 +2955,10 @@ const ProductDetails = ({route}) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {selectedVariantData?.price}{' '}
+                        {singleData?.price}{' '}
                         <Text style={styles.productPrice}>
                           {countryCode?.symbol}
-                          {selectedVariantData?.org_price}
+                          {singleData?.org_price}
                         </Text>
                       </Text>
                       <Text
@@ -2933,7 +2979,7 @@ const ProductDetails = ({route}) => {
                         fontSize: 12,
                         color: Color.red,
                       }}>
-                      ( Only {selectedVariantData?.stock} pending )
+                      ( Only {singleData?.stock} pending )
                     </Text>
                   </View>
 
@@ -3070,63 +3116,157 @@ const ProductDetails = ({route}) => {
                     marginVertical: 10,
                     backgroundColor: Color.softGrey,
                   }}></View>
-                {singleData?.variants_list?.color?.length > 0 ||
-                  (singleData?.variants_list?.size?.length > 0 && (
-                    <View>
-                      <View>
-                        {hasNonEmptyColor ? (
-                          <>
-                            <View style={styles.colorContainer}>
-                              <Text style={styles.label}>Color :</Text>
-                              <View style={styles.colorOptions}>
-                                {singleData?.variants_list?.color?.map(
-                                  (item, index) => {
-                                    if (item?.color && item?.color !== '') {
-                                      return (
-                                        <TouchableOpacity
-                                          key={index}
-                                          style={[
-                                            styles.colorOption,
-                                            {
-                                              borderColor:
-                                                selectedColor === item?.color
-                                                  ? Color.primary
-                                                  : Color.lightgrey,
-                                            },
-                                          ]}
-                                          onPress={() => handleColorPress(item)}
-                                          disabled={item?.stock == 0}>
-                                          <View
-                                            style={[
-                                              styles.colorView,
-                                              {backgroundColor: item?.color},
-                                            ]}
-                                          />
-                                          <Text style={styles.colorNameText}>
-                                            {common_fn.getColorName(
-                                              item?.color,
-                                            )}
-                                          </Text>
-                                        </TouchableOpacity>
-                                      );
-                                    }
-                                    return null;
-                                  },
-                                )}
-                              </View>
-                            </View>
-                            <View style={styles.separator}></View>
-                          </>
-                        ) : null}
+                <View>
+                  <View>
+                    {singleData?.variants_list?.color?.length > 0 ? (
+                      <>
+                        <View style={styles.colorContainer}>
+                          <Text style={styles.label}>Color :</Text>
+                          <View style={styles.colorOptions}>
+                            {singleData?.variants_list?.color?.map(
+                              (item, index) => {
+                                // if (item?.color && item?.color !== '') {
+                                return (
+                                  <TouchableOpacity
+                                    key={index}
+                                    style={[
+                                      styles.colorOption,
+                                      {
+                                        borderColor:
+                                          selectedColor === item?.color
+                                            ? Color.primary
+                                            : Color.lightgrey,
+                                      },
+                                    ]}
+                                    onPress={() => handleColorPress(item)}
+                                    disabled={item?.stock == 0}>
+                                    <View
+                                      style={[
+                                        styles.colorView,
+                                        {backgroundColor: item?.color_code},
+                                      ]}
+                                    />
+                                    <Text style={styles.colorNameText}>
+                                      {item?.color}
+                                    </Text>
+                                  </TouchableOpacity>
+                                );
+                                // }
+                                // return null;
+                              },
+                            )}
+                          </View>
+                        </View>
+                        <View style={styles.separator}></View>
+                      </>
+                    ) : null}
 
-                        {(sizeVisible ||
-                          !singleData?.variants_list?.color?.some(
-                            variant => variant.color,
-                          )) && (
-                          <View style={styles.sizeContainer}>
-                            <Text style={styles.sizeLabel}>Size :</Text>
-                            <View style={styles.sizeOptions}>
-                              {filteredSizes?.map((item, index) => (
+                    {singleData?.variants_list?.size?.length > 0 ? (
+                      <View style={styles.sizeContainer}>
+                        <Text style={styles.sizeLabel}>Size :</Text>
+                        <View style={styles.sizeOptions}>
+                          {singleData?.variants_list?.size?.map(
+                            (item, index) => (
+                              <TouchableOpacity
+                                key={index}
+                                style={[
+                                  styles.sizeOption,
+                                  {
+                                    borderColor:
+                                      selectedSize === item?.size
+                                        ? Color.primary
+                                        : Color.white,
+                                  },
+                                ]}
+                                onPress={() => handleSizePress(item)}
+                                disabled={item?.stock == 0}>
+                                <View
+                                  style={[
+                                    styles.sizeView,
+                                    {
+                                      backgroundColor:
+                                        item?.stock == 0
+                                          ? '#EEEEEE80'
+                                          : '#EEEEEE',
+                                    },
+                                  ]}>
+                                  <Text style={styles.sizeText}>
+                                    {item?.size}
+                                  </Text>
+                                </View>
+                                {item?.stock == 0 && (
+                                  <Text style={styles.soldText}>sold</Text>
+                                )}
+                              </TouchableOpacity>
+                            ),
+                          )}
+                        </View>
+                      </View>
+                    ) : null}
+                  </View>
+                  <Modal
+                    visible={modalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setModalVisible(false)}>
+                    <Pressable
+                      onPress={() => setModalVisible(false)}
+                      style={styles.modalBackground}
+                    />
+                    <View style={styles.modalContainer}>
+                      <Text style={styles.modalTitle}>
+                        Please select a color and/or size:
+                      </Text>
+
+                      {singleData?.variants_list?.color?.length > 0 ? (
+                        <>
+                          <View style={styles.colorContainer}>
+                            <Text style={styles.label}>Color :</Text>
+                            <View style={styles.colorOptions}>
+                              {singleData?.variants_list?.color?.map(
+                                (item, index) => {
+                                  // if (item?.color && item?.color !== '') {
+                                    return (
+                                      <TouchableOpacity
+                                        key={index}
+                                        style={[
+                                          styles.colorOption,
+                                          {
+                                            borderColor:
+                                              selectedColor === item?.color
+                                                ? Color.primary
+                                                : Color.lightgrey,
+                                          },
+                                        ]}
+                                        onPress={() => handleColorPress(item)}
+                                        disabled={item?.stock == 0}>
+                                        <View
+                                          style={[
+                                            styles.colorView,
+                                            {backgroundColor: item?.color_code},
+                                          ]}
+                                        />
+                                        <Text style={styles.colorNameText}>
+                                          {item?.color}
+                                        </Text>
+                                      </TouchableOpacity>
+                                    );
+                                  // }
+                                  // return null;
+                                },
+                              )}
+                            </View>
+                          </View>
+                          <View style={styles.separator}></View>
+                        </>
+                      ) : null}
+
+                      {singleData?.variants_list?.size?.length > 0 ? (
+                        <View style={styles.sizeContainer}>
+                          <Text style={styles.sizeLabel}>Size :</Text>
+                          <View style={styles.sizeOptions}>
+                            {singleData?.variants_list?.size?.map(
+                              (item, index) => (
                                 <TouchableOpacity
                                   key={index}
                                   style={[
@@ -3158,209 +3298,104 @@ const ProductDetails = ({route}) => {
                                     <Text style={styles.soldText}>sold</Text>
                                   )}
                                 </TouchableOpacity>
-                              ))}
-                            </View>
-                          </View>
-                        )}
-                      </View>
-                      <Modal
-                        visible={modalVisible}
-                        transparent={true}
-                        animationType="slide"
-                        onRequestClose={() => setModalVisible(false)}>
-                        <Pressable
-                          onPress={() => setModalVisible(false)}
-                          style={styles.modalBackground}
-                        />
-                        <View style={styles.modalContainer}>
-                          <Text style={styles.modalTitle}>
-                            Please select a color and/or size:
-                          </Text>
-
-                          {singleData?.variants_list?.color?.some(
-                            variant => variant.color,
-                          ) && (
-                            <View style={styles.colorContainer}>
-                              <Text style={styles.label}>Color :</Text>
-                              <View style={styles.colorOptions}>
-                                {singleData?.variants_list?.color?.map(
-                                  (item, index) => {
-                                    if (item?.color && item?.color !== '') {
-                                      return (
-                                        <TouchableOpacity
-                                          key={index}
-                                          style={[
-                                            styles.colorOption,
-                                            {
-                                              borderColor:
-                                                selectedColor === item?.color
-                                                  ? Color.primary
-                                                  : Color.lightgrey,
-                                            },
-                                          ]}
-                                          onPress={() => handleColorPress(item)}
-                                          disabled={item?.stock == 0}>
-                                          <View
-                                            style={[
-                                              styles.colorView,
-                                              {backgroundColor: item?.color},
-                                            ]}
-                                          />
-                                          <Text style={styles.colorNameText}>
-                                            {common_fn.getColorName(
-                                              item?.color,
-                                            )}
-                                          </Text>
-                                        </TouchableOpacity>
-                                      );
-                                    }
-                                    return null;
-                                  },
-                                )}
-                              </View>
-                            </View>
-                          )}
-
-                          <View style={styles.separator}></View>
-
-                          {(sizeVisible ||
-                            !singleData?.variants_list?.color?.some(
-                              variant => variant.color,
-                            )) && (
-                            <View style={styles.sizeContainer}>
-                              <Text style={styles.sizeLabel}>Size :</Text>
-                              <View style={styles.sizeOptions}>
-                                {filteredSizes?.map((item, index) => (
-                                  <TouchableOpacity
-                                    key={index}
-                                    style={[
-                                      styles.sizeOption,
-                                      {
-                                        borderColor:
-                                          selectedSize === item?.size
-                                            ? Color.primary
-                                            : Color.white,
-                                      },
-                                    ]}
-                                    onPress={() => handleSizePress(item)}
-                                    disabled={item?.stock == 0}>
-                                    <View
-                                      style={[
-                                        styles.sizeView,
-                                        {
-                                          backgroundColor:
-                                            item?.stock == 0
-                                              ? '#EEEEEE80'
-                                              : '#EEEEEE',
-                                        },
-                                      ]}>
-                                      <Text style={styles.sizeText}>
-                                        {item?.size}
-                                      </Text>
-                                    </View>
-                                    {item?.stock == 0 && (
-                                      <Text style={styles.soldText}>sold</Text>
-                                    )}
-                                  </TouchableOpacity>
-                                ))}
-                              </View>
-                            </View>
-                          )}
-
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              marginTop: 20,
-                            }}>
-                            <TouchableOpacity
-                              activeOpacity={0.5}
-                              style={{
-                                width: '50%',
-                                height: 50,
-                                bottom: 10,
-                                marginHorizontal: 5,
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: 5,
-                                backgroundColor: Color.white,
-                                borderWidth: 1,
-                                borderColor: Color.lightBlack,
-                              }}
-                              onPress={() => {
-                                if (selectedVariantData?.in_cart) {
-                                  navigation.navigate('MyCartTab');
-                                } else {
-                                  if (token != undefined) {
-                                    setAdd_cart();
-                                  } else {
-                                    navigation.navigate('Auth');
-                                  }
-                                }
-                              }}>
-                              <Iconviewcomponent
-                                Icontag={'AntDesign'}
-                                iconname={'shoppingcart'}
-                                icon_size={20}
-                                icon_color={Color.black}
-                              />
-                              <Text
-                                style={{
-                                  fontSize: 14,
-                                  color: Color.black,
-                                  fontFamily: Manrope.SemiBold,
-                                  letterSpacing: 0.5,
-                                  paddingHorizontal: 10,
-                                }}>
-                                {selectedVariantData?.in_cart
-                                  ? `Go to Cart`
-                                  : `Add to Cart`}
-                              </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              activeOpacity={0.5}
-                              style={{
-                                width: '50%',
-                                height: 50,
-                                bottom: 10,
-                                marginHorizontal: 5,
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: 5,
-                                backgroundColor: Color.primary,
-                              }}
-                              onPress={() => {
-                                if (token != undefined) {
-                                  setBuyNow();
-                                } else {
-                                  navigation.navigate('Auth');
-                                }
-                              }}>
-                              <Iconviewcomponent
-                                Icontag={'Feather'}
-                                iconname={'shopping-bag'}
-                                icon_size={20}
-                                icon_color={Color.white}
-                              />
-                              <Text
-                                style={{
-                                  fontSize: 14,
-                                  color: Color.white,
-                                  fontFamily: Manrope.SemiBold,
-                                  letterSpacing: 0.5,
-                                  paddingHorizontal: 10,
-                                }}>
-                                Buy Now
-                              </Text>
-                            </TouchableOpacity>
+                              ),
+                            )}
                           </View>
                         </View>
-                      </Modal>
+                      ) : null}
+
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginTop: 20,
+                        }}>
+                        <TouchableOpacity
+                          activeOpacity={0.5}
+                          style={{
+                            width: '50%',
+                            height: 50,
+                            bottom: 10,
+                            marginHorizontal: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 5,
+                            backgroundColor: Color.white,
+                            borderWidth: 1,
+                            borderColor: Color.lightBlack,
+                          }}
+                          onPress={() => {
+                            if (singleData?.in_cart) {
+                              navigation.navigate('MyCartTab');
+                            } else {
+                              if (token != undefined) {
+                                setAdd_cart();
+                              } else {
+                                navigation.navigate('Auth');
+                              }
+                            }
+                          }}>
+                          <Iconviewcomponent
+                            Icontag={'AntDesign'}
+                            iconname={'shoppingcart'}
+                            icon_size={20}
+                            icon_color={Color.black}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.black,
+                              fontFamily: Manrope.SemiBold,
+                              letterSpacing: 0.5,
+                              paddingHorizontal: 10,
+                            }}>
+                            {singleData?.in_cart ? `Go to Cart` : `Add to Cart`}
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          activeOpacity={0.5}
+                          style={{
+                            width: '50%',
+                            height: 50,
+                            bottom: 10,
+                            marginHorizontal: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 5,
+                            backgroundColor: Color.primary,
+                          }}
+                          onPress={() => {
+                            if (token != undefined) {
+                              setBuyNow();
+                            } else {
+                              navigation.navigate('Auth');
+                            }
+                          }}>
+                          <Iconviewcomponent
+                            Icontag={'Feather'}
+                            iconname={'shopping-bag'}
+                            icon_size={20}
+                            icon_color={Color.white}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.white,
+                              fontFamily: Manrope.SemiBold,
+                              letterSpacing: 0.5,
+                              paddingHorizontal: 10,
+                            }}>
+                            Buy Now
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  ))}
+                  </Modal>
+                </View>
+                {/* ))} */}
                 <View
                   style={{
                     backgroundColor: '#F0F9FB',
@@ -4103,7 +4138,7 @@ const ProductDetails = ({route}) => {
                 borderColor: Color.lightBlack,
               }}
               onPress={() => {
-                if (selectedVariantData?.in_cart) {
+                if (singleData?.in_cart) {
                   navigation.navigate('MyCartTab');
                 } else {
                   if (token != undefined) {
@@ -4127,7 +4162,7 @@ const ProductDetails = ({route}) => {
                   letterSpacing: 0.5,
                   paddingHorizontal: 10,
                 }}>
-                {selectedVariantData?.in_cart ? `Go to Cart` : `Add to Cart`}
+                {singleData?.in_cart ? `Go to Cart` : `Add to Cart`}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -4224,7 +4259,7 @@ const styles = StyleSheet.create({
   colorOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     flexWrap: 'wrap',
     marginRight: 5,
     borderWidth: 1,

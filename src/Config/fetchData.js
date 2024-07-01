@@ -39,8 +39,8 @@ export default {
     let url = api_name + 'products?' + data;
     return api.getMethod(url, token);
   },
-  single_property: (data, token) => {
-    let url = api_name + 'products/get/' + data;
+  single_property: (param, data, token) => {
+    let url = api_name + 'products/get/' + param + '?' + data;
     return api.getMethod(url, token);
   },
   upload_assets: (data, token) => {
