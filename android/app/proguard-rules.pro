@@ -8,3 +8,11 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+-keep class com.facebook.imagepipeline.animated.factory.AnimatedFactoryImpl { *; }
+-keep class com.facebook.imagepipeline.animated.factory.AnimatedFactoryImplSupport { *; }
+-keep class com.facebook.imagepipeline.animated.factory.AnimatedFactory { *; }
+-keep class com.facebook.imagepipeline.animated.base.AnimatedImage { *; }
+-keep class com.facebook.imagepipeline.animated.impl.AnimatedDrawableFactory { *; }
+-keep class com.facebook.imagepipeline.animated.impl.AnimatedImageFactory { *; }
+-keep class com.facebook.imagepipeline.animated.impl.AnimatedImageCompositor { *; }
+
