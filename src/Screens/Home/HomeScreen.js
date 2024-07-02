@@ -706,6 +706,19 @@ const HomeScreen = () => {
                   onPress={() => {
                     navigation.navigate('WishListTab');
                   }}>
+                  <Badge
+                    style={{
+                      position: 'absolute',
+                      zIndex: 1,
+                      top: -10,
+                      right: -10,
+                      backgroundColor: Color.red,
+                      color: Color.white,
+                      fontFamily: Manrope.Bold,
+                      fontSize: 12,
+                    }}>
+                    {wishlist}
+                  </Badge>
                   <AntDesign name="hearto" size={22} color={Color.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -722,6 +735,7 @@ const HomeScreen = () => {
                       backgroundColor: Color.red,
                       color: Color.white,
                       fontFamily: Manrope.Bold,
+                      fontSize: 12,
                     }}>
                     {cart}
                   </Badge>

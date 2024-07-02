@@ -2,17 +2,20 @@ export const Media = {
   user: 'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514850.png',
   status:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514851.png',
-  logo: 'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514852.png',
+  logo: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/black_logo.png',
   return:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514844.png',
   aboutUs:
-    'https://albion-backend.s3.ap-south-1.amazonaws.com/Fobes/aboutUs.jpg',
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/about-us.jpg',
   contactUs:
-    'https://albion-backend.s3.ap-south-1.amazonaws.com/Fobes/contactUs.jpg',
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/contact-us.jpg',
   privacy:
-    'https://albion-backend.s3.ap-south-1.amazonaws.com/Fobes/privacy.jpg',
-  faq: 'https://albion-backend.s3.ap-south-1.amazonaws.com/Fobes/faq.jpg',
-  terms: 'https://albion-backend.s3.ap-south-1.amazonaws.com/Fobes/terms.jpg',
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/privacy-policy.jpg',
+  faq: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/faq.jpg',
+  returnrefund:
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/retur+and+refund.jpg',
+  terms:
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/terms-and-condition.jpg',
 
   onboard_one:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_1.png',

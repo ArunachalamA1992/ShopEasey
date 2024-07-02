@@ -34,6 +34,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrders from './Screens/MyOrders/MyOrders';
 import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
 import TrackOrder from './Screens/MyOrders/TrackOrder';
+import DeliveredOrder from './Screens/MyOrders/DeliveredOrder';
+import OrderReview from './Screens/MyOrders/OrderReview';
+import ReturnRefundPolicy from './Screens/Sidemenu/ReturnRefundPolicy';
+import AboutUs from './Screens/Sidemenu/AboutUs';
+import ContactUs from './Screens/Sidemenu/ContactUs';
+import FAQs from './Screens/Sidemenu/FAQs';
+import MyRewards from './Screens/Sidemenu/MyRewards';
+import NotificationSettings from './Screens/Sidemenu/NotificationSettings';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -441,10 +449,202 @@ const MainApp = () => {
           })}
         />
         <Stack.Screen
+          name="DeliveredOrder"
+          component={DeliveredOrder}
+          options={({navigation, route}) => ({
+            headerTitle: 'Order Details',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="OrderReview"
+          component={OrderReview}
+          options={({navigation, route}) => ({
+            headerTitle: 'Leave a Review',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
           name="OrderConfirmation"
           component={OrderConfirmation}
           options={({navigation, route}) => ({
             headerTitle: 'Order Confirmation',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="ReturnRefundPolicy"
+          component={ReturnRefundPolicy}
+          options={({navigation, route}) => ({
+            headerTitle: 'Return & Refund Policy',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="AboutUs"
+          component={AboutUs}
+          options={({navigation, route}) => ({
+            headerTitle: 'About Us',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="ContactUs"
+          component={ContactUs}
+          options={({navigation, route}) => ({
+            headerTitle: 'Contact Us',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="FAQs"
+          component={FAQs}
+          options={({navigation, route}) => ({
+            headerTitle: 'FAQs',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="MyRewards"
+          component={MyRewards}
+          options={({navigation, route}) => ({
+            headerTitle: 'My Rewards',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="NotificationSettings"
+          component={NotificationSettings}
+          options={({navigation, route}) => ({
+            headerTitle: 'Notification Settings',
             headerTitleAlign: 'center',
             headerTitleStyle: {
               color: Color.black,

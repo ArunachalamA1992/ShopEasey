@@ -18,6 +18,7 @@ import fetchData from '../../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {setUserData} from '../../../Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import common_fn from '../../../Config/common_fn';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -684,7 +685,8 @@ const Profile = () => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginVertical: 10,
-                }}>
+                }}
+                onPress={() => navigation.navigate('MyRewards')}>
                 <View
                   style={{
                     flex: 1,
@@ -789,15 +791,15 @@ const Profile = () => {
                 </View>
               </TouchableOpacity>
 
-              <View
+              {/* <View
                 style={{
                   width: '90%',
                   height: 0.5,
                   backgroundColor: Color.Venus,
                   marginVertical: 10,
-                }}></View>
+                }}></View> */}
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   width: '100%',
                   flexDirection: 'row',
@@ -846,7 +848,7 @@ const Profile = () => {
                     icon_color={Color.cloudyGrey}
                   />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <View
                 style={{
@@ -922,7 +924,8 @@ const Profile = () => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginVertical: 10,
-                }}>
+                }}
+                onPress={() => navigation.navigate('NotificationSettings')}>
                 <View
                   style={{
                     flex: 1,
@@ -967,7 +970,7 @@ const Profile = () => {
                 </View>
               </TouchableOpacity>
 
-              <View
+              {/* <View
                 style={{
                   width: '90%',
                   height: 0.5,
@@ -1024,7 +1027,7 @@ const Profile = () => {
                     icon_color={Color.cloudyGrey}
                   />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <View
@@ -1048,7 +1051,8 @@ const Profile = () => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginVertical: 10,
-                }}>
+                }}
+                onPress={() => navigation.navigate('ReturnRefundPolicy')}>
                 <View
                   style={{
                     flex: 1,
@@ -1227,6 +1231,11 @@ const Profile = () => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginVertical: 10,
+                }}
+                onPress={() => {
+                  common_fn.showToast(
+                    'Only apps that are currently available on the Play Store can be shared',
+                  );
                 }}>
                 <View
                   style={{

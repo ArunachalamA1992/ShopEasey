@@ -2207,6 +2207,7 @@ import {useNavigation} from '@react-navigation/native';
 const ProductDetails = ({route}) => {
   const navigation = useNavigation();
   const [id] = useState(route?.params?.id);
+  console.log('id', id);
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
   const [resultDate, setResultDate] = useState(null);
@@ -2402,7 +2403,8 @@ const ProductDetails = ({route}) => {
     try {
       var param = `${id}`;
       const setFollow = await fetchData.post_follow(param, {}, token);
-      console.log('setFollow---------------', setFollow);
+      getData();
+      common_fn.showToast(setFollow?.message);
     } catch (error) {
       console.log('error', error);
     }
@@ -2521,10 +2523,9 @@ const ProductDetails = ({route}) => {
 
   const toggle_WishList = async single => {
     try {
-      const wishlist_id = single?.id;
       var data = {
-        product_id: single?.id,
-        variant_id: wishlist_id,
+        product_id: single?.product_id,
+        variant_id: single?.id,
       };
       const wishlist = await fetchData.toggle_wishlists(data, token);
       if (wishlist?.status == true) {
@@ -2626,6 +2627,7 @@ const ProductDetails = ({route}) => {
               backgroundColor: Color.red,
               color: Color.white,
               fontFamily: Manrope.Bold,
+              fontSize: 12,
             }}>
             {wishlist}
           </Badge>
@@ -2645,6 +2647,7 @@ const ProductDetails = ({route}) => {
               backgroundColor: Color.red,
               color: Color.white,
               fontFamily: Manrope.Bold,
+              fontSize: 12,
             }}>
             {cart}
           </Badge>
@@ -3226,31 +3229,31 @@ const ProductDetails = ({route}) => {
                               {singleData?.variants_list?.color?.map(
                                 (item, index) => {
                                   // if (item?.color && item?.color !== '') {
-                                    return (
-                                      <TouchableOpacity
-                                        key={index}
+                                  return (
+                                    <TouchableOpacity
+                                      key={index}
+                                      style={[
+                                        styles.colorOption,
+                                        {
+                                          borderColor:
+                                            selectedColor === item?.color
+                                              ? Color.primary
+                                              : Color.lightgrey,
+                                        },
+                                      ]}
+                                      onPress={() => handleColorPress(item)}
+                                      disabled={item?.stock == 0}>
+                                      <View
                                         style={[
-                                          styles.colorOption,
-                                          {
-                                            borderColor:
-                                              selectedColor === item?.color
-                                                ? Color.primary
-                                                : Color.lightgrey,
-                                          },
+                                          styles.colorView,
+                                          {backgroundColor: item?.color_code},
                                         ]}
-                                        onPress={() => handleColorPress(item)}
-                                        disabled={item?.stock == 0}>
-                                        <View
-                                          style={[
-                                            styles.colorView,
-                                            {backgroundColor: item?.color_code},
-                                          ]}
-                                        />
-                                        <Text style={styles.colorNameText}>
-                                          {item?.color}
-                                        </Text>
-                                      </TouchableOpacity>
-                                    );
+                                      />
+                                      <Text style={styles.colorNameText}>
+                                        {item?.color}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  );
                                   // }
                                   // return null;
                                 },
@@ -3415,23 +3418,22 @@ const ProductDetails = ({route}) => {
                       <Image
                         source={{uri: Media.user}}
                         style={{
-                          width: 100,
-                          height: 100,
+                          width: 70,
+                          height: 70,
                           resizeMode: 'cover',
                           borderRadius: 100,
                         }}
                       />
                       <Text
                         style={{
-                          fontSize: 12,
+                          fontSize: 10,
                           color: Color.white,
                           fontFamily: Manrope.Medium,
-                          backgroundColor: Color.green,
-                          padding: 7,
+                          backgroundColor: '#0FAD45',
+                          padding: 5,
                           paddingHorizontal: 15,
-                          letterSpacing: 0.5,
+                          marginTop: -10,
                           borderRadius: 5,
-                          bottom: 10,
                         }}>
                         Preferred
                       </Text>
@@ -3441,6 +3443,7 @@ const ProductDetails = ({route}) => {
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'flex-start',
+                        marginLeft: 10,
                       }}>
                       <Text
                         style={{
@@ -3472,7 +3475,7 @@ const ProductDetails = ({route}) => {
                               activeOpacity={0.7}
                               key={index}
                               onPress={() => handleRatingPress(item.rating)}
-                              style={{}}>
+                              style={{marginRight: 5}}>
                               <AntDesign
                                 name={
                                   item.rating <= defaultRating
@@ -3499,44 +3502,60 @@ const ProductDetails = ({route}) => {
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
-                          marginVertical: 10,
+                          marginTop: 10,
                         }}>
-                        <Button
-                          mode="contained"
+                        <TouchableOpacity
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            backgroundColor: Color.primary,
+                            borderRadius: 5,
+                            padding: 10,
+                          }}
                           onPress={() => {
                             navigation.navigate('SellerProfile', {
                               vendor_id: singleData?.product?.vendor?.id,
                             });
-                          }}
+                          }}>
+                          <Feather
+                            name="shopping-bag"
+                            color={Color.white}
+                            size={18}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.white,
+                              fontFamily: Manrope.Bold,
+                              marginHorizontal: 5,
+                            }}>
+                            View Shop
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
                           style={{
-                            backgroundColor: Color.primary,
-                            borderRadius: 5,
-                          }}
-                          icon={() => (
-                            <Feather
-                              name="shopping-bag"
-                              color={Color.white}
-                              size={18}
-                            />
-                          )}
-                          textColor={Color.white}>
-                          View Shop
-                        </Button>
-                        <Button
-                          mode="contained"
-                          onPress={() => {
-                            setFollowProfile(singleData?.product?.vendor?.id);
-                          }}
-                          style={{
-                            marginHorizontal: 10,
-                            borderRadius: 5,
+                            flexDirection: 'row',
+                            alignItems: 'center',
                             backgroundColor: Color.white,
+                            borderRadius: 5,
+                            padding: 10,
+                            marginHorizontal: 10,
                             borderColor: Color.lightgrey,
                             borderWidth: 1,
                           }}
-                          textColor={Color.black}>
-                          Follow
-                        </Button>
+                          onPress={() => {
+                            setFollowProfile(singleData?.product?.vendor?.id);
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Color.black,
+                              fontFamily: Manrope.Bold,
+                              marginHorizontal: 5,
+                            }}>
+                            Follow
+                          </Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>
@@ -3819,6 +3838,7 @@ const ProductDetails = ({route}) => {
                     Product Description
                   </Text>
                   <RenderHtml
+                    tagsStyles={styles.htmlStyles}
                     contentWidth={'100%'}
                     source={{html: singleData?.product?.description}}
                   />
@@ -4231,6 +4251,15 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     resizeMode: 'cover',
+  },
+  htmlStyles: {
+    body: {
+      fontFamily: Manrope.SemiBold,
+      color: Color.cloudyGrey,
+      fontSize: 14,
+      lineHeight: 20,
+      textAlign: 'justify',
+    },
   },
   productRatingView: {
     flexDirection: 'row',

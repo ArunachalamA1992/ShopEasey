@@ -1,22 +1,31 @@
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import Color from '../../Global/Color';
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {useSelector} from 'react-redux';
 import common_fn from '../../Config/common_fn';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import Color from '../../Global/Color';
 import {Media} from '../../Global/Media';
 import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../../Components/Icontag';
 import StepIndicator from 'react-native-step-indicator';
 import FOIcon from 'react-native-vector-icons/Fontisto';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {Button, Divider} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {ItemCardHorizontal} from '../../Components/ItemCard';
 
 const customStyles = {
   stepIndicatorSize: 25,
   separatorStrokeWidth: 2,
+  separatorStrokeDasharray: '2 2',
   stepIndicatorLabelFontSize: 15,
-  labelColor: Color.cloudyGrey,
+  labelColor: Color.black,
   labelSize: 15,
   currentStepIndicatorSize: 30,
   currentStepStrokeWidth: 3,
@@ -34,38 +43,64 @@ const customStyles = {
   stepIndicatorLabelUnFinishedColor: Color.white,
 };
 
-const TrackOrder = ({navigation, route}) => {
+const steps = [
+  {label: 'Order Confirmation', date: '03 June 2024'},
+  {label: 'Order Delivered', date: '04 June 2024'},
+];
+
+const renderLabel = ({position, stepStatus, label, currentPosition}) => {
+  return (
+    <View style={styles.labelContainer}>
+      <Text
+        style={[
+          styles.label,
+          {
+            color:
+              position === currentPosition
+                ? customStyles.currentStepLabelColor
+                : customStyles.labelColor,
+          },
+        ]}>
+        {label}
+      </Text>
+      <Text
+        style={[
+          styles.date,
+          {
+            color:
+              position === currentPosition
+                ? customStyles.currentStepLabelColor
+                : customStyles.labelColor,
+          },
+        ]}>
+        {steps[position].date}
+      </Text>
+    </View>
+  );
+};
+
+const DeliveredOrder = ({navigation, route}) => {
   const [orderData] = useState(route.params.orderData);
-  const [orderLoading, setOrderLoading] = useState(false);
-  const [orderStatus, setOrderStatus] = useState([]);
+  const [loading, setLoading] = useState(false);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
+  const [pdfPath, setPdfPath] = useState(null);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
-
-  const filteredOrderData = orderStatus?.filter(
-    order => !['missing', 'pending', 'cancelled']?.includes(order.status),
-  );
-
-  const labels = filteredOrderData?.map(order => order.status);
-  const currentPosition = filteredOrderData.findIndex(
-    order => order.status === orderData?.status,
-  );
+  const [recommended, setRecommended] = useState([]);
 
   useEffect(() => {
-    setOrderLoading(true);
-    myorderData()
-      .then(() => setOrderLoading(false))
-      .catch(error => {
-        console.log('Error fetching data:', error);
-        setOrderLoading(false);
-      });
-  }, [token]);
+    setLoading(true);
+    getData().finally(() => {
+      setLoading(false);
+    });
+  }, []);
 
-  const myorderData = async () => {
+  const getData = async () => {
     try {
-      const order_status = await fetchData.list_status(``, token);
-      setOrderStatus(order_status?.data);
-      setOrderLoading(false);
+      var top_picks_data = `project=top-picks`;
+      const top_picks = await fetchData.list_products(top_picks_data, token);
+      setRecommended(top_picks?.data);
+      setLoading(false);
     } catch (error) {
       console.log('error', error);
     }
@@ -259,113 +294,42 @@ const TrackOrder = ({navigation, route}) => {
               </View>
             </View>
           </View>
-        </View>
-        <View
-          style={{marginTop: 10, backgroundColor: Color.white, padding: 10}}>
-          <Text
+          <View
             style={{
-              fontSize: 16,
-              fontFamily: Manrope.SemiBold,
-              paddingVertical: 5,
-              color: Color.black,
+              flexDirection: 'row',
+              marginTop: 10,
+              padding: 10,
+              paddingHorizontal: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#E7F7EC',
+              borderWidth: 1,
+              borderColor: '#7BD299',
+              borderRadius: 5,
             }}>
-            Order Details
-          </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Iconviewcomponent
+              Icontag={'MaterialCommunityIcons'}
+              iconname={'truck-outline'}
+              icon_size={25}
+              icon_color={Color.black}
+            />
             <Text
               style={{
-                flex: 1,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-                paddingVertical: 5,
+                fontSize: 12,
                 color: Color.black,
-              }}>
-              Name:
-            </Text>
-            <Text
-              style={{
-                color: Color.black,
-                fontSize: 14,
+                paddingHorizontal: 10,
                 fontFamily: Manrope.Medium,
               }}>
-              Gokul Raj
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-                paddingVertical: 5,
-                color: Color.black,
-              }}>
-              Order Id:
-            </Text>
-            <Text
-              style={{
-                color: Color.black,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-              }}>
-              123456
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-                paddingVertical: 5,
-                color: Color.black,
-              }}>
-              Tracking Id:
-            </Text>
-            <Text
-              style={{
-                color: Color.black,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-              }}>
-              AMKRTSUWYSGW
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-                paddingVertical: 5,
-                color: Color.black,
-              }}>
-              Expected Delivery:
-            </Text>
-            <Text
-              style={{
-                color: Color.black,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-              }}>
-              05 June 2024
+              Delivered on 04 JUNE 2024 ( Free Delivery )
             </Text>
           </View>
         </View>
         <View
           style={{marginTop: 10, padding: 10, backgroundColor: Color.white}}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontFamily: Manrope.SemiBold,
-              paddingVertical: 5,
-              color: Color.black,
-            }}>
-            Order Status
-          </Text>
           <View
             style={{
-              height: 300,
+              marginTop: 10,
+              height: 140,
               borderWidth: 1,
               borderColor: Color.lightgrey,
               padding: 10,
@@ -373,20 +337,12 @@ const TrackOrder = ({navigation, route}) => {
             }}>
             <StepIndicator
               customStyles={customStyles}
-              currentPosition={currentPosition}
-              stepCount={filteredOrderData.length}
-              labels={labels}
+              currentPosition={2}
+              stepCount={2}
+              labels={steps.map(step => step.label)}
               direction="vertical"
               renderStepIndicator={({position, stepStatus}) => {
                 switch (stepStatus) {
-                  case 'current':
-                    return (
-                      <FOIcon
-                        name="radio-btn-active"
-                        size={20}
-                        color={Color.primary}
-                      />
-                    );
                   case 'finished':
                     return (
                       <FOIcon
@@ -395,21 +351,12 @@ const TrackOrder = ({navigation, route}) => {
                         color={Color.primary}
                       />
                     );
-                  case 'unfinished':
-                    return (
-                      <FOIcon
-                        name="radio-btn-active"
-                        size={20}
-                        color={Color.lightgrey}
-                      />
-                    );
-                  default:
-                    return null;
                 }
               }}
+              renderLabel={renderLabel}
             />
-            <Divider style={{height: 1, marginVertical: 10}} />
-            <TouchableOpacity
+            {/* <Divider style={{height: 1, marginVertical: 10}} /> */}
+            {/* <TouchableOpacity
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -426,25 +373,111 @@ const TrackOrder = ({navigation, route}) => {
                 View More
               </Text>
               <Icon name="chevron-forward" size={18} color={Color.primary} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
         <Button
           mode="contained"
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate('OrderReview', {orderData});
+          }}
           style={{
             backgroundColor: Color.white,
-            borderRadius: 10,
+            borderRadius: 5,
             margin: 10,
             borderWidth: 1,
             borderColor: Color.primary,
           }}
           textColor={Color.primary}>
-          Cancel Order
+          Add Reviews
         </Button>
+        <Button
+          mode="contained"
+          onPress={() => {
+            const data = common_fn.generatePDF(orderData);
+            setPdfPath(data);
+          }}
+          style={{
+            backgroundColor: Color.primary,
+            borderRadius: 5,
+            margin: 10,
+            borderWidth: 1,
+            borderColor: Color.primary,
+          }}
+          textColor={Color.white}>
+          Download Invoice
+        </Button>
+        {/* {pdfPath && (
+          <Pdf
+            source={{uri: pdfPath}}
+            style={{
+              flex: 1,
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        )} */}
+        {recommended?.length > 0 && (
+          <View
+            style={{
+              padding: 10,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 10,
+              }}>
+              <Text
+                style={{
+                  flex: 1,
+                  fontSize: 16,
+                  color: Color.black,
+                  fontFamily: Manrope.SemiBold,
+                }}>
+                Recommended
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: Color.cloudyGrey,
+                  fontFamily: Manrope.Bold,
+                }}>
+                See more
+              </Text>
+            </View>
+            <FlatList
+              data={recommended}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({item, index}) => {
+                return (
+                  <ItemCardHorizontal item={item} navigation={navigation} />
+                );
+              }}
+            />
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default TrackOrder;
+export default DeliveredOrder;
+
+const styles = StyleSheet.create({
+  labelContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: 10,
+  },
+  label: {
+    fontSize: 15,
+    fontFamily: Manrope.Bold,
+  },
+  date: {
+    fontSize: 12,
+    fontFamily: Manrope.Regular,
+    marginTop: 2,
+  },
+});

@@ -681,6 +681,9 @@ const Pending = ({token, index, navigation}) => {
                     borderTopWidth: 1,
                     borderColor: Color.lightgrey,
                     borderStyle: 'dashed',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('TrackingDetails', {orderData: item});
                   }}>
                   <Text
                     style={{
@@ -1031,6 +1034,9 @@ const Proccesed = ({token, index, navigation}) => {
                     borderTopWidth: 1,
                     borderColor: Color.lightgrey,
                     borderStyle: 'dashed',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('TrackingDetails', {orderData: item});
                   }}>
                   <Text
                     style={{
@@ -1386,6 +1392,9 @@ const OnShipping = ({token, index, navigation}) => {
                       fontSize: 16,
                       color: Color.primary,
                       fontFamily: Manrope.Bold,
+                    }}
+                    onPress={() => {
+                      navigation.navigate('TrackingDetails', {orderData: item});
                     }}>
                     Track order
                   </Text>
@@ -1729,6 +1738,9 @@ const ArrivedOrders = ({token, index, navigation}) => {
                     borderTopWidth: 1,
                     borderColor: Color.lightgrey,
                     borderStyle: 'dashed',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('DeliveredOrder', {orderData: item});
                   }}>
                   <Text
                     style={{
@@ -1736,7 +1748,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                       color: Color.primary,
                       fontFamily: Manrope.Bold,
                     }}>
-                    Track order
+                    View order
                   </Text>
                   <Iconviewcomponent
                     Icontag={'Ionicons'}
@@ -1798,6 +1810,7 @@ const CancelledOrders = ({token, index, navigation}) => {
       console.log('error', error);
     }
   };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       {OrderLoading ? (
@@ -2077,6 +2090,11 @@ const CancelledOrders = ({token, index, navigation}) => {
                     borderTopWidth: 1,
                     borderColor: Color.lightgrey,
                     borderStyle: 'dashed',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('ProductDetails', {
+                      id: item?.product_id,
+                    });
                   }}>
                   <Text
                     style={{
@@ -2084,7 +2102,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                       color: Color.primary,
                       fontFamily: Manrope.Bold,
                     }}>
-                    Track order
+                    Re-order
                   </Text>
                   <Iconviewcomponent
                     Icontag={'Ionicons'}
@@ -2383,8 +2401,8 @@ const MyOrders = ({navigation}) => {
                 {...props}
                 style={{
                   backgroundColor: Color.white,
-                  height: 50,
-                  marginBottom: 10,
+                  // height: 50,
+                  // marginBottom: 10,
                   elevation: 0,
                   overflow: 'hidden',
                 }}
@@ -2398,8 +2416,7 @@ const MyOrders = ({navigation}) => {
                   borderColor: Color.cloudyGrey,
                 }}
                 indicatorStyle={{
-                  backgroundColor: Color.black,
-                  height: '100%',
+                  backgroundColor: Color.primary,
                   borderRadius: 50,
                 }}
                 activeColor={Color.white}
@@ -2407,8 +2424,12 @@ const MyOrders = ({navigation}) => {
                 renderLabel={({route, focused, color}) => (
                   <View
                     style={{
-                      backgroundColor: focused ? Color.black : Color.white,
+                      backgroundColor: focused ? Color.primary : Color.white,
                       borderRadius: 25,
+                      padding: 10,
+                      paddingHorizontal: 20,
+                      borderWidth: 1,
+                      borderColor: Color.lightgrey,
                     }}>
                     <Text
                       style={{color, fontSize: 14, fontFamily: Manrope.Bold}}>

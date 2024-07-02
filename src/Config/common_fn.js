@@ -4,9 +4,14 @@ import {
   LayoutAnimation,
   UIManager,
   PermissionsAndroid,
+  Alert,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {colors} from './hexColor';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import RNFS from 'react-native-fs';
+import {Media} from '../Global/Media';
+import moment from 'moment';
 
 const common_fn = {
   showToast: msg => {
@@ -160,6 +165,311 @@ const common_fn = {
       }
     });
     return closestColor;
+  },
+  generatePDF: async response => {
+    var discount =
+      100 -
+      parseInt(
+        ((response?.variants?.org_price - response?.variants?.price) /
+          response?.variants?.org_price) *
+          100,
+      );
+    const discount_price =
+      (response.variants?.org_price - response.variants?.price) *
+        response?.quantity || 0;
+    var tax_percent = parseInt(
+      (response?.order?.tax / response?.variants?.price) * 100,
+    );
+    const tax_amount =
+      (response.variants?.price - response.order.tax) * response?.quantity || 0;
+    console.log('tax_amount', tax_amount);
+    const htmlContent = `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .invoice-box {
+            width: 800px;
+            margin: auto;
+            padding: 30px;
+            background: #fff;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            color: #333;
+        }
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        .invoice-box table td {
+            padding: 10px;
+            vertical-align: top;
+        }
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+        .invoice-box table tr.heading td {
+            background: #0D71BA;
+            color: #fff;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+            text-align: center;
+        }
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+        .invoice-box .footer {
+            margin-top: 30px;
+        }
+        .invoice-box .footer table {
+            width: 100%;
+        }
+        .invoice-box .footer table td {
+            padding: 10px;
+            border-top: 1px solid #eee;
+            text-align: left;
+        }
+        .total-due {
+            background-color: #0D71BA;
+            padding: 10px;
+            font-weight: bold;
+            color: #fff;
+            text-align: right;
+            border-radius:5px
+        }
+        .total-due-box {
+            background-color: #0D71BA;
+            color: #fff;
+            padding: 10px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        .company-logo {
+            width: 100px;
+            height: auto;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #0D71BA;
+            font-size:30px
+        }
+        .footer-title {
+            font-weight: bold;
+            color: #0D71BA;
+            font-size:20px
+        }
+        .thank-you {
+            font-weight: bold;
+            color: #0D71BA;
+            font-size:25px;
+            margin-vertical:10px;
+        }
+        .header-title {
+            font-weight: bold;
+            color: #000;
+            font-size:25px;
+        }
+        .highlight {
+            color: #0D71BA;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="4">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="${
+                                  Media.logo
+                                }" alt="Brand Logo" style="width: 100px; max-width: 300px;">
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="section-title highlight">INVOICE</div>
+                                <div>${moment(new Date()).format(
+                                  'MMM DD,YYYY',
+                                )}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="4">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="header-title">Office Address</div>
+                                13/8 New Colony, 13th Cross Street,<br>
+                                near Parvathy Hospital, Lake Area, Mahalakshmi Colony,<br>
+                                Chromepet, Tamil Nadu 600044<br>
+                                (+91)9629332301
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="header-title">To:</div>
+                                Customer Name<br>
+                                Main street, Your Loc<br>
+                                Number 06/B
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="heading">
+                <td>Items Description</td>
+                <td>Unit Price</td>
+                <td>Qnt</td>
+                <td>Total</td>
+            </tr>
+            <tr class="item">
+                <td>${response.products.product_name}</td>
+                <td style="text-align: center;">${`${
+                  response?.order?.region_id == 454
+                    ? '$'
+                    : response?.order?.region_id == 453
+                    ? 'RM'
+                    : '₹'
+                } ${response.price}`}</td>
+                <td style="text-align: center;">${response.quantity}</td>
+                <td style="text-align: right;">${`${
+                  response?.order?.region_id == 454
+                    ? '$'
+                    : response?.order?.region_id == 453
+                    ? 'RM'
+                    : '₹'
+                } ${response.order.total}`}</td>
+            </tr>
+            <tr class="total">
+                <td colspan="3" style="text-align: right;color:#0D71BA;font-weight:600">SUBTOTAL:</td>
+                <td style="text-align: right;color:#0D71BA;font-weight:600">${`${
+                  response?.order?.region_id == 454
+                    ? '$'
+                    : response?.order?.region_id == 453
+                    ? 'RM'
+                    : '₹'
+                } ${response.order.sub_total}`}</td>
+            </tr>
+            <tr class="total">
+                <td colspan="3" style="text-align: right;font-weight:600">Tax ${tax_percent}%:</td>
+                <td style="text-align: right;font-weight:600">${`${
+                  response?.order?.region_id == 454
+                    ? '$'
+                    : response?.order?.region_id == 453
+                    ? 'RM'
+                    : '₹'
+                } ${response.order.tax}`}</td>
+            </tr>
+            <tr class="total">
+                <td colspan="3" style="text-align: right;font-weight:600">Discount ${discount}%:</td>
+                <td style="text-align: right;font-weight:600">${`${
+                  response?.order?.region_id == 454
+                    ? '$'
+                    : response?.order?.region_id == 453
+                    ? 'RM'
+                    : '₹'
+                } ${discount_price}`}</td>
+            </tr>
+            <tr class="total">
+                <td colspan="2" style="text-align: right;font-weight:600">Total Amount</td>
+                <td class="total-due">${`${
+                  response?.order?.region_id == 454
+                    ? '$'
+                    : response?.order?.region_id == 453
+                    ? 'RM'
+                    : '₹'
+                } ${response.order.total}`}</td>
+            </tr>
+        </table>
+        <div class="footer">
+            <div class='thank-you'>Thank you for your Business</div>
+            <table>
+                <tr>
+                    <td>
+                        <div class="footer-title">Questions?</div>
+                        Contact us at (+91)9629332301 or info@shopeasey.com
+                    </td>
+                    <td>
+                        <div class="footer-title">Payment Info:</div>
+                        Payment Gateway: ${
+                          response.order.region_id == 452
+                            ? 'Razorpay'
+                            : 'Paypal'
+                        }<br>
+                        Account #: 123456789<br>
+                        Routing #: 987654321
+                    </td>
+                    <td>
+                        <div class="footer-title">Terms & Conditions:</div>
+                        Payment is due within 30 days.<br>
+                        Late fees may apply.
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+
+    const options = {
+      html: htmlContent,
+      fileName: 'invoice',
+      directory: 'Documents',
+    };
+
+    const file = await RNHTMLtoPDF.convert(options);
+    return common_fn.downloadInvoice(file.filePath);
+  },
+  downloadInvoice: async pdfPath => {
+    if (!pdfPath) {
+      Alert.alert('Error', 'Please generate the invoice first.');
+      return;
+    }
+
+    const destPath = `${RNFS.DownloadDirectoryPath}/invoice.pdf`;
+
+    try {
+      await RNFS.moveFile(pdfPath, destPath);
+      common_fn.showToast(`Invoice downloaded`);
+    } catch (error) {
+      common_fn.showToast(`Failed to download the invoice`);
+    }
   },
 };
 export default common_fn;
