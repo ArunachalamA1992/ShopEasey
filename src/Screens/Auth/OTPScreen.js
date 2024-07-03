@@ -1,5 +1,5 @@
 //import liraries
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -16,23 +16,23 @@ import {
   Alert,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import { Manrope } from '../../Global/FontFamily';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import OTPInput from '../../Components/OTPInput';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import Icon from 'react-native-vector-icons/Ionicons';
 import fetchData from '../../Config/fetchData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import common_fn from '../../Config/common_fn';
 
-const DismissKeyboard = ({children}) => (
+const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
   </TouchableWithoutFeedback>
 );
 
-const OTPScreen = ({route, AppState}) => {
+const OTPScreen = ({ route, AppState }) => {
   const navigation = useNavigation();
   const [number] = useState(route.params.number);
   const [token] = useState(route.params.token);
@@ -85,21 +85,21 @@ const OTPScreen = ({route, AppState}) => {
     const ResendOtpVerify =
       loginType == ''
         ? await fetchData.login_verify_otp(
-            {
-              mobile: number,
-              otp: otpCode,
-              region_id: countryCode?.id,
-            },
-            token,
-          )
+          {
+            mobile: number,
+            otp: otpCode,
+            region_id: countryCode?.id,
+          },
+          token,
+        )
         : await fetchData.Register_verify_otp(
-            {
-              mobile: number,
-              otp: otpCode,
-              region_id: countryCode?.id,
-            },
-            token,
-          );
+          {
+            mobile: number,
+            otp: otpCode,
+            region_id: countryCode?.id,
+          },
+          token,
+        );
     if (ResendOtpVerify?.status == true) {
       if (Platform.OS === 'android') {
         common_fn.showToast(ResendOtpVerify?.message);
@@ -169,7 +169,7 @@ const OTPScreen = ({route, AppState}) => {
   };
   return (
     <ScrollView
-      contentContainerStyle={{justifyContent: 'center', flex: 1}}
+      contentContainerStyle={{ justifyContent: 'center', flex: 1 }}
       keyboardShouldPersistTaps="handled">
       <DismissKeyboard>
         <View
@@ -239,7 +239,7 @@ const OTPScreen = ({route, AppState}) => {
                         }}>
                         Albion would like to Access the Camera?
                       </Text>
-                      <View style={{width: '95%', alignItems: 'flex-start'}}>
+                      <View style={{ width: '95%', alignItems: 'flex-start' }}>
                         <Text
                           style={{
                             textAlign: 'justify',
@@ -295,7 +295,7 @@ const OTPScreen = ({route, AppState}) => {
                         }}>
                         Albion want to access your location
                       </Text>
-                      <View style={{width: '95%', alignItems: 'flex-start'}}>
+                      <View style={{ width: '95%', alignItems: 'flex-start' }}>
                         <Text
                           style={{
                             textAlign: 'justify',
@@ -335,7 +335,7 @@ const OTPScreen = ({route, AppState}) => {
                       backgroundColor: Color.primary,
                       borderRadius: 40,
                     }}>
-                    <Text style={{fontSize: 14, color: 'white'}}>Continue</Text>
+                    <Text style={{ fontSize: 14, color: 'white' }}>Continue</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -345,7 +345,7 @@ const OTPScreen = ({route, AppState}) => {
           <View
             style={{
               justifyContent: 'center',
-              // alignItems: 'center',
+              alignItems: 'center',
             }}>
             <Text
               style={{
@@ -376,7 +376,7 @@ const OTPScreen = ({route, AppState}) => {
                   letterSpacing: 0.5,
                 }}>
                 {isMobile(number) && countryCode?.mobile_prefix}
-                {number?.substring(0, 2).concat('*****') +
+                {number?.substring(0, 2).concat('*** **') +
                   number.substring(7, 9) +
                   number.substring(9)}
               </Text>
@@ -407,31 +407,32 @@ const OTPScreen = ({route, AppState}) => {
               </View>
             )}
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={() => VerifyOTP(navigation)}
               style={{
+                width: '90%',
                 height: 50,
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor: Color.primary,
-                borderRadius: 5,
+                borderRadius: 5, marginVertical: 10
               }}>
               <Text
                 style={{
                   fontSize: 16,
                   color: Color.white,
                   fontFamily: Manrope.SemiBold,
-                  letterSpacing: 0.5,
+                  letterSpacing: 0.5, textTransform: 'uppercase'
                 }}>
-                Verify
+                Confirm
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
-          <Button
+          {/* <Button
             title={'Confirm'}
             titleStyle={{}}
             buttonStyle={{
-              height: 50,
+              height: 70,
               width: '100%',
               backgroundColor: Color.primary,
               borderRadius: 20,
@@ -440,7 +441,7 @@ const OTPScreen = ({route, AppState}) => {
             color={Color.primary}
             onPress={() => VerifyOTP(navigation)}
             loading={loading}
-          />
+          /> */}
         </View>
       </DismissKeyboard>
     </ScrollView>
@@ -454,15 +455,16 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   otpInputView: {
-    marginVertical: 10,
+    marginVertical: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
   noReceivecodeView: {
+    width: '88%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginVertical: 20,
+    marginVertical: 15,
   },
   noReceiveText: {
     color: Color.black,

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -11,10 +11,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation} from '@react-navigation/native';
-import {Media} from '../../Global/Media';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
 
 import {
   GoogleSignin,
@@ -22,7 +22,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import common_fn from '../../Config/common_fn';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -224,17 +224,17 @@ const Login = () => {
         <Text
           style={{
             textAlign: 'left',
-            fontSize: 25,
+            fontSize: 26,
             color: Color.black,
             fontFamily: Manrope.SemiBold,
           }}>
           {loginType == '' ? 'Login to' : 'Register to'}
         </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text
             style={{
               textAlign: 'left',
-              fontSize: 30,
+              fontSize: 34,
               color: Color.black,
               fontFamily: Manrope.Bold,
             }}>
@@ -243,8 +243,8 @@ const Login = () => {
           <Iconviewcomponent
             Icontag={'MaterialIcons'}
             iconname={'shopping-bag'}
-            icon_size={40}
-            iconstyle={{color: Color.primary, marginHorizontal: 5}}
+            icon_size={42}
+            iconstyle={{ color: Color.primary, marginHorizontal: 5 }}
           />
         </View>
       </View>
@@ -262,7 +262,7 @@ const Login = () => {
           }}>
           Mobile Number/Email
         </Text>
-        <View style={{marginVertical: 10}}>
+        <View style={{ marginVertical: 10 }}>
           <View style={styles.NumberBoxConatiner}>
             {/* <Text style={styles.numberCountryCode}>+91</Text> */}
             <TextInput
@@ -331,8 +331,8 @@ const Login = () => {
             googleSignIn();
           }}>
           <Image
-            source={{uri: Media.google_icon}}
-            style={{width: 30, height: 30, resizeMode: 'contain'}}
+            source={{ uri: Media.google_icon }}
+            style={{ width: 30, height: 30, resizeMode: 'contain' }}
           />
           <Text
             style={{
@@ -469,11 +469,11 @@ const Login = () => {
       )}
       <View
         style={{
-          marginTop: 20,
+          marginTop: 20, paddingHorizontal: 10
           // justifyContent: 'flex-end',
           // padding: 10,
         }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text
             style={{
               textAlign: 'justify',
@@ -497,7 +497,7 @@ const Login = () => {
             ShopEasey
           </Text>
         </View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity
             onPress={() => navigation.navigate('TermsandConditions')}>
             <Text

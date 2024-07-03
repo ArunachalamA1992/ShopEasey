@@ -36,12 +36,12 @@ const ContactUs = () => {
                             source={{ uri: Media.contactUs }}
                             style={{
                                 width: scr_width,
-                                height: 180, resizeMode: 'contain'
+                                height: 220, resizeMode: 'contain'
                             }}
                         />
                     </View>
 
-                    <View style={{ width: '95%' }}>
+                    <View style={{ width: '95%', paddingVertical: 20 }}>
                         <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.SemiBold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>ABOUT US CONTENT</Text>
                         <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>ShopEasey is one of the fast-growing authorized dealers, with our wings widespread in India, Singapore, and Malaysia. Presenting in simple verbs, ShopEasey is a one-stop shop for all customer requirements. ShopEasey aims to give customers in India, Singapore, and Malaysia a hassle-free and enjoyable shopping experience by offering a large selection of goods from top-tier brands & genuine handmade retailers. The brand focuses on delivering quality products to its consumers with reliable services.</Text>
                     </View>
@@ -106,7 +106,7 @@ const ContactUs = () => {
                             />
                         </View>
                         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', paddingHorizontal: 10 }}>
-                            <Text style={{ width: '95%', fontSize: 18, textAlign: 'justify', color: Color.primary, letterSpacing: 0.5, fontFamily: Manrope.SemiBold }}>Shop Easey</Text>
+                            <Text style={{ width: '95%', fontSize: 18, textAlign: 'justify', color: Color.primary, letterSpacing: 0.5, fontFamily: Manrope.SemiBold, paddingVertical: 5 }}>Shop Easey</Text>
                             <Text style={{ width: '95%', textAlign: 'justify', letterSpacing: 0.5, fontSize: 14, color: Color.cloudyGrey, fontFamily: Manrope.SemiBold }} numberOfLines={2} >India’s No.1 Trade is now a Superband</Text>
                         </View>
                     </View>

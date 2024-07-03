@@ -8,11 +8,11 @@ import {
   StatusBar,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {scr_height, scr_width} from '../../Utils/Dimensions';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation} from '@react-navigation/native';
-import {Media} from '../../Global/Media';
+import { scr_height, scr_width } from '../../Utils/Dimensions';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
 
 const OnboardTwo = () => {
   const navigation = useNavigation();
@@ -26,7 +26,7 @@ const OnboardTwo = () => {
           alignItems: 'center',
           padding: 10,
         }}>
-        <Image source={{uri: Media.welcome}} style={styles.image} />
+        <Image source={{ uri: Media.welcome }} style={styles.image} />
       </View>
       <View
         style={{
@@ -57,7 +57,7 @@ const OnboardTwo = () => {
             Shopeasey.
           </Text>
         </View>
-        <View style={{alignItems: 'center', padding: 15}}>
+        <View style={{ alignItems: 'center', padding: 15 }}>
           <View
             style={{
               flexDirection: 'row',
@@ -76,8 +76,8 @@ const OnboardTwo = () => {
                 marginHorizontal: 5,
               }}>
               <Image
-                source={{uri: Media.coupon_icon}}
-                style={{width: 20, height: 20, resizeMode: 'contain'}}
+                source={{ uri: Media.coupon_icon }}
+                style={{ width: 25, height: 25, resizeMode: 'contain' }}
               />
               <Text
                 style={{
@@ -102,8 +102,8 @@ const OnboardTwo = () => {
                 marginHorizontal: 5,
               }}>
               <Image
-                source={{uri: Media.voucher_icon}}
-                style={{width: 20, height: 20, resizeMode: 'contain'}}
+                source={{ uri: Media.voucher_icon }}
+                style={{ width: 25, height: 25, resizeMode: 'contain' }}
               />
               <Text
                 style={{
@@ -118,8 +118,38 @@ const OnboardTwo = () => {
               </Text>
             </View>
           </View>
-          <View
+          <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginVertical: 10 }}>
+            <View
+              style={{
+                width: '60%',
+                flexDirection: 'row',
+                backgroundColor: '#F0F9FB',
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 10,
+                marginHorizontal: 5,
+              }}>
+              <Image
+                source={{ uri: Media.van_icon }}
+                style={{ width: 25, height: 25, resizeMode: 'contain' }}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: Color.black,
+                  fontFamily: Manrope.SemiBold,
+                  letterSpacing: 0.5,
+                  lineHeight: 22,
+                  paddingHorizontal: 10,
+                }}>
+                Free Shipping
+              </Text>
+            </View>
+          </View>
+          {/* <View
             style={{
+              width: '50%',
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -135,8 +165,8 @@ const OnboardTwo = () => {
                 padding: 10,
               }}>
               <Image
-                source={{uri: Media.van_icon}}
-                style={{width: 20, height: 20, resizeMode: 'contain'}}
+                source={{ uri: Media.van_icon }}
+                style={{ width: 20, height: 20, resizeMode: 'contain' }}
               />
               <Text
                 style={{
@@ -150,10 +180,10 @@ const OnboardTwo = () => {
                 Free Shipping
               </Text>
             </View>
-          </View>
+          </View> */}
         </View>
       </View>
-      <View style={{padding: 10}}>
+      <View style={{ padding: 10 }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Auth')}
           style={{
@@ -180,7 +210,7 @@ const OnboardTwo = () => {
             Icontag={'AntDesign'}
             iconname={'arrowright'}
             icon_size={22}
-            iconstyle={{color: Color.white, paddingHorizontal: 5}}
+            iconstyle={{ color: Color.white, paddingHorizontal: 5 }}
           />
         </TouchableOpacity>
         <TouchableOpacity
