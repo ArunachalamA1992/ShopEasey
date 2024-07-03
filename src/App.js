@@ -67,7 +67,6 @@ const MyDrawer = () => {
   };
 
   useEffect(() => {
-    console.log("Check test");
     const getUserData = async () => {
       try {
         const value = await AsyncStorage.getItem('user_data');
