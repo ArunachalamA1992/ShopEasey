@@ -298,7 +298,6 @@ const HomeScreen = () => {
     try {
       const getFlashDeals = await fetchData.flash_Offers(``, token);
       setFlashOffers(getFlashDeals?.data);
-      console.log('getFlashDeals?.data', getFlashDeals?.data);
       var data = `project=offer`;
       const get_products = await fetchData.list_products(data, token);
       setProducts(get_products?.data);

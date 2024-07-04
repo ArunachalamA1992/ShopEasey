@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -11,10 +11,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { Iconviewcomponent } from '../../Components/Icontag';
-import { useNavigation } from '@react-navigation/native';
-import { Media } from '../../Global/Media';
+import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import {useNavigation} from '@react-navigation/native';
+import {Media} from '../../Global/Media';
 
 import {
   GoogleSignin,
@@ -22,16 +22,18 @@ import {
 } from '@react-native-google-signin/google-signin';
 import common_fn from '../../Config/common_fn';
 import fetchData from '../../Config/fetchData';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setUserData} from '../../Redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
-
   const [number, setNumber] = useState('');
   const [error, setError] = useState(false);
   const [loginType, setLoginType] = useState('');
+  const dispatch = useDispatch();
 
   const isEmail = input => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -66,35 +68,23 @@ const Login = () => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log('User info ============== :', JSON.stringify(userInfo));
-      // if (userInfo) {
-      //   var data = {
-      //     email: userInfo?.user?.email,
-      //   };
-      //   const updateProfiledata = await fetchData.login_with_gmail(data);
-      //   console.log(updateProfiledata);
-      //   if (updateProfiledata.message) {
-      //     dispatch(setUserData(updateProfiledata?.users));
-
-      //     setPercentage(percentage);
-      //     const UserLogin = {
-      //       ...updateProfiledata?.users,
-      //     };
-      //     await AsyncStorage.setItem(
-      //       'user_data',
-      //       JSON.stringify(updateProfiledata?.users),
-      //     );
-      //     await AsyncStorage.setItem(
-      //       'action_login_type',
-      //       JSON.stringify({ login_type: 'properties' }),
-      //     );
-      //     dispatch(setLoginType('properties'));
-      //     if (percentage == 100) {
-      //       replace('TabNavigator', UserLogin);
-      //     } else {
-      //       replace('TabNavigator', UserLogin);
-      //     }
-      //   }
-      // }
+      if (userInfo) {
+        var data = {
+          region_id: countryCode?.id,
+          email: userInfo?.user?.email,
+        };
+        const updateProfiledata = await fetchData.login_with_gmail(data, null);
+        console.log(updateProfiledata);
+        if (updateProfiledata.message) {
+          const UserLogin = {
+            ...updateProfiledata?.data,
+            token: updateProfiledata?.token,
+          };
+          await AsyncStorage.setItem('user_data', JSON.stringify(UserLogin));
+          navigation.replace('TabNavigator');
+          common_fn.showToast(`Welcome to ShopEasey`);
+        }
+      }
     } catch (error) {
       console.log('catch in google_Signing', error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -230,7 +220,7 @@ const Login = () => {
           }}>
           {loginType == '' ? 'Login to' : 'Register to'}
         </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
             style={{
               textAlign: 'left',
@@ -244,7 +234,7 @@ const Login = () => {
             Icontag={'MaterialIcons'}
             iconname={'shopping-bag'}
             icon_size={42}
-            iconstyle={{ color: Color.primary, marginHorizontal: 5 }}
+            iconstyle={{color: Color.primary, marginHorizontal: 5}}
           />
         </View>
       </View>
@@ -262,7 +252,7 @@ const Login = () => {
           }}>
           Mobile Number/Email
         </Text>
-        <View style={{ marginVertical: 10 }}>
+        <View style={{marginVertical: 10}}>
           <View style={styles.NumberBoxConatiner}>
             {/* <Text style={styles.numberCountryCode}>+91</Text> */}
             <TextInput
@@ -331,8 +321,8 @@ const Login = () => {
             googleSignIn();
           }}>
           <Image
-            source={{ uri: Media.google_icon }}
-            style={{ width: 30, height: 30, resizeMode: 'contain' }}
+            source={{uri: Media.google_icon}}
+            style={{width: 30, height: 30, resizeMode: 'contain'}}
           />
           <Text
             style={{
@@ -469,11 +459,12 @@ const Login = () => {
       )}
       <View
         style={{
-          marginTop: 20, paddingHorizontal: 10
+          marginTop: 20,
+          paddingHorizontal: 10,
           // justifyContent: 'flex-end',
           // padding: 10,
         }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
             style={{
               textAlign: 'justify',
@@ -497,7 +488,7 @@ const Login = () => {
             ShopEasey
           </Text>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity
             onPress={() => navigation.navigate('TermsandConditions')}>
             <Text

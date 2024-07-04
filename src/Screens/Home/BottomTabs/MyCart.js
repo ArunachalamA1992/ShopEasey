@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -10,23 +10,23 @@ import {
   View,
 } from 'react-native';
 import Color from '../../../Global/Color';
-import { Manrope } from '../../../Global/FontFamily';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Iconviewcomponent } from '../../../Components/Icontag';
-import { BottomSheet } from 'react-native-btr';
-import { useDispatch, useSelector } from 'react-redux';
+import {Manrope} from '../../../Global/FontFamily';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {Iconviewcomponent} from '../../../Components/Icontag';
+import {BottomSheet} from 'react-native-btr';
+import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../../Config/fetchData';
-import { Media } from '../../../Global/Media';
+import {Media} from '../../../Global/Media';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import common_fn from '../../../Config/common_fn';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { setDataCount } from '../../../Redux';
-import { RefreshControl } from 'react-native-gesture-handler';
+import {setDataCount} from '../../../Redux';
+import {RefreshControl} from 'react-native-gesture-handler';
 
-const { height } = Dimensions.get('screen');
+const {height} = Dimensions.get('screen');
 
-const MyCart = ({ }) => {
+const MyCart = ({}) => {
   const navigation = useNavigation();
   const [defaultRating, setDefaultRating] = useState(0);
   const [selectedData, setSelectedData] = useState([]);
@@ -38,7 +38,7 @@ const MyCart = ({ }) => {
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
-  var { token } = userData;
+  var {token} = userData;
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -290,9 +290,9 @@ const MyCart = ({ }) => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
+    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
       {loading ? (
-        <View style={{ marginHorizontal: 5 }}>
+        <View style={{marginHorizontal: 5}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -338,13 +338,13 @@ const MyCart = ({ }) => {
           <FlatList
             data={cartData}
             keyExtractor={(item, index) => String(index)}
-            renderItem={({ item, index }) => {
+            renderItem={({item, index}) => {
               var discount =
                 100 -
                 parseInt(
                   ((item?.variant?.org_price - item?.variant?.price) /
                     item?.variant?.org_price) *
-                  100,
+                    100,
                 );
               return (
                 <View
@@ -355,10 +355,10 @@ const MyCart = ({ }) => {
                     borderColor: Color.lightgrey,
                     borderRadius: 10,
                     flexDirection: 'row',
-                    alignItems: 'center',
+                    // alignItems: 'center',
                     padding: 10,
                   }}>
-                  <View style={{ flex: 1 }}>
+                  <View style={{}}>
                     <TouchableOpacity
                       onPress={() => {
                         handleCheckboxToggle(item);
@@ -383,23 +383,22 @@ const MyCart = ({ }) => {
                         }
                       />
                     </TouchableOpacity>
-                    {item?.variant?.productImages?.length > 0 ? (
+                    {item?.variant?.productImages?.length == 0 ? (
                       <Image
-                        source={{ uri: item?.variant?.productImages?.[0]?.image }}
-                        // source={{uri: Media.no_image}}
+                        source={{uri: item?.variant?.productImages?.[0]?.image}}
                         style={{
-                          width: 150,
-                          height: 170,
+                          width: 120,
+                          height: 120,
                           resizeMode: 'cover',
                           borderRadius: 10,
                         }}
                       />
                     ) : (
                       <Image
-                        source={{ uri: Media.no_image }}
+                        source={{uri: Media.no_image}}
                         style={{
-                          width: 150,
-                          height: 170,
+                          width: 120,
+                          height: 120,
                           resizeMode: 'contain',
                           borderRadius: 10,
                         }}
@@ -410,22 +409,25 @@ const MyCart = ({ }) => {
                         fontSize: 14,
                         color: Color.red,
                         fontFamily: Manrope.SemiBold,
-                        position: 'absolute',
-                        bottom: 10,
-                        right: 30,
+                        // position: 'absolute',
+                        // bottom: 10,
+                        // right: 30,
+                        marginTop: 5,
                         textAlign: 'center',
                       }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
                   </View>
                   <View
                     style={{
                       flex: 1,
+                      marginLeft: 10,
                     }}>
                     <Text
                       style={{
                         fontSize: 14,
                         color: Color.black,
                         fontFamily: Manrope.SemiBold,
-                      }}>
+                      }}
+                      numberOfLines={2}>
                       {item?.product?.product_name}
                     </Text>
                     <View style={styles.productRatingView}>
@@ -660,7 +662,7 @@ const MyCart = ({ }) => {
             }}
             showsVerticalScrollIndicator={false}
           />
-          {cartData.length > 0 ?
+          {cartData.length > 0 ? (
             <View
               style={{
                 marginVertical: 5,
@@ -709,7 +711,7 @@ const MyCart = ({ }) => {
                     onPress={() => {
                       if (CheckOut?.length > 0) {
                         if (addressData > 0) {
-                          navigation.navigate('OrderConfirmation', { CheckOut });
+                          navigation.navigate('OrderConfirmation', {CheckOut});
                         } else {
                           navigation.navigate('AddAddress', {
                             item: {},
@@ -744,7 +746,7 @@ const MyCart = ({ }) => {
                 </View>
               </View>
             </View>
-            : null}
+          ) : null}
         </>
       )}
       {sale_BottomSheetmenu()}

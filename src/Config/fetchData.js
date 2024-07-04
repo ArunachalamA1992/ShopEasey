@@ -7,6 +7,10 @@ export default {
     let url = api_name + 'auth/user/login_with_otp';
     return api.postMethod(url, data, token);
   },
+  login_with_gmail: (data, token) => {
+    let url = api_name + 'auth/google';
+    return api.postMethod(url, data, token);
+  },
   login_verify_otp: (data, token) => {
     let url = api_name + 'auth/user/login_verify_otp';
     return api.postMethod(url, data, token);
