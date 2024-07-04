@@ -716,7 +716,7 @@ const TabNavigator = () => {
         component={WishListStack}
         options={{
           headerShown: false,
-          tabBarBadge: wishlist,
+          tabBarBadge: wishlist !== 0 ? wishlist : null
         }}
       />
       <Tab.Screen
@@ -724,7 +724,7 @@ const TabNavigator = () => {
         component={MyCartStack}
         options={{
           headerShown: false,
-          tabBarBadge: cart,
+          tabBarBadge: cart !== 0 ? cart : null,
         }}
       />
       <Tab.Screen

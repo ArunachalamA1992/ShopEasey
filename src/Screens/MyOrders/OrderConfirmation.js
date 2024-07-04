@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,16 +15,16 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {BottomSheet} from 'react-native-btr';
-import {Checkbox} from 'react-native-paper';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { BottomSheet } from 'react-native-btr';
+import { Checkbox } from 'react-native-paper';
 import common_fn from '../../Config/common_fn';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import FIcon from 'react-native-vector-icons/FontAwesome';
-import {Media} from '../../Global/Media';
-import {setOrderCancelVisible, setOrderSuccessVisible} from '../../Redux';
+import { Media } from '../../Global/Media';
+import { setOrderCancelVisible, setOrderSuccessVisible } from '../../Redux';
 import RazorpayCheckout from 'react-native-razorpay';
 
 let dummyText =
@@ -32,8 +32,9 @@ let dummyText =
 
 LogBox.ignoreAllLogs();
 
-const OrderConfirmation = ({navigation, route}) => {
+const OrderConfirmation = ({ navigation, route }) => {
   const [CheckOut] = useState(route.params.CheckOut);
+  console.log("Check out ============ : ", CheckOut);
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
   const [selectPayment, setSelectPayment] = useState(null);
@@ -66,7 +67,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const [discriptiontextShown, setDiscriptiontextShown] = useState(false);
   const [numLines, setNumLines] = useState(undefined);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -205,7 +206,7 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const handleOnlineOrder = post_order => {
     RazorpayCheckout.open(post_order?.data)
-      .then(async ({razorpay_signature, razorpay_payment_id}) => {
+      .then(async ({ razorpay_signature, razorpay_payment_id }) => {
         const data = {
           unique_order_id: post_order?.unique_order_id,
           order_id: post_order?.data?.order_id,
@@ -268,12 +269,12 @@ const OrderConfirmation = ({navigation, route}) => {
                     Icontag={'AntDesign'}
                     iconname={'closecircleo'}
                     icon_size={22}
-                    iconstyle={{color: Color.primary, marginRight: 10}}
+                    iconstyle={{ color: Color.primary, marginRight: 10 }}
                   />
                 </TouchableOpacity>
               </View>
-              <View style={{width: '95%', alignItems: 'center'}}>
-                <View style={{width: '95%', alignItems: 'center'}}>
+              <View style={{ width: '95%', alignItems: 'center' }}>
+                <View style={{ width: '95%', alignItems: 'center' }}>
                   <Text
                     style={{
                       width: '100%',
@@ -367,7 +368,7 @@ const OrderConfirmation = ({navigation, route}) => {
                       />
                     </View>
                   </View>
-                  <View style={{width: 2, height: '100%'}}></View>
+                  <View style={{ width: 2, height: '100%' }}></View>
                   <View
                     style={{
                       width: '47%',
@@ -413,7 +414,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     onPress={() => {
                       setChecked(!checked);
                     }}
-                    style={{fontSize: 16}}
+                    style={{ fontSize: 16 }}
                   />
                   <Text
                     style={{
@@ -477,11 +478,11 @@ const OrderConfirmation = ({navigation, route}) => {
             padding: 10,
             marginTop: Platform.OS == 'ios' ? 80 : 0,
           }}>
-          <Text style={{color: 'white'}}>No Internet Connection</Text>
+          <Text style={{ color: 'white' }}>No Internet Connection</Text>
         </Animated.View>
       )}
 
-      <View style={{flex: 1, backgroundColor: Color.softGrey}}>
+      <View style={{ flex: 1, backgroundColor: Color.softGrey }}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -518,7 +519,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}>
                   <TouchableOpacity
                     onPress={() => setSelectAddress(item)}
-                    style={{marginRight: 10, marginTop: 10}}>
+                    style={{ marginRight: 10, marginTop: 10 }}>
                     <Iconviewcomponent
                       Icontag={'Ionicons'}
                       iconname={
@@ -527,10 +528,10 @@ const OrderConfirmation = ({navigation, route}) => {
                           : 'radio-button-off-sharp'
                       }
                       icon_size={22}
-                      iconstyle={{color: Color.lightBlack}}
+                      iconstyle={{ color: Color.lightBlack }}
                     />
                   </TouchableOpacity>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -580,7 +581,7 @@ const OrderConfirmation = ({navigation, route}) => {
                         status: 'UPDATE',
                       });
                     }}
-                    style={{marginHorizontal: 10}}>
+                    style={{ marginHorizontal: 10 }}>
                     <FIcon name="pencil" size={20} color={Color.primary} />
                   </TouchableOpacity>
                 </View>
@@ -628,34 +629,81 @@ const OrderConfirmation = ({navigation, route}) => {
                 icon_color={Color.black}
               />
             </TouchableOpacity>
+            {CheckOut?.[0] ?
 
-            {isExpanded ? (
-              <View style={{width: '100%'}}>
-                <View
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    paddingHorizontal: 10,
-                    backgroundColor: Color.white,
-                  }}>
-                  {CheckOut?.map(item => {
-                    var discount =
-                      100 -
-                      parseInt(
-                        ((item?.variant?.org_price - item?.variant?.price) /
-                          item?.variant?.org_price) *
-                          100,
-                      );
-                    return (
+
+              CheckOut?.map(item => {
+                var discount =
+                  100 -
+                  parseInt(
+                    ((item?.variant?.org_price - item?.variant?.price) /
+                      item?.variant?.org_price) *
+                    100,
+                  );
+                return (
+                  <View
+                    style={{
+                      backgroundColor: Color.white,
+                      marginTop: 10,
+                      borderWidth: 1,
+                      borderColor: Color.lightgrey,
+                      borderRadius: 10,
+                      flexDirection: 'row',
+                      padding: 10,
+                    }}>
+                    <View style={{ flex: 1 }}>
+                      {item?.variant?.productImages?.length > 0 ? (
+                        <Image
+                          source={{
+                            uri: item?.variant?.productImages?.[0]?.image,
+                          }}
+                          style={{
+                            width: 150,
+                            height: 170,
+                            resizeMode: 'cover',
+                            borderRadius: 10,
+                          }}
+                        />
+                      ) : (
+                        <Image
+                          source={{ uri: Media.no_image }}
+                          style={{
+                            width: 150,
+                            height: 170,
+                            resizeMode: 'contain',
+                            borderRadius: 10,
+                          }}
+                        />
+                      )}
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: Color.red,
+                          fontFamily: Manrope.SemiBold,
+                          position: 'absolute',
+                          bottom: 10,
+                          right: 30,
+                          textAlign: 'center',
+                        }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: Color.black,
+                          fontFamily: Manrope.SemiBold,
+                        }}>
+                        {item?.product?.product_name}
+                      </Text>
                       <View
                         style={{
-                          backgroundColor: Color.white,
-                          marginTop: 10,
-                          borderWidth: 1,
-                          borderColor: Color.lightgrey,
-                          borderRadius: 10,
+                          marginVertical: 10,
                           flexDirection: 'row',
-                          padding: 10,
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                         }}>
                         <View style={{}}>
                           {item?.variant?.productImages?.length > 0 ? (
@@ -700,46 +748,200 @@ const OrderConfirmation = ({navigation, route}) => {
                           }}>
                           <Text
                             style={{
+                              fontSize: 12,
+                              color: Color.cloudyGrey,
+                              fontFamily: Manrope.Medium,
+                            }}>
+                            Qty-{' '}
+                          </Text>
+                          <Text
+                            style={{
                               fontSize: 14,
                               color: Color.black,
                               fontFamily: Manrope.SemiBold,
                             }}>
-                            {item?.product?.product_name}
+                            {item?.quantity}
                           </Text>
-                          <View
-                            style={{
-                              marginVertical: 10,
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                            }}>
-                            <Text style={styles.productDiscountPrice}>
-                              {countryCode?.symbol}
-                              {item?.variant?.price}{' '}
-                              <Text style={styles.productPrice}>
-                                {countryCode?.symbol}
-                                {item?.variant?.org_price}
-                              </Text>
-                            </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                );
+              }) :
+              isExpanded ? (
+                <View style={{ width: '100%' }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      paddingHorizontal: 10,
+                      backgroundColor: Color.white,
+                    }}>
+
+
+                    {CheckOut?.map(item => {
+                      var discount =
+                        100 -
+                        parseInt(
+                          ((item?.variant?.org_price - item?.variant?.price) /
+                            item?.variant?.org_price) *
+                          100,
+                        );
+                      return (
+                        <View
+                          style={{
+                            backgroundColor: Color.white,
+                            marginTop: 10,
+                            borderWidth: 1,
+                            borderColor: Color.lightgrey,
+                            borderRadius: 10,
+                            flexDirection: 'row',
+                            padding: 10,
+                          }}>
+                          <View style={{ flex: 1 }}>
+                            {item?.variant?.productImages?.length > 0 ? (
+                              <Image
+                                source={{
+                                  uri: item?.variant?.productImages?.[0]?.image,
+                                }}
+                                style={{
+                                  width: 150,
+                                  height: 170,
+                                  resizeMode: 'cover',
+                                  borderRadius: 10,
+                                }}
+                              />
+                            ) : (
+                              <Image
+                                source={{ uri: Media.no_image }}
+                                style={{
+                                  width: 150,
+                                  height: 170,
+                                  resizeMode: 'contain',
+                                  borderRadius: 10,
+                                }}
+                              />
+                            )}
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: Color.red,
+                                fontFamily: Manrope.SemiBold,
+                                position: 'absolute',
+                                bottom: 10,
+                                right: 30,
+                                textAlign: 'center',
+                              }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
                           </View>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: '#0FAD45',
-                              fontFamily: Manrope.Bold,
-                              letterSpacing: 0.5,
-                            }}
-                            numberOfLines={1}>
-                            Save {discount}% OFF
-                          </Text>
                           <View
                             style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              flexWrap: 'wrap',
+                              flex: 1,
                             }}>
-                            {item?.variant?.size != '' && (
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: Color.black,
+                                fontFamily: Manrope.SemiBold,
+                              }}>
+                              {item?.product?.product_name}
+                            </Text>
+                            <View
+                              style={{
+                                marginVertical: 10,
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}>
+                              <Text style={styles.productDiscountPrice}>
+                                {countryCode?.symbol}
+                                {item?.variant?.price}{' '}
+                                <Text style={styles.productPrice}>
+                                  {countryCode?.symbol}
+                                  {item?.variant?.org_price}
+                                </Text>
+                              </Text>
+                            </View>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: '#0FAD45',
+                                fontFamily: Manrope.Bold,
+                                letterSpacing: 0.5,
+                              }}
+                              numberOfLines={1}>
+                              Save {discount}% OFF
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                flexWrap: 'wrap',
+                              }}>
+                              {item?.variant?.size != '' && (
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    marginRight: 5,
+                                  }}>
+                                  <Text
+                                    style={{
+                                      fontSize: 12,
+                                      color: Color.cloudyGrey,
+                                      fontFamily: Manrope.Medium,
+                                      letterSpacing: 0.5,
+                                    }}>
+                                    Size-{' '}
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                      color: Color.black,
+                                      fontFamily: Manrope.SemiBold,
+                                    }}>
+                                    {item?.variant?.size}
+                                  </Text>
+                                </View>
+                              )}
+                              {item?.variant?.color && (
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    marginRight: 5,
+                                  }}>
+                                  <Text
+                                    style={{
+                                      fontSize: 12,
+                                      color: Color.cloudyGrey,
+                                      fontFamily: Manrope.Medium,
+                                      letterSpacing: 0.5,
+                                    }}>
+                                    Color-{' '}
+                                  </Text>
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                    }}>
+                                    <Text
+                                      style={{
+                                        paddingHorizontal: 5,
+                                        fontSize: 14,
+                                        color: Color.black,
+                                        fontFamily: Manrope.SemiBold,
+                                        letterSpacing: 0.5,
+                                      }}>
+                                      {common_fn.getColorName(
+                                        item?.variant?.color,
+                                      )}
+                                    </Text>
+                                  </View>
+                                </View>
+                              )}
                               <View
                                 style={{
                                   flexDirection: 'row',
@@ -752,9 +954,8 @@ const OrderConfirmation = ({navigation, route}) => {
                                     fontSize: 12,
                                     color: Color.cloudyGrey,
                                     fontFamily: Manrope.Medium,
-                                    letterSpacing: 0.5,
                                   }}>
-                                  Size-{' '}
+                                  Qty-{' '}
                                 </Text>
                                 <Text
                                   style={{
@@ -762,107 +963,46 @@ const OrderConfirmation = ({navigation, route}) => {
                                     color: Color.black,
                                     fontFamily: Manrope.SemiBold,
                                   }}>
-                                  {item?.variant?.size}
+                                  {item?.quantity}
                                 </Text>
                               </View>
-                            )}
-                            {item?.variant?.color && (
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'flex-start',
-                                  alignItems: 'center',
-                                  marginRight: 5,
-                                }}>
-                                <Text
-                                  style={{
-                                    fontSize: 12,
-                                    color: Color.cloudyGrey,
-                                    fontFamily: Manrope.Medium,
-                                    letterSpacing: 0.5,
-                                  }}>
-                                  Color-{' '}
-                                </Text>
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                  }}>
-                                  <Text
-                                    style={{
-                                      paddingHorizontal: 5,
-                                      fontSize: 14,
-                                      color: Color.black,
-                                      fontFamily: Manrope.SemiBold,
-                                      letterSpacing: 0.5,
-                                    }}>
-                                    {common_fn.getColorName(
-                                      item?.variant?.color,
-                                    )}
-                                  </Text>
-                                </View>
-                              </View>
-                            )}
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                                marginRight: 5,
-                              }}>
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  color: Color.cloudyGrey,
-                                  fontFamily: Manrope.Medium,
-                                }}>
-                                Qty-{' '}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 14,
-                                  color: Color.black,
-                                  fontFamily: Manrope.SemiBold,
-                                }}>
-                                {item?.quantity}
-                              </Text>
                             </View>
                           </View>
                         </View>
-                      </View>
-                    );
-                  })}
-                </View>
+                      );
+                    })}
+                  </View>
 
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginVertical: 10,
-                    paddingVertical: 10,
-                    margin: 10,
-                    borderRadius: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#E7F7EC',
-                  }}>
-                  <Iconviewcomponent
-                    Icontag={'FontAwesome5'}
-                    iconname={'truck'}
-                    icon_size={20}
-                    icon_color={Color.black}
-                  />
-                  <Text
+                  <View
                     style={{
-                      fontSize: 14,
-                      color: Color.black,
-                      paddingHorizontal: 10,
-                      fontFamily: Manrope.SemiBold,
+                      width: '90%',
+                      flexDirection: 'row',
+                      marginVertical: 10,
+                      paddingVertical: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: '#E7F7EC',
                     }}>
-                    Delivery by tomorrow, Free Delivery
-                  </Text>
+                    <Iconviewcomponent
+                      Icontag={'FontAwesome5'}
+                      iconname={'truck'}
+                      icon_size={20}
+                      icon_color={Color.black}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: Color.black,
+                        paddingHorizontal: 10,
+                        fontFamily: Manrope.SemiBold,
+                      }}>
+                      Delivery by tomorrow, Free Delivery
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            ) : null}
+              ) : null
+
+            }
           </View>
 
           <View
@@ -882,7 +1022,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 borderRadius: 5,
                 backgroundColor: '#ECEFFE',
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Iconviewcomponent
                   Icontag={'MaterialCommunityIcons'}
                   iconname={'brightness-percent'}
@@ -962,7 +1102,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     </Text>
                     <TouchableOpacity
                       onPress={() => setSelectPayment(item)}
-                      style={{marginEnd: 20}}>
+                      style={{ marginEnd: 20 }}>
                       <Iconviewcomponent
                         Icontag={'Ionicons'}
                         iconname={
@@ -971,7 +1111,7 @@ const OrderConfirmation = ({navigation, route}) => {
                             : 'radio-button-off-sharp'
                         }
                         icon_size={22}
-                        iconstyle={{color: Color.lightBlack}}
+                        iconstyle={{ color: Color.lightBlack }}
                       />
                     </TouchableOpacity>
                   </View>
@@ -1179,7 +1319,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 paddingHorizontal: 10,
                 marginVertical: 10,
               }}>
-              <View style={{paddingHorizontal: 10, elevation: 1}}>
+              <View style={{ paddingHorizontal: 10, elevation: 1 }}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -1252,7 +1392,7 @@ const OrderConfirmation = ({navigation, route}) => {
             {Sub_total + tax}
           </Text>
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <TouchableOpacity
             onPress={() => {
               if (selectPayment && selectPayment.name) {

@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Color from '../../Global/Color';
 import common_fn from '../../Config/common_fn';
-import {Media} from '../../Global/Media';
-import {Manrope} from '../../Global/FontFamily';
+import { Media } from '../../Global/Media';
+import { Manrope } from '../../Global/FontFamily';
 import StepIndicator from 'react-native-step-indicator';
 import FOIcon from 'react-native-vector-icons/Fontisto';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Button, Divider} from 'react-native-paper';
+import { Button, Divider } from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const customStyles = {
   stepIndicatorSize: 25,
@@ -18,7 +18,9 @@ const customStyles = {
   stepIndicatorLabelFontSize: 15,
   labelColor: Color.cloudyGrey,
   labelSize: 15,
-  currentStepIndicatorSize: 30,
+  labelAlign: 'flex-start',
+  stepIndicatorLabelCurrentStyle: 'capitalize',
+  currentStepIndicatorSize: 35,
   currentStepStrokeWidth: 3,
   stepStrokeCurrentColor: Color.white,
   stepIndicatorCurrentColor: Color.white,
@@ -34,19 +36,20 @@ const customStyles = {
   stepIndicatorLabelUnFinishedColor: Color.white,
 };
 
-const TrackOrder = ({navigation, route}) => {
+const TrackOrder = ({ navigation, route }) => {
   const [orderData] = useState(route.params.orderData);
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   const filteredOrderData = orderStatus?.filter(
     order => !['missing', 'pending', 'cancelled']?.includes(order.status),
   );
 
   const labels = filteredOrderData?.map(order => order.status);
+  console.log("labels =========  :", labels);
   const currentPosition = filteredOrderData.findIndex(
     order => order.status === orderData?.status,
   );
@@ -72,9 +75,9 @@ const TrackOrder = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F6FA' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{padding: 10, backgroundColor: Color.white}}>
+        <View style={{ padding: 10, backgroundColor: Color.white }}>
           <View
             style={{
               flexDirection: 'row',
@@ -84,7 +87,7 @@ const TrackOrder = ({navigation, route}) => {
             }}>
             {orderData?.variants?.productImages?.length > 0 ? (
               <Image
-                source={{uri: orderData?.variants?.productImages?.[0]?.image}}
+                source={{ uri: orderData?.variants?.productImages?.[0]?.image }}
                 style={{
                   width: 100,
                   height: 110,
@@ -94,7 +97,7 @@ const TrackOrder = ({navigation, route}) => {
               />
             ) : (
               <Image
-                source={{uri: Media.no_image}}
+                source={{ uri: Media.no_image }}
                 style={{
                   width: 100,
                   height: 110,
@@ -103,7 +106,7 @@ const TrackOrder = ({navigation, route}) => {
                 }}
               />
             )}
-            <View style={{flex: 1, marginHorizontal: 10}}>
+            <View style={{ flex: 1, marginHorizontal: 10 }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -252,8 +255,8 @@ const TrackOrder = ({navigation, route}) => {
                   {orderData?.order?.region_id == 454
                     ? '$'
                     : orderData?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'}
+                      ? 'RM'
+                      : '₹'}
                   {orderData?.price}
                 </Text>
               </View>
@@ -261,7 +264,7 @@ const TrackOrder = ({navigation, route}) => {
           </View>
         </View>
         <View
-          style={{marginTop: 10, backgroundColor: Color.white, padding: 10}}>
+          style={{ marginTop: 10, backgroundColor: Color.white, padding: 10 }}>
           <Text
             style={{
               fontSize: 16,
@@ -271,7 +274,7 @@ const TrackOrder = ({navigation, route}) => {
             }}>
             Order Details
           </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -291,7 +294,7 @@ const TrackOrder = ({navigation, route}) => {
               Gokul Raj
             </Text>
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -311,7 +314,7 @@ const TrackOrder = ({navigation, route}) => {
               123456
             </Text>
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -331,7 +334,7 @@ const TrackOrder = ({navigation, route}) => {
               AMKRTSUWYSGW
             </Text>
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -353,7 +356,7 @@ const TrackOrder = ({navigation, route}) => {
           </View>
         </View>
         <View
-          style={{marginTop: 10, padding: 10, backgroundColor: Color.white}}>
+          style={{ marginTop: 10, padding: 10, backgroundColor: Color.white }}>
           <Text
             style={{
               fontSize: 16,
@@ -377,7 +380,7 @@ const TrackOrder = ({navigation, route}) => {
               stepCount={filteredOrderData.length}
               labels={labels}
               direction="vertical"
-              renderStepIndicator={({position, stepStatus}) => {
+              renderStepIndicator={({ position, stepStatus }) => {
                 switch (stepStatus) {
                   case 'current':
                     return (
@@ -408,7 +411,7 @@ const TrackOrder = ({navigation, route}) => {
                 }
               }}
             />
-            <Divider style={{height: 1, marginVertical: 10}} />
+            <Divider style={{ height: 1, marginVertical: 10 }} />
             <TouchableOpacity
               style={{
                 flexDirection: 'row',
@@ -431,7 +434,7 @@ const TrackOrder = ({navigation, route}) => {
         </View>
         <Button
           mode="contained"
-          onPress={() => {}}
+          onPress={() => { }}
           style={{
             backgroundColor: Color.white,
             borderRadius: 10,

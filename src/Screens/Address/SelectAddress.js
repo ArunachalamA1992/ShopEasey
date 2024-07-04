@@ -111,7 +111,11 @@ const SelectAddress = () => {
 
                     </View>
                     <View style={{ width: '100%', flex: 1, bottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => navigation.navigate("AddAddress")} style={{ width: '90%', flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.white, borderColor: Color.primary, borderWidth: 1, borderRadius: 5, marginVertical: 0 }}>
+                        <TouchableOpacity onPress={() => navigation.navigate("AddAddress", {
+                            item: "",
+                            CheckOut: "",
+                            status: '',
+                        })} style={{ width: '90%', flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.white, borderColor: Color.primary, borderWidth: 1, borderRadius: 5, marginVertical: 0 }}>
                             <Iconviewcomponent
                                 Icontag={'AntDesign'}
                                 iconname={'plus'}
