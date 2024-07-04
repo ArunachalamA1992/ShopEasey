@@ -231,13 +231,15 @@ const Login = () => {
             fontFamily: Manrope.Bold,
             marginTop: 10,
           }}>
-          Mobile Number/Email
+          {countryCode?.id == 452 ? 'Mobile' : 'WhatsApp'} Number/Email
         </Text>
         <View style={{marginVertical: 10}}>
           <View style={styles.NumberBoxConatiner}>
             {/* <Text style={styles.numberCountryCode}>+91</Text> */}
             <TextInput
-              placeholder="Mobile number or Email"
+              placeholder={`${
+                countryCode?.id == 452 ? 'Mobile' : 'WhatsApp'
+              } Number or Email`}
               placeholderTextColor={Color.cloudyGrey}
               value={number}
               maxLength={isMobile(number) ? 10 : undefined}

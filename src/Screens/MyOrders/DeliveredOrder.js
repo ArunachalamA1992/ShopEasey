@@ -121,8 +121,8 @@ const DeliveredOrder = ({navigation, route}) => {
               <Image
                 source={{uri: orderData?.variants?.productImages?.[0]?.image}}
                 style={{
-                  width: 100,
-                  height: 110,
+                  width: 120,
+                  height: 120,
                   resizeMode: 'cover',
                   borderRadius: 10,
                 }}
@@ -131,14 +131,14 @@ const DeliveredOrder = ({navigation, route}) => {
               <Image
                 source={{uri: Media.no_image}}
                 style={{
-                  width: 100,
-                  height: 110,
+                  width: 120,
+                  height: 120,
                   resizeMode: 'cover',
                   borderRadius: 10,
                 }}
               />
             )}
-            <View style={{flex: 1, marginHorizontal: 10}}>
+            <View style={{flex: 1, marginLeft: 10}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -155,11 +155,11 @@ const DeliveredOrder = ({navigation, route}) => {
                 </Text>
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 10,
                     color: Color.white,
                     padding: 5,
                     paddingHorizontal: 10,
-                    borderRadius: 5,
+                    borderRadius: 50,
                     backgroundColor: Color.green,
                     fontFamily: Manrope.SemiBold,
                     textTransform: 'capitalize',
@@ -173,9 +173,8 @@ const DeliveredOrder = ({navigation, route}) => {
                   fontSize: 14,
                   color: Color.lightBlack,
                   fontFamily: Manrope.SemiBold,
-                  letterSpacing: 0.5,
                 }}
-                numberOfLines={1}>
+                numberOfLines={2}>
                 {orderData?.products?.product_name}
               </Text>
               <View
@@ -187,64 +186,78 @@ const DeliveredOrder = ({navigation, route}) => {
                   paddingVertical: 3,
                 }}>
                 {orderData?.variants?.color != '' && (
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                      borderRightWidth: 1,
-                      borderRightColor: Color.lightgrey,
-                      paddingHorizontal: 5,
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: Color.cloudyGrey,
-                        fontFamily: Manrope.Medium,
-                        marginRight: 5,
-                      }}>
-                      Color
-                    </Text>
+                  <>
                     <View
                       style={{
-                        width: 15,
-                        height: 15,
-                        backgroundColor: bgcolor,
-                        borderRadius: 30,
-                        borderWidth: 1,
-                        borderColor: Color.primary,
-                      }}></View>
-                  </View>
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                        borderRightWidth: 1,
+                        borderRightColor: Color.lightgrey,
+                        paddingHorizontal: 5,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Medium,
+                          marginRight: 5,
+                        }}>
+                        Color
+                      </Text>
+                      <View
+                        style={{
+                          width: 15,
+                          height: 15,
+                          backgroundColor: bgcolor,
+                          borderRadius: 30,
+                          borderWidth: 1,
+                          borderColor: Color.primary,
+                        }}></View>
+                    </View>
+                    <View
+                      style={{
+                        width: 1,
+                        height: 20,
+                        backgroundColor: Color.lightgrey,
+                      }}
+                    />
+                  </>
                 )}
                 {orderData?.variants?.size != '' && (
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                      marginHorizontal: 5,
-                      borderRightWidth: 1,
-                      borderRightColor: Color.lightgrey,
-                      paddingHorizontal: 5,
-                    }}>
-                    <Text
+                  <>
+                    <View
                       style={{
-                        fontSize: 12,
-                        color: Color.cloudyGrey,
-                        fontFamily: Manrope.Medium,
-                        marginRight: 5,
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
                       }}>
-                      Size -
-                    </Text>
-                    <Text
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Medium,
+                          marginRight: 5,
+                        }}>
+                        Size -
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Medium,
+                        }}>
+                        {orderData?.variants?.size}
+                      </Text>
+                    </View>
+                    <View
                       style={{
-                        fontSize: 12,
-                        color: Color.cloudyGrey,
-                        fontFamily: Manrope.Medium,
-                      }}>
-                      {orderData?.variants?.size}
-                    </Text>
-                  </View>
+                        width: 1,
+                        height: 20,
+                        backgroundColor: Color.lightgrey,
+                      }}
+                    />
+                  </>
                 )}
                 <View
                   style={{

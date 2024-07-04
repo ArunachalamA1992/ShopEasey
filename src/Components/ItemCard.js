@@ -154,7 +154,7 @@ const ItemCard = props => {
             end={{x: 1, y: 0}}
             colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
             <Octicons name="location" size={15} color={Color.white} />
-            <Text style={styles.locationText}>{item?.location}</Text>
+            <Text style={styles.locationText}>{item?.vendor?.country}</Text>
             {/* <Text
             style={{
               color: Color.white,
@@ -174,10 +174,11 @@ const ItemCard = props => {
               style={{
                 flex: 1,
                 color: Color.cloudyGrey,
-                fontSize: 14,
+                fontSize: 12,
                 fontFamily: Manrope.Medium,
               }}>
-              {item?.type} - {item?.category?.category_name}
+              {item?.type && `${item?.type} - `}
+              {item?.category?.category_name}
             </Text>
             <Text
               style={{
@@ -189,7 +190,7 @@ const ItemCard = props => {
             </Text>
           </View>
 
-          <Text style={styles.productName} numberOfLines={1}>
+          <Text style={styles.productName} numberOfLines={2}>
             {item?.product_name}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -304,9 +305,9 @@ export const ItemCardHorizontal = props => {
   return (
     <TouchableOpacity
       style={{
-        width: 150,
+        width: 170,
         // width: '50%',
-        height: 285,
+        // height: 285,
         backgroundColor: Color.white,
         margin: 5,
         borderRadius: 5,
@@ -371,7 +372,7 @@ export const ItemCardHorizontal = props => {
           end={{x: 1, y: 0}}
           colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
           <Octicons name="location" size={15} color={Color.white} />
-          <Text style={styles.locationText}>{item?.location}</Text>
+          <Text style={styles.locationText}>{item?.vendor?.country}</Text>
         </LinearGradient>
       </ImageBackground>
       <View style={styles.contentView}>
@@ -383,7 +384,7 @@ export const ItemCardHorizontal = props => {
               fontSize: 14,
               fontFamily: Manrope.Medium,
             }}>
-            {item?.type && `${item?.type}-`}
+            {item?.type && `${item?.type} - `}
             {item?.category?.category_name}
           </Text>
         </View>
