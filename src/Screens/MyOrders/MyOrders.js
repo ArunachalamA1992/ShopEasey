@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -11,21 +11,21 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {useNavigation} from '@react-navigation/native';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { useNavigation } from '@react-navigation/native';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import F6Icon from 'react-native-vector-icons/FontAwesome6';
 import Icon from 'react-native-vector-icons/Ionicons';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import common_fn from '../../Config/common_fn';
-import {TabView, TabBar} from 'react-native-tab-view';
-import {Media} from '../../Global/Media';
+import { TabView, TabBar } from 'react-native-tab-view';
+import { Media } from '../../Global/Media';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-const Placed = ({token, index, navigation}) => {
+const Placed = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -49,9 +49,9 @@ const Placed = ({token, index, navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -115,7 +115,7 @@ const Placed = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -139,7 +139,7 @@ const Placed = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -149,7 +149,7 @@ const Placed = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -312,8 +312,8 @@ const Placed = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -330,7 +330,7 @@ const Placed = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('TrackingDetails', {orderData: item});
+                    navigation.navigate('TrackingDetails', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -377,7 +377,7 @@ const Placed = ({token, index, navigation}) => {
   );
 };
 
-const Pending = ({token, index, navigation}) => {
+const Pending = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -402,9 +402,9 @@ const Pending = ({token, index, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -468,7 +468,7 @@ const Pending = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -492,7 +492,7 @@ const Pending = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -502,7 +502,7 @@ const Pending = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -665,8 +665,8 @@ const Pending = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -683,7 +683,7 @@ const Pending = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('TrackingDetails', {orderData: item});
+                    navigation.navigate('TrackingDetails', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -730,7 +730,7 @@ const Pending = ({token, index, navigation}) => {
   );
 };
 
-const Proccesed = ({token, index, navigation}) => {
+const Proccesed = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -755,9 +755,9 @@ const Proccesed = ({token, index, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -821,7 +821,7 @@ const Proccesed = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -845,7 +845,7 @@ const Proccesed = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -855,7 +855,7 @@ const Proccesed = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -1018,8 +1018,8 @@ const Proccesed = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -1036,7 +1036,7 @@ const Proccesed = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('TrackingDetails', {orderData: item});
+                    navigation.navigate('TrackingDetails', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -1083,7 +1083,7 @@ const Proccesed = ({token, index, navigation}) => {
   );
 };
 
-const OnShipping = ({token, index, navigation}) => {
+const OnShipping = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1107,9 +1107,9 @@ const OnShipping = ({token, index, navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -1173,7 +1173,7 @@ const OnShipping = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -1197,7 +1197,7 @@ const OnShipping = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -1207,7 +1207,7 @@ const OnShipping = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -1370,8 +1370,8 @@ const OnShipping = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -1394,7 +1394,7 @@ const OnShipping = ({token, index, navigation}) => {
                       fontFamily: Manrope.Bold,
                     }}
                     onPress={() => {
-                      navigation.navigate('TrackingDetails', {orderData: item});
+                      navigation.navigate('TrackingDetails', { orderData: item });
                     }}>
                     Track order
                   </Text>
@@ -1435,7 +1435,7 @@ const OnShipping = ({token, index, navigation}) => {
   );
 };
 
-const ArrivedOrders = ({token, index, navigation}) => {
+const ArrivedOrders = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1459,9 +1459,9 @@ const ArrivedOrders = ({token, index, navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -1525,7 +1525,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -1549,7 +1549,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -1559,7 +1559,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -1722,8 +1722,8 @@ const ArrivedOrders = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -1740,7 +1740,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('DeliveredOrder', {orderData: item});
+                    navigation.navigate('DeliveredOrder', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -1787,7 +1787,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
   );
 };
 
-const CancelledOrders = ({token, index, navigation}) => {
+const CancelledOrders = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1812,9 +1812,9 @@ const CancelledOrders = ({token, index, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 5}}>
+        <View style={{ padding: 5 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -1878,7 +1878,7 @@ const CancelledOrders = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -1902,7 +1902,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -1912,7 +1912,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -2074,8 +2074,8 @@ const CancelledOrders = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$ '
                           : item?.order?.region_id == 453
-                          ? 'RM '
-                          : '₹ '}
+                            ? 'RM '
+                            : '₹ '}
                         {item?.price}
                       </Text>
                     </View>
@@ -2141,12 +2141,12 @@ const CancelledOrders = ({token, index, navigation}) => {
   );
 };
 
-const MyOrders = ({navigation}) => {
+const MyOrders = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState([]);
   const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
 
@@ -2181,7 +2181,7 @@ const MyOrders = ({navigation}) => {
       .replace(/orders|shipping/i, match => ` ${match}`),
   }));
 
-  const renderScene = ({route}) => {
+  const renderScene = ({ route }) => {
     switch (route.key) {
       case 'placed':
         return (
@@ -2243,11 +2243,11 @@ const MyOrders = ({navigation}) => {
   return (
     <View style={styles.container}>
       {loading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
-                style={{flexDirection: 'row', alignItems: 'center'}}>
+                style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <SkeletonPlaceholder.Item
                   width={'80%'}
                   height={50}
@@ -2353,9 +2353,9 @@ const MyOrders = ({navigation}) => {
                 padding: 5,
                 paddingHorizontal: 10,
               }}
-              onPress={() => {}}>
+              onPress={() => { }}>
               <Icon
-                style={{width: 20, height: 20}}
+                style={{ width: 20, height: 20 }}
                 color={Color.lightgrey}
                 name="search"
                 size={20}
@@ -2385,17 +2385,17 @@ const MyOrders = ({navigation}) => {
                 borderWidth: 1,
                 borderColor: Color.lightgrey,
               }}
-              onPress={() => {}}>
+              onPress={() => { }}>
               <F6Icon color={Color.lightgrey} name="sliders" size={20} />
             </TouchableOpacity>
           </View>
           <TabView
-            navigationState={{index, routes}}
+            navigationState={{ index, routes }}
             renderScene={renderScene}
             swipeEnabled={false}
             onIndexChange={setIndex}
-            style={{flex: 1}}
-            initialLayout={{width: layout.width}}
+            style={{ flex: 1 }}
+            initialLayout={{ width: layout.width }}
             renderTabBar={props => (
               <TabBar
                 {...props}
@@ -2421,7 +2421,7 @@ const MyOrders = ({navigation}) => {
                 }}
                 activeColor={Color.white}
                 inactiveColor={Color.cloudyGrey}
-                renderLabel={({route, focused, color}) => (
+                renderLabel={({ route, focused, color }) => (
                   <View
                     style={{
                       backgroundColor: focused ? Color.primary : Color.white,
@@ -2432,7 +2432,7 @@ const MyOrders = ({navigation}) => {
                       borderColor: Color.lightgrey,
                     }}>
                     <Text
-                      style={{color, fontSize: 14, fontFamily: Manrope.Bold}}>
+                      style={{ color, fontSize: 14, fontFamily: Manrope.Bold }}>
                       {route.title}
                     </Text>
                   </View>

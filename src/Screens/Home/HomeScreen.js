@@ -706,39 +706,42 @@ const HomeScreen = () => {
                   onPress={() => {
                     navigation.navigate('WishListTab');
                   }}>
-                  <Badge
-                    style={{
-                      position: 'absolute',
-                      zIndex: 1,
-                      top: -10,
-                      right: -10,
-                      backgroundColor: Color.red,
-                      color: Color.white,
-                      fontFamily: Manrope.Bold,
-                      fontSize: 12,
-                    }}>
-                    {wishlist}
-                  </Badge>
+                  {wishlist != 0 ?
+                    <Badge
+                      style={{
+                        position: 'absolute',
+                        zIndex: 1,
+                        top: -10,
+                        right: -10,
+                        backgroundColor: Color.red,
+                        color: Color.white,
+                        fontFamily: Manrope.Bold,
+                        fontSize: 12,
+                      }}>
+                      {wishlist}
+                    </Badge> : null}
                   <AntDesign name="hearto" size={22} color={Color.white} />
                 </TouchableOpacity>
-                <TouchableOpacity
+
+                < TouchableOpacity
                   style={{ marginHorizontal: 10 }}
                   onPress={() => {
                     navigation.navigate('MyCartTab');
                   }}>
-                  <Badge
-                    style={{
-                      position: 'absolute',
-                      zIndex: 1,
-                      top: -10,
-                      right: -10,
-                      backgroundColor: Color.red,
-                      color: Color.white,
-                      fontFamily: Manrope.Bold,
-                      fontSize: 12,
-                    }}>
-                    {cart}
-                  </Badge>
+                  {cart != 0 ?
+                    <Badge
+                      style={{
+                        position: 'absolute',
+                        zIndex: 1,
+                        top: -10,
+                        right: -10,
+                        backgroundColor: Color.red,
+                        color: Color.white,
+                        fontFamily: Manrope.Bold,
+                        fontSize: 12,
+                      }}>
+                      {cart}
+                    </Badge> : null}
                   <Feather name="shopping-cart" size={22} color={Color.white} />
                 </TouchableOpacity>
               </View>
@@ -1553,26 +1556,29 @@ const HomeScreen = () => {
             }}
           />
         </>
-      )}
-      {netInfo_State ? null : (
-        <Animated.View
-          animation="fadeInRight"
-          style={{
-            flex: 1,
-            position: 'absolute',
-            zIndex: 9999,
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#626262',
-            opacity: 0.5,
-            padding: 10,
-            marginTop: Platform.OS == 'ios' ? 80 : 0,
-          }}>
-          <Text style={{ color: 'white' }}>No Internet Connection</Text>
-        </Animated.View>
-      )}
+      )
+      }
+      {
+        netInfo_State ? null : (
+          <Animated.View
+            animation="fadeInRight"
+            style={{
+              flex: 1,
+              position: 'absolute',
+              zIndex: 9999,
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#626262',
+              opacity: 0.5,
+              padding: 10,
+              marginTop: Platform.OS == 'ios' ? 80 : 0,
+            }}>
+            <Text style={{ color: 'white' }}>No Internet Connection</Text>
+          </Animated.View>
+        )
+      }
 
       <Modal transparent={true} animationType="fade" visible={imageVisible}>
         <View style={{ backgroundColor: Color.transparantBlack, flex: 1 }}>
@@ -1613,7 +1619,7 @@ const HomeScreen = () => {
         </View>
       </Modal>
       <PostCompletedModal navigation={navigation} />
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 

@@ -541,6 +541,7 @@ const TabNavigator = () => {
   const userData = useSelector(state => state.UserReducer.userData);
   var { token } = userData;
   const dataCount = useSelector(state => state.UserReducer.count);
+  console.log("Count =========== :", dataCount.wishlist);
   var { wishlist, cart } = dataCount;
 
   const dispatch = useDispatch();
@@ -755,7 +756,7 @@ const TabNavigator = () => {
         component={WishListStack}
         options={{
           headerShown: false,
-          tabBarBadge: wishlist,
+          tabBarBadge: wishlist !== 0 ? wishlist : null
         }}
       />
       <Tab.Screen
@@ -763,7 +764,7 @@ const TabNavigator = () => {
         component={MyCartStack}
         options={{
           headerShown: false,
-          tabBarBadge: cart,
+          tabBarBadge: cart !== 0 ? cart : null,
         }}
       />
       <Tab.Screen
