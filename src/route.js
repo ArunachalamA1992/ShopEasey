@@ -1,10 +1,9 @@
 import React, {useEffect} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import {Text, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {Badge} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import HomeScreen from './Screens/Home/HomeScreen';
 import Color from './Global/Color';
@@ -14,7 +13,6 @@ import MyCart from './Screens/Home/BottomTabs/MyCart';
 import Profile from './Screens/Home/BottomTabs/Profile';
 import Login from './Screens/Auth/Login';
 import OTPScreen from './Screens/Auth/OTPScreen';
-import {NavigationDrawerStructure} from './Components/Nav/NavDrawer';
 import {Manrope} from './Global/FontFamily';
 import PrivacyPolicy from './Screens/Sidemenu/PrivacyPolicy';
 import TermsandConditions from './Screens/Sidemenu/TermsandConditions';
@@ -26,13 +24,10 @@ import MyOrders from './Screens/MyOrders/MyOrders';
 import AddAddress from './Screens/Address/AddAddress';
 import SelectAddress from './Screens/Address/SelectAddress';
 import ProfileView from './Screens/Profile/ProfileView';
-import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
 import FollowingSellers from './Screens/Profile/FollowingSellers';
 import SellerProfile from './Screens/Profile/SellerProfile';
 import {setDataCount} from './Redux';
 import fetchData from './Config/fetchData';
-import ProductList from './Screens/Home/ProductList';
-import ProductDetails from './Screens/Home/ProductDetails';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -197,29 +192,29 @@ export const WishListStack = () => {
               />
             </View>
           ),
-          headerRight: () => (
-            <TouchableOpacity
-              style={{right: 10}}
-              onPress={() => {
-                navigation.navigate('Notification');
-              }}>
-              <Badge
-                badgeStyle={{
-                  backgroundColor: Color.primary,
-                  position: 'absolute',
-                  right: 0,
-                  zIndex: 1,
-                }}>
-                {notificationCount}
-              </Badge>
-              <Iconviewcomponent
-                Icontag={'Ionicons'}
-                iconname={'notifications-outline'}
-                icon_size={26}
-                icon_color={Color.black}
-              />
-            </TouchableOpacity>
-          ),
+          // headerRight: () => (
+          //   <TouchableOpacity
+          //     style={{right: 10}}
+          //     onPress={() => {
+          //       navigation.navigate('Notification');
+          //     }}>
+          //     <Badge
+          //       badgeStyle={{
+          //         backgroundColor: Color.primary,
+          //         position: 'absolute',
+          //         right: 0,
+          //         zIndex: 1,
+          //       }}>
+          //       {notificationCount}
+          //     </Badge>
+          //     <Iconviewcomponent
+          //       Icontag={'Ionicons'}
+          //       iconname={'notifications-outline'}
+          //       icon_size={26}
+          //       icon_color={Color.black}
+          //     />
+          //   </TouchableOpacity>
+          // ),
         })}
       />
     </Stack.Navigator>

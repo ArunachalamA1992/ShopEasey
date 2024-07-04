@@ -43,6 +43,7 @@ import FAQs from './Screens/Sidemenu/FAQs';
 import MyRewards from './Screens/Sidemenu/MyRewards';
 import NotificationSettings from './Screens/Sidemenu/NotificationSettings';
 import {Paypal} from './Components/Paypal';
+import AccountSettings from './Screens/Sidemenu/AccountSettings';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -646,6 +647,30 @@ const MainApp = () => {
           component={NotificationSettings}
           options={({navigation, route}) => ({
             headerTitle: 'Notification Settings',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="AccountSettings"
+          component={AccountSettings}
+          options={({navigation, route}) => ({
+            headerTitle: 'Account Settings',
             headerTitleAlign: 'center',
             headerTitleStyle: {
               color: Color.black,

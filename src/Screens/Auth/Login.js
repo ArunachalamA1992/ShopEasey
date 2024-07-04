@@ -214,7 +214,7 @@ const Login = () => {
         <Text
           style={{
             textAlign: 'left',
-            fontSize: 25,
+            fontSize: 26,
             color: Color.black,
             fontFamily: Manrope.SemiBold,
           }}>
@@ -224,7 +224,7 @@ const Login = () => {
           <Text
             style={{
               textAlign: 'left',
-              fontSize: 30,
+              fontSize: 34,
               color: Color.black,
               fontFamily: Manrope.Bold,
             }}>
@@ -233,7 +233,7 @@ const Login = () => {
           <Iconviewcomponent
             Icontag={'MaterialIcons'}
             iconname={'shopping-bag'}
-            icon_size={40}
+            icon_size={42}
             iconstyle={{color: Color.primary, marginHorizontal: 5}}
           />
         </View>
@@ -460,6 +460,7 @@ const Login = () => {
       <View
         style={{
           marginTop: 20,
+          paddingHorizontal: 10,
           // justifyContent: 'flex-end',
           // padding: 10,
         }}>

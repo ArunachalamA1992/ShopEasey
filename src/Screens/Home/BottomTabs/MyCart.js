@@ -662,89 +662,91 @@ const MyCart = ({}) => {
             }}
             showsVerticalScrollIndicator={false}
           />
-          <View
-            style={{
-              marginVertical: 5,
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              marginVertical: 10,
-            }}>
+          {cartData.length > 0 ? (
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
+                marginVertical: 5,
+                justifyContent: 'flex-end',
                 alignItems: 'center',
+                marginVertical: 10,
               }}>
               <View
                 style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginHorizontal: 20,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: Color.cloudyGrey,
-                    fontFamily: Manrope.Medium,
-                  }}>
-                  Total Price
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: Color.black,
-                    fontFamily: Manrope.Bold,
-                  }}
-                  numberOfLines={1}>
-                  {countryCode?.symbol}
-                  {total_price}
-                </Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (CheckOut?.length > 0) {
-                      if (addressData > 0) {
-                        navigation.navigate('OrderConfirmation', {CheckOut});
-                      } else {
-                        navigation.navigate('AddAddress', {
-                          item: {},
-                          CheckOut: CheckOut,
-                          status: 'ADD',
-                        });
-                      }
-                    } else {
-                      common_fn.showToast(
-                        'Please select at least one product to checkout',
-                      );
-                    }
-                  }}
+                <View
                   style={{
-                    width: '100%',
-                    height: 45,
-                    backgroundColor:
-                      CheckOut?.length > 0 ? Color.primary : Color.lightgrey,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    borderRadius: 5,
+                    marginHorizontal: 20,
                   }}>
                   <Text
                     style={{
                       fontSize: 14,
-                      color: Color.white,
-                      fontFamily: Manrope.Bold,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
                     }}>
-                    Go to checkout
+                    Total Price
                   </Text>
-                </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: Color.black,
+                      fontFamily: Manrope.Bold,
+                    }}
+                    numberOfLines={1}>
+                    {countryCode?.symbol}
+                    {total_price}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (CheckOut?.length > 0) {
+                        if (addressData > 0) {
+                          navigation.navigate('OrderConfirmation', {CheckOut});
+                        } else {
+                          navigation.navigate('AddAddress', {
+                            item: {},
+                            CheckOut: CheckOut,
+                            status: 'ADD',
+                          });
+                        }
+                      } else {
+                        common_fn.showToast(
+                          'Please select at least one product to checkout',
+                        );
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      height: 45,
+                      backgroundColor:
+                        CheckOut?.length > 0 ? Color.primary : Color.lightgrey,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      borderRadius: 5,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: Color.white,
+                        fontFamily: Manrope.Bold,
+                      }}>
+                      Go to checkout
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
+          ) : null}
         </>
       )}
       {sale_BottomSheetmenu()}

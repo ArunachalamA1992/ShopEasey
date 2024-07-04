@@ -36,12 +36,12 @@ const PrivacyPolicy = () => {
                             source={{ uri: Media.privacy }}
                             style={{
                                 width: scr_width,
-                                height: 180, resizeMode: 'contain'
+                                height: 220, resizeMode: 'contain'
                             }}
                         />
                     </View>
 
-                    <View style={{ width: '95%', padding: 10 }}>
+                    <View style={{ width: '95%', padding: 10, paddingVertical: 20 }}>
                         <Text style={{ width: '100%', fontSize: 16, color: Color.lightBlack, fontFamily: Manrope.SemiBold, letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>PRIVACY POLICY - GENERAL</Text>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
@@ -229,7 +229,7 @@ const PrivacyPolicy = () => {
                             />
                         </View>
                         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', paddingHorizontal: 10 }}>
-                            <Text style={{ width: '95%', fontSize: 18, textAlign: 'justify', color: Color.primary, letterSpacing: 0.5, fontFamily: Manrope.SemiBold }}>Shop Easey</Text>
+                            <Text style={{ width: '95%', fontSize: 18, textAlign: 'justify', color: Color.primary, letterSpacing: 0.5, fontFamily: Manrope.SemiBold, paddingVertical: 5 }}>Shop Easey</Text>
                             <Text style={{ width: '95%', textAlign: 'justify', letterSpacing: 0.5, fontSize: 14, color: Color.cloudyGrey, fontFamily: Manrope.Medium }} numberOfLines={2} >India’s No.1 Trade is now a Superband</Text>
                         </View>
                     </View>

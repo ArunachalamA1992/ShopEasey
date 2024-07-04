@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -20,12 +20,12 @@ import {
   Linking,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {useDispatch} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
-import {Media} from '../../Global/Media';
-import {scr_width} from '../../Utils/Dimensions';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
+import { scr_width } from '../../Utils/Dimensions';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 
 const aboutData = [
   {
@@ -45,13 +45,13 @@ const ReturnRefundPolicy = () => {
   function renderHeaderItem() {
     try {
       return (
-        <View style={{width: '100%', alignItems: 'center'}}>
-          <View style={{width: scr_width}}>
+        <View style={{ width: '100%', alignItems: 'center' }}>
+          <View style={{ width: scr_width }}>
             <Image
-              source={{uri: Media.returnrefund}}
+              source={{ uri: Media.returnrefund }}
               style={{
                 width: scr_width,
-                height: 180,
+                height: 220,
                 resizeMode: 'contain',
               }}
             />
@@ -64,7 +64,7 @@ const ReturnRefundPolicy = () => {
               fontSize: 16,
               color: Color.lightBlack,
               fontFamily: Manrope.SemiBold,
-              paddingVertical: 10,
+              paddingVertical: 20,
               textAlign: 'justify',
               letterSpacing: 0.5,
               lineHeight: 25,
@@ -74,7 +74,7 @@ const ReturnRefundPolicy = () => {
             purchased items (the "Item"), subject to the terms and conditions in
             this Refunds and Return Policy and the Terms of Service.
           </Text>
-          <View style={{width: '95%', padding: 10}}>
+          <View style={{ width: '95%', padding: 10 }}>
             <Text
               style={{
                 width: '100%',
@@ -140,7 +140,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -168,7 +168,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -195,7 +195,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -223,7 +223,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -253,7 +253,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -280,7 +280,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -309,7 +309,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -336,7 +336,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -354,7 +354,7 @@ const ReturnRefundPolicy = () => {
             </View>
           </View>
 
-          <View style={{width: '95%', padding: 10}}>
+          <View style={{ width: '95%', padding: 10 }}>
             <Text
               style={{
                 width: '100%',
@@ -393,7 +393,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -422,7 +422,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -450,7 +450,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -479,7 +479,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -498,7 +498,7 @@ const ReturnRefundPolicy = () => {
             </View>
           </View>
 
-          <View style={{width: '95%', padding: 10}}>
+          <View style={{ width: '95%', padding: 10 }}>
             <Text
               style={{
                 width: '100%',
@@ -524,7 +524,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -553,7 +553,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -582,7 +582,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -602,7 +602,7 @@ const ReturnRefundPolicy = () => {
             </View>
           </View>
 
-          <View style={{width: '95%', padding: 10}}>
+          <View style={{ width: '95%', padding: 10 }}>
             <Text
               style={{
                 width: '100%',
@@ -628,7 +628,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -656,7 +656,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -685,7 +685,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -713,7 +713,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -775,7 +775,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -805,7 +805,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -824,7 +824,7 @@ const ReturnRefundPolicy = () => {
             </View>
           </View>
 
-          <View style={{width: '95%', padding: 10}}>
+          <View style={{ width: '95%', padding: 10 }}>
             <Text
               style={{
                 width: '100%',
@@ -850,7 +850,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -878,7 +878,7 @@ const ReturnRefundPolicy = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{marginTop: 0}}
+                iconstyle={{ marginTop: 0 }}
               />
               <Text
                 style={{
@@ -915,7 +915,7 @@ const ReturnRefundPolicy = () => {
             alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <View style={{width: '100%', alignItems: 'center'}}>
+          <View style={{ width: '100%', alignItems: 'center' }}>
             <Text
               style={{
                 width: '95%',
@@ -978,7 +978,7 @@ const ReturnRefundPolicy = () => {
                   Icontag={'Feather'}
                   iconname={'phone-call'}
                   icon_size={14}
-                  iconstyle={{color: Color.primary}}
+                  iconstyle={{ color: Color.primary }}
                 />
               </View>
               <Text
@@ -1013,7 +1013,7 @@ const ReturnRefundPolicy = () => {
                   Icontag={'Ionicons'}
                   iconname={'mail'}
                   icon_size={14}
-                  iconstyle={{color: Color.primary}}
+                  iconstyle={{ color: Color.primary }}
                 />
               </View>
               <Text
@@ -1037,7 +1037,7 @@ const ReturnRefundPolicy = () => {
               marginVertical: 20,
             }}></View>
           <View
-            style={{width: '95%', flexDirection: 'row', alignItems: 'center'}}>
+            style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
             <View
               style={{
                 flex: 0,
@@ -1073,7 +1073,7 @@ const ReturnRefundPolicy = () => {
                   textAlign: 'justify',
                   color: Color.primary,
                   letterSpacing: 0.5,
-                  fontFamily: Manrope.SemiBold,
+                  fontFamily: Manrope.SemiBold, paddingVertical: 5
                 }}>
                 Shop Easey
               </Text>
@@ -1264,7 +1264,7 @@ const ReturnRefundPolicy = () => {
           ListHeaderComponent={() => renderHeaderItem()}
           // renderItem={({ item, index }) => renderFreeRentalItem(item, index)}
           ListFooterComponent={() => renderFooterItem()}
-          style={{width: '95%'}}
+          style={{ width: '95%' }}
           showsVerticalScrollIndicator={false}
         />
       </View>

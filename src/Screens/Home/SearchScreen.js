@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 import F6Icon from 'react-native-vector-icons/FontAwesome6';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const SearchScreen = ({navigation}) => {
+const SearchScreen = ({ navigation }) => {
   const [searchJob, setSearchJob] = useState('');
   const [RecentlySearch] = useState([
     {
@@ -48,9 +48,9 @@ const SearchScreen = ({navigation}) => {
       <TouchableOpacity style={styles.searchView}>
         <Icon color={Color.cloudyGrey} name="search" size={25} />
         <TextInput
-          placeholder="Search products"
+          placeholder="Search Products"
           value={searchJob}
-          style={{flex: 1, marginLeft: 10}}
+          style={{ flex: 1, marginLeft: 10 }}
           placeholderTextColor={Color.grey}
           onChangeText={search => propertySearch(search)}
         />
@@ -77,9 +77,9 @@ const SearchScreen = ({navigation}) => {
         onPress={() => {
           getSearchData();
         }}>
-        <Text style={{fontSize: 16, color: Color.white}}>Search</Text>
+        <Text style={{ fontSize: 16, color: Color.white }}>Search</Text>
       </TouchableOpacity>
-      <View style={{marginTop: 10}}>
+      <View style={{ flex: 1, marginTop: 10 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -110,11 +110,11 @@ const SearchScreen = ({navigation}) => {
         </View>
         <View
           style={{
-            flexDirection: 'row',
+            flex: 1,
+            justifyContent: 'center',
             alignItems: 'center',
-            flexWrap: 'wrap',
           }}>
-          {RecentlySearch.map((item, index) => {
+          {/* {RecentlySearch.map((item, index) => {
             return (
               <TouchableOpacity
                 key={index}
@@ -150,7 +150,9 @@ const SearchScreen = ({navigation}) => {
                 </Text>
               </TouchableOpacity>
             );
-          })}
+          })} */}
+
+          <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.Medium }}>In-Progress</Text>
         </View>
       </View>
     </View>
