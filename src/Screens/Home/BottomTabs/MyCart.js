@@ -30,7 +30,6 @@ const MyCart = ({}) => {
   const navigation = useNavigation();
   const [defaultRating, setDefaultRating] = useState(0);
   const [selectedData, setSelectedData] = useState([]);
-  console.log('selectedData', selectedData);
   const [CheckOut, setCheckOut] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [addressData, setAddressCount] = useState(0);
@@ -167,7 +166,7 @@ const MyCart = ({}) => {
   };
 
   useEffect(() => {
-    if (CheckOut?.length > 0) {
+    if (selectedData?.length > 0) {
       const updatedCheckOut = cartData.filter(item =>
         selectedData.some(CheckOutItem => CheckOutItem === item?.id),
       );
