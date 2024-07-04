@@ -2167,7 +2167,7 @@
 //     fontFamily: Manrope.Bold,
 //   },
 // });
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -2181,38 +2181,39 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Badge, Button} from 'react-native-paper';
+import { Badge, Button } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import ImageView from '../../Components/imageView';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import moment from 'moment';
-import {products} from '../../Config/Content';
-import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
-import {scr_height, scr_width} from '../../Utils/Dimensions';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { products } from '../../Config/Content';
+import ItemCard, { ItemCardHorizontal } from '../../Components/ItemCard';
+import { scr_height, scr_width } from '../../Utils/Dimensions';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
 import RenderHtml from 'react-native-render-html';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import common_fn from '../../Config/common_fn';
-import {setDataCount} from '../../Redux/user/UserAction';
+import { setDataCount } from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-const ProductDetails = ({route}) => {
+const ProductDetails = ({ route }) => {
   const navigation = useNavigation();
   const [id] = useState(route?.params?.id);
+  console.log("product ================= :", id);
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
-  var {wishlist, cart} = dataCount;
+  var { wishlist, cart } = dataCount;
   const [topPicks, setTopPicks] = useState([]);
   const [Categories_data, setCategories_data] = useState([]);
   const [reviewsData, setReviewsData] = useState({});
@@ -2260,7 +2261,7 @@ const ProductDetails = ({route}) => {
   const [defaultRating, setDefaultRating] = useState(singleData?.shop?.rating);
   const [tabIndex, setIndex] = useState(0);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   const [maxRating, setMaxRating] = useState([
     {
@@ -2307,17 +2308,14 @@ const ProductDetails = ({route}) => {
       let result;
 
       if (Math.abs(daysAgo) > 0) {
-        result = `${Math.abs(daysAgo)} day${
-          Math.abs(daysAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(daysAgo)} day${Math.abs(daysAgo) !== 1 ? 's' : ''
+          } ago`;
       } else if (Math.abs(hoursAgo) > 0) {
-        result = `${Math.abs(hoursAgo)} hour${
-          Math.abs(hoursAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(hoursAgo)} hour${Math.abs(hoursAgo) !== 1 ? 's' : ''
+          } ago`;
       } else {
-        result = `${Math.abs(minutesAgo)} minute${
-          Math.abs(minutesAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(minutesAgo)} minute${Math.abs(minutesAgo) !== 1 ? 's' : ''
+          } ago`;
       }
       setResultDate(result);
     }
@@ -2510,7 +2508,7 @@ const ProductDetails = ({route}) => {
             },
           },
         ];
-        navigation.navigate('OrderConfirmation', {CheckOut});
+        navigation.navigate('OrderConfirmation', { CheckOut });
         setModalVisible(false);
       } else {
         common_fn.showToast('Please Select the Color or Size');
@@ -2561,7 +2559,7 @@ const ProductDetails = ({route}) => {
     const message = `Check out this Product: ${jobDeepLink}`;
 
     try {
-      await Share.share({message});
+      await Share.share({ message });
     } catch (error) {
       console.error(error.message);
     }
@@ -2585,10 +2583,10 @@ const ProductDetails = ({route}) => {
         }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={{padding: 5}}>
+          style={{ padding: 5 }}>
           <Icon name="arrow-back" size={30} color={Color.black} />
         </TouchableOpacity>
-        <View style={{marginHorizontal: 10, flex: 1}}>
+        <View style={{ marginHorizontal: 10, flex: 1 }}>
           <Text
             style={{
               color: Color.black,
@@ -2608,55 +2606,57 @@ const ProductDetails = ({route}) => {
           </Text>
         </View>
         <TouchableOpacity
-          style={{marginHorizontal: 10}}
+          style={{ marginHorizontal: 10 }}
           onPress={() => {
             share_product(singleData?.id);
           }}>
           <Icon name="share-social" size={25} color={Color.black} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginHorizontal: 10}}
+          style={{ marginHorizontal: 10 }}
           onPress={() => {
             navigation.navigate('WishListTab');
           }}>
-          <Badge
-            style={{
-              position: 'absolute',
-              zIndex: 1,
-              top: -10,
-              right: -10,
-              backgroundColor: Color.red,
-              color: Color.white,
-              fontFamily: Manrope.Bold,
-              fontSize: 12,
-            }}>
-            {wishlist}
-          </Badge>
+          {wishlist != 0 ?
+            <Badge
+              style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: -10,
+                right: -10,
+                backgroundColor: Color.red,
+                color: Color.white,
+                fontFamily: Manrope.Bold,
+                fontSize: 12,
+              }}>
+              {wishlist}
+            </Badge> : null}
           <AntDesign name="hearto" size={25} color={Color.black} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginHorizontal: 10}}
+          style={{ marginHorizontal: 10 }}
           onPress={() => {
             navigation.navigate('MyCartTab');
           }}>
-          <Badge
-            style={{
-              position: 'absolute',
-              zIndex: 1,
-              top: -10,
-              right: -10,
-              backgroundColor: Color.red,
-              color: Color.white,
-              fontFamily: Manrope.Bold,
-              fontSize: 12,
-            }}>
-            {cart}
-          </Badge>
+          {cart != 0 ?
+            <Badge
+              style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: -10,
+                right: -10,
+                backgroundColor: Color.red,
+                color: Color.white,
+                fontFamily: Manrope.Bold,
+                fontSize: 12,
+              }}>
+              {cart}
+            </Badge> : null}
           <Feather name="shopping-cart" size={25} color={Color.black} />
         </TouchableOpacity>
       </View>
       {loading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -2785,7 +2785,7 @@ const ProductDetails = ({route}) => {
         </View>
       ) : (
         <>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <View
                 style={{
@@ -2823,8 +2823,8 @@ const ProductDetails = ({route}) => {
                   <ImageView images={singleData?.productImages} />
                 ) : (
                   <Image
-                    source={{uri: Media.no_image}}
-                    style={{width: '100%', height: 250, resizeMode: 'contain'}}
+                    source={{ uri: Media.no_image }}
+                    style={{ width: '100%', height: 250, resizeMode: 'contain' }}
                   />
                 )}
                 {/* {singleData?.variants_list?.color?.map((item, index) => {
@@ -2853,6 +2853,7 @@ const ProductDetails = ({route}) => {
                 })} */}
                 <View
                   style={{
+                    paddingHorizontal: 10,
                     backgroundColor: Color.white,
                     marginTop: 50,
                   }}>
@@ -2897,7 +2898,7 @@ const ProductDetails = ({route}) => {
                       </Text>
                     </View>
                   </View>
-                  <View style={{marginVertical: 10}}>
+                  <View style={{ marginVertical: 10 }}>
                     <Text
                       style={{
                         color: Color.lightBlack,
@@ -2910,14 +2911,14 @@ const ProductDetails = ({route}) => {
                       <View
                         style={[
                           styles.customRatingBarStyle,
-                          {alignItems: 'center', marginTop: 5},
+                          { alignItems: 'center', marginTop: 5 },
                         ]}>
                         {maxRating.map((item, index) => {
                           return (
                             <View
                               activeOpacity={0.7}
                               key={index}
-                              style={{marginRight: 5}}>
+                              style={{ marginRight: 5 }}>
                               <FontAwesome
                                 name={
                                   reviewsData.count <= defaultRating
@@ -3059,8 +3060,8 @@ const ProductDetails = ({route}) => {
                       flexWrap: 'wrap',
                     }}>
                     <Image
-                      source={{uri: Media.return}}
-                      style={{width: 20, height: 20}}
+                      source={{ uri: Media.return }}
+                      style={{ width: 20, height: 20 }}
                     />
                     <Text
                       style={{
@@ -3126,9 +3127,10 @@ const ProductDetails = ({route}) => {
                       <>
                         <View style={styles.colorContainer}>
                           <Text style={styles.label}>Color :</Text>
-                          <View style={styles.colorOptions}>
+                          <View style={[styles.colorOptions, { paddingHorizontal: 10, paddingVertical: 5 }]}>
                             {singleData?.variants_list?.color?.map(
                               (item, index) => {
+                                console.log("singleData?.variants_list?.color", singleData?.variants_list)
                                 // if (item?.color && item?.color !== '') {
                                 return (
                                   <TouchableOpacity
@@ -3147,7 +3149,7 @@ const ProductDetails = ({route}) => {
                                     <View
                                       style={[
                                         styles.colorView,
-                                        {backgroundColor: item?.color_code},
+                                        { backgroundColor: item?.color_code },
                                       ]}
                                     />
                                     <Text style={styles.colorNameText}>
@@ -3247,7 +3249,7 @@ const ProductDetails = ({route}) => {
                                       <View
                                         style={[
                                           styles.colorView,
-                                          {backgroundColor: item?.color_code},
+                                          { backgroundColor: item?.color_code },
                                         ]}
                                       />
                                       <Text style={styles.colorNameText}>
@@ -3363,8 +3365,8 @@ const ProductDetails = ({route}) => {
                             {singleData?.stock == 0
                               ? 'Notify Me'
                               : singleData?.in_cart
-                              ? `Go to Cart`
-                              : `Add to Cart`}
+                                ? `Go to Cart`
+                                : `Add to Cart`}
                           </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -3430,7 +3432,7 @@ const ProductDetails = ({route}) => {
                         alignItems: 'center',
                       }}>
                       <Image
-                        source={{uri: Media.user}}
+                        source={{ uri: Media.user }}
                         style={{
                           width: 70,
                           height: 70,
@@ -3489,7 +3491,7 @@ const ProductDetails = ({route}) => {
                               activeOpacity={0.7}
                               key={index}
                               onPress={() => handleRatingPress(item.rating)}
-                              style={{marginRight: 5}}>
+                              style={{ marginRight: 5 }}>
                               <AntDesign
                                 name={
                                   item.rating <= defaultRating
@@ -3854,7 +3856,7 @@ const ProductDetails = ({route}) => {
                   <RenderHtml
                     tagsStyles={styles.htmlStyles}
                     contentWidth={'100%'}
-                    source={{html: singleData?.product?.description}}
+                    source={{ html: singleData?.product?.description }}
                   />
                 </View>
                 {reviewsData?.data?.length > 0 && (
@@ -3955,7 +3957,7 @@ const ProductDetails = ({route}) => {
                       }}>
                       {reviewsData?.data?.map((item, index) => {
                         return (
-                          <View style={{width: '100%', alignItems: 'center'}}>
+                          <View style={{ width: '100%', alignItems: 'center' }}>
                             <View
                               style={{
                                 flexDirection: 'row',
@@ -3968,7 +3970,7 @@ const ProductDetails = ({route}) => {
                                   alignItems: 'center',
                                 }}>
                                 <Image
-                                  source={{uri: Media?.user}}
+                                  source={{ uri: Media?.user }}
                                   style={{
                                     width: 70,
                                     height: 70,
@@ -4025,7 +4027,7 @@ const ProductDetails = ({route}) => {
                                     </Text>
                                   </View>
                                 </View>
-                                <View style={{width: '100%'}}>
+                                <View style={{ width: '100%' }}>
                                   <Text
                                     style={{
                                       textAlign: 'justify',
@@ -4057,7 +4059,7 @@ const ProductDetails = ({route}) => {
                         alignItems: 'flex-end',
                         marginVertical: 0,
                       }}>
-                      <TouchableOpacity onPress={() => {}}>
+                      <TouchableOpacity onPress={() => { }}>
                         <Text
                           style={{
                             fontFamily: Manrope?.SemiBold,
@@ -4105,7 +4107,7 @@ const ProductDetails = ({route}) => {
                       data={topPicks}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return (
                           <ItemCardHorizontal
                             item={item}
@@ -4135,7 +4137,7 @@ const ProductDetails = ({route}) => {
                       data={Categories_data}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return (
                           <ItemCardHorizontal
                             item={item}
@@ -4202,8 +4204,8 @@ const ProductDetails = ({route}) => {
                 {singleData?.stock == 0
                   ? 'Notify Me'
                   : singleData?.in_cart
-                  ? `Go to Cart`
-                  : `Add to Cart`}
+                    ? `Go to Cart`
+                    : `Add to Cart`}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -4304,8 +4306,8 @@ const styles = StyleSheet.create({
   colorOptions: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     flexWrap: 'wrap',
   },
   colorOption: {
@@ -4342,7 +4344,7 @@ const styles = StyleSheet.create({
   },
   sizeContainer: {
     backgroundColor: Color.white,
-    padding: 10,
+    padding: 5,
   },
   sizeLabel: {
     fontSize: 16,

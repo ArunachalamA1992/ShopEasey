@@ -5,7 +5,7 @@ import {
   ImageBackground,
   RefreshControl,
   StyleSheet,
-  Text,
+  Text, Image,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -65,7 +65,7 @@ const WishList = ({ navigation }) => {
       if (isRefreshing) {
         setRefreshing(true);
       }
-      console.log('Fetching wishlist data with token:', token);
+      // console.log('Fetching wishlist data with token:', token);
       try {
         const getWishlist = await fetchData.list_wishlist('', token);
         if (getWishlist?.status == true) {
@@ -358,14 +358,25 @@ const WishList = ({ navigation }) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Text
+                {/* <Text
                   style={{
                     fontFamily: Manrope.SemiBold,
                     fontSize: 14,
                     color: Color.black,
                   }}>
                   No Wishlist
-                </Text>
+                </Text> */}
+
+                <Image
+                  source={{ uri: Media.empty_wishlist }}
+                  style={{
+                    width: 180,
+                    height: 180,
+                    resizeMode: 'contain',
+                    borderRadius: 10,
+                  }}
+                />
+
               </View>
             );
           }}

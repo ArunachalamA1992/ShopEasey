@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -10,23 +10,23 @@ import {
   View,
 } from 'react-native';
 import Color from '../../../Global/Color';
-import {Manrope} from '../../../Global/FontFamily';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {Iconviewcomponent} from '../../../Components/Icontag';
-import {BottomSheet} from 'react-native-btr';
-import {useDispatch, useSelector} from 'react-redux';
+import { Manrope } from '../../../Global/FontFamily';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Iconviewcomponent } from '../../../Components/Icontag';
+import { BottomSheet } from 'react-native-btr';
+import { useDispatch, useSelector } from 'react-redux';
 import fetchData from '../../../Config/fetchData';
-import {Media} from '../../../Global/Media';
+import { Media } from '../../../Global/Media';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import common_fn from '../../../Config/common_fn';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {setDataCount} from '../../../Redux';
-import {RefreshControl} from 'react-native-gesture-handler';
+import { setDataCount } from '../../../Redux';
+import { RefreshControl } from 'react-native-gesture-handler';
 
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-const MyCart = ({}) => {
+const MyCart = ({ }) => {
   const navigation = useNavigation();
   const [defaultRating, setDefaultRating] = useState(0);
   const [selectedData, setSelectedData] = useState([]);
@@ -38,7 +38,7 @@ const MyCart = ({}) => {
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -290,9 +290,9 @@ const MyCart = ({}) => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+    <View style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
       {loading ? (
-        <View style={{marginHorizontal: 5}}>
+        <View style={{ marginHorizontal: 5 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -335,16 +335,17 @@ const MyCart = ({}) => {
         </View>
       ) : (
         <>
+
           <FlatList
-            data={cartData}
+            // data={cartData}
             keyExtractor={(item, index) => String(index)}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               var discount =
                 100 -
                 parseInt(
                   ((item?.variant?.org_price - item?.variant?.price) /
                     item?.variant?.org_price) *
-                    100,
+                  100,
                 );
               return (
                 <View
@@ -385,7 +386,7 @@ const MyCart = ({}) => {
                     </TouchableOpacity>
                     {item?.variant?.productImages?.length > 0 ? (
                       <Image
-                        source={{uri: item?.variant?.productImages?.[0]?.image}}
+                        source={{ uri: item?.variant?.productImages?.[0]?.image }}
                         style={{
                           width: 120,
                           height: 120,
@@ -395,7 +396,7 @@ const MyCart = ({}) => {
                       />
                     ) : (
                       <Image
-                        source={{uri: Media.no_image}}
+                        source={{ uri: Media.no_image }}
                         style={{
                           width: 120,
                           height: 120,
@@ -649,19 +650,21 @@ const MyCart = ({}) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Text
+                  <Image
+                    source={{ uri: Media.empty_cart }}
                     style={{
-                      fontFamily: Manrope.SemiBold,
-                      fontSize: 14,
-                      color: Color.black,
-                    }}>
-                    No products added to cart
-                  </Text>
+                      width: 250,
+                      height: 250,
+                      resizeMode: 'contain',
+                      borderRadius: 10,
+                    }}
+                  />
                 </View>
               );
             }}
             showsVerticalScrollIndicator={false}
           />
+
           {cartData.length > 0 ? (
             <View
               style={{
@@ -711,7 +714,7 @@ const MyCart = ({}) => {
                     onPress={() => {
                       if (CheckOut?.length > 0) {
                         if (addressData > 0) {
-                          navigation.navigate('OrderConfirmation', {CheckOut});
+                          navigation.navigate('OrderConfirmation', { CheckOut });
                         } else {
                           navigation.navigate('AddAddress', {
                             item: {},

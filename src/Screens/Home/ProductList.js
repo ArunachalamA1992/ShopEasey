@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -10,31 +10,31 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
-import {Badge} from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { Badge } from 'react-native-paper';
 import ItemCard from '../../Components/ItemCard';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import fetchData from '../../Config/fetchData';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {setDataCount} from '../../Redux';
+import { setDataCount } from '../../Redux';
 
-const {height} = Dimensions.get('screen');
-const ProductList = ({route}) => {
+const { height } = Dimensions.get('screen');
+const ProductList = ({ route }) => {
   const [category_id] = useState(route.params.category_id);
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  const {token} = userData;
+  const { token } = userData;
   const dispatch = useDispatch();
   const [CategoryData, setCategoryData] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(false);
   const [sub_cat_id, setSub_cat_id] = useState(0);
   const dataCount = useSelector(state => state.UserReducer.count);
-  const {wishlist, cart} = dataCount;
+  const { wishlist, cart } = dataCount;
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
@@ -141,10 +141,10 @@ const ProductList = ({route}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <View style={styles.header}>
         <TouchableOpacity
-          style={{marginRight: 10}}
+          style={{ marginRight: 10 }}
           onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={30} color={Color.white} />
         </TouchableOpacity>
@@ -157,51 +157,53 @@ const ProductList = ({route}) => {
           />
         </View>
         <TouchableOpacity
-          style={{marginRight: 10}}
+          style={{ marginRight: 10 }}
           onPress={() => {
             navigation.navigate('WishListTab');
           }}>
-          <Badge
-            style={{
-              position: 'absolute',
-              zIndex: 1,
-              top: -10,
-              right: -10,
-              backgroundColor: Color.red,
-              color: Color.white,
-              fontFamily: Manrope.Bold,
-              fontSize: 12,
-            }}>
-            {wishlist}
-          </Badge>
+          {wishlist != 0 ?
+            <Badge
+              style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: -10,
+                right: -10,
+                backgroundColor: Color.red,
+                color: Color.white,
+                fontFamily: Manrope.Bold,
+                fontSize: 12,
+              }}>
+              {wishlist}
+            </Badge> : null}
           <AntDesign name="hearto" size={22} color={Color.white} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginRight: 10, padding: 5}}
+          style={{ marginRight: 10, padding: 5 }}
           onPress={() => {
             navigation.navigate('MyCartTab');
           }}>
-          <Badge
-            style={{
-              position: 'absolute',
-              zIndex: 1,
-              top: -5,
-              right: -5,
-              backgroundColor: Color.red,
-              color: Color.white,
-              fontFamily: Manrope.Bold,
-              fontSize: 12,
-            }}>
-            {cart}
-          </Badge>
+          {cart != 0 ?
+            <Badge
+              style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: -5,
+                right: -5,
+                backgroundColor: Color.red,
+                color: Color.white,
+                fontFamily: Manrope.Bold,
+                fontSize: 12,
+              }}>
+              {cart}
+            </Badge> : null}
           <Feather name="shopping-cart" size={22} color={Color.white} />
         </TouchableOpacity>
       </View>
       {loading ? (
-        <View style={{marginHorizontal: 5}}>
+        <View style={{ marginHorizontal: 5 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={80}
                 height={40}
@@ -239,7 +241,7 @@ const ProductList = ({route}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -256,7 +258,7 @@ const ProductList = ({route}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -273,7 +275,7 @@ const ProductList = ({route}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -290,7 +292,7 @@ const ProductList = ({route}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -309,7 +311,7 @@ const ProductList = ({route}) => {
           </SkeletonPlaceholder>
         </View>
       ) : (
-        <View style={{flex: 1, backgroundColor: Color.white}}>
+        <View style={{ flex: 1, backgroundColor: Color.white }}>
           <View
             style={{
               width: '100%',
@@ -345,12 +347,12 @@ const ProductList = ({route}) => {
               data={CategoryData}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 const isFocused = currentLevel
                   ? item.sub_sub_category_name ===
-                    selectedCategory?.sub_sub_category_name
+                  selectedCategory?.sub_sub_category_name
                   : item.sub_category_name ===
-                    selectedCategory?.sub_category_name;
+                  selectedCategory?.sub_category_name;
 
                 return (
                   <TouchableOpacity
@@ -388,7 +390,7 @@ const ProductList = ({route}) => {
             data={products}
             numColumns={2}
             showsVerticalScrollIndicator={false}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return <ItemCard item={item} navigation={navigation} />;
             }}
             onEndReached={() => {

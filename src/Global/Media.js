@@ -122,8 +122,9 @@ export const Media = {
   flash_sell_ban_three:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/off_three.jpg',
 
-  no_image:
-    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/no_image.png',
+  no_image: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/no_image.png',
+  empty_cart: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/empty_cart.png',
+  empty_wishlist: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/empty-wishlist.png',
   LottieCheck: require('../assets/LottieCheck.json'),
   LottieCancelled: require('../assets/LottieCancelled.json'),
 };

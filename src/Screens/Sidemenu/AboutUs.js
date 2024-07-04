@@ -43,17 +43,28 @@ const AboutUs = () => {
 
                     <View style={{ width: '95%', paddingVertical: 20 }}>
                         <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.SemiBold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>ABOUT US CONTENT</Text>
-                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>ShopEasey is one of the fast-growing authorized dealers, with our wings widespread in India, Singapore, and Malaysia. Presenting in simple verbs, ShopEasey is a one-stop shop for all customer requirements. ShopEasey aims to give customers in India, Singapore, and Malaysia a hassle-free and enjoyable shopping experience by offering a large selection of goods from top-tier brands & genuine handmade retailers. The brand focuses on delivering quality products to its consumers with reliable services.</Text>
+                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>Shopeasey is the leading e-commerce platform built for all shoppers who love shopping from the comfort of their homes. We understand the importance of a tailored online experience, and that's exactly what we deliver—a platform that's easy, secure, and fast. </Text>
                     </View>
 
                     <View style={{ width: '95%' }}>
-                        <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.Bold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>Value Proposition</Text>
-                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>The value proposition of ShopEasey pivots around giving buyers an effortless method of purchasing products online. The key elements that simplify the user's buying experience include product discounts, quick delivery alternatives, return policies, and customer support.</Text>
+                        <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.SemiBold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>Shop with Confidence: Convenience at Your Fingertips</Text>
+                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>At Shopeasey, we believe online shopping should be accessible, effortless, and enjoyable for everyone. That's why we've designed a platform that puts you in control. With strong payment and fulfilment options, you can shop with complete confidence, knowing your transactions are secure and your purchases will arrive quickly.</Text>
                     </View>
 
                     <View style={{ width: '95%' }}>
-                        <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.Bold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>Our Products: </Text>
-                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>ShopEasey includes a vast selection of products from various categories like Home Appliances, Men's fashion, Women's fashion, trendy wear, baby wear, baby care products, organic products, dry fruits, groceries, pooja items, home decoration items, traditional photo frames, sweets & snacks. We are here to deliver you what you need with the best comfort.</Text>
+                        <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.SemiBold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>Our Vision: Transforming the Online Shopping Experience</Text>
+                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>We're passionate about the power of technology to create positive change. Shopeasey aspires to be more than just an online store; we envision a platform that empowers our community. We connect buyers and sellers, creating a vibrant space for commerce and discovery.</Text>
+                    </View>
+
+                    <View style={{ width: '95%' }}>
+                        <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.SemiBold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>Your One-Stop Shop for All Delights</Text>
+                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>Shopeasey offers a wide range of products at your fingertips. Explore a vast selection catering to your specific needs. Find everything you desire, from the familiar brands you love to exciting new discoveries.</Text>
+                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>But Shopeasey goes beyond just products. We create a social space where you can connect with like-minded shoppers, share recommendations, and discover hidden gems.</Text>
+                    </View>
+
+                    <View style={{ width: '95%' }}>
+                        <Text style={{ width: '100%', fontSize: 16, color: '#333', fontFamily: Manrope.SemiBold, fontWeight: '800', letterSpacing: 0.5, textAlign: 'justify', lineHeight: 20 }}>Shopeasey also provides seamless fulfilment services, ensuring your purchases reach you swiftly and conveniently.</Text>
+                        <Text style={{ width: '100%', fontSize: 14, color: '#666', fontFamily: Manrope.Regular, textAlign: 'justify', letterSpacing: 0.5, lineHeight: 22, paddingVertical: 10 }}>Join the Shopeasey community today and experience the joy of a hassle-free, secure, and enjoyable online shopping journey!</Text>
                     </View>
                 </View>
             );
