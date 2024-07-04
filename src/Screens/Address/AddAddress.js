@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -10,17 +10,17 @@ import {
   FlatList,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {Manrope} from '../../Global/FontFamily';
-import {StackActions, useNavigation} from '@react-navigation/native';
-import {BottomSheet} from 'react-native-btr';
-import {Media} from '../../Global/Media';
-import {CheckboxData, RadioData} from '../../Components/RadioButton';
-import {useSelector} from 'react-redux';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { StackActions, useNavigation } from '@react-navigation/native';
+import { BottomSheet } from 'react-native-btr';
+import { Media } from '../../Global/Media';
+import { CheckboxData, RadioData } from '../../Components/RadioButton';
+import { useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import common_fn from '../../Config/common_fn';
 
-const AddAddress = ({route}) => {
+const AddAddress = ({ route }) => {
   const navigation = useNavigation();
   const [itemData] = useState(route.params.item);
   const [CheckOut] = useState(route.params.CheckOut);
@@ -40,7 +40,7 @@ const AddAddress = ({route}) => {
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const [defaultAddress, setDefaultAddress] = useState(itemData?.is_default);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
   const [stateloadMore, setStateLoadMore] = useState(false);
@@ -77,7 +77,7 @@ const AddAddress = ({route}) => {
         console.log('add_address', add_address);
         if (add_address?.status == true) {
           navigation.dispatch(
-            StackActions.replace('OrderConfirmation', {CheckOut}),
+            StackActions.replace('OrderConfirmation', { CheckOut }),
           );
           common_fn.showToast(add_address?.message);
         } else {
@@ -120,7 +120,7 @@ const AddAddress = ({route}) => {
           data,
           token,
         );
-        console.log('update_address', update_address?.status == true);
+        console.log('update_address', update_address);
         if (update_address?.status == true) {
           navigation.goBack();
           common_fn.showToast(update_address?.message);
@@ -146,13 +146,13 @@ const AddAddress = ({route}) => {
 
   useEffect(() => {
     if (itemData?.address_type) {
-      setSelectAddressType({name: itemData.address_type});
+      setSelectAddressType({ name: itemData.address_type });
     }
     if (itemData?.city) {
-      setSelectCity({city_id: itemData?.city_id, city: itemData.city});
+      setSelectCity({ city_id: itemData?.city_id, city: itemData.city });
     }
     if (itemData?.state) {
-      setSelectState({state_id: itemData?.state_id, state: itemData.state});
+      setSelectState({ state_id: itemData?.state_id, state: itemData.state });
     }
   }, [itemData]);
 
@@ -255,8 +255,8 @@ const AddAddress = ({route}) => {
         <View>
           <BottomSheet
             visible={salebottomSheetVisible}
-            onBackButtonPress={sale_toggleBottomView}
-            onBackdropPress={sale_toggleBottomView}>
+            onBackButtonPress={() => setSaleBottomSheetVisible(false)}
+            onBackdropPress={() => setSaleBottomSheetVisible(false)}>
             <View
               style={{
                 backgroundColor: 'white',
@@ -289,120 +289,120 @@ const AddAddress = ({route}) => {
                     Icontag={'AntDesign'}
                     iconname={'closecircleo'}
                     icon_size={22}
-                    iconstyle={{color: Color.primary, marginRight: 10}}
+                    iconstyle={{ color: Color.primary, marginRight: 10 }}
                   />
                 </TouchableOpacity>
               </View>
-              <View style={{flex: 1, alignItems: 'center'}}>
-                <ScrollView style={{flex: 1}}>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <ScrollView style={{ flex: 1 }}>
                   {selectType == 'State' ? (
-                    // <View style={{width: '100%', alignItems: 'center'}}>
-                    <FlatList
-                      data={stateData}
-                      keyExtractor={(item, index) => item + index}
-                      showsVerticalScrollIndicator={false}
-                      renderItem={({item, index}) => {
-                        return (
-                          <TouchableOpacity
-                            key={item + index}
-                            onPress={() => {
-                              setSelectState(item);
-                              setSaleBottomSheetVisible(false);
-                            }}
-                            style={{
-                              width: '100%',
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              padding: 10,
-                              margin: 5,
-                              backgroundColor:
-                                selectState?.state === item.state
-                                  ? Color.primary
-                                  : '#f3f3f3',
-                            }}>
-                            <View
+                    <View style={{ width: '100%', alignItems: 'center' }}>
+                      <FlatList
+                        data={stateData}
+                        keyExtractor={(item, index) => item + index}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item, index }) => {
+                          return (
+                            <TouchableOpacity
+                              key={item + index}
+                              onPress={() => {
+                                setSelectState(item);
+                                setSaleBottomSheetVisible(false);
+                              }}
                               style={{
                                 width: '100%',
+                                flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
+                                padding: 10,
+                                margin: 5,
+                                backgroundColor:
+                                  selectState?.state === item.state
+                                    ? Color.primary
+                                    : '#f3f3f3',
                               }}>
-                              <Text
+                              <View
                                 style={{
-                                  fontSize: 16,
-                                  color:
-                                    selectState?.state === item.state
-                                      ? Color.white
-                                      : Color.black,
-                                  fontFamily: Manrope.Medium,
+                                  width: '100%',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
                                 }}>
-                                {item.state}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      }}
-                      onEndReached={() => {
-                        loadMoreStateData();
-                      }}
-                      onEndReachedThreshold={3}
-                    />
-                  ) : // </View>
-                  null}
+                                <Text
+                                  style={{
+                                    fontSize: 16,
+                                    color:
+                                      selectState?.state === item.state
+                                        ? Color.white
+                                        : Color.black,
+                                    fontFamily: Manrope.Medium,
+                                  }}>
+                                  {item.state}
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        }}
+                        onEndReached={() => {
+                          loadMoreStateData();
+                        }}
+                        onEndReachedThreshold={3}
+                      />
+                    </View>) :
+                    null}
                   {selectType == 'City' ? (
-                    // <View style={{width: '100%', alignItems: 'center'}}>
-                    <FlatList
-                      data={cityData}
-                      keyExtractor={(item, index) => item + index}
-                      showsVerticalScrollIndicator={false}
-                      renderItem={({item, index}) => {
-                        return (
-                          <TouchableOpacity
-                            key={item + index}
-                            onPress={() => {
-                              setSelectCity(item);
-                              setSaleBottomSheetVisible(false);
-                            }}
-                            style={{
-                              width: '100%',
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              padding: 10,
-                              margin: 5,
-                              backgroundColor:
-                                selectCity?.city === item.city
-                                  ? Color.primary
-                                  : '#f3f3f3',
-                            }}>
-                            <View
+                    <View style={{ width: '100%', alignItems: 'center' }}>
+                      <FlatList
+                        data={cityData}
+                        keyExtractor={(item, index) => item + index}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item, index }) => {
+                          return (
+                            <TouchableOpacity
+                              key={item + index}
+                              onPress={() => {
+                                setSelectCity(item);
+                                setSaleBottomSheetVisible(false);
+                              }}
                               style={{
                                 width: '100%',
+                                flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
+                                padding: 10,
+                                margin: 5,
+                                backgroundColor:
+                                  selectCity?.city === item.city
+                                    ? Color.primary
+                                    : '#f3f3f3',
                               }}>
-                              <Text
+                              <View
                                 style={{
-                                  fontSize: 16,
-                                  color:
-                                    selectCity?.city === item.city
-                                      ? Color.white
-                                      : Color.black,
-                                  fontFamily: Manrope.Medium,
+                                  width: '100%',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
                                 }}>
-                                {item.city}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      }}
-                      onEndReached={() => {
-                        loadMoreCityData();
-                      }}
-                      onEndReachedThreshold={3}
-                    />
-                  ) : // </View>
-                  null}
+                                <Text
+                                  style={{
+                                    fontSize: 16,
+                                    color:
+                                      selectCity?.city === item.city
+                                        ? Color.white
+                                        : Color.black,
+                                    fontFamily: Manrope.Medium,
+                                  }}>
+                                  {item.city}
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        }}
+                        onEndReached={() => {
+                          loadMoreCityData();
+                        }}
+                        onEndReachedThreshold={3}
+                      />
+                    </View>)
+                    : null}
                 </ScrollView>
               </View>
             </View>
@@ -415,7 +415,7 @@ const AddAddress = ({route}) => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+    <View style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{}}>
           <Text
@@ -568,7 +568,7 @@ const AddAddress = ({route}) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <View style={{width: '45%', marginVertical: 10}}>
+            <View style={{ width: '45%', marginVertical: 10 }}>
               <Text
                 style={{
                   fontSize: 14,
@@ -586,8 +586,8 @@ const AddAddress = ({route}) => {
                     alignItems: 'center',
                   }}>
                   <Image
-                    source={{uri: countryCode?.country_image}}
-                    style={{width: 30, height: 30, resizeMode: 'contain'}}
+                    source={{ uri: countryCode?.country_image }}
+                    style={{ width: 30, height: 30, resizeMode: 'contain' }}
                   />
                   <Text
                     style={{
@@ -601,7 +601,7 @@ const AddAddress = ({route}) => {
                 </View>
               </View>
             </View>
-            <View style={{width: '45%', marginVertical: 10}}>
+            <View style={{ width: '45%', marginVertical: 10 }}>
               <Text
                 style={{
                   fontSize: 14,
@@ -634,7 +634,7 @@ const AddAddress = ({route}) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <View style={{width: '45%', marginVertical: 10}}>
+            <View style={{ width: '45%', marginVertical: 10 }}>
               <Text
                 style={{
                   fontSize: 14,
@@ -657,7 +657,7 @@ const AddAddress = ({route}) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            <View style={{width: '45%', marginVertical: 10}}>
+            <View style={{ width: '45%', marginVertical: 10 }}>
               <Text
                 style={{
                   fontSize: 14,
@@ -706,12 +706,12 @@ const AddAddress = ({route}) => {
                 onChangeText={value => {
                   setLandmark(value);
                 }}
-                keyboardType="number-pad"
+                keyboardType="name-phone-pad"
                 returnKeyType="done"
               />
             </View>
           </View>
-          <View style={{marginVertical: 10}}>
+          <View style={{ marginVertical: 10 }}>
             <Text
               style={{
                 fontSize: 14,

@@ -6,6 +6,7 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
+  Image,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -359,14 +360,24 @@ const WishList = ({navigation}) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Text
+                {/* <Text
                   style={{
                     fontFamily: Manrope.SemiBold,
                     fontSize: 14,
                     color: Color.black,
                   }}>
                   No Wishlist
-                </Text>
+                </Text> */}
+
+                <Image
+                  source={{uri: Media.empty_wishlist}}
+                  style={{
+                    width: 180,
+                    height: 180,
+                    resizeMode: 'contain',
+                    borderRadius: 10,
+                  }}
+                />
               </View>
             );
           }}

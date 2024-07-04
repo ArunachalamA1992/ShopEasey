@@ -348,7 +348,7 @@ const MyCart = ({}) => {
       ) : (
         <>
           <FlatList
-            data={cartData}
+            // data={cartData}
             keyExtractor={(item, index) => String(index)}
             renderItem={({item, index}) => {
               var discount =
@@ -666,19 +666,21 @@ const MyCart = ({}) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Text
+                  <Image
+                    source={{uri: Media.empty_cart}}
                     style={{
-                      fontFamily: Manrope.SemiBold,
-                      fontSize: 14,
-                      color: Color.black,
-                    }}>
-                    No products added to cart
-                  </Text>
+                      width: 250,
+                      height: 250,
+                      resizeMode: 'contain',
+                      borderRadius: 10,
+                    }}
+                  />
                 </View>
               );
             }}
             showsVerticalScrollIndicator={false}
           />
+
           {cartData.length > 0 ? (
             <View
               style={{
