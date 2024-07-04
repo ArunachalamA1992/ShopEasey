@@ -139,4 +139,8 @@ export default {
     let url = api_name + 'orders/verify';
     return api.postMethod(url, data, token, header);
   },
+  update_order: (param, data, token) => {
+    let url = api_name + 'orders/' + param;
+    return api.patchMethod(url, data, token);
+  },
 };

@@ -3464,8 +3464,8 @@ const ProductDetails = ({route}) => {
                           fontSize: 14,
                           color: Color.black,
                           fontFamily: Manrope.Bold,
-                          letterSpacing: 0.5,
-                        }}>
+                        }}
+                        numberOfLines={2}>
                         {singleData?.product?.vendor?.business_name}
                       </Text>
                       <Text
@@ -3567,7 +3567,7 @@ const ProductDetails = ({route}) => {
                               fontFamily: Manrope.Bold,
                               marginHorizontal: 5,
                             }}>
-                            Follow
+                            {singleData?.is_follow ? 'Following' : 'Follow'}
                           </Text>
                         </TouchableOpacity>
                       </View>

@@ -27,13 +27,11 @@ import {Media} from '../../Global/Media';
 import {setOrderCancelVisible, setOrderSuccessVisible} from '../../Redux';
 import RazorpayCheckout from 'react-native-razorpay';
 
-let dummyText =
-  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-
 LogBox.ignoreAllLogs();
 
 const OrderConfirmation = ({navigation, route}) => {
   const [CheckOut] = useState(route.params.CheckOut);
+  const [OrderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
   const [selectPayment, setSelectPayment] = useState(null);
@@ -68,7 +66,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
-  const [isExpanded, setIsExpanded] = useState(CheckOut?.length == 1);
+  const [isExpanded, setIsExpanded] = useState(OrderData?.length == 1);
 
   useEffect(() => {
     setNumLines(discriptiontextShown ? undefined : 3);
@@ -133,6 +131,9 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const getCartData = async () => {
     try {
+      var data = `id=${CheckOut?.join(',')}`;
+      const getCart = await fetchData.list_cart(data, token);
+      setOrderData(getCart?.data);
       const getaddress = await fetchData.list_address(``, token);
       setAddress(getaddress?.data);
     } catch (error) {
@@ -140,11 +141,11 @@ const OrderConfirmation = ({navigation, route}) => {
     }
   };
 
-  const Sub_total = CheckOut?.reduce((accumulator, item) => {
+  const Sub_total = OrderData?.reduce((accumulator, item) => {
     return accumulator + (item.variant?.price * item?.quantity || 0);
   }, 0);
 
-  const discount_price = CheckOut?.reduce((accumulator, item) => {
+  const discount_price = OrderData?.reduce((accumulator, item) => {
     return (
       accumulator +
       ((item.variant?.org_price - item.variant?.price) * item?.quantity || 0)
@@ -162,7 +163,7 @@ const OrderConfirmation = ({navigation, route}) => {
         tax: tax,
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-        products: CheckOut?.map(item => ({
+        products: OrderData?.map(item => ({
           product_id: item?.product?.id,
           variant_id: item?.variant?.id,
           quantity: item?.quantity,
@@ -630,7 +631,7 @@ const OrderConfirmation = ({navigation, route}) => {
             </TouchableOpacity>
             {isExpanded ? (
               <View style={{width: '100%'}}>
-                {CheckOut?.map(item => {
+                {OrderData?.map(item => {
                   var discount =
                     100 -
                     parseInt(
@@ -639,7 +640,7 @@ const OrderConfirmation = ({navigation, route}) => {
                         100,
                     );
                   return (
-                    <View
+                    <TouchableOpacity
                       style={{
                         backgroundColor: Color.white,
                         marginTop: 10,
@@ -648,6 +649,11 @@ const OrderConfirmation = ({navigation, route}) => {
                         borderRadius: 10,
                         flexDirection: 'row',
                         padding: 10,
+                      }}
+                      onPress={() => {
+                        navigation.navigate('ProductDetails', {
+                          id: item?.product?.id,
+                        });
                       }}>
                       <View style={{}}>
                         {item?.variant?.productImages?.length > 0 ? (
@@ -816,24 +822,25 @@ const OrderConfirmation = ({navigation, route}) => {
                           </View>
                         </View>
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   );
                 })}
 
                 <View
                   style={{
-                    width: '90%',
                     flexDirection: 'row',
                     marginVertical: 10,
                     paddingVertical: 10,
+                    margin: 10,
+                    borderRadius: 10,
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: '#E7F7EC',
                   }}>
                   <Iconviewcomponent
-                    Icontag={'FontAwesome5'}
-                    iconname={'truck'}
-                    icon_size={20}
+                    Icontag={'MaterialCommunityIcons'}
+                    iconname={'truck-outline'}
+                    icon_size={25}
                     icon_color={Color.black}
                   />
                   <Text
@@ -1011,7 +1018,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     fontFamily: Manrope.Medium,
                     letterSpacing: 0.5,
                   }}>
-                  Price ( {CheckOut?.length} Items )
+                  Price ( {OrderData?.length} Items )
                 </Text>
                 <Text
                   style={{

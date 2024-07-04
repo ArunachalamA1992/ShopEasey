@@ -30,6 +30,7 @@ const MyCart = ({}) => {
   const navigation = useNavigation();
   const [defaultRating, setDefaultRating] = useState(0);
   const [selectedData, setSelectedData] = useState([]);
+  console.log('selectedData', selectedData);
   const [CheckOut, setCheckOut] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [addressData, setAddressCount] = useState(0);
@@ -79,6 +80,7 @@ const MyCart = ({}) => {
       const wishlist = await fetchData.toggle_wishlists(data, token);
       if (wishlist?.status == true) {
         common_fn.showToast(wishlist?.message);
+        deleteCartData();
         getCartData();
         getCountData();
         setSaleBottomSheetVisible(false);
@@ -164,15 +166,25 @@ const MyCart = ({}) => {
     }
   };
 
+  useEffect(() => {
+    if (CheckOut?.length > 0) {
+      const updatedCheckOut = cartData.filter(item =>
+        selectedData.some(CheckOutItem => CheckOutItem === item?.id),
+      );
+      setSelectedData(updatedCheckOut);
+    }
+  }, [selectedData]);
+
+  console.log('selectedData', selectedData, selectedData?.length);
   const handleCheckboxToggle = item => {
     if (selectedData?.includes(item?.id)) {
       setSelectedData(selectedData.filter(id => id !== item.id));
-      setCheckOut(
-        CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
-      );
+      // setCheckOut(
+      //   CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+      // );
     } else {
       setSelectedData([...selectedData, item.id]);
-      setCheckOut([...CheckOut, item]);
+      // setCheckOut([...CheckOut, item]);
     }
   };
 
@@ -347,7 +359,7 @@ const MyCart = ({}) => {
                     100,
                 );
               return (
-                <View
+                <TouchableOpacity
                   style={{
                     backgroundColor: Color.white,
                     marginTop: 10,
@@ -357,6 +369,11 @@ const MyCart = ({}) => {
                     flexDirection: 'row',
                     // alignItems: 'center',
                     padding: 10,
+                  }}
+                  onPress={() => {
+                    navigation.navigate('ProductDetails', {
+                      id: item?.product?.id,
+                    });
                   }}>
                   <View style={{}}>
                     <TouchableOpacity
@@ -631,7 +648,7 @@ const MyCart = ({}) => {
                   </TouchableOpacity> */}
                     </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               );
             }}
             refreshControl={
@@ -709,13 +726,15 @@ const MyCart = ({}) => {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      if (CheckOut?.length > 0) {
+                      if (selectedData?.length > 0) {
                         if (addressData > 0) {
-                          navigation.navigate('OrderConfirmation', {CheckOut});
+                          navigation.navigate('OrderConfirmation', {
+                            CheckOut: selectedData,
+                          });
                         } else {
                           navigation.navigate('AddAddress', {
                             item: {},
-                            CheckOut: CheckOut,
+                            CheckOut: selectedData,
                             status: 'ADD',
                           });
                         }
@@ -729,7 +748,9 @@ const MyCart = ({}) => {
                       width: '100%',
                       height: 45,
                       backgroundColor:
-                        CheckOut?.length > 0 ? Color.primary : Color.lightgrey,
+                        selectedData?.length > 0
+                          ? Color.primary
+                          : Color.lightgrey,
                       justifyContent: 'center',
                       alignItems: 'center',
                       borderRadius: 5,

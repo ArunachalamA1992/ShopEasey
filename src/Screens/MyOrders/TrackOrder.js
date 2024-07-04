@@ -74,6 +74,24 @@ const TrackOrder = ({navigation, route}) => {
     }
   };
 
+  const cancelOrder = async () => {
+    try {
+      var data = {
+        status: 6,
+      };
+      const order_status = await fetchData.update_order(
+        `${orderData?.order?.id}`,
+        data,
+        token,
+      );
+      common_fn.showToast(order_status?.message);
+      myorderData();
+      setOrderLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -447,7 +465,9 @@ const TrackOrder = ({navigation, route}) => {
         </View>
         <Button
           mode="contained"
-          onPress={() => {}}
+          onPress={() => {
+            cancelOrder();
+          }}
           style={{
             backgroundColor: Color.white,
             borderRadius: 10,
