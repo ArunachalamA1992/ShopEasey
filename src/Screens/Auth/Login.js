@@ -1,9 +1,8 @@
-import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Animated,
   Image,
   TouchableOpacity,
   TextInput,
@@ -23,7 +22,6 @@ import {
 import common_fn from '../../Config/common_fn';
 import fetchData from '../../Config/fetchData';
 import {useDispatch, useSelector} from 'react-redux';
-import {setUserData} from '../../Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
@@ -52,29 +50,22 @@ const Login = () => {
         webClientId:
           '573868691501-50tudos3b49fgfjar4q841sjmhmmm12e.apps.googleusercontent.com',
         offlineAccess: false,
-        // webClientId: '1080007356916-6amrf74qvgd060rprqqeegs06s168dn1.apps.googleusercontent.com',
-        // offlineAccess: true,
-        // hostedDomain: '',
-        // forceConsentPrompt: true,
       });
     } catch (error) {
       console.log('error ----------- : ', error);
     }
   }, []);
 
-  const googleSignIn = async navigation => {
+  const googleSignIn = async () => {
     try {
-      const replace = navigation;
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log('User info ============== :', JSON.stringify(userInfo));
       if (userInfo) {
         var data = {
           region_id: countryCode?.id,
           email: userInfo?.user?.email,
         };
         const updateProfiledata = await fetchData.login_with_gmail(data, null);
-        console.log(updateProfiledata);
         if (updateProfiledata.message) {
           const UserLogin = {
             ...updateProfiledata?.data,
@@ -87,15 +78,6 @@ const Login = () => {
       }
     } catch (error) {
       console.log('catch in google_Signing', error);
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
-      } else {
-        // some other error happened
-      }
     }
   };
 
@@ -162,7 +144,6 @@ const Login = () => {
 
   const RegisterVerify = async () => {
     try {
-      setLoading(true);
       setLoading(true);
       const numberIsEmail = isEmail(number);
       const numberIsMobile = isMobile(number);

@@ -1,13 +1,9 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
-  Alert,
-  FlatList,
   Image,
-  Modal,
   PermissionsAndroid,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,11 +19,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {BottomSheet} from 'react-native-btr';
-import {baseUrl, base_image_url} from '../../Config/base_url';
+import {baseUrl} from '../../Config/base_url';
 import {useSelector} from 'react-redux';
 import {Media} from '../../Global/Media';
-import axios from 'axios';
-import common_fn from '../../Config/common_fn';
 
 const genderData = [
   {

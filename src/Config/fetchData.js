@@ -95,6 +95,10 @@ export default {
     let url = api_name + 'orders';
     return api.postMethod(url, data, token);
   },
+  verify_order: (data, token) => {
+    let url = api_name + 'orders/paypal_verify';
+    return api.postMethod(url, data, token);
+  },
   list_order: (data, token) => {
     let url = api_name + 'orders?' + data;
     return api.getMethod(url, token);

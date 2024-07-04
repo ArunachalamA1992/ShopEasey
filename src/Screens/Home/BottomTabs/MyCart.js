@@ -383,7 +383,7 @@ const MyCart = ({}) => {
                         }
                       />
                     </TouchableOpacity>
-                    {item?.variant?.productImages?.length == 0 ? (
+                    {item?.variant?.productImages?.length > 0 ? (
                       <Image
                         source={{uri: item?.variant?.productImages?.[0]?.image}}
                         style={{

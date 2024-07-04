@@ -1,5 +1,5 @@
 //import liraries
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -10,10 +10,10 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import { Switch } from 'react-native-paper';
+import {Manrope} from '../../Global/FontFamily';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {Switch} from 'react-native-paper';
 
 // create a component
 const NotificationSettings = () => {
@@ -40,7 +40,7 @@ const NotificationSettings = () => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{flex: 1, alignItems: 'center'}}>
         <View
           style={{
             width: '100%',
@@ -53,10 +53,10 @@ const NotificationSettings = () => {
             onPress={() => {
               setStatusClick('Email');
             }}
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text
               style={{
-                fontSize: statusClick == 'Email' ? 18 : 16,
+                fontSize: 14,
                 color: statusClick == 'Email' ? Color.primary : Color.black,
                 fontFamily: Manrope.Bold,
                 letterSpacing: 0.5,
@@ -78,10 +78,10 @@ const NotificationSettings = () => {
             onPress={() => {
               setStatusClick('SMS');
             }}
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text
               style={{
-                fontSize: statusClick == 'SMS' ? 18 : 16,
+                fontSize: 14,
                 color: statusClick == 'SMS' ? Color.primary : Color.black,
                 fontFamily: Manrope.Bold,
                 letterSpacing: 0.5,
@@ -103,10 +103,10 @@ const NotificationSettings = () => {
             onPress={() => {
               setStatusClick('Whatsapp');
             }}
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text
               style={{
-                fontSize: statusClick == 'Whatsapp' ? 18 : 16,
+                fontSize: 14,
                 color: statusClick == 'Whatsapp' ? Color.primary : Color.black,
                 fontFamily: Manrope.Bold,
                 letterSpacing: 0.5,
@@ -127,7 +127,7 @@ const NotificationSettings = () => {
         </View>
 
         {statusClick == 'Email' ? (
-          <View style={{ width: '100%', backgroundColor: '#F5F6FA' }}>
+          <View style={{width: '100%', backgroundColor: '#F5F6FA'}}>
             <View
               style={{
                 width: '100%',
@@ -164,7 +164,8 @@ const NotificationSettings = () => {
                     lineHeight: 22,
                     padding: 3,
                   }}>
-                  Your order has been updated! Check the app for the latest status and delivery details.
+                  Your order has been updated! Check the app for the latest
+                  status and delivery details.
                 </Text>
               </View>
               <View
@@ -217,7 +218,8 @@ const NotificationSettings = () => {
                     lineHeight: 22,
                     padding: 3,
                   }}>
-                  Exciting deals just for you! Open the app to discover our latest promotional offers and save big today!
+                  Exciting deals just for you! Open the app to discover our
+                  latest promotional offers and save big today!
                 </Text>
               </View>
               <View
@@ -270,7 +272,8 @@ const NotificationSettings = () => {
                     lineHeight: 22,
                     padding: 3,
                   }}>
-                  Stay informed! Check out the latest news and updates in the app now to stay ahead of the curve.
+                  Stay informed! Check out the latest news and updates in the
+                  app now to stay ahead of the curve.
                 </Text>
               </View>
               <View
@@ -289,7 +292,7 @@ const NotificationSettings = () => {
           </View>
         ) : null}
         {statusClick == 'SMS' ? (
-          <View style={{ width: '100%', backgroundColor: '#F5F6FA' }}>
+          <View style={{width: '100%', backgroundColor: '#F5F6FA'}}>
             <View
               style={{
                 width: '100%',
@@ -326,7 +329,8 @@ const NotificationSettings = () => {
                     lineHeight: 22,
                     padding: 3,
                   }}>
-                  Your order has been updated! Check the app for the latest status and delivery details.
+                  Your order has been updated! Check the app for the latest
+                  status and delivery details.
                 </Text>
               </View>
               <View
@@ -343,16 +347,59 @@ const NotificationSettings = () => {
               </View>
             </View>
 
-            <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: Color.white, padding: 10, marginVertical: 10 }}>
-              <View style={{ flex: 3, justifyContent: 'center', alignItems: 'flex-start', }}>
-                <Text style={{ fontSize: 16, textAlign: 'justify', color: Color.black, fontFamily: Manrope.Bold, letterSpacing: 0.5, padding: 3 }}>Notification updates</Text>
-                <Text style={{ fontSize: 14, textAlign: 'justify', color: Color.cloudyGrey, fontFamily: Manrope.Light, letterSpacing: 0.5, lineHeight: 22, padding: 3 }}>You have new notifications! Open the app to see the latest updates and stay informed about important activities.</Text>
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: Color.white,
+                padding: 10,
+                marginVertical: 10,
+              }}>
+              <View
+                style={{
+                  flex: 3,
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    textAlign: 'justify',
+                    color: Color.black,
+                    fontFamily: Manrope.Bold,
+                    letterSpacing: 0.5,
+                    padding: 3,
+                  }}>
+                  Notification updates
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    textAlign: 'justify',
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Light,
+                    letterSpacing: 0.5,
+                    lineHeight: 22,
+                    padding: 3,
+                  }}>
+                  You have new notifications! Open the app to see the latest
+                  updates and stay informed about important activities.
+                </Text>
               </View>
-              <View style={{ flex: 0, justifyContent: 'flex-end', alignItems: 'center' }}>
-                <Switch value={isSMSProSwitchOn} onValueChange={setIsSMSProSwitchOn} color={Color.primary} />
+              <View
+                style={{
+                  flex: 0,
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                }}>
+                <Switch
+                  value={isSMSProSwitchOn}
+                  onValueChange={setIsSMSProSwitchOn}
+                  color={Color.primary}
+                />
               </View>
             </View>
-
 
             {/*     <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: Color.white, padding: 10, marginVertical: 10 }}>
                             <View style={{ flex: 3, justifyContent: 'center', alignItems: 'flex-start', }}>
@@ -366,7 +413,7 @@ const NotificationSettings = () => {
           </View>
         ) : null}
         {statusClick == 'Whatsapp' ? (
-          <View style={{ width: '100%', backgroundColor: '#F5F6FA' }}>
+          <View style={{width: '100%', backgroundColor: '#F5F6FA'}}>
             <View
               style={{
                 width: '100%',
@@ -403,7 +450,8 @@ const NotificationSettings = () => {
                     lineHeight: 22,
                     padding: 3,
                   }}>
-                  Your order has been updated! Check the app for the latest status and delivery details.
+                  Your order has been updated! Check the app for the latest
+                  status and delivery details.
                 </Text>
               </View>
               <View
@@ -456,7 +504,8 @@ const NotificationSettings = () => {
                     lineHeight: 22,
                     padding: 3,
                   }}>
-                  Exciting deals just for you! Open the app to discover our latest promotional offers and save big today!
+                  Exciting deals just for you! Open the app to discover our
+                  latest promotional offers and save big today!
                 </Text>
               </View>
               <View

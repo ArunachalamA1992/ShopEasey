@@ -156,10 +156,10 @@ const OrderConfirmation = ({navigation, route}) => {
       const total_price = Sub_total + tax;
       const data = {
         address_id: selectAddress?.id,
-        region_id: 454,
+        region_id: countryCode?.id,
         total: total_price,
         sub_total: Sub_total,
-        tax: 10,
+        tax: tax,
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
         products: CheckOut?.map(item => ({
@@ -167,7 +167,7 @@ const OrderConfirmation = ({navigation, route}) => {
           variant_id: item?.variant?.id,
           quantity: item?.quantity,
           price: item?.variant?.price,
-          tax: 10,
+          tax: tax,
         })),
       };
 
@@ -180,6 +180,7 @@ const OrderConfirmation = ({navigation, route}) => {
         } else {
           navigation.navigate('Paypal', {
             approval_url: post_order?.approval_url,
+            data: post_order?.data,
           });
         }
       }

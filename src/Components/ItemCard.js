@@ -26,7 +26,6 @@ const ItemCard = props => {
   const [loadingWishlist, setLoadingWishlist] = useState(null);
   const [reviewsData, setReviewsData] = useState({});
   const {token} = userData;
-  console.log('token', token);
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
 

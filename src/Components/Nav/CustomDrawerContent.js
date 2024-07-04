@@ -494,7 +494,7 @@ const CustomDrawerContent = props => {
                 setItemSelected('share');
                 // onShare();
                 common_fn.showToast(
-                  'Only apps that are currently available on the Play Store can be shared',
+                  'Only when the app is published on the Play Store can you share it with others.',
                 );
               }}>
               <Iconviewcomponent

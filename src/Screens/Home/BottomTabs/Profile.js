@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -9,14 +9,14 @@ import {
   View,
 } from 'react-native';
 import Color from '../../../Global/Color';
-import { Manrope } from '../../../Global/FontFamily';
-import { Iconviewcomponent } from '../../../Components/Icontag';
-import { useNavigation } from '@react-navigation/native';
-import { Media } from '../../../Global/Media';
-import { useDispatch, useSelector } from 'react-redux';
+import {Manrope} from '../../../Global/FontFamily';
+import {Iconviewcomponent} from '../../../Components/Icontag';
+import {useNavigation} from '@react-navigation/native';
+import {Media} from '../../../Global/Media';
+import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { setUserData } from '../../../Redux';
+import {setUserData} from '../../../Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import common_fn from '../../../Config/common_fn';
 
@@ -25,7 +25,7 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.UserReducer.userData);
-  var { token } = userData;
+  var {token} = userData;
 
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState({});
@@ -48,20 +48,20 @@ const Profile = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Color.white }}>
+    <View style={{flex: 1, backgroundColor: Color.white}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {loading ? (
-          <View style={{ padding: 10 }}>
+          <View style={{padding: 10}}>
             <SkeletonPlaceholder>
               <SkeletonPlaceholder.Item
-                style={{ flexDirection: 'row', alignItems: 'center' }}>
+                style={{flexDirection: 'row', alignItems: 'center'}}>
                 <SkeletonPlaceholder.Item
                   width={100}
                   height={100}
                   borderRadius={100}
                   marginTop={10}
                 />
-                <SkeletonPlaceholder.Item style={{ marginHorizontal: 10 }}>
+                <SkeletonPlaceholder.Item style={{marginHorizontal: 10}}>
                   <SkeletonPlaceholder.Item
                     width={150}
                     height={10}
@@ -95,7 +95,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -131,7 +131,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -167,7 +167,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -203,7 +203,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -239,7 +239,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -275,7 +275,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -311,7 +311,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -347,7 +347,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -383,7 +383,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -419,7 +419,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -455,7 +455,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{ flex: 1 }}>
+                  <View style={{flex: 1}}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -475,7 +475,7 @@ const Profile = () => {
             </SkeletonPlaceholder>
           </View>
         ) : (
-          <View style={{ width: '100%', alignItems: 'center' }}>
+          <View style={{width: '100%', alignItems: 'center'}}>
             <View
               style={{
                 width: '90%',
@@ -494,7 +494,7 @@ const Profile = () => {
                 }}>
                 {profileData.profile?.length > 0 ? (
                   <Image
-                    source={{ uri: profileData.profile }}
+                    source={{uri: profileData.profile}}
                     style={{
                       width: 100,
                       height: 100,
@@ -504,7 +504,7 @@ const Profile = () => {
                   />
                 ) : (
                   <Image
-                    source={{ uri: Media.user }}
+                    source={{uri: Media.user}}
                     style={{
                       width: 100,
                       height: 100,
@@ -521,8 +521,7 @@ const Profile = () => {
                   alignItems: 'flex-start',
                   paddingHorizontal: 10,
                 }}>
-                {profileData.first_name && profileData.last_name
-                  ?
+                {profileData.first_name && profileData.last_name ? (
                   <Text
                     style={{
                       fontSize: 16,
@@ -532,19 +531,26 @@ const Profile = () => {
                     }}
                     numberOfLines={2}>
                     {profileData.first_name + ' ' + profileData.last_name}
-                  </Text> : ''}
-                {profileData.email ? <Text
-                  style={{
-                    fontSize: 14,
-                    color: Color.cloudyGrey,
-                    fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
-                  }}
-                  numberOfLines={1}>
-                  {profileData.email}
-                </Text> : ''}
+                  </Text>
+                ) : (
+                  ''
+                )}
+                {profileData.email ? (
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Medium,
+                      letterSpacing: 0.5,
+                    }}
+                    numberOfLines={1}>
+                    {profileData.email}
+                  </Text>
+                ) : (
+                  ''
+                )}
 
-                {token == undefined ?
+                {token == undefined ? (
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('Auth');
@@ -556,7 +562,8 @@ const Profile = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       backgroundColor: Color.primary,
-                      marginVertical: 20, marginHorizontal: 10
+                      marginVertical: 20,
+                      marginHorizontal: 10,
                     }}>
                     <Text
                       style={{
@@ -567,7 +574,8 @@ const Profile = () => {
                       }}>
                       LOGIN
                     </Text>
-                  </TouchableOpacity> : null}
+                  </TouchableOpacity>
+                ) : null}
               </View>
             </View>
             <View
@@ -1003,7 +1011,8 @@ const Profile = () => {
                   marginVertical: 10,
                 }}></View>
 
-              <TouchableOpacity onPress={() => navigation.navigate('AccountSettings')}
+              <TouchableOpacity
+                onPress={() => navigation.navigate('AccountSettings')}
                 style={{
                   width: '100%',
                   flexDirection: 'row',
@@ -1259,7 +1268,7 @@ const Profile = () => {
                 }}
                 onPress={() => {
                   common_fn.showToast(
-                    'Only apps that are currently available on the Play Store can be shared',
+                    'Only when the app is published on the Play Store can you share it with others.',
                   );
                 }}>
                 <View
@@ -1527,8 +1536,7 @@ const Profile = () => {
                 </View>
               </TouchableOpacity> */}
 
-
-              {token != undefined ?
+              {token != undefined ? (
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('OnboardScreen');
@@ -1554,8 +1562,7 @@ const Profile = () => {
                     LOGOUT
                   </Text>
                 </TouchableOpacity>
-                :
-                null}
+              ) : null}
             </View>
           </View>
         )}
