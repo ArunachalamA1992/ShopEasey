@@ -42,6 +42,7 @@ import ContactUs from './Screens/Sidemenu/ContactUs';
 import FAQs from './Screens/Sidemenu/FAQs';
 import MyRewards from './Screens/Sidemenu/MyRewards';
 import NotificationSettings from './Screens/Sidemenu/NotificationSettings';
+import {Paypal} from './Components/Paypal';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -663,6 +664,11 @@ const MainApp = () => {
               </View>
             ),
           })}
+        />
+        <Stack.Screen
+          name="Paypal"
+          component={Paypal}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </>

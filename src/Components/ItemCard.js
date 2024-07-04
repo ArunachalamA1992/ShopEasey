@@ -24,7 +24,9 @@ const ItemCard = props => {
   const {item: initialItem, navigation} = props;
   const userData = useSelector(state => state.UserReducer.userData);
   const [loadingWishlist, setLoadingWishlist] = useState(null);
+  const [reviewsData, setReviewsData] = useState({});
   const {token} = userData;
+  console.log('token', token);
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
 
@@ -43,6 +45,9 @@ const ItemCard = props => {
       const data = `id=${item?.id}`;
       const product_data = await fetchData.list_products(data, token);
       setItem(product_data?.data[0]);
+      var review_data = `${item?.id}`;
+      const reviewData = await fetchData.get_review(review_data, token);
+      setReviewsData(reviewData);
     } catch (error) {
       console.log('Error loading products:', error);
     }
@@ -202,28 +207,30 @@ const ItemCard = props => {
           ${item.discountPrice}{' '}
           <Text style={styles.productPrice}>${item.price}</Text>
         </Text> */}
-          <View style={styles.productRatingView}>
-            <FontAwesome name="star" size={12} color={Color.lightYellow} />
-            <Text
-              style={{
-                fontFamily: Manrope.Bold,
-                fontSize: 12,
-                paddingHorizontal: 5,
-                color: Color.black,
-              }}>
-              {item?.rating}
+          {reviewsData?.data?.length > 0 && (
+            <View style={styles.productRatingView}>
+              <FontAwesome name="star" size={12} color={Color.lightYellow} />
               <Text
                 style={{
-                  fontFamily: Manrope.SemiBold,
-                  fontSize: 10,
-                  color: Color.cloudyGrey,
-                  letterSpacing: 0.5,
+                  fontFamily: Manrope.Bold,
+                  fontSize: 12,
+                  paddingHorizontal: 5,
+                  color: Color.black,
                 }}>
-                {' '}
-                ({item?.shop?.reviews} Reviews)
+                {reviewsData.count}
+                <Text
+                  style={{
+                    fontFamily: Manrope.SemiBold,
+                    fontSize: 10,
+                    color: Color.cloudyGrey,
+                    letterSpacing: 0.5,
+                  }}>
+                  {' '}
+                  ({reviewsData.count} Reviews)
+                </Text>
               </Text>
-            </Text>
-          </View>
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     </View>
@@ -235,6 +242,7 @@ export const ItemCardHorizontal = props => {
   const {item: initialItem, navigation} = props;
   const userData = useSelector(state => state.UserReducer.userData);
   const {token} = userData;
+  const [reviewsData, setReviewsData] = useState({});
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
 
@@ -253,6 +261,9 @@ export const ItemCardHorizontal = props => {
       const data = `id=${item?.id}`;
       const product_data = await fetchData.list_products(data, token);
       setItem(product_data?.data[0]);
+      var review_data = `${item?.id}`;
+      const reviewData = await fetchData.get_review(review_data, token);
+      setReviewsData(reviewData);
     } catch (error) {
       console.log('Error loading products:', error);
     }
@@ -373,7 +384,8 @@ export const ItemCardHorizontal = props => {
               fontSize: 14,
               fontFamily: Manrope.Medium,
             }}>
-            {item?.type} - {item?.category?.category_name}
+            {item?.type && `${item?.type}-`}
+            {item?.category?.category_name}
           </Text>
         </View>
 
@@ -394,28 +406,30 @@ export const ItemCardHorizontal = props => {
           ${item.discountPrice}{' '}
           <Text style={styles.productPrice}>${item.price}</Text>
         </Text> */}
-        <View style={styles.productRatingView}>
-          <FontAwesome name="star" size={12} color={Color.lightYellow} />
-          <Text
-            style={{
-              fontFamily: Manrope.Bold,
-              fontSize: 12,
-              paddingHorizontal: 5,
-              color: Color.black,
-            }}>
-            {item?.rating}
+        {reviewsData?.data?.length > 0 && (
+          <View style={styles.productRatingView}>
+            <FontAwesome name="star" size={12} color={Color.lightYellow} />
             <Text
               style={{
-                fontFamily: Manrope.SemiBold,
-                fontSize: 10,
-                color: Color.cloudyGrey,
-                letterSpacing: 0.5,
+                fontFamily: Manrope.Bold,
+                fontSize: 12,
+                paddingHorizontal: 5,
+                color: Color.black,
               }}>
-              {' '}
-              ({item?.shop?.reviews} Reviews)
+              {reviewsData.count}
+              <Text
+                style={{
+                  fontFamily: Manrope.SemiBold,
+                  fontSize: 10,
+                  color: Color.cloudyGrey,
+                  letterSpacing: 0.5,
+                }}>
+                {' '}
+                ({reviewsData.count} Reviews)
+              </Text>
             </Text>
-          </Text>
-        </View>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -429,7 +443,7 @@ const styles = StyleSheet.create({
   },
   product: {
     // width: 190,
-    height: 300,
+    // height: 300,
     backgroundColor: Color.white,
     margin: 5,
     borderRadius: 5,

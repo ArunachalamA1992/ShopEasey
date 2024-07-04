@@ -285,12 +285,12 @@ const common_fn = {
         .section-title {
             font-weight: bold;
             color: #0D71BA;
-            font-size:30px
+            font-size:30px;
         }
         .footer-title {
             font-weight: bold;
             color: #0D71BA;
-            font-size:20px
+            font-size:20px;
         }
         .thank-you {
             font-weight: bold;
@@ -343,9 +343,8 @@ const common_fn = {
                             </td>
                             <td style="text-align: right;">
                                 <div class="header-title">To:</div>
-                                Customer Name<br>
-                                Main street, Your Loc<br>
-                                Number 06/B
+                                ${response?.product?.vendor?.name}<br>
+                                ${response?.product?.vendor?.address}
                             </td>
                         </tr>
                     </table>
@@ -406,7 +405,7 @@ const common_fn = {
                 } ${discount_price}`}</td>
             </tr>
             <tr class="total">
-                <td colspan="2" style="text-align: right;font-weight:600">Total Amount</td>
+                <td colspan="3" style="text-align: right;font-weight:600">Total Amount:</td>
                 <td class="total-due">${`${
                   response?.order?.region_id == 454
                     ? '$'
@@ -422,7 +421,7 @@ const common_fn = {
                 <tr>
                     <td>
                         <div class="footer-title">Questions?</div>
-                        Contact us at (+91)9629332301 or info@shopeasey.com
+                        Contact us at <br>(+91)9629332301 <br>or info@shopeasey.com
                     </td>
                     <td>
                         <div class="footer-title">Payment Info:</div>

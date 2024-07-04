@@ -22,16 +22,18 @@ import {
 } from '@react-native-google-signin/google-signin';
 import common_fn from '../../Config/common_fn';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setUserData} from '../../Redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
-
   const [number, setNumber] = useState('');
   const [error, setError] = useState(false);
   const [loginType, setLoginType] = useState('');
+  const dispatch = useDispatch();
 
   const isEmail = input => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -66,35 +68,23 @@ const Login = () => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log('User info ============== :', JSON.stringify(userInfo));
-      // if (userInfo) {
-      //   var data = {
-      //     email: userInfo?.user?.email,
-      //   };
-      //   const updateProfiledata = await fetchData.login_with_gmail(data);
-      //   console.log(updateProfiledata);
-      //   if (updateProfiledata.message) {
-      //     dispatch(setUserData(updateProfiledata?.users));
-
-      //     setPercentage(percentage);
-      //     const UserLogin = {
-      //       ...updateProfiledata?.users,
-      //     };
-      //     await AsyncStorage.setItem(
-      //       'user_data',
-      //       JSON.stringify(updateProfiledata?.users),
-      //     );
-      //     await AsyncStorage.setItem(
-      //       'action_login_type',
-      //       JSON.stringify({ login_type: 'properties' }),
-      //     );
-      //     dispatch(setLoginType('properties'));
-      //     if (percentage == 100) {
-      //       replace('TabNavigator', UserLogin);
-      //     } else {
-      //       replace('TabNavigator', UserLogin);
-      //     }
-      //   }
-      // }
+      if (userInfo) {
+        var data = {
+          region_id: countryCode?.id,
+          email: userInfo?.user?.email,
+        };
+        const updateProfiledata = await fetchData.login_with_gmail(data, null);
+        console.log(updateProfiledata);
+        if (updateProfiledata.message) {
+          const UserLogin = {
+            ...updateProfiledata?.data,
+            token: updateProfiledata?.token,
+          };
+          await AsyncStorage.setItem('user_data', JSON.stringify(UserLogin));
+          navigation.replace('TabNavigator');
+          common_fn.showToast(`Welcome to ShopEasey`);
+        }
+      }
     } catch (error) {
       console.log('catch in google_Signing', error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {

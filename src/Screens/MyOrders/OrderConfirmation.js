@@ -38,7 +38,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const [netInfo_State, setNetinfo] = useState(true);
   const [selectPayment, setSelectPayment] = useState(null);
   const [selectAddress, setSelectAddress] = useState({});
-  const [tax, setTax] = useState(0);
+  const [tax, setTax] = useState(10);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
@@ -68,7 +68,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
     setNumLines(discriptiontextShown ? undefined : 3);
@@ -156,7 +156,7 @@ const OrderConfirmation = ({navigation, route}) => {
       const total_price = Sub_total + tax;
       const data = {
         address_id: selectAddress?.id,
-        region_id: countryCode?.id,
+        region_id: 454,
         total: total_price,
         sub_total: Sub_total,
         tax: 10,
@@ -172,11 +172,16 @@ const OrderConfirmation = ({navigation, route}) => {
       };
 
       const post_order = await fetchData.postOrder(data, token);
-
       if (selectPayment?.name === 'cash on delivery') {
         handleCODOrder(post_order);
       } else {
-        handleOnlineOrder(post_order);
+        if (countryCode?.id == 452) {
+          handleOnlineOrder(post_order);
+        } else {
+          navigation.navigate('Paypal', {
+            approval_url: post_order?.approval_url,
+          });
+        }
       }
     } catch (error) {
       console.error('Error in postOrder:', error);
@@ -651,15 +656,15 @@ const OrderConfirmation = ({navigation, route}) => {
                           flexDirection: 'row',
                           padding: 10,
                         }}>
-                        <View style={{flex: 1}}>
+                        <View style={{}}>
                           {item?.variant?.productImages?.length > 0 ? (
                             <Image
                               source={{
                                 uri: item?.variant?.productImages?.[0]?.image,
                               }}
                               style={{
-                                width: 150,
-                                height: 170,
+                                width: 120,
+                                height: 120,
                                 resizeMode: 'cover',
                                 borderRadius: 10,
                               }}
@@ -668,8 +673,8 @@ const OrderConfirmation = ({navigation, route}) => {
                             <Image
                               source={{uri: Media.no_image}}
                               style={{
-                                width: 150,
-                                height: 170,
+                                width: 120,
+                                height: 120,
                                 resizeMode: 'contain',
                                 borderRadius: 10,
                               }}
@@ -680,15 +685,17 @@ const OrderConfirmation = ({navigation, route}) => {
                               fontSize: 14,
                               color: Color.red,
                               fontFamily: Manrope.SemiBold,
-                              position: 'absolute',
-                              bottom: 10,
-                              right: 30,
+                              // position: 'absolute',
+                              // bottom: 10,
+                              // right: 20,
                               textAlign: 'center',
+                              marginTop: 5,
                             }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
                         </View>
                         <View
                           style={{
                             flex: 1,
+                            marginLeft: 10,
                           }}>
                           <Text
                             style={{
@@ -828,10 +835,11 @@ const OrderConfirmation = ({navigation, route}) => {
 
                 <View
                   style={{
-                    width: '90%',
                     flexDirection: 'row',
                     marginVertical: 10,
                     paddingVertical: 10,
+                    margin: 10,
+                    borderRadius: 10,
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: '#E7F7EC',
@@ -1157,7 +1165,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {Sub_total}
+                  {Sub_total + tax}
                 </Text>
               </View>
             </View>
@@ -1182,35 +1190,27 @@ const OrderConfirmation = ({navigation, route}) => {
                 </Text>
                 <Text
                   style={{
-                    fontSize: 13,
+                    fontSize: 14,
                     color: Color.lightBlack,
                     textAlign: 'justify',
                     paddingVertical: 5,
                     fontFamily: Manrope.Light,
-                    letterSpacing: 0.5,
                     lineHeight: 22,
                   }}
-                  numberOfLines={numLines}
-                  onTextLayout={onDescriptionTextLayout}>
-                  {!discriptiontextShown
-                    ? dummyText
-                        .split('\n')
-                        .join('')
-                        .substring(0, 120)
-                        .concat('...')
-                    : dummyText.split('\n').join('')}{' '}
-                  {showMoreButton || numLines >= 3 || numLines == undefined ? (
-                    <Text
-                      onPress={toggleTextShown}
-                      style={{
-                        color: Color.primary,
-                        fontFamily: Manrope.SemiBold,
-                        fontSize: 14,
-                        paddingVertical: 5,
-                      }}>
-                      {discriptiontextShown ? 'Read Less' : 'Read More'}
-                    </Text>
-                  ) : null}
+                  numberOfLines={4}>
+                  ShopEasey reserves the right to return the relevant amount to
+                  you without informing the Seller again if we don't hear from
+                  them within.{' '}
+                  <Text
+                    onPress={() => navigation.navigate('ReturnRefundPolicy')}
+                    style={{
+                      color: Color.primary,
+                      fontFamily: Manrope.SemiBold,
+                      fontSize: 14,
+                      paddingVertical: 5,
+                    }}>
+                    Read More
+                  </Text>
                 </Text>
               </View>
             </View>
@@ -1248,7 +1248,7 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {Sub_total}
+            {Sub_total + tax}
           </Text>
         </View>
         <View style={{flex: 1}}>
@@ -1263,7 +1263,10 @@ const OrderConfirmation = ({navigation, route}) => {
             style={{
               width: '100%',
               height: 45,
-              backgroundColor: Color.primary,
+              backgroundColor:
+                selectPayment && selectPayment.name
+                  ? Color.primary
+                  : Color.lightgrey,
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 5,

@@ -27,7 +27,6 @@ const FollowingSellers = () => {
   const [loading, setLoading] = useState(false);
   const [searchtext, setSearchtext] = useState('');
   const [sellerData, setSellerData] = useState([]);
-  console.log('sellerData', sellerData);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const [inputs, setInputs] = useState('');
@@ -44,6 +43,7 @@ const FollowingSellers = () => {
   const getSellersData = async () => {
     try {
       const getSellerList = await fetchData.seller_list(``, token);
+      console.log('getSellerList?.data', getSellerList?.data);
       setSellerData(getSellerList?.data);
     } catch (error) {
       console.log('error', error);

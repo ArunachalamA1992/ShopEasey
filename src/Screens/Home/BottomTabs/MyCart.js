@@ -355,10 +355,10 @@ const MyCart = ({}) => {
                     borderColor: Color.lightgrey,
                     borderRadius: 10,
                     flexDirection: 'row',
-                    alignItems: 'center',
+                    // alignItems: 'center',
                     padding: 10,
                   }}>
-                  <View style={{flex: 1}}>
+                  <View style={{}}>
                     <TouchableOpacity
                       onPress={() => {
                         handleCheckboxToggle(item);
@@ -383,13 +383,12 @@ const MyCart = ({}) => {
                         }
                       />
                     </TouchableOpacity>
-                    {item?.variant?.productImages?.length > 0 ? (
+                    {item?.variant?.productImages?.length == 0 ? (
                       <Image
                         source={{uri: item?.variant?.productImages?.[0]?.image}}
-                        // source={{uri: Media.no_image}}
                         style={{
-                          width: 150,
-                          height: 170,
+                          width: 120,
+                          height: 120,
                           resizeMode: 'cover',
                           borderRadius: 10,
                         }}
@@ -398,8 +397,8 @@ const MyCart = ({}) => {
                       <Image
                         source={{uri: Media.no_image}}
                         style={{
-                          width: 150,
-                          height: 170,
+                          width: 120,
+                          height: 120,
                           resizeMode: 'contain',
                           borderRadius: 10,
                         }}
@@ -410,22 +409,25 @@ const MyCart = ({}) => {
                         fontSize: 14,
                         color: Color.red,
                         fontFamily: Manrope.SemiBold,
-                        position: 'absolute',
-                        bottom: 10,
-                        right: 30,
+                        // position: 'absolute',
+                        // bottom: 10,
+                        // right: 30,
+                        marginTop: 5,
                         textAlign: 'center',
                       }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
                   </View>
                   <View
                     style={{
                       flex: 1,
+                      marginLeft: 10,
                     }}>
                     <Text
                       style={{
                         fontSize: 14,
                         color: Color.black,
                         fontFamily: Manrope.SemiBold,
-                      }}>
+                      }}
+                      numberOfLines={2}>
                       {item?.product?.product_name}
                     </Text>
                     <View style={styles.productRatingView}>

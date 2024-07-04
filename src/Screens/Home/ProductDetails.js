@@ -2207,7 +2207,6 @@ import {useNavigation} from '@react-navigation/native';
 const ProductDetails = ({route}) => {
   const navigation = useNavigation();
   const [id] = useState(route?.params?.id);
-  console.log('id', id);
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
   const [resultDate, setResultDate] = useState(null);
@@ -2453,6 +2452,7 @@ const ProductDetails = ({route}) => {
           setModalVisible(false);
           getCountData();
           getData();
+          navigation.navigate('MyCartTab');
         } else {
           common_fn.showToast(add_to_cart?.message);
           setModalVisible(false);
@@ -2602,8 +2602,9 @@ const ProductDetails = ({route}) => {
               color: Color.cloudyGrey,
               fontSize: 12,
               fontFamily: Manrope.Medium,
-            }}>
-            {singleData?.type}
+            }}
+            numberOfLines={1}>
+            {singleData?.product?.product_name}
           </Text>
         </View>
         <TouchableOpacity
@@ -2867,7 +2868,7 @@ const ProductDetails = ({route}) => {
                         fontSize: 13,
                         fontFamily: Manrope.Medium,
                       }}>
-                      {singleData?.type} -{' '}
+                      {singleData?.type && `${singleData?.type}-`}
                       {singleData?.product?.category?.category_name}
                     </Text>
                     <View
@@ -3330,19 +3331,24 @@ const ProductDetails = ({route}) => {
                             borderColor: Color.lightBlack,
                           }}
                           onPress={() => {
-                            if (singleData?.in_cart) {
-                              navigation.navigate('MyCartTab');
+                            if (singleData?.stock == 0) {
                             } else {
-                              if (token != undefined) {
-                                setAdd_cart();
+                              if (singleData?.in_cart) {
+                                navigation.navigate('MyCartTab');
                               } else {
-                                navigation.navigate('Auth');
+                                if (token != undefined) {
+                                  setAdd_cart();
+                                } else {
+                                  navigation.navigate('Auth');
+                                }
                               }
                             }
                           }}>
                           <Iconviewcomponent
-                            Icontag={'AntDesign'}
-                            iconname={'shoppingcart'}
+                            Icontag={'Ionicons'}
+                            iconname={
+                              singleData?.stock == 0 ? 'notifications' : 'cart'
+                            }
                             icon_size={20}
                             icon_color={Color.black}
                           />
@@ -3354,7 +3360,11 @@ const ProductDetails = ({route}) => {
                               letterSpacing: 0.5,
                               paddingHorizontal: 10,
                             }}>
-                            {singleData?.in_cart ? `Go to Cart` : `Add to Cart`}
+                            {singleData?.stock == 0
+                              ? 'Notify Me'
+                              : singleData?.in_cart
+                              ? `Go to Cart`
+                              : `Add to Cart`}
                           </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -3368,8 +3378,12 @@ const ProductDetails = ({route}) => {
                             justifyContent: 'center',
                             alignItems: 'center',
                             borderRadius: 5,
-                            backgroundColor: Color.primary,
+                            backgroundColor:
+                              singleData?.stock == 0
+                                ? Color.lightgrey
+                                : Color.primary,
                           }}
+                          disabled={singleData?.stock == 0}
                           onPress={() => {
                             if (token != undefined) {
                               setBuyNow();
@@ -4158,13 +4172,16 @@ const ProductDetails = ({route}) => {
                 borderColor: Color.lightBlack,
               }}
               onPress={() => {
-                if (singleData?.in_cart) {
-                  navigation.navigate('MyCartTab');
+                if (singleData?.stock == 0) {
                 } else {
-                  if (token != undefined) {
-                    setAdd_cart();
+                  if (singleData?.in_cart) {
+                    navigation.navigate('MyCartTab');
                   } else {
-                    navigation.navigate('Auth');
+                    if (token != undefined) {
+                      setAdd_cart();
+                    } else {
+                      navigation.navigate('Auth');
+                    }
                   }
                 }
               }}>
@@ -4182,7 +4199,11 @@ const ProductDetails = ({route}) => {
                   letterSpacing: 0.5,
                   paddingHorizontal: 10,
                 }}>
-                {singleData?.in_cart ? `Go to Cart` : `Add to Cart`}
+                {singleData?.stock == 0
+                  ? 'Notify Me'
+                  : singleData?.in_cart
+                  ? `Go to Cart`
+                  : `Add to Cart`}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -4196,8 +4217,10 @@ const ProductDetails = ({route}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderRadius: 5,
-                backgroundColor: Color.primary,
+                backgroundColor:
+                  singleData?.stock == 0 ? Color.lightgrey : Color.primary,
               }}
+              disabled={singleData?.stock == 0}
               onPress={() => {
                 if (token != undefined) {
                   setBuyNow();

@@ -46,16 +46,6 @@ export const HomeStack = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="ProductList"
-        component={ProductList}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ProductDetails"
-        component={ProductDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name="AboutUs"
         component={AboutUs}
         options={({navigation, route}) => ({
@@ -252,30 +242,6 @@ export const MyCartStack = () => {
             color: Color.black,
             fontFamily: Manrope.Bold,
             fontSize: 18,
-          },
-          headerStyle: {backgroundColor: Color.white},
-          headerLeft: () => (
-            <View style={{marginHorizontal: 10}}>
-              <Icon
-                name="arrow-back"
-                size={30}
-                color={Color.black}
-                onPress={() => navigation.goBack()}
-              />
-            </View>
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="OrderConfirmation"
-        component={OrderConfirmation}
-        options={({navigation, route}) => ({
-          headerTitle: 'Order Confirmation',
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            color: Color.black,
-            fontSize: 18,
-            fontFamily: Manrope.Bold,
           },
           headerStyle: {backgroundColor: Color.white},
           headerLeft: () => (
