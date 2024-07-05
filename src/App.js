@@ -47,6 +47,7 @@ import AccountSettings from './Screens/Sidemenu/AccountSettings';
 import ProfileView from './Screens/Profile/ProfileView';
 import EditProfile from './Screens/Profile/EditProfile';
 import SelectAddress from './Screens/Address/SelectAddress';
+import { setUserId, setUserProperties } from './analytics';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -149,6 +150,11 @@ const App = () => {
     projectId: 'shopeasey-8855b',
     appId: '1:573868691501:android:776bd7b34bfb80e69428a4',
   };
+
+  useEffect(() => {
+    setUserId('1');
+    setUserProperties({ product: 'ShopEasey' });
+  }, []);
 
   useEffect(() => {
     try {

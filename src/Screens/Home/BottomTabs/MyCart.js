@@ -174,7 +174,6 @@ const MyCart = ({}) => {
     }
   }, [selectedData]);
 
-  console.log('selectedData', selectedData, selectedData?.length);
   const handleCheckboxToggle = item => {
     if (selectedData?.includes(item?.id)) {
       setSelectedData(selectedData.filter(id => id !== item.id));
@@ -347,7 +346,7 @@ const MyCart = ({}) => {
       ) : (
         <>
           <FlatList
-            // data={cartData}
+            data={cartData}
             keyExtractor={(item, index) => String(index)}
             renderItem={({item, index}) => {
               var discount =

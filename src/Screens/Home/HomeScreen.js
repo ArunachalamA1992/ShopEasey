@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -18,24 +18,24 @@ import {
 } from 'react-native';
 import Color from '../../Global/Color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
-import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import {Badge, Button} from 'react-native-paper';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { useNavigation } from '@react-navigation/native';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
+import { Badge, Button } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {scr_width} from '../../Utils/Dimensions';
+import { scr_width } from '../../Utils/Dimensions';
 import CountdownTimer from '../../Components/CountdownTimer';
-import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
+import ItemCard, { ItemCardHorizontal } from '../../Components/ItemCard';
 import * as ImagePicker from 'react-native-image-picker';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {setDataCount, setUserData} from '../../Redux';
-import {useDispatch, useSelector} from 'react-redux';
+import { setDataCount, setUserData } from '../../Redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Geolocation from 'react-native-geolocation-service';
 import common_fn from '../../Config/common_fn';
 import axios from 'axios';
@@ -43,7 +43,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import PostCompletedModal from '../MyOrders/OrderCompletionModal';
 
 LogBox.ignoreAllLogs();
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -57,13 +57,13 @@ const HomeScreen = () => {
   const [endReached, setEndReached] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const [imageVisible, setImageVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const dataCount = useSelector(state => state.UserReducer.count);
-  var {wishlist, cart} = dataCount;
+  var { wishlist, cart } = dataCount;
 
   const [OfferBanner] = useState([
     {
@@ -156,14 +156,14 @@ const HomeScreen = () => {
   ]);
 
   const [shopSection] = useState([
-    {id: 1, title: 'Category Menu', data: ['Category Menu']},
-    {id: 2, title: 'banners', data: ['banners']},
-    {id: 3, title: 'hot deals', data: ['hot deals']},
-    {id: 4, title: 'Trend Brands', data: ['Trend Brands']},
-    {id: 5, title: 'Trend Product', data: ['Trend Product']},
-    {id: 6, title: 'Offer Banner', data: ['Offer Banner']},
-    {id: 7, title: 'Flash Selling', data: ['Flash Selling']},
-    {id: 8, title: 'product', data: ['product']},
+    { id: 1, title: 'Category Menu', data: ['Category Menu'] },
+    { id: 2, title: 'banners', data: ['banners'] },
+    { id: 3, title: 'hot deals', data: ['hot deals'] },
+    { id: 4, title: 'Trend Brands', data: ['Trend Brands'] },
+    { id: 5, title: 'Trend Product', data: ['Trend Product'] },
+    { id: 6, title: 'Offer Banner', data: ['Offer Banner'] },
+    { id: 7, title: 'Flash Selling', data: ['Flash Selling'] },
+    { id: 8, title: 'product', data: ['product'] },
   ]);
 
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
@@ -190,7 +190,7 @@ const HomeScreen = () => {
       Geolocation.getCurrentPosition(
         async position => {
           clearTimeout(timeoutId);
-          const {latitude, longitude} = position.coords;
+          const { latitude, longitude } = position.coords;
 
           try {
             const response = await axios.get(
@@ -372,11 +372,11 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'light-content'} />
       {loading ? (
-        <View style={{marginHorizontal: 10}}>
+        <View style={{ marginHorizontal: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{flex: 1}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1 }}>
                 <SkeletonPlaceholder.Item
                   width={180}
                   height={20}
@@ -428,7 +428,7 @@ const HomeScreen = () => {
                 marginTop: 20,
               }}>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -444,7 +444,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -460,7 +460,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -476,7 +476,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -492,7 +492,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -508,7 +508,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -524,7 +524,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -540,7 +540,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={50}
                   height={50}
@@ -664,7 +664,7 @@ const HomeScreen = () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -689,19 +689,19 @@ const HomeScreen = () => {
                   </View>
                 </View>
                 <TouchableOpacity
-                  style={{marginHorizontal: 10}}
-                  onPress={() => {}}>
+                  style={{ marginHorizontal: 10 }}
+                  onPress={() => { }}>
                   <Iconviewcomponent
                     Icontag={'Ionicons'}
                     iconname={'notifications-outline'}
                     icon_size={26}
                     icon_color={Color.white}
-                    iconstyle={{marginTop: 0}}
+                    iconstyle={{ marginTop: 0 }}
                   />
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{marginHorizontal: 10}}
+                  style={{ marginHorizontal: 10 }}
                   onPress={() => {
                     navigation.navigate('WishListTab');
                   }}>
@@ -723,7 +723,7 @@ const HomeScreen = () => {
                   <AntDesign name="hearto" size={22} color={Color.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{marginHorizontal: 10}}
+                  style={{ marginHorizontal: 10 }}
                   onPress={() => {
                     navigation.navigate('MyCartTab');
                   }}>
@@ -819,7 +819,7 @@ const HomeScreen = () => {
             scrollEventThrottle={1}
             nestedScrollEnabled
             initialNumToRender={5}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               switch (item) {
                 case 'Category Menu':
                   return (
@@ -848,7 +848,7 @@ const HomeScreen = () => {
                               width: '25%',
                               marginVertical: 10,
                             }}>
-                            <View style={{alignItems: 'center'}}>
+                            <View style={{ alignItems: 'center' }}>
                               <View
                                 style={{
                                   backgroundColor: '#E6F5F8',
@@ -857,7 +857,7 @@ const HomeScreen = () => {
                                   height: 65,
                                 }}>
                                 <Image
-                                  source={{uri: item?.file}}
+                                  source={{ uri: item?.file }}
                                   style={{
                                     width: 65,
                                     height: 65,
@@ -892,7 +892,7 @@ const HomeScreen = () => {
                           marginVertical: 10,
                           width: '25%',
                         }}>
-                        <View style={{alignItems: 'center'}}>
+                        <View style={{ alignItems: 'center' }}>
                           <View
                             style={{
                               backgroundColor: '#fff',
@@ -949,9 +949,9 @@ const HomeScreen = () => {
                           justifyContent: 'center',
                           alignItems: 'center',
                         }}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                           <Image
-                            source={{uri: item.ban_image}}
+                            source={{ uri: item.ban_image }}
                             style={{
                               width: width - 10,
                               height: 130,
@@ -979,7 +979,7 @@ const HomeScreen = () => {
                           marginTop: 20,
                         }}>
                         <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          style={{ flexDirection: 'row', alignItems: 'center' }}>
                           <View
                             style={{
                               flexDirection: 'row',
@@ -1043,7 +1043,7 @@ const HomeScreen = () => {
                         data={hotDealsData}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({item, index}) => {
+                        renderItem={({ item, index }) => {
                           return (
                             <View
                               key={index}
@@ -1053,7 +1053,7 @@ const HomeScreen = () => {
                                 marginRight: 10,
                               }}>
                               <Image
-                                source={{uri: item?.image}}
+                                source={{ uri: item?.image }}
                                 style={{
                                   width: 170,
                                   height: 130,
@@ -1261,7 +1261,7 @@ const HomeScreen = () => {
                           data={trendingProducts}
                           horizontal
                           showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             return (
                               <ItemCardHorizontal
                                 item={item}
@@ -1296,7 +1296,7 @@ const HomeScreen = () => {
                         //   justifyContent: 'center',
                         //   alignItems: 'center',
                         // }}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                           <View
                             style={{
                               width: scr_width,
@@ -1304,7 +1304,7 @@ const HomeScreen = () => {
                               alignItems: 'center',
                             }}>
                             <Image
-                              source={{uri: item?.category_image}}
+                              source={{ uri: item?.category_image }}
                               style={{
                                 width: '100%',
                                 height: 470,
@@ -1409,7 +1409,7 @@ const HomeScreen = () => {
                             justifyContent: 'space-between',
                           }}>
                           <Image
-                            source={{uri: Media.flash_sell_ban_one}}
+                            source={{ uri: Media.flash_sell_ban_one }}
                             style={{
                               width: '45%',
                               height: 100,
@@ -1419,7 +1419,7 @@ const HomeScreen = () => {
                             }}
                           />
                           <Image
-                            source={{uri: Media.flash_sell_ban_two}}
+                            source={{ uri: Media.flash_sell_ban_two }}
                             style={{
                               width: '45%',
                               height: 100,
@@ -1444,7 +1444,7 @@ const HomeScreen = () => {
                             size={46}
                             color={'#0095B6'}
                           />
-                          <View style={{flex: 1}}>
+                          <View style={{ flex: 1 }}>
                             <Text
                               style={{
                                 fontSize: 11,
@@ -1480,7 +1480,7 @@ const HomeScreen = () => {
                               backgroundColor: Color.primary,
                               borderRadius: 5,
                             }}>
-                            <Text style={{fontSize: 12, color: Color.white}}>
+                            <Text style={{ fontSize: 12, color: Color.white }}>
                               Claim
                             </Text>
                           </View>
@@ -1519,7 +1519,6 @@ const HomeScreen = () => {
                           style={{
                             backgroundColor: Color.white,
                             marginHorizontal: 10,
-                            marginVertical: 10,
                             padding: 10,
                           }}>
                           <View
@@ -1528,7 +1527,7 @@ const HomeScreen = () => {
                               alignItems: 'center',
                             }}>
                             <Image
-                              source={{uri: item.logo}}
+                              source={{ uri: item.logo }}
                               style={{
                                 width: 100,
                                 height: 60,
@@ -1551,14 +1550,14 @@ const HomeScreen = () => {
                     <View
                       style={{
                         backgroundColor: Color.white,
-                        marginBottom: 10,
+                        marginBottom: 20,
                         padding: 10,
                       }}>
                       <FlatList
                         data={visibleData}
                         numColumns={2}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({item, index}) => {
+                        renderItem={({ item, index }) => {
                           return (
                             <ItemCard item={item} navigation={navigation} />
                           );
@@ -1609,14 +1608,14 @@ const HomeScreen = () => {
             padding: 10,
             marginTop: Platform.OS == 'ios' ? 80 : 0,
           }}>
-          <Text style={{color: 'white'}}>No Internet Connection</Text>
+          <Text style={{ color: 'white' }}>No Internet Connection</Text>
         </Animated.View>
       )}
 
       <Modal transparent={true} animationType="fade" visible={imageVisible}>
-        <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
+        <View style={{ backgroundColor: Color.transparantBlack, flex: 1 }}>
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity
               style={{
                 position: 'absolute',
@@ -1661,8 +1660,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.white,
   },
-  child: {width: Dimensions.get('window').width, justifyContent: 'center'},
-  text: {fontSize: 14, textAlign: 'center'},
+  child: { width: Dimensions.get('window').width, justifyContent: 'center' },
+  text: { fontSize: 14, textAlign: 'center' },
   categoryImage: {
     width: 80,
     height: 80,
