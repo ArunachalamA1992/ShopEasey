@@ -696,7 +696,7 @@ const HomeScreen = () => {
                     </Text>
                   </View>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{marginHorizontal: 10}}
                   onPress={() => {}}>
                   <Iconviewcomponent
@@ -706,7 +706,7 @@ const HomeScreen = () => {
                     icon_color={Color.white}
                     iconstyle={{marginTop: 0}}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                   style={{marginHorizontal: 10}}
@@ -951,16 +951,23 @@ const HomeScreen = () => {
                           alignItems: 'center',
                         }}
                         renderItem={({item}) => (
-                          <Image
-                            source={{uri: item.ban_image}}
-                            style={{
-                              width: width - 10,
-                              height: 130,
-                              borderRadius: 5,
-                              resizeMode: 'cover',
-                              marginHorizontal: 5,
-                            }}
-                          />
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('ProductList', {
+                                category_id: 560,
+                              });
+                            }}>
+                            <Image
+                              source={{uri: item.ban_image}}
+                              style={{
+                                width: width - 10,
+                                height: 130,
+                                borderRadius: 5,
+                                resizeMode: 'cover',
+                                marginHorizontal: 5,
+                              }}
+                            />
+                          </TouchableOpacity>
                         )}
                       />
                     </View>
@@ -1046,12 +1053,17 @@ const HomeScreen = () => {
                         showsHorizontalScrollIndicator={false}
                         renderItem={({item, index}) => {
                           return (
-                            <View
+                            <TouchableOpacity
                               key={index}
                               style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 marginRight: 10,
+                              }}
+                              onPress={() => {
+                                navigation.navigate('ProductList', {
+                                  category_id: 560,
+                                });
                               }}>
                               <Image
                                 source={{uri: item?.image}}
@@ -1061,7 +1073,7 @@ const HomeScreen = () => {
                                   resizeMode: 'contain',
                                 }}
                               />
-                            </View>
+                            </TouchableOpacity>
                           );
                         }}
                       />
@@ -1113,7 +1125,12 @@ const HomeScreen = () => {
                           showsHorizontalScrollIndicator={false}>
                           {trendData.map((item, index) => {
                             return (
-                              <View
+                              <TouchableOpacity
+                                onPress={() => {
+                                  navigation.navigate('ProductList', {
+                                    category_id: 560,
+                                  });
+                                }}
                                 style={{
                                   width: 150,
                                   height: 170,
@@ -1219,7 +1236,7 @@ const HomeScreen = () => {
                                     color={Color.white}
                                   />
                                 </View>
-                              </View>
+                              </TouchableOpacity>
                             );
                           })}
                         </ScrollView>
@@ -1298,21 +1315,26 @@ const HomeScreen = () => {
                         //   alignItems: 'center',
                         // }}
                         renderItem={({item}) => (
-                          <View
+                          <TouchableOpacity
                             style={{
                               width: scr_width,
                               flexDirection: 'row',
                               alignItems: 'center',
+                            }}
+                            onPress={() => {
+                              navigation.navigate('ProductList', {
+                                category_id: 560,
+                              });
                             }}>
                             <Image
                               source={{uri: item?.category_image}}
                               style={{
                                 width: '100%',
                                 height: 470,
-                                resizeMode: 'contain',
+                                resizeMode: 'cover',
                               }}
                             />
-                          </View>
+                          </TouchableOpacity>
                         )}
                       />
                       <View
@@ -1409,26 +1431,44 @@ const HomeScreen = () => {
                             alignItems: 'center',
                             justifyContent: 'space-between',
                           }}>
-                          <Image
-                            source={{uri: Media.flash_sell_ban_one}}
-                            style={{
-                              width: '45%',
-                              height: 100,
-                              resizeMode: 'contain',
-                              marginHorizontal: 5,
-                              borderRadius: 10,
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('ProductList', {
+                                category_id: 560,
+                              });
                             }}
-                          />
-                          <Image
-                            source={{uri: Media.flash_sell_ban_two}}
                             style={{
-                              width: '45%',
-                              height: 100,
-                              resizeMode: 'contain',
-                              marginHorizontal: 5,
+                              flex: 1,
                               borderRadius: 10,
+                            }}>
+                            <Image
+                              source={{uri: Media.flash_sell_ban_one}}
+                              style={{
+                                height: 100,
+                                resizeMode: 'contain',
+                                marginHorizontal: 5,
+                              }}
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('ProductList', {
+                                category_id: 560,
+                              });
                             }}
-                          />
+                            style={{
+                              flex: 1,
+                              borderRadius: 10,
+                            }}>
+                            <Image
+                              source={{uri: Media.flash_sell_ban_two}}
+                              style={{
+                                height: 100,
+                                resizeMode: 'contain',
+                                marginHorizontal: 5,
+                              }}
+                            />
+                          </TouchableOpacity>
                         </View>
                         <View
                           style={{
@@ -1445,7 +1485,7 @@ const HomeScreen = () => {
                             size={46}
                             color={'#0095B6'}
                           />
-                          <View style={{flex: 1}}>
+                          <View style={{flex: 1, marginLeft: 10}}>
                             <Text
                               style={{
                                 fontSize: 11,
@@ -1474,7 +1514,7 @@ const HomeScreen = () => {
                               Min spent 2000$ of cart value
                             </Text>
                           </View>
-                          <View
+                          {/* <View
                             style={{
                               padding: 10,
                               paddingHorizontal: 20,
@@ -1484,7 +1524,7 @@ const HomeScreen = () => {
                             <Text style={{fontSize: 12, color: Color.white}}>
                               Claim
                             </Text>
-                          </View>
+                          </View> */}
                           {/* <Button
                             mode="contained"
                             onPress={() => { }}

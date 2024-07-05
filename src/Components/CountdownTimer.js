@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
   timerText: {
     fontSize: 14,
-    color: Color.lightBlack,
+    color: Color.black,
     fontFamily: Manrope.Bold,
     marginBottom: 5,
   },
@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: Color.cloudyGrey,
-    padding: 7,
-    paddingHorizontal: 12,
+    padding: 5,
+    paddingHorizontal: 10,
   },
   timeText: {
     fontSize: 14,

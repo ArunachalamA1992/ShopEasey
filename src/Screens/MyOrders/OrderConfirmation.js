@@ -35,7 +35,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
   const dispatch = useDispatch();
-  const [isExpanded, setIsExpanded] = useState(OrderData?.length == 1);
+  const [isExpanded, setIsExpanded] = useState(CheckOut?.length == 1);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
@@ -79,18 +79,18 @@ const OrderConfirmation = ({navigation, route}) => {
     }
   };
 
-  const Sub_total = OrderData?.reduce((accumulator, item) => {
+  const Sub_total = CheckOut?.reduce((accumulator, item) => {
     return accumulator + (item.variant?.price * item?.quantity || 0);
   }, 0);
 
-  const discount_price = OrderData?.reduce((accumulator, item) => {
+  const discount_price = CheckOut?.reduce((accumulator, item) => {
     return (
       accumulator +
       ((item.variant?.org_price - item.variant?.price) * item?.quantity || 0)
     );
   }, 0);
 
-  const product_tax = OrderData?.map(orderItem => {
+  const product_tax = CheckOut?.map(orderItem => {
     return orderItem?.tax
       ?.map(item => {
         if (item?.region_id == countryCode?.id) {
@@ -113,7 +113,7 @@ const OrderConfirmation = ({navigation, route}) => {
         tax: overall_tax,
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-        products: OrderData?.flatMap(item =>
+        products: CheckOut?.flatMap(item =>
           item.tax?.flatMap(tax_item => {
             if (tax_item?.region_id == countryCode?.id) {
               return {
@@ -356,7 +356,7 @@ const OrderConfirmation = ({navigation, route}) => {
             </TouchableOpacity>
             {isExpanded ? (
               <View style={{width: '100%'}}>
-                {OrderData?.map(item => {
+                {CheckOut?.map(item => {
                   var discount =
                     100 -
                     parseInt(
@@ -743,7 +743,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     fontFamily: Manrope.Medium,
                     letterSpacing: 0.5,
                   }}>
-                  Price ( {OrderData?.length} Items )
+                  Price ( {CheckOut?.length} Items )
                 </Text>
                 <Text
                   style={{

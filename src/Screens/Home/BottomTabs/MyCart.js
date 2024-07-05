@@ -83,9 +83,12 @@ const MyCart = ({}) => {
         getCartData();
         getCountData();
         setSaleBottomSheetVisible(false);
-        if (selectedData?.includes(bottomData?.id)) {
-          setSelectedData(selectedData.filter(id => id !== bottomData?.id));
-        }
+        // if (selectedData?.includes(bottomData?.id)) {
+        //   setSelectedData(selectedData.filter(id => id !== bottomData?.id));
+        // }
+        setCheckOut(
+          CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+        );
       } else {
         common_fn.showToast(wishlist?.message);
       }
@@ -163,9 +166,12 @@ const MyCart = ({}) => {
       setSaleBottomSheetVisible(false);
       getCartData();
       getCountData();
-      if (selectedData?.includes(bottomData?.id)) {
-        setSelectedData(selectedData.filter(id => id !== bottomData?.id));
-      }
+      // if (selectedData?.includes(bottomData?.id)) {
+      //   setSelectedData(selectedData.filter(id => id !== bottomData?.id));
+      // }
+      setCheckOut(
+        CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+      );
     } catch (error) {
       console.log('error', error);
     }
@@ -174,12 +180,12 @@ const MyCart = ({}) => {
   const handleCheckboxToggle = item => {
     if (selectedData?.includes(item?.id)) {
       setSelectedData(selectedData.filter(id => id !== item.id));
-      // setCheckOut(
-      //   CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
-      // );
+      setCheckOut(
+        CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+      );
     } else {
       setSelectedData([...selectedData, item.id]);
-      // setCheckOut([...CheckOut, item]);
+      setCheckOut([...CheckOut, item]);
     }
   };
 
@@ -727,12 +733,12 @@ const MyCart = ({}) => {
                       if (selectedData?.length > 0) {
                         if (addressData > 0) {
                           navigation.navigate('OrderConfirmation', {
-                            CheckOut: selectedData,
+                            CheckOut: CheckOut,
                           });
                         } else {
                           navigation.navigate('AddAddress', {
                             item: {},
-                            CheckOut: selectedData,
+                            CheckOut: CheckOut,
                             status: 'ADD',
                           });
                         }

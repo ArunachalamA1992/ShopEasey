@@ -346,6 +346,7 @@ const ProductDetails = ({route}) => {
               productImages: singleData?.productImages,
               offer: singleData?.offer,
             },
+            tax: singleData?.tax,
           },
         ];
         navigation.navigate('OrderConfirmation', {CheckOut});
@@ -1070,7 +1071,7 @@ const ProductDetails = ({route}) => {
                     />
                     <View style={styles.modalContainer}>
                       <Text style={styles.modalTitle}>
-                        Please select a color and/or size:
+                        Please select a color or size:
                       </Text>
 
                       {singleData?.variants_list?.color?.length > 0 ? (
@@ -2220,7 +2221,6 @@ const styles = StyleSheet.create({
     fontFamily: Manrope.SemiBold,
   },
   sizeOptions: {
-    width: '95%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginVertical: 10,
@@ -2228,6 +2228,7 @@ const styles = StyleSheet.create({
   sizeOption: {
     marginHorizontal: 10,
     borderWidth: 1,
+    marginTop: 10,
   },
   sizeView: {
     padding: 10,

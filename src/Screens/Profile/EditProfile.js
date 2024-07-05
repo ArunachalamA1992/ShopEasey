@@ -56,7 +56,7 @@ const EditProfile = () => {
   const [emailValidError, setEmailValidError] = useState('');
 
   const [imageVisible, setImageVisible] = useState(false);
-  const [profileImage, setProfileImage] = useState(userData.profile);
+  const [profileImage, setProfileImage] = useState([]);
   const [image, setImage] = useState([]);
 
   const [gender, setGender] = useState('Male');
@@ -108,7 +108,7 @@ const EditProfile = () => {
   useEffect(() => {
     const resizeImages = [];
     Promise.all(
-      profileImage.map(async (image, index) => {
+      profileImage?.map(async (image, index) => {
         var path = image?.uri;
         var maxWidth = 1000,
           maxHeight = 1000,
@@ -158,6 +158,7 @@ const EditProfile = () => {
       if (isCameraPermitted) {
         launchCamera(options, async response => {
           setProfileImage(response?.assets);
+          setSaleBottomSheetVisible(false);
         });
       } else {
         console.log('Please grant camera permissions to capture image.');
@@ -239,11 +240,7 @@ const EditProfile = () => {
           body: formdata,
           redirect: 'follow',
         };
-        console.log(
-          'requestOptions  ------------ ',
-          JSON.stringify(requestOptions),
-        );
-        fetch(`${baseUrl}/api/auth/user/update_profile`, requestOptions)
+        fetch(`${baseUrl}api/auth/user/update_profile`, requestOptions)
           .then(response => response.json())
           .then(result => {
             console.log('Result ===========   ', result);

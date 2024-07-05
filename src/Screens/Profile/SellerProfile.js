@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,26 +13,28 @@ import {
   FlatList,
   ImageBackground,
   ToastAndroid,
+  Linking,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { Media } from '../../Global/Media';
+import {Manrope} from '../../Global/FontFamily';
+import {Media} from '../../Global/Media';
 import CountdownTimer, {
   SellerCountdownTimer,
 } from '../../Components/CountdownTimer';
-import { scr_width } from '../../Utils/Dimensions';
-import { Iconviewcomponent } from '../../Components/Icontag';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { products } from '../../Config/Content';
-import ItemCard, { ItemCardHorizontal } from '../../Components/ItemCard';
-import { TextStroke } from '../../Utils/TextStroke';
+import {scr_width} from '../../Utils/Dimensions';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {products} from '../../Config/Content';
+import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
+import {TextStroke} from '../../Utils/TextStroke';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import fetchData from '../../Config/fetchData';
+import common_fn from '../../Config/common_fn';
 
 LogBox.ignoreAllLogs();
 
-const SellerProfile = ({ route }) => {
+const SellerProfile = ({route}) => {
   const navigation = useNavigation();
   const [vendor_id] = useState(route.params.vendor_id);
   const [sellerData, setSellerData] = useState({});
@@ -43,23 +45,23 @@ const SellerProfile = ({ route }) => {
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
-  const [seller_follow, setSeller_follow] = useState("Follow");
+  const [seller_follow, setSeller_follow] = useState('Follow');
 
   const userData = useSelector(state => state.UserReducer.userData);
-  var { token } = userData;
+  var {token} = userData;
 
   const [defaultRating, setDefaultRating] = useState(sellerData?.rating);
 
   const [shopSection] = useState([
-    { id: 1, title: 'Profile', data: ['Profile'] },
-    { id: 2, title: 'About', data: ['About'] },
-    { id: 3, title: 'Shop Categories', data: ['Shop Categories'] },
-    { id: 4, title: 'OfferBanner', data: ['OfferBanner'] },
-    { id: 5, title: 'Top Picks', data: ['Top Picks'] },
-    { id: 6, title: 'Offer Coupon', data: ['Offer Coupon'] },
-    { id: 7, title: 'New Arrival', data: ['New Arrival'] },
-    { id: 8, title: 'flash deals', data: ['flash deals'] },
-    { id: 9, title: 'Steel deals', data: ['Steel deals'] },
+    {id: 1, title: 'Profile', data: ['Profile']},
+    {id: 2, title: 'About', data: ['About']},
+    {id: 3, title: 'Shop Categories', data: ['Shop Categories']},
+    {id: 4, title: 'OfferBanner', data: ['OfferBanner']},
+    {id: 5, title: 'Top Picks', data: ['Top Picks']},
+    {id: 6, title: 'Offer Coupon', data: ['Offer Coupon']},
+    {id: 7, title: 'New Arrival', data: ['New Arrival']},
+    {id: 8, title: 'flash deals', data: ['flash deals']},
+    {id: 9, title: 'Steel deals', data: ['Steel deals']},
   ]);
 
   const [steelData, setSteelData] = useState([
@@ -130,7 +132,6 @@ const SellerProfile = ({ route }) => {
     getFlashDeals();
   }, []);
 
-
   useEffect(() => {
     const daysAgo = currentDate.diff(yourDate, 'days');
     const hoursAgo = currentDate.diff(yourDate, 'hours');
@@ -142,14 +143,17 @@ const SellerProfile = ({ route }) => {
       let result;
 
       if (Math.abs(daysAgo) > 0) {
-        result = `${Math.abs(daysAgo)} day${Math.abs(daysAgo) !== 1 ? 's' : ''
-          } ago`;
+        result = `${Math.abs(daysAgo)} day${
+          Math.abs(daysAgo) !== 1 ? 's' : ''
+        } ago`;
       } else if (Math.abs(hoursAgo) > 0) {
-        result = `${Math.abs(hoursAgo)} hour${Math.abs(hoursAgo) !== 1 ? 's' : ''
-          } ago`;
+        result = `${Math.abs(hoursAgo)} hour${
+          Math.abs(hoursAgo) !== 1 ? 's' : ''
+        } ago`;
       } else {
-        result = `${Math.abs(minutesAgo)} minute${Math.abs(minutesAgo) !== 1 ? 's' : ''
-          } ago`;
+        result = `${Math.abs(minutesAgo)} minute${
+          Math.abs(minutesAgo) !== 1 ? 's' : ''
+        } ago`;
       }
 
       setResultDate(result);
@@ -163,7 +167,6 @@ const SellerProfile = ({ route }) => {
       setDefaultRating(item);
     }
   };
-
 
   const getData = async () => {
     try {
@@ -188,10 +191,10 @@ const SellerProfile = ({ route }) => {
       const setFollow = await fetchData.post_follow(param, {}, token);
       if (setFollow.status === true) {
         setSeller_follow('Follow');
-        ToastAndroid.show("Unfollow Success", ToastAndroid.SHORT);
+        common_fn.showToast(setFollow?.message);
       } else {
         setSeller_follow('Following');
-        ToastAndroid.show("Following Success", ToastAndroid.SHORT);
+        common_fn.showToast(setFollow?.message);
       }
       getData();
     } catch (error) {
@@ -237,7 +240,7 @@ const SellerProfile = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'dark-content'} />
-      <View style={{ width: '100%', alignItems: 'center' }}>
+      <View style={{width: '100%', alignItems: 'center'}}>
         <Animated.SectionList
           sections={shopSection}
           scrollEnabled={true}
@@ -246,7 +249,7 @@ const SellerProfile = ({ route }) => {
           scrollEventThrottle={1}
           nestedScrollEnabled
           initialNumToRender={5}
-          renderItem={({ item }) => {
+          renderItem={({item}) => {
             switch (item) {
               case 'Profile':
                 return (
@@ -256,10 +259,10 @@ const SellerProfile = ({ route }) => {
                       marginTop: 10,
                       padding: 10,
                     }}>
-                    <View style={{ width: '100%', paddingHorizontal: 10 }}>
+                    <View style={{width: '100%', paddingHorizontal: 10}}>
                       {sellerData?.profile != null ? (
                         <Image
-                          source={{ uri: sellerData?.profile }}
+                          source={{uri: sellerData?.profile}}
                           style={{
                             width: 80,
                             height: 80,
@@ -269,7 +272,7 @@ const SellerProfile = ({ route }) => {
                         />
                       ) : (
                         <Image
-                          source={{ uri: Media.user }}
+                          source={{uri: Media.user}}
                           style={{
                             width: 80,
                             height: 80,
@@ -283,7 +286,8 @@ const SellerProfile = ({ route }) => {
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
-                        paddingVertical: 10, paddingHorizontal: 10
+                        paddingVertical: 10,
+                        paddingHorizontal: 10,
                       }}>
                       <View
                         style={{
@@ -299,7 +303,9 @@ const SellerProfile = ({ route }) => {
                               fontFamily: Manrope.SemiBold,
                               letterSpacing: 0.5,
                             }}>
-                            {sellerData?.first_name + ' ' + sellerData?.last_name}
+                            {sellerData?.first_name +
+                              ' ' +
+                              sellerData?.last_name}
                           </Text>
                         </View>
                         <View
@@ -375,7 +381,6 @@ const SellerProfile = ({ route }) => {
                           justifyContent: 'flex-end',
                           alignItems: 'flex-end',
                         }}>
-
                         <TouchableOpacity
                           onPress={() => {
                             setFollowProfile(vendor_id);
@@ -393,7 +398,7 @@ const SellerProfile = ({ route }) => {
                               fontFamily: Manrope.Medium,
                               letterSpacing: 0.5,
                             }}>
-                            {seller_follow == false ? "Follow" : "Following"}
+                            {sellerData?.is_follow ? 'Following' : 'Follow'}
                           </Text>
                         </TouchableOpacity>
                       </View>
@@ -404,7 +409,8 @@ const SellerProfile = ({ route }) => {
                 return (
                   <View
                     style={{
-                      width: '100%', alignItems: 'center',
+                      width: '100%',
+                      alignItems: 'center',
                       paddingHorizontal: 10,
                     }}>
                     <Text
@@ -432,14 +438,14 @@ const SellerProfile = ({ route }) => {
                         paddingVertical: 10,
                       }}>
                       ShopEasey is one of the fast-growing authorized dealers,
-                      with our wings widespread in India, Singapore, and Malaysia.
-                      Presenting in simple verbs, ShopEasey is a one-stop shop for
-                      all customer requirements. ShopEasey aims to give customers
-                      in India, Singapore, and Malaysia a hassle-free and
-                      enjoyable shopping experience by offering a large selection
-                      of goods from top-tier brands & genuine handmade retailers.
-                      The brand focuses on delivering quality products to its
-                      consumers with reliable services.
+                      with our wings widespread in India, Singapore, and
+                      Malaysia. Presenting in simple verbs, ShopEasey is a
+                      one-stop shop for all customer requirements. ShopEasey
+                      aims to give customers in India, Singapore, and Malaysia a
+                      hassle-free and enjoyable shopping experience by offering
+                      a large selection of goods from top-tier brands & genuine
+                      handmade retailers. The brand focuses on delivering
+                      quality products to its consumers with reliable services.
                     </Text>
                     <View
                       style={{
@@ -449,7 +455,12 @@ const SellerProfile = ({ route }) => {
                         alignItems: 'center',
                         paddingVertical: 5,
                       }}>
-                      <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'flex-start',
+                          alignItems: 'flex-start',
+                        }}>
                         <Text
                           style={{
                             fontSize: 16,
@@ -471,7 +482,12 @@ const SellerProfile = ({ route }) => {
                           {resultDate}
                         </Text>
                       </View>
-                      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
                         <Text
                           style={{
                             fontSize: 16,
@@ -492,7 +508,12 @@ const SellerProfile = ({ route }) => {
                           Total {sellerData?.product_count}+ Products
                         </Text>
                       </View>
-                      <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'flex-end',
+                          alignItems: 'flex-end',
+                        }}>
                         <Text
                           style={{
                             fontSize: 16,
@@ -505,27 +526,24 @@ const SellerProfile = ({ route }) => {
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: 'space-between',
+                            justifyContent: 'space-around',
                             marginTop: 5,
                           }}>
-                          <Iconviewcomponent
-                            Icontag={'Entypo'}
-                            iconname={'linkedin'}
-                            icon_size={16}
-                            icon_color={Color.primary}
-                          />
-                          <Iconviewcomponent
-                            Icontag={'FontAwesome'}
-                            iconname={'facebook-f'}
-                            icon_size={16}
-                            icon_color={Color.primary}
-                          />
-                          <Iconviewcomponent
-                            Icontag={'FontAwesome'}
-                            iconname={'youtube-play'}
-                            icon_size={16}
-                            icon_color={Color.primary}
-                          />
+                          {sellerData?.social_links?.map(item => {
+                            return (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  Linking.openURL(item?.url);
+                                }}>
+                                <Iconviewcomponent
+                                  Icontag={'Entypo'}
+                                  iconname={item?.social_media}
+                                  icon_size={14}
+                                  icon_color={Color.primary}
+                                />
+                              </TouchableOpacity>
+                            );
+                          })}
                           {/* <Iconviewcomponent
                           Icontag={'FontAwesome6Brands'}
                           iconname={'x-twitter'}
@@ -541,7 +559,8 @@ const SellerProfile = ({ route }) => {
                 return (
                   <View
                     style={{
-                      width: '100%', paddingHorizontal: 10,
+                      width: '100%',
+                      paddingHorizontal: 10,
                       marginTop: 10,
                     }}>
                     <Text
@@ -559,7 +578,7 @@ const SellerProfile = ({ route }) => {
                       data={sellerData?.categories}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({ item, index }) => {
+                      renderItem={({item, index}) => {
                         return (
                           <TouchableOpacity
                             key={index}
@@ -582,7 +601,7 @@ const SellerProfile = ({ route }) => {
                                   justifyContent: 'center',
                                 }}>
                                 <Image
-                                  source={{ uri: item?.file }}
+                                  source={{uri: item?.file}}
                                   style={{
                                     width: 60,
                                     height: 60,
@@ -633,7 +652,7 @@ const SellerProfile = ({ route }) => {
                 );
               case 'OfferBanner':
                 return (
-                  <View style={{ width: scr_width }}>
+                  <View style={{width: scr_width}}>
                     <Image
                       source={require('../../assets/category/flat.png')}
                       style={{
@@ -651,7 +670,7 @@ const SellerProfile = ({ route }) => {
                       marginTop: 10,
                       padding: 10,
                     }}>
-                    {topPicks > 0 ?
+                    {topPicks > 0 ? (
                       <View
                         style={{
                           flexDirection: 'row',
@@ -678,12 +697,12 @@ const SellerProfile = ({ route }) => {
                           See All
                         </Text>
                       </View>
-                      : null}
+                    ) : null}
                     <FlatList
                       data={topPicks}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({ item, index }) => {
+                      renderItem={({item, index}) => {
                         return (
                           <ItemCardHorizontal
                             item={item}
@@ -698,7 +717,9 @@ const SellerProfile = ({ route }) => {
                 return (
                   <View
                     style={{
-                      width: scr_width, alignItems: 'center', padding: 10
+                      width: scr_width,
+                      alignItems: 'center',
+                      padding: 10,
                     }}>
                     <View
                       style={{
@@ -757,7 +778,7 @@ const SellerProfile = ({ route }) => {
                           fontSize: 8,
                           color: Color.black,
                           fontFamily: Manrope.Bold,
-                          transform: [{ rotate: '-90deg' }],
+                          transform: [{rotate: '-90deg'}],
                         }}>
                         . T&C Apply
                       </Text>
@@ -805,7 +826,8 @@ const SellerProfile = ({ route }) => {
                           color: Color.black,
                           fontFamily: Manrope.SemiBold,
                           letterSpacing: 0.5,
-                          paddingVertical: 5, paddingHorizontal: 10,
+                          paddingVertical: 5,
+                          paddingHorizontal: 10,
                         }}>
                         New Arrivals
                       </Text>
@@ -822,7 +844,7 @@ const SellerProfile = ({ route }) => {
                       data={newArrivals}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({ item, index }) => {
+                      renderItem={({item, index}) => {
                         return (
                           <ItemCardHorizontal
                             item={item}
@@ -847,7 +869,8 @@ const SellerProfile = ({ route }) => {
                         const difference =
                           expirationDate.getTime() - currentDate.getTime();
                         const seconds = Math.floor(difference / 1000) % 60;
-                        const minutes = Math.floor(difference / (1000 * 60)) % 60;
+                        const minutes =
+                          Math.floor(difference / (1000 * 60)) % 60;
                         const hours =
                           Math.floor(difference / (1000 * 60 * 60)) % 24;
                         const days = Math.floor(
@@ -864,7 +887,7 @@ const SellerProfile = ({ route }) => {
                               alignItems: 'center',
                             }}>
                             <Image
-                              source={{ uri: item.logo }}
+                              source={{uri: item.logo}}
                               style={{
                                 width: 120,
                                 height: 60,
@@ -880,12 +903,12 @@ const SellerProfile = ({ route }) => {
                           </View>
                         );
                       })}
-                    <View style={{ width: '95%', paddingStart: 20 }}>
+                    <View style={{width: '95%', paddingStart: 20}}>
                       <FlatList
                         data={products}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({ item, index }) => {
+                        renderItem={({item, index}) => {
                           return (
                             <ItemCardHorizontal
                               item={item}
@@ -915,13 +938,13 @@ const SellerProfile = ({ route }) => {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         backgroundColor: Color.black,
-
                       }}>
                       <View
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'center',
-                          alignItems: 'center', padding: 15,
+                          alignItems: 'center',
+                          padding: 15,
                         }}>
                         <Iconviewcomponent
                           Icontag={'MaterialCommunityIcons'}
@@ -944,7 +967,8 @@ const SellerProfile = ({ route }) => {
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'center',
-                          alignItems: 'center', padding: 15,
+                          alignItems: 'center',
+                          padding: 15,
                         }}>
                         <Iconviewcomponent
                           Icontag={'MaterialCommunityIcons'}
@@ -967,7 +991,8 @@ const SellerProfile = ({ route }) => {
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'flex-start',
-                          alignItems: 'flex-start', padding: 15,
+                          alignItems: 'flex-start',
+                          padding: 15,
                         }}>
                         <Iconviewcomponent
                           Icontag={'MaterialIcons'}
@@ -1012,23 +1037,30 @@ const SellerProfile = ({ route }) => {
                           </Text>
                         </TextStroke>
                       </View>
-                      <View style={{ paddingStart: 10, height: '100%', paddingVertical: 10 }}>
+                      <View
+                        style={{
+                          paddingStart: 10,
+                          height: '100%',
+                          paddingVertical: 10,
+                        }}>
                         <FlatList
                           data={steelData}
                           horizontal
                           showsHorizontalScrollIndicator={false}
-                          renderItem={({ item, index }) => {
+                          renderItem={({item, index}) => {
                             return (
                               <TouchableOpacity
                                 key={index}
                                 style={{
-                                  borderRadius: 10, marginHorizontal: 5
+                                  borderRadius: 10,
+                                  marginHorizontal: 5,
                                 }}>
                                 <View>
                                   <Image
                                     source={item.steel_image}
                                     style={{
-                                      width: 160, height: 150,
+                                      width: 160,
+                                      height: 150,
                                       resizeMode: 'cover',
                                       borderTopLeftRadius: 10,
                                       borderTopRightRadius: 10,
@@ -1078,7 +1110,6 @@ const SellerProfile = ({ route }) => {
                                   </View>
                                 </View>
                               </TouchableOpacity>
-
 
                               // <TouchableOpacity
                               //   key={index}
@@ -1205,7 +1236,8 @@ const SellerProfile = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.white, alignItems: 'center'
+    backgroundColor: Color.white,
+    alignItems: 'center',
   },
 });
 
