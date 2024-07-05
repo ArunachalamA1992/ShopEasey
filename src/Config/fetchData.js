@@ -143,4 +143,8 @@ export default {
     let url = api_name + 'orders/' + param;
     return api.patchMethod(url, data, token);
   },
+  search: (data, token) => {
+    let url = api_name + 'products/search?' + data;
+    return api.getMethod(url, token);
+  },
 };

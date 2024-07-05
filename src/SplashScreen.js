@@ -2,8 +2,9 @@ import React, {useEffect} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Color from './Global/Color';
-import {setCountryCode, setUserData} from './Redux';
+import {setCountryCode, setDataCount, setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import fetchData from './Config/fetchData';
 
 const SplashScreen = ({navigation}) => {
   const imageScale = new Animated.Value(0.1);
@@ -64,10 +65,18 @@ const SplashScreen = ({navigation}) => {
       }
 
       const {token} = JSON.parse(user_data);
+      console.log('spoalsh-----------------token', token);
       if (!token) {
         navigation.replace('OnboardScreen');
       } else {
         dispatch(setUserData(user_data));
+        const getData = await fetchData.profile_data(``, token);
+        dispatch(
+          setDataCount({
+            wishlist: getData?.data?.wishlist_count,
+            cart: getData?.data?.cart_count,
+          }),
+        );
         navigation.replace('TabNavigator');
       }
     } catch (e) {

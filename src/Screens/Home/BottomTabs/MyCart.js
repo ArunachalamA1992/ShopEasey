@@ -83,6 +83,9 @@ const MyCart = ({}) => {
         getCartData();
         getCountData();
         setSaleBottomSheetVisible(false);
+        if (selectedData?.includes(bottomData?.id)) {
+          setSelectedData(selectedData.filter(id => id !== bottomData?.id));
+        }
       } else {
         common_fn.showToast(wishlist?.message);
       }
@@ -160,21 +163,14 @@ const MyCart = ({}) => {
       setSaleBottomSheetVisible(false);
       getCartData();
       getCountData();
+      if (selectedData?.includes(bottomData?.id)) {
+        setSelectedData(selectedData.filter(id => id !== bottomData?.id));
+      }
     } catch (error) {
       console.log('error', error);
     }
   };
 
-  useEffect(() => {
-    if (selectedData?.length > 0) {
-      const updatedCheckOut = cartData.filter(item =>
-        selectedData.some(CheckOutItem => CheckOutItem === item?.id),
-      );
-      setSelectedData(updatedCheckOut);
-    }
-  }, [selectedData]);
-
-  console.log('selectedData', selectedData, selectedData?.length);
   const handleCheckboxToggle = item => {
     if (selectedData?.includes(item?.id)) {
       setSelectedData(selectedData.filter(id => id !== item.id));
@@ -347,7 +343,7 @@ const MyCart = ({}) => {
       ) : (
         <>
           <FlatList
-            // data={cartData}
+            data={cartData}
             keyExtractor={(item, index) => String(index)}
             renderItem={({item, index}) => {
               var discount =
@@ -359,6 +355,7 @@ const MyCart = ({}) => {
                 );
               return (
                 <TouchableOpacity
+                  key={index}
                   style={{
                     backgroundColor: Color.white,
                     marginTop: 10,

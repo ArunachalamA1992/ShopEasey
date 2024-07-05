@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Color from '../../Global/Color';
 import common_fn from '../../Config/common_fn';
 import {Media} from '../../Global/Media';
@@ -76,17 +83,34 @@ const TrackOrder = ({navigation, route}) => {
 
   const cancelOrder = async () => {
     try {
-      var data = {
-        status: 6,
-      };
-      const order_status = await fetchData.update_order(
-        `${orderData?.order?.id}`,
-        data,
-        token,
+      Alert.alert(
+        '',
+        'Do you want cancel this product',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: async () => {
+              var data = {
+                status: 6,
+              };
+              const order_status = await fetchData.update_order(
+                `${orderData?.order?.id}`,
+                data,
+                token,
+              );
+              common_fn.showToast(order_status?.message);
+              myorderData();
+              setOrderLoading(false);
+            },
+          },
+        ],
+        {cancelable: false},
       );
-      common_fn.showToast(order_status?.message);
-      myorderData();
-      setOrderLoading(false);
     } catch (error) {
       console.log('error', error);
     }

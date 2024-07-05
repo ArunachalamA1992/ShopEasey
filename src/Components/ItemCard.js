@@ -217,7 +217,7 @@ const ItemCard = props => {
                   paddingHorizontal: 5,
                   color: Color.black,
                 }}>
-                {reviewsData.count}
+                {reviewsData?.rating}
                 <Text
                   style={{
                     fontFamily: Manrope.SemiBold,
@@ -416,7 +416,7 @@ export const ItemCardHorizontal = props => {
                 paddingHorizontal: 5,
                 color: Color.black,
               }}>
-              {reviewsData.count}
+              {reviewsData?.rating}
               <Text
                 style={{
                   fontFamily: Manrope.SemiBold,

@@ -41,6 +41,7 @@ import common_fn from '../../Config/common_fn';
 import axios from 'axios';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import PostCompletedModal from '../MyOrders/OrderCompletionModal';
+import VoiceSearch from '../../Components/VoiceSearch';
 
 LogBox.ignoreAllLogs();
 const {width} = Dimensions.get('window');
@@ -236,6 +237,13 @@ const HomeScreen = () => {
   };
 
   const [responseCamera, setResponseCamera] = React.useState([]);
+  const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
+  const handleVoiceSearch = query => {
+    console.log('query', query, query != '');
+    if (query != '') {
+      navigation.navigate('Search', {searchProduct: query});
+    }
+  };
 
   const openCameraWithPermission = async () => {
     try {
@@ -768,7 +776,7 @@ const HomeScreen = () => {
                   borderColor: Color.lightgrey,
                 }}
                 onPress={() => {
-                  navigation.navigate('Search');
+                  navigation.navigate('Search', {searchProduct: ''});
                 }}>
                 <Iconviewcomponent
                   Icontag={'AntDesign'}
@@ -787,14 +795,7 @@ const HomeScreen = () => {
                   numberOfLines={1}>
                   {`Search Products`}
                 </Text>
-                <MCIcon
-                  color={Color.lightBlack}
-                  name="microphone"
-                  size={20}
-                  style={{
-                    marginHorizontal: 5,
-                  }}
-                />
+                <VoiceSearch onSearch={handleVoiceSearch} />
                 <TouchableOpacity
                   onPress={() => {
                     openCameraWithPermission();

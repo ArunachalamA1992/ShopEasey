@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
-import { Linking, LogBox, StatusBar, View } from 'react-native';
+import React, {useEffect} from 'react';
+import {Linking, LogBox, StatusBar, View} from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Provider, useDispatch } from 'react-redux';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {Provider, useDispatch} from 'react-redux';
 
-import { Provider as PaperProvider } from 'react-native-paper';
-import { navigationRef } from '../RootNavigation';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {navigationRef} from '../RootNavigation';
 import Store from './Redux/Store';
 import SplashScreen from './SplashScreen';
 import OnboardScreen from './Screens/Onboarding/OnboardScreen';
 import Color from './Global/Color';
-import TabNavigator, { Auth } from './route';
+import TabNavigator, {Auth} from './route';
 import OnboardTwo from './Screens/Onboarding/OnboardTwo';
 import CustomDrawerContent from './Components/Nav/CustomDrawerContent';
 import WishList from './Screens/Home/BottomTabs/WishList';
@@ -21,7 +21,7 @@ import ProductList from './Screens/Home/ProductList';
 import ProductDetails from './Screens/Home/ProductDetails';
 import CategoryScreen from './Screens/Home/CategoryScreen';
 import SearchScreen from './Screens/Home/SearchScreen';
-import { Manrope } from './Global/FontFamily';
+import {Manrope} from './Global/FontFamily';
 import PrivacyPolicy from './Screens/Sidemenu/PrivacyPolicy';
 import TermsandConditions from './Screens/Sidemenu/TermsandConditions';
 import FollowingSellers from './Screens/Profile/FollowingSellers';
@@ -29,7 +29,7 @@ import SellerProfile from './Screens/Profile/SellerProfile';
 import AddCard from './Screens/MyOrders/AddCard';
 import firebase from '@react-native-firebase/app';
 import AddAddress from './Screens/Address/AddAddress';
-import { setUserData } from './Redux';
+import {setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrders from './Screens/MyOrders/MyOrders';
 import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
@@ -42,11 +42,12 @@ import ContactUs from './Screens/Sidemenu/ContactUs';
 import FAQs from './Screens/Sidemenu/FAQs';
 import MyRewards from './Screens/Sidemenu/MyRewards';
 import NotificationSettings from './Screens/Sidemenu/NotificationSettings';
-import { Paypal } from './Components/Paypal';
+import {Paypal} from './Components/Paypal';
 import AccountSettings from './Screens/Sidemenu/AccountSettings';
 import ProfileView from './Screens/Profile/ProfileView';
 import EditProfile from './Screens/Profile/EditProfile';
 import SelectAddress from './Screens/Address/SelectAddress';
+import SearchDataList from './Screens/Home/SearchDataList';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -87,7 +88,7 @@ const MyDrawer = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const handleDeepLink = ({ url }) => {
+    const handleDeepLink = ({url}) => {
       try {
         const route = url.replace(/.*?:\/\//g, '');
         const id = route.match(/\/([^\/]+)\/?$/)[1];
@@ -102,7 +103,7 @@ const MyDrawer = () => {
       try {
         const initialUrl = await Linking.getInitialURL();
         if (initialUrl) {
-          handleDeepLink({ url: initialUrl });
+          handleDeepLink({url: initialUrl});
         }
       } catch (error) {
         console.error('Error handling initial URL:', error);
@@ -120,17 +121,17 @@ const MyDrawer = () => {
       <NavigationContainer ref={navigationRef} linking={linking}>
         <Drawer.Navigator
           initialRouteName="Home"
-          screenOptions={{ swipeEnabled: false }}
+          screenOptions={{swipeEnabled: false}}
           drawerContent={props => <CustomDrawerContent {...props} />}>
           <Drawer.Screen
             name="Home"
             component={MainApp}
-            options={{ headerShown: false }}
+            options={{headerShown: false}}
           />
           <Stack.Screen
             name="ProductDetails"
             component={ProductDetails}
-            options={{ headerShown: false }}
+            options={{headerShown: false}}
           />
         </Drawer.Navigator>
       </NavigationContainer>
@@ -176,38 +177,38 @@ const MainApp = () => {
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="OnboardScreen"
           component={OnboardScreen}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="OnboardTwo"
           component={OnboardTwo}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="Auth"
           component={Auth}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="Wishlist"
           component={WishList}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Wish List',
             headerTitleAlign: 'center',
-            headerTitleStyle: { color: Color.black },
-            headerStyle: { backgroundColor: Color.white },
+            headerTitleStyle: {color: Color.black},
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -221,13 +222,13 @@ const MainApp = () => {
         <Stack.Screen
           name="category"
           component={CategoryScreen}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Category',
             headerTitleAlign: 'center',
-            headerTitleStyle: { color: Color.black },
-            headerStyle: { backgroundColor: Color.white },
+            headerTitleStyle: {color: Color.black},
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -241,17 +242,17 @@ const MainApp = () => {
         <Stack.Screen
           name="ProductList"
           component={ProductList}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="Search"
           component={SearchScreen}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: '',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -259,9 +260,33 @@ const MainApp = () => {
               fontFamily: Manrope.Bold,
               fontSize: 18,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="SearchDataList"
+          component={SearchDataList}
+          options={({navigation, route}) => ({
+            headerTitle: '',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontFamily: Manrope.Bold,
+              fontSize: 18,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -276,13 +301,13 @@ const MainApp = () => {
         <Stack.Screen
           name="TermsandConditions"
           component={TermsandConditions}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Terms & Conditions',
             headerTitleAlign: 'center',
-            headerTitleStyle: { color: Color.white },
-            headerStyle: { backgroundColor: Color.primary },
+            headerTitleStyle: {color: Color.white},
+            headerStyle: {backgroundColor: Color.primary},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -296,12 +321,12 @@ const MainApp = () => {
         <Stack.Screen
           name="PrivacyPolicy"
           component={PrivacyPolicy}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Privacy Policy',
-            headerTitleStyle: { color: Color.white },
-            headerStyle: { backgroundColor: Color.primary },
+            headerTitleStyle: {color: Color.white},
+            headerStyle: {backgroundColor: Color.primary},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -316,7 +341,7 @@ const MainApp = () => {
         <Stack.Screen
           name="FollowingSellers"
           component={FollowingSellers}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Following Sellers',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -324,9 +349,9 @@ const MainApp = () => {
               fontFamily: Manrope.Bold,
               fontSize: 18,
             },
-            headerStyle: { backgroundColor: Color.primary },
+            headerStyle: {backgroundColor: Color.primary},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -340,7 +365,7 @@ const MainApp = () => {
         <Stack.Screen
           name="SellerProfile"
           component={SellerProfile}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Seller Profile',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -348,9 +373,9 @@ const MainApp = () => {
               fontFamily: Manrope.Bold,
               fontSize: 18,
             },
-            headerStyle: { backgroundColor: Color.primary },
+            headerStyle: {backgroundColor: Color.primary},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -364,7 +389,7 @@ const MainApp = () => {
         <Stack.Screen
           name="AddCard"
           component={AddCard}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Add Card Details',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -372,9 +397,9 @@ const MainApp = () => {
               fontFamily: Manrope.Bold,
               fontSize: 18,
             },
-            headerStyle: { backgroundColor: Color.primary },
+            headerStyle: {backgroundColor: Color.primary},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -388,13 +413,13 @@ const MainApp = () => {
         <Stack.Screen
           name="AddAddress"
           component={AddAddress}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Add address',
             headerTitleAlign: 'center',
-            headerTitleStyle: { color: Color.black, textAlign: 'center' },
-            headerStyle: { backgroundColor: Color.white },
+            headerTitleStyle: {color: Color.black, textAlign: 'center'},
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -408,7 +433,7 @@ const MainApp = () => {
         <Stack.Screen
           name="MyOrders"
           component={MyOrders}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'My Orders',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -416,9 +441,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -432,7 +457,7 @@ const MainApp = () => {
         <Stack.Screen
           name="TrackingDetails"
           component={TrackOrder}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Tracking Details',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -440,9 +465,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -456,7 +481,7 @@ const MainApp = () => {
         <Stack.Screen
           name="DeliveredOrder"
           component={DeliveredOrder}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Order Details',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -464,9 +489,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -480,7 +505,7 @@ const MainApp = () => {
         <Stack.Screen
           name="OrderReview"
           component={OrderReview}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Leave a Review',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -488,9 +513,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -504,7 +529,7 @@ const MainApp = () => {
         <Stack.Screen
           name="OrderConfirmation"
           component={OrderConfirmation}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Order Confirmation',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -512,9 +537,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -528,7 +553,7 @@ const MainApp = () => {
         <Stack.Screen
           name="ReturnRefundPolicy"
           component={ReturnRefundPolicy}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Return & Refund Policy',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -536,9 +561,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -552,7 +577,7 @@ const MainApp = () => {
         <Stack.Screen
           name="AboutUs"
           component={AboutUs}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'About Us',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -560,9 +585,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -576,7 +601,7 @@ const MainApp = () => {
         <Stack.Screen
           name="ContactUs"
           component={ContactUs}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Contact Us',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -584,9 +609,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -600,7 +625,7 @@ const MainApp = () => {
         <Stack.Screen
           name="FAQs"
           component={FAQs}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'FAQs',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -608,9 +633,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -624,7 +649,7 @@ const MainApp = () => {
         <Stack.Screen
           name="MyRewards"
           component={MyRewards}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'My Rewards',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -632,9 +657,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -648,7 +673,7 @@ const MainApp = () => {
         <Stack.Screen
           name="NotificationSettings"
           component={NotificationSettings}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Notification Settings',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -656,9 +681,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -672,7 +697,7 @@ const MainApp = () => {
         <Stack.Screen
           name="AccountSettings"
           component={AccountSettings}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Account Settings',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -680,9 +705,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -697,7 +722,7 @@ const MainApp = () => {
         <Stack.Screen
           name="ProfileView"
           component={ProfileView}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Profile View',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -705,9 +730,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -722,7 +747,7 @@ const MainApp = () => {
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Edit Profile',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -730,9 +755,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -747,7 +772,7 @@ const MainApp = () => {
         <Stack.Screen
           name="SelectAddress"
           component={SelectAddress}
-          options={({ navigation, route }) => ({
+          options={({navigation, route}) => ({
             headerTitle: 'Select Delivery Address',
             headerTitleAlign: 'center',
             headerTitleStyle: {
@@ -755,9 +780,9 @@ const MainApp = () => {
               fontSize: 18,
               fontFamily: Manrope.Bold,
             },
-            headerStyle: { backgroundColor: Color.white },
+            headerStyle: {backgroundColor: Color.white},
             headerLeft: () => (
-              <View style={{ marginHorizontal: 10 }}>
+              <View style={{marginHorizontal: 10}}>
                 <Icon
                   name="arrow-back"
                   size={30}
@@ -772,7 +797,7 @@ const MainApp = () => {
         <Stack.Screen
           name="Paypal"
           component={Paypal}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </>

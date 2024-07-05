@@ -1,20 +1,39 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
+  FlatList,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Searchbar } from 'react-native-paper';
+import {Divider, Searchbar} from 'react-native-paper';
 import F6Icon from 'react-native-vector-icons/FontAwesome6';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
+import {Manrope} from '../../Global/FontFamily';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
+import fetchData from '../../Config/fetchData';
+import VoiceSearch from '../../Components/VoiceSearch';
+import {useSelector} from 'react-redux';
+import common_fn from '../../Config/common_fn';
 
-const SearchScreen = ({ navigation }) => {
-  const [searchJob, setSearchJob] = useState('');
+const SearchScreen = ({navigation, route}) => {
+  const [searchProduct, setSearchProduct] = useState(
+    route.params.searchProduct,
+  );
+  const [selectData, setSelectData] = useState({});
+  const [loadMore, setLoadMore] = useState(false);
+  const [Page, setPage] = useState(1);
+  const [endReached, setEndReached] = useState(false);
+  const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
+  const [ProductSuggestions, setProductSuggestions] = useState({
+    data: [],
+    visible: false,
+  });
+
   const [RecentlySearch] = useState([
     {
       id: 1,
@@ -28,16 +47,58 @@ const SearchScreen = ({ navigation }) => {
     },
   ]);
 
+  const handleVoiceSearch = query => {
+    setSearchProduct(query);
+  };
+
   const propertySearch = async data => {
-    setSearchJob(data);
+    setSearchProduct(data);
     try {
+      const data = `filter=${searchProduct}&page=1&limit=10`;
+      const getData = await fetchData.search(data, token);
+      setProductSuggestions({
+        data: getData?.data?.keyword?.rows,
+        visible: true,
+      });
     } catch (error) {
       console.log('error', error);
     }
   };
 
+  const loadMoreData = async () => {
+    if (loadMore || endReached) {
+      return;
+    }
+    setLoadMore(true);
+    try {
+      const nextPage = Page + 1;
+      var data = `filter=${searchProduct}&page=${nextPage}&limit=10`;
+      const filterData = await fetchData.search(data, token);
+      if (filterData.length > 0) {
+        setPage(nextPage);
+        const updatedData = [
+          ...ProductSuggestions,
+          ...filterData?.data?.keyword?.rows,
+        ];
+        setProductSuggestions(updatedData);
+      } else {
+        setEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadMore(false);
+    }
+  };
+
   const getSearchData = async () => {
     try {
+      console.log('search----------', searchProduct, selectData);
+      if (searchProduct != '') {
+        navigation.navigate('SearchDataList', {searchProduct, selectData});
+      } else {
+        common_fn.showToast('Please Select the Search');
+      }
     } catch (error) {
       console.log('error', error);
     }
@@ -49,20 +110,65 @@ const SearchScreen = ({ navigation }) => {
         <Icon color={Color.cloudyGrey} name="search" size={25} />
         <TextInput
           placeholder="Search Products"
-          value={searchJob}
-          style={{ flex: 1, marginLeft: 10 }}
-          placeholderTextColor={Color.grey}
+          value={searchProduct}
+          style={{
+            flex: 1,
+            marginLeft: 10,
+            color: Color.cloudyGrey,
+            fontSize: 14,
+            fontFamily: Manrope.SemiBold,
+          }}
+          placeholderTextColor={Color.cloudyGrey}
           onChangeText={search => propertySearch(search)}
         />
-        <MCIcon
-          color={Color.cloudyGrey}
-          name="microphone"
-          size={25}
-          style={{
-            marginHorizontal: 5,
-          }}
-        />
+        <VoiceSearch onSearch={handleVoiceSearch} />
       </TouchableOpacity>
+      {ProductSuggestions?.visible == true && (
+        <View
+          style={{
+            maxHeight: 200,
+            padding: 10,
+            backgroundColor: Color.white,
+            elevation: 3,
+            borderRadius: 5,
+            marginTop: 5,
+          }}>
+          <FlatList
+            data={ProductSuggestions?.data}
+            keyExtractor={(item, index) => item + index}
+            renderItem={({item, index}) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setSearchProduct(item?.keyword);
+                    setSelectData(item);
+                    setProductSuggestions({
+                      data: [],
+                      visible: false,
+                    });
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: Manrope.Medium,
+                      color: Color.black,
+                    }}>
+                    {item?.keyword}
+                  </Text>
+                  {index < ProductSuggestions?.data.length - 1 && (
+                    <Divider style={{height: 1, marginVertical: 5}} />
+                  )}
+                </TouchableOpacity>
+              );
+            }}
+            onEndReached={() => {
+              loadMoreData();
+            }}
+            onEndReachedThreshold={3}
+          />
+        </View>
+      )}
       <TouchableOpacity
         activeOpacity={0.7}
         style={{
@@ -77,9 +183,9 @@ const SearchScreen = ({ navigation }) => {
         onPress={() => {
           getSearchData();
         }}>
-        <Text style={{ fontSize: 16, color: Color.white }}>Search</Text>
+        <Text style={{fontSize: 16, color: Color.white}}>Search</Text>
       </TouchableOpacity>
-      <View style={{ flex: 1, marginTop: 10 }}>
+      {/* <View style={{flex: 1, marginTop: 10}}>
         <View
           style={{
             flexDirection: 'row',
@@ -90,7 +196,7 @@ const SearchScreen = ({ navigation }) => {
             style={{
               flex: 1,
               fontFamily: Manrope.Bold,
-              fontSize: 18,
+              fontSize: 16,
               color: Color.black,
               textTransform: 'capitalize',
               marginHorizontal: 5,
@@ -114,7 +220,7 @@ const SearchScreen = ({ navigation }) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          {/* {RecentlySearch.map((item, index) => {
+          {RecentlySearch.map((item, index) => {
             return (
               <TouchableOpacity
                 key={index}
@@ -130,7 +236,7 @@ const SearchScreen = ({ navigation }) => {
                   flexDirection: 'row',
                 }}
                 onPress={() => {
-                  setSearchJob(item?.name);
+                  setSearchProduct(item?.name);
                 }}>
                 <F6Icon
                   name="arrow-rotate-left"
@@ -150,11 +256,17 @@ const SearchScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             );
-          })} */}
-
-          <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.Medium }}>In-Progress</Text>
+          })}
+          <Text
+            style={{
+              fontSize: 16,
+              color: Color.black,
+              fontFamily: Manrope.Medium,
+            }}>
+            In-Progress
+          </Text>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -168,7 +280,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   searchView: {
-    borderRadius: 10,
+    borderRadius: 5,
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',

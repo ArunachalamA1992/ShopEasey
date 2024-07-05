@@ -12,7 +12,7 @@ import {
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation} from '@react-navigation/native';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import {Media} from '../../Global/Media';
 
 import {
@@ -118,11 +118,13 @@ const Login = () => {
         const login_data = await fetchData.login_with_otp(data, null);
         if (login_data?.status == true) {
           common_fn.showToast('OTP Sent to your Email');
-          navigation.navigate('OTPScreen', {
-            number,
-            token: login_data?.token,
-            loginType,
-          });
+          navigation.dispatch(
+            StackActions.replace('OTPScreen', {
+              number,
+              token: login_data?.token,
+              loginType,
+            }),
+          );
           setLoading(false);
         } else {
           var msg = login_data?.message;

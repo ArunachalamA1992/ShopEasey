@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,14 +11,10 @@ import {
   Platform,
   LogBox,
   StatusBar,
-  TextInput,
-  ToastAndroid,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import {Iconviewcomponent} from '../../Components/Icontag';
-import {BottomSheet} from 'react-native-btr';
-import {Checkbox} from 'react-native-paper';
 import common_fn from '../../Config/common_fn';
 import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../Config/fetchData';
@@ -36,16 +32,12 @@ const OrderConfirmation = ({navigation, route}) => {
   const [netInfo_State, setNetinfo] = useState(true);
   const [selectPayment, setSelectPayment] = useState(null);
   const [selectAddress, setSelectAddress] = useState({});
-  const [tax, setTax] = useState(10);
-  const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
-  const [username, setUsername] = useState('');
-  const [cardnumber, setCardNumber] = useState('');
-  const [monthYear, setMonthYear] = useState('');
-  const [cvvNumber, setCVVNumber] = useState('');
-  const [checked, setChecked] = useState(false);
   const dispatch = useDispatch();
+  const [isExpanded, setIsExpanded] = useState(OrderData?.length == 1);
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
 
   const [paymentMethod] = useState([
     {
@@ -60,65 +52,11 @@ const OrderConfirmation = ({navigation, route}) => {
     },
   ]);
 
-  const [showMoreButton, setShowMoreButton] = useState(false);
-  const [discriptiontextShown, setDiscriptiontextShown] = useState(false);
-  const [numLines, setNumLines] = useState(undefined);
-  const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
-
-  const [isExpanded, setIsExpanded] = useState(OrderData?.length == 1);
-
-  useEffect(() => {
-    setNumLines(discriptiontextShown ? undefined : 3);
-  }, [discriptiontextShown]);
-
-  const onDescriptionTextLayout = useCallback(
-    e => {
-      if (e.nativeEvent.lines.length > 3 && !discriptiontextShown) {
-        setShowMoreButton(true);
-        setNumLines(3);
-      }
-    },
-    [discriptiontextShown],
-  );
-
   useEffect(() => {
     if (address.length > 0) {
       setSelectAddress(address[0]);
     }
   }, [address]);
-
-  const toggleTextShown = () => {
-    setDiscriptiontextShown(!discriptiontextShown);
-    setNumLines();
-  };
-
-  const cardSubmitClick = () => {
-    try {
-      if (
-        username != '' &&
-        cardnumber != '' &&
-        monthYear != '' &&
-        cvvNumber != ''
-      ) {
-        console.log('Success');
-        ToastAndroid.show('Your card details is added', ToastAndroid.SHORT);
-        sale_toggleBottomView();
-      } else {
-        ToastAndroid.show('Please fill mandatory fields', ToastAndroid.SHORT);
-      }
-    } catch (error) {
-      console.log('catch in cardSubmit_Click : ', error);
-    }
-  };
-
-  function sale_toggleBottomView(type) {
-    try {
-      setSaleBottomSheetVisible(!salebottomSheetVisible);
-    } catch (error) {
-      console.log('Catch in sale_toggleBottomView :', error);
-    }
-  }
 
   useEffect(() => {
     setLoading(true);
@@ -152,26 +90,44 @@ const OrderConfirmation = ({navigation, route}) => {
     );
   }, 0);
 
+  const product_tax = OrderData?.map(orderItem => {
+    return orderItem?.tax
+      ?.map(item => {
+        if (item?.region_id == countryCode?.id) {
+          return item.tax * orderItem?.quantity || 0;
+        }
+        return 0;
+      })
+      .reduce((acc, curr) => acc + curr, 0);
+  });
+  const overall_tax = product_tax?.reduce((acc, curr) => acc + curr, 0);
+
   const postOrder = async () => {
     try {
-      const total_price = Sub_total + tax;
+      const total_price = Sub_total + overall_tax;
       const data = {
         address_id: selectAddress?.id,
         region_id: countryCode?.id,
         total: total_price,
         sub_total: Sub_total,
-        tax: tax,
+        tax: overall_tax,
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-        products: OrderData?.map(item => ({
-          product_id: item?.product?.id,
-          variant_id: item?.variant?.id,
-          quantity: item?.quantity,
-          price: item?.variant?.price,
-          tax: tax,
-        })),
+        products: OrderData?.flatMap(item =>
+          item.tax?.flatMap(tax_item => {
+            if (tax_item?.region_id == countryCode?.id) {
+              return {
+                product_id: item?.product?.id,
+                variant_id: item?.variant?.id,
+                quantity: item?.quantity,
+                price: item?.variant?.price,
+                tax: tax_item?.tax * item?.quantity,
+              };
+            }
+            return [];
+          }),
+        ),
       };
-
       const post_order = await fetchData.postOrder(data, token);
       if (selectPayment?.name === 'cash on delivery') {
         handleCODOrder(post_order);
@@ -229,236 +185,6 @@ const OrderConfirmation = ({navigation, route}) => {
       });
   };
 
-  function sale_BottomSheetmenu() {
-    try {
-      return (
-        <View>
-          <BottomSheet
-            visible={salebottomSheetVisible}
-            onBackButtonPress={sale_toggleBottomView}
-            onBackdropPress={sale_toggleBottomView}>
-            <View
-              style={{
-                backgroundColor: '#DBF8FF',
-                width: '100%',
-                height: 500,
-                minHeight: 200,
-                alignItems: 'center',
-                borderTopStartRadius: 20,
-                borderTopEndRadius: 20,
-              }}>
-              <View
-                style={{
-                  width: '100%',
-                  padding: 20,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: Color.black,
-                    fontFamily: Manrope.Medium,
-                  }}>
-                  Add Card
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setSaleBottomSheetVisible(false)}>
-                  <Iconviewcomponent
-                    Icontag={'AntDesign'}
-                    iconname={'closecircleo'}
-                    icon_size={22}
-                    iconstyle={{color: Color.primary, marginRight: 10}}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={{width: '95%', alignItems: 'center'}}>
-                <View style={{width: '95%', alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      paddingVertical: 10,
-                      fontSize: 14,
-                      color: Color.cloudyGrey,
-                      fontFamily: Manrope.Medium,
-                    }}>
-                    Name of the card *
-                  </Text>
-                  <View style={styles.NumberBoxConatiner}>
-                    <TextInput
-                      style={styles.numberTextBox}
-                      placeholder="Enter Your Name"
-                      placeholderTextColor={Color.cloudyGrey}
-                      value={username}
-                      onChangeText={value => {
-                        setUsername(value);
-                      }}
-                      keyboardType="name-phone-pad"
-                    />
-                  </View>
-                </View>
-                <View
-                  style={{
-                    width: '95%',
-                    alignItems: 'center',
-                    marginVertical: 5,
-                  }}>
-                  <Text
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      paddingVertical: 10,
-                      fontSize: 14,
-                      color: Color.cloudyGrey,
-                      fontFamily: Manrope.Medium,
-                    }}>
-                    Card Number *
-                  </Text>
-                  <View style={styles.NumberBoxConatiner}>
-                    <TextInput
-                      style={styles.numberTextBox}
-                      placeholder="XXXX XXXX XXXX XXXX"
-                      placeholderTextColor={Color.cloudyGrey}
-                      value={cardnumber}
-                      onChangeText={value => {
-                        setCardNumber(value);
-                      }}
-                      keyboardType="number-pad"
-                      maxLength={16}
-                    />
-                  </View>
-                </View>
-                <View
-                  style={{
-                    width: '95%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginVertical: 5,
-                  }}>
-                  <View
-                    style={{
-                      width: '47%',
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-start',
-                    }}>
-                    <Text
-                      style={{
-                        width: '100%',
-                        textAlign: 'left',
-                        paddingVertical: 10,
-                        fontSize: 14,
-                        color: Color.cloudyGrey,
-                        fontFamily: Manrope.Medium,
-                      }}>
-                      Expiry Month/Year *
-                    </Text>
-                    <View style={styles.NumberBoxConatiner}>
-                      <TextInput
-                        style={styles.numberTextBox}
-                        placeholder="MM/YYYY"
-                        placeholderTextColor={Color.cloudyGrey}
-                        value={monthYear}
-                        onChangeText={value => {
-                          setMonthYear(value);
-                        }}
-                        keyboardType="number-pad"
-                      />
-                    </View>
-                  </View>
-                  <View style={{width: 2, height: '100%'}}></View>
-                  <View
-                    style={{
-                      width: '47%',
-                      justifyContent: 'flex-end',
-                      alignItems: 'flex-end',
-                    }}>
-                    <Text
-                      style={{
-                        width: '100%',
-                        textAlign: 'left',
-                        paddingVertical: 10,
-                        fontSize: 14,
-                        color: Color.cloudyGrey,
-                        fontFamily: Manrope.Medium,
-                      }}>
-                      CVV *
-                    </Text>
-                    <View style={styles.NumberBoxConatiner}>
-                      <TextInput
-                        style={styles.numberTextBox}
-                        placeholder="CVV"
-                        placeholderTextColor={Color.cloudyGrey}
-                        value={cvvNumber}
-                        onChangeText={value => {
-                          setCVVNumber(value);
-                        }}
-                        keyboardType="number-pad"
-                      />
-                    </View>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    width: '95%',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingVertical: 10,
-                  }}>
-                  <Checkbox
-                    color={Color.primary}
-                    uncheckedColor={`#FA4616`}
-                    status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                      setChecked(!checked);
-                    }}
-                    style={{fontSize: 16}}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: Color.black,
-                      fontFamily: Manrope.SemiBold,
-                      letterSpacing: 0.5,
-                      textAlign: 'justify',
-                    }}>
-                    Save this card for faster checkout
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() => cardSubmitClick()}
-                  activeOpacity={0.5}
-                  style={{
-                    width: '95%',
-                    height: 50,
-                    marginVertical: 5,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: Color.primary,
-                    borderRadius: 5,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: Color.white,
-                      fontFamily: Manrope.Medium,
-                      textTransform: 'uppercase',
-                    }}>
-                    Submit
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </BottomSheet>
-        </View>
-      );
-    } catch (error) {
-      console.log('catch in sale_BottomSheetmenu ', error);
-    }
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'dark-content'} />
@@ -481,7 +207,6 @@ const OrderConfirmation = ({navigation, route}) => {
           <Text style={{color: 'white'}}>No Internet Connection</Text>
         </Animated.View>
       )}
-
       <View style={{flex: 1, backgroundColor: Color.softGrey}}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
@@ -1094,7 +819,8 @@ const OrderConfirmation = ({navigation, route}) => {
                     paddingHorizontal: 5,
                   }}
                   numberOfLines={2}>
-                  {tax}
+                  {countryCode?.symbol}
+                  {overall_tax}
                 </Text>
               </View>
               <View
@@ -1158,7 +884,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {Sub_total + tax}
+                  {Sub_total + overall_tax}
                 </Text>
               </View>
             </View>
@@ -1241,7 +967,7 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {Sub_total + tax}
+            {Sub_total + overall_tax}
           </Text>
         </View>
         <View style={{flex: 1}}>

@@ -151,6 +151,7 @@ dependencies {
     implementation 'com.google.android.play:core:1.10.3'
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-fs')
+    implementation project(':react-native-otp-verify')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
