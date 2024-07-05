@@ -20,6 +20,7 @@ import { useDispatch } from 'react-redux';
 import { getAnalytics } from '@react-native-firebase/analytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import common_fn from '../../Config/common_fn';
+import { logEvent } from '../../analytics';
 
 const OnboardScreen = () => {
   const navigation = useNavigation();
@@ -287,6 +288,7 @@ const OnboardScreen = () => {
             onPress={() => {
               if (selectname != '') {
                 navigation.navigate('OnboardTwo');
+                logEvent('button_press', { button: 'example_button' });
               } else {
                 common_fn.showToast('Please Select the Region');
               }
