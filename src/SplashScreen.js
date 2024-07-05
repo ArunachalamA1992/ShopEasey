@@ -70,6 +70,7 @@ const SplashScreen = ({navigation}) => {
         navigation.replace('OnboardScreen');
       } else {
         dispatch(setUserData(user_data));
+        navigation.replace('TabNavigator');
         const getData = await fetchData.profile_data(``, token);
         dispatch(
           setDataCount({
@@ -77,7 +78,6 @@ const SplashScreen = ({navigation}) => {
             cart: getData?.data?.cart_count,
           }),
         );
-        navigation.replace('TabNavigator');
       }
     } catch (e) {
       console.log(e);

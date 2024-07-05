@@ -1,5 +1,5 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   PermissionsAndroid,
@@ -21,6 +21,7 @@ import moment from 'moment';
 import {BottomSheet} from 'react-native-btr';
 import {baseUrl} from '../../Config/base_url';
 import {useSelector} from 'react-redux';
+import ImageResizer from 'react-native-image-resizer';
 import {Media} from '../../Global/Media';
 
 const genderData = [
@@ -56,6 +57,7 @@ const EditProfile = () => {
 
   const [imageVisible, setImageVisible] = useState(false);
   const [profileImage, setProfileImage] = useState(userData.profile);
+  const [image, setImage] = useState([]);
 
   const [gender, setGender] = useState('Male');
   const [userdob, setUserdob] = useState(userData.dob);
@@ -103,6 +105,44 @@ const EditProfile = () => {
     }
   };
 
+  useEffect(() => {
+    const resizeImages = [];
+    Promise.all(
+      profileImage.map(async (image, index) => {
+        var path = image?.uri;
+        var maxWidth = 1000,
+          maxHeight = 1000,
+          compressFormat = 'JPEG',
+          quality = 100,
+          rotation = 0,
+          keepMeta = false,
+          options = {};
+        var outputPath;
+
+        if (path) {
+          try {
+            const resizedImage = await ImageResizer.createResizedImage(
+              path,
+              maxWidth,
+              maxHeight,
+              compressFormat,
+              quality,
+              rotation,
+              outputPath,
+              keepMeta,
+              options,
+            );
+            resizeImages.push(resizedImage);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }),
+    ).then(() => {
+      setImage(resizeImages);
+    });
+  }, [profileImage.length]);
+
   const captureImage = async () => {
     try {
       let options = {
@@ -117,8 +157,7 @@ const EditProfile = () => {
       const isCameraPermitted = await requestCameraPermission();
       if (isCameraPermitted) {
         launchCamera(options, async response => {
-          setProfileImage(response?.assets[0]);
-          // await uploadProfileImage();
+          setProfileImage(response?.assets);
         });
       } else {
         console.log('Please grant camera permissions to capture image.');
@@ -138,7 +177,7 @@ const EditProfile = () => {
         selectionLimit: 0,
       };
       launchImageLibrary(options, async response => {
-        setProfileImage(response?.assets[0]);
+        setProfileImage(response?.assets);
         // await uploadProfileImage();
         setSaleBottomSheetVisible(false);
       });
@@ -184,6 +223,8 @@ const EditProfile = () => {
         myHeaders.append('Authorization', 'Bearer ' + token);
 
         const formdata = new FormData();
+        var {uri, fileName, name} = image[0];
+        formdata.append('profile', {uri, type: 'image/jpeg', name});
         formdata.append('profile', profileImage);
         formdata.append('first_name', firstName);
         formdata.append('last_name', lastName);
@@ -468,7 +509,7 @@ const EditProfile = () => {
       console.log('catch in Home_interior select_City :', error);
     }
   }
-
+  console.log('profileImage', profileImage);
   return (
     <View style={{flex: 1, backgroundColor: Color.white}}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -486,40 +527,65 @@ const EditProfile = () => {
               backgroundColor: Color.white,
               marginVertical: 10,
             }}>
-            <View
-              style={{
-                width: 120,
-                height: 120,
-                backgroundColor: Color.white,
-                elevation: 1,
-                borderRadius: 100,
-              }}>
-              {profileImage != null ? (
-                <Image
-                  source={{uri: profileImage}}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    resizeMode: 'contain',
-                    borderRadius: 100,
-                    borderWidth: 1,
-                    borderColor: Color.lightgrey,
-                  }}
-                />
-              ) : (
-                <Image
-                  source={{uri: Media.user}}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    resizeMode: 'contain',
-                    borderRadius: 100,
-                    borderWidth: 1,
-                    borderColor: Color.lightgrey,
-                  }}
-                />
-              )}
-            </View>
+            {/* {proimage?.length != 0 ? (
+              <Image
+                source={{ uri: proimage[0]?.uri }}
+                style={{
+                  width: 130,
+                  height: 130,
+                  resizeMode: 'contain',
+                  borderRadius: 100,
+                }}
+              />
+            ) : profile?.length > 0 ? (
+              <Image
+                source={{
+                  uri:
+                    // base_profile +
+                    profile,
+                }}
+                style={{
+                  width: 130,
+                  height: 130,
+                  resizeMode: 'contain',
+                  borderRadius: 100,
+                }}
+              />
+            ) : (
+              <Image
+                source={{ uri: Media.Userpng }}
+                style={{
+                  width: 130,
+                  height: 130,
+                  resizeMode: 'contain',
+                }}
+              />
+            )} */}
+            {profileImage?.length > 0 ? (
+              <Image
+                source={{uri: profileImage?.[0]?.uri}}
+                style={{
+                  width: 120,
+                  height: 120,
+                  resizeMode: 'contain',
+                  borderRadius: 100,
+                  borderWidth: 1,
+                  borderColor: Color.lightgrey,
+                }}
+              />
+            ) : (
+              <Image
+                source={{uri: Media.user}}
+                style={{
+                  width: 120,
+                  height: 120,
+                  resizeMode: 'contain',
+                  borderRadius: 100,
+                  borderWidth: 1,
+                  borderColor: Color.lightgrey,
+                }}
+              />
+            )}
             <TouchableOpacity
               onPress={() => sale_toggleBottomView('Profile')}
               style={{
