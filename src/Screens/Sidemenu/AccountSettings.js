@@ -4,6 +4,7 @@ import {
     Alert,
     FlatList,
     Image,
+    Linking,
     ScrollView,
     StyleSheet,
     Text,
@@ -12,14 +13,23 @@ import {
 } from 'react-native';
 import Color from '../../Global/Color';
 import { Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
+import { StackActions, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import { Switch } from 'react-native-paper';
+import fetchData from '../../Config/fetchData';
+import common_fn from '../../Config/common_fn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setUserData } from '../../Redux';
 
 // create a component
 const AccountSettings = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+
+    const rootuserData = useSelector(state => state.UserReducer.userData);
+    var { token } = rootuserData;
+    console.log('USER =========== :', token);
+
 
     // *********************   EMAIL *********************//
     const [isOrderSwitchOn, setIsOrderSwitchOn] = useState(false);
@@ -42,9 +52,36 @@ const AccountSettings = () => {
         }
     }
 
+
+    const removeUserClick = () => {
+        try {
+            Alert.alert(
+                'Alert',
+                'Are you sure you want to Remove/Delete account?',
+                [
+                    { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                    {
+                        text: 'OK', onPress: async () => {
+                            Linking.openURL(
+                                `https://shopeasey.com/delete-user/${token}`,
+                            );
+                            AsyncStorage.clear()
+                            navigation.replace("OnboardScreen")
+                            dispatch(setUserData({}));
+                            common_fn.showToast("Your account has beed deleted")
+                        }
+                    },
+                ],
+                { cancelable: false }
+            )
+        } catch (error) {
+            console.log('catch in change_Country : ', error);
+        }
+    }
+
     return (
         <View style={styles.container}>
-            <View style={{ width: '100%', backgroundColor: '#F5F6FA' }}>
+            <View style={{ width: '100%', backgroundColor: '#F5F6FA', alignItems: 'center' }}>
 
                 <View style={{
                     backgroundColor: Color.white,
@@ -127,6 +164,58 @@ const AccountSettings = () => {
                         />
                     </View>
                 </TouchableOpacity>
+
+
+                <View
+                    style={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: Color.white,
+                        padding: 10,
+                        marginVertical: 10,
+                    }}>
+                    <View
+                        style={{
+                            flex: 3,
+                            justifyContent: 'center',
+                            alignItems: 'flex-start',
+                        }}>
+                        <Text
+                            style={{
+                                fontSize: 16,
+                                textAlign: 'justify',
+                                color: Color.black,
+                                fontFamily: Manrope.Bold,
+                                letterSpacing: 0.5,
+                                padding: 5,
+                            }}>
+                            Remove Account
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 13,
+                                textAlign: 'justify',
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Light,
+                                letterSpacing: 0.5,
+                                lineHeight: 22,
+                                paddingHorizontal: 10,
+                            }}>
+                            If you want to remove, and tap Remove account. This will delete all associated data and content from your device
+                        </Text>
+                    </View>
+                    <TouchableOpacity onPress={() => { removeUserClick() }}
+                        style={{
+                            flex: 0,
+                            justifyContent: 'flex-end',
+                            alignItems: 'center', backgroundColor: Color.primary, padding: 10, paddingHorizontal: 20, borderRadius: 5
+                        }}>
+                        <Text style={{ fontSize: 14, color: Color.white }}>Remove</Text>
+                    </TouchableOpacity>
+                </View>
+
+
 
                 {/* <View
                     style={{

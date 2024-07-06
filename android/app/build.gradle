@@ -84,8 +84,10 @@ android {
         applicationId "com.shopeasey"
         minSdkVersion 23
         targetSdkVersion 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.2"
+        missingDimensionStrategy 'react-native-camera', 'general'
+        multiDexEnabled true
     }
     splits {
         abi {

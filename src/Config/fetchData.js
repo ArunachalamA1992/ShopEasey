@@ -147,4 +147,8 @@ export default {
     let url = api_name + 'products/search?' + data;
     return api.getMethod(url, token);
   },
+  remove_account: (data, token) => {
+    let url = api_name + 'auth/user';
+    return api.deleteMethod(url, token);
+  },
 };
