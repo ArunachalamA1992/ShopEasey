@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,20 +7,20 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { scr_height, scr_width } from '../../Utils/Dimensions';
+import {scr_height, scr_width} from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
-import { BottomSheet } from 'react-native-btr';
-import { Iconviewcomponent } from '../../Components/Icontag';
-import { Media } from '../../Global/Media';
+import {Manrope} from '../../Global/FontFamily';
+import {useNavigation} from '@react-navigation/native';
+import {BottomSheet} from 'react-native-btr';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import {Media} from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
-import { setCountryCode } from '../../Redux';
-import { useDispatch } from 'react-redux';
-import { getAnalytics } from '@react-native-firebase/analytics';
+import {setCountryCode} from '../../Redux';
+import {useDispatch} from 'react-redux';
+import {getAnalytics} from '@react-native-firebase/analytics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import common_fn from '../../Config/common_fn';
-import { logEvent } from '../../analytics';
+import {logEvent} from '../../analytics';
 
 const OnboardScreen = () => {
   const navigation = useNavigation();
@@ -97,7 +97,7 @@ const OnboardScreen = () => {
                     Icontag={'AntDesign'}
                     iconname={'closecircle'}
                     icon_size={22}
-                    iconstyle={{ color: Color.primary, marginRight: 10 }}
+                    iconstyle={{color: Color.primary, marginRight: 10}}
                   />
                 </TouchableOpacity>
               </View>
@@ -120,8 +120,8 @@ const OnboardScreen = () => {
                         selectname === item.country ? Color.primary : '#f3f3f3',
                     }}>
                     <Image
-                      source={{ uri: item.country_image }}
-                      style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                      source={{uri: item.country_image}}
+                      style={{width: 30, height: 30, resizeMode: 'contain'}}
                     />
                     <Text
                       style={{
@@ -202,12 +202,13 @@ const OnboardScreen = () => {
           width: '100%',
           position: 'absolute',
           bottom: 0,
-          height: 330, padding: 10,
+          height: 330,
+          padding: 10,
           backgroundColor: Color.white,
           borderTopStartRadius: 30,
           borderTopRightRadius: 30,
         }}>
-        <View style={{ padding: 10 }}>
+        <View style={{padding: 10}}>
           <Text
             style={{
               textAlign: 'left',
@@ -231,7 +232,7 @@ const OnboardScreen = () => {
             products.
           </Text>
         </View>
-        <View style={{ padding: 10 }}>
+        <View style={{padding: 10}}>
           <Text
             style={{
               fontSize: 14,
@@ -261,8 +262,8 @@ const OnboardScreen = () => {
                 alignItems: 'center',
               }}>
               <Image
-                source={{ uri: selectImage }}
-                style={{ width: 30, height: 50, resizeMode: 'contain' }}
+                source={{uri: selectImage}}
+                style={{width: 30, height: 50, resizeMode: 'contain'}}
               />
               <Text
                 style={{
@@ -279,7 +280,7 @@ const OnboardScreen = () => {
                 Icontag={'Entypo'}
                 iconname={'chevron-small-down'}
                 icon_size={24}
-                iconstyle={{ color: Color.lightBlack, marginRight: 10 }}
+                iconstyle={{color: Color.lightBlack, marginRight: 10}}
               />
             </View>
           </TouchableOpacity>
@@ -288,7 +289,7 @@ const OnboardScreen = () => {
             onPress={() => {
               if (selectname != '') {
                 navigation.navigate('OnboardTwo');
-                logEvent('button_press', { button: 'example_button' });
+                logEvent('button_press', {button: 'example_button'});
               } else {
                 common_fn.showToast('Please Select the Region');
               }
@@ -297,7 +298,8 @@ const OnboardScreen = () => {
             style={{
               height: 50,
               marginVertical: 10,
-              backgroundColor: selectname != '' ? Color.primary : Color.softGrey,
+              backgroundColor:
+                selectname != '' ? Color.primary : Color.softGrey,
               borderColor: Color.lightgrey,
               borderWidth: 1,
               justifyContent: 'center',

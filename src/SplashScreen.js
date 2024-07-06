@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Color from './Global/Color';
-import {setCountryCode, setDataCount, setUserData} from './Redux';
+import {setAsync, setCountryCode, setDataCount, setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import fetchData from './Config/fetchData';
 
@@ -42,18 +42,19 @@ const SplashScreen = ({navigation}) => {
   const getloginData = async () => {
     try {
       const countryData = await AsyncStorage.getItem('countryData');
-      console.log('countryData', countryData);
       if (countryData === null) {
         navigation.replace('OnboardScreen');
         return;
       }
       dispatch(setCountryCode(JSON.parse(countryData)));
 
-      const value = await AsyncStorage.getItem('UserState');
-      if (value !== null) {
-        const {onboardVisible} = JSON.parse(value);
+      const userStateValue = await AsyncStorage.getItem('UserState');
+      if (userStateValue) {
+        dispatch(setAsync(JSON.parse(userStateValue)));
+        const {onboardVisible} = JSON.parse(userStateValue);
+        console.log('onboardVisible', onboardVisible);
         if (onboardVisible) {
-          navigation.replace('OnboardScreen');
+          navigation.replace('TabNavigator');
           return;
         }
       }
@@ -65,7 +66,6 @@ const SplashScreen = ({navigation}) => {
       }
 
       const {token} = JSON.parse(user_data);
-      console.log('spoalsh-----------------token', token);
       if (!token) {
         navigation.replace('OnboardScreen');
       } else {

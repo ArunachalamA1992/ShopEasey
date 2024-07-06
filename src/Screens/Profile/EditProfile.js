@@ -23,6 +23,7 @@ import {baseUrl} from '../../Config/base_url';
 import {useSelector} from 'react-redux';
 import ImageResizer from 'react-native-image-resizer';
 import {Media} from '../../Global/Media';
+import common_fn from '../../Config/common_fn';
 
 const genderData = [
   {
@@ -244,14 +245,11 @@ const EditProfile = () => {
           .then(response => response.json())
           .then(result => {
             console.log('Result ===========   ', result);
-            if (result?.message === 'Data Updated Successfully') {
-              ToastAndroid.show(
-                'Your Profile Has Been Updated Successfully',
-                ToastAndroid.SHORT,
-              );
+            if (result?.status == true) {
+              common_fn.showToast(result?.message);
               navigation.navigate('Profile');
             } else {
-              ToastAndroid.show('Please Try Again Later', ToastAndroid.SHORT);
+              common_fn.showToast(result?.message);
             }
           })
 
@@ -748,12 +746,12 @@ const EditProfile = () => {
                   style={styles.numberTextBox}
                   placeholder="Enter Your Phone Number"
                   placeholderTextColor={Color.cloudyGrey}
-                  value={'+91' + phoneNumber}
+                  value={phoneNumber}
                   onChangeText={value => {
                     setPhoneNumber(value);
                   }}
                   keyboardType="phone-pad"
-                  maxLength={14}
+                  maxLength={10}
                 />
               </View>
             </View>
