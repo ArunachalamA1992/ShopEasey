@@ -80,13 +80,18 @@ const OrderConfirmation = ({navigation, route}) => {
   };
 
   const Sub_total = CheckOut?.reduce((accumulator, item) => {
-    return accumulator + (item.variant?.price * item?.quantity || 0);
+    return (
+      accumulator +
+      ((item.variant?.price / countryCode?.price_margin) * item?.quantity || 0)
+    );
   }, 0);
 
   const discount_price = CheckOut?.reduce((accumulator, item) => {
     return (
       accumulator +
-      ((item.variant?.org_price - item.variant?.price) * item?.quantity || 0)
+      ((item.variant?.org_price / countryCode?.price_margin -
+        item.variant?.price / countryCode?.price_margin) *
+        item?.quantity || 0)
     );
   }, 0);
 
@@ -120,7 +125,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 product_id: item?.product?.id,
                 variant_id: item?.variant?.id,
                 quantity: item?.quantity,
-                price: item?.variant?.price,
+                price: item?.variant?.price / countryCode?.price_margin,
                 tax: tax_item?.tax * item?.quantity,
               };
             }
@@ -360,8 +365,10 @@ const OrderConfirmation = ({navigation, route}) => {
                   var discount =
                     100 -
                     parseInt(
-                      ((item?.variant?.org_price - item?.variant?.price) /
-                        item?.variant?.org_price) *
+                      ((item?.variant?.org_price / countryCode?.price_margin -
+                        item?.variant?.price / countryCode?.price_margin) /
+                        item?.variant?.org_price /
+                        countryCode?.price_margin) *
                         100,
                     );
                   return (
@@ -436,10 +443,12 @@ const OrderConfirmation = ({navigation, route}) => {
                           }}>
                           <Text style={styles.productDiscountPrice}>
                             {countryCode?.symbol}
-                            {item?.variant?.price}{' '}
+                            {item?.variant?.price /
+                              countryCode?.price_margin}{' '}
                             <Text style={styles.productPrice}>
                               {countryCode?.symbol}
-                              {item?.variant?.org_price}
+                              {item?.variant?.org_price /
+                                countryCode?.price_margin}
                             </Text>
                           </Text>
                         </View>

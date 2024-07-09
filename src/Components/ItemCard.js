@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -11,22 +11,22 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Color from '../Global/Color';
-import { Manrope } from '../Global/FontFamily';
+import {Manrope} from '../Global/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
-import { Media } from '../Global/Media';
-import { useDispatch, useSelector } from 'react-redux';
+import {Media} from '../Global/Media';
+import {useDispatch, useSelector} from 'react-redux';
 import common_fn from '../Config/common_fn';
 import fetchData from '../Config/fetchData';
-import { setDataCount } from '../Redux';
-import { ActivityIndicator } from 'react-native-paper';
+import {setDataCount} from '../Redux';
+import {ActivityIndicator} from 'react-native-paper';
 
 const ItemCard = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
-  const { item: initialItem, navigation } = props;
+  const {item: initialItem, navigation} = props;
   const userData = useSelector(state => state.UserReducer.userData);
   const [loadingWishlist, setLoadingWishlist] = useState(null);
   const [reviewsData, setReviewsData] = useState({});
-  const { token } = userData;
+  const {token} = userData;
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
 
@@ -35,9 +35,11 @@ const ItemCard = props => {
   }, [initialItem]);
 
   const discount = parseInt(
-    ((item?.variants?.[0]?.org_price - item?.variants?.[0]?.price) /
-      item?.variants?.[0]?.org_price) *
-    100,
+    ((item?.variants?.[0]?.org_price / countryCode?.price_margin -
+      item?.variants?.[0]?.price / countryCode?.price_margin) /
+      item?.variants?.[0]?.org_price /
+      countryCode?.price_margin) *
+      100,
   );
 
   const getProduct = async () => {
@@ -88,15 +90,18 @@ const ItemCard = props => {
       console.log('error', error);
     }
   };
-  console.log("item? ================= : ", item?.variants?.[0]?.productImages?.length);
+  console.log(
+    'item? ================= : ',
+    item?.variants?.[0]?.productImages?.length,
+  );
 
   const isLoading = loadingWishlist === item.id;
   return (
-    <View style={{ width: '50%' }}>
+    <View style={{width: '50%'}}>
       <TouchableOpacity
         style={styles.product}
         onPress={() => {
-          navigation.navigate('ProductDetails', { id: item?.id });
+          navigation.navigate('ProductDetails', {id: item?.id});
         }}>
         <ImageBackground
           style={styles.Productimage}
@@ -119,7 +124,7 @@ const ItemCard = props => {
                 <Text style={styles.offerText}>{discount}% off</Text>
               </View>
             ) : (
-              <View style={{ flex: 1 }} />
+              <View style={{flex: 1}} />
             )}
             <TouchableOpacity
               onPress={() => {
@@ -152,16 +157,28 @@ const ItemCard = props => {
           </View>
           <LinearGradient
             style={styles.locationView}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
             colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}>
               <Octicons name="location" size={15} color={Color.white} />
               <Text style={styles.locationText}>{item?.vendor?.country}</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
               <Feather name="camera" size={15} color={Color.white} />
-              <Text style={styles.locationText}>{item?.variants?.[0]?.productImages?.length}</Text>
+              <Text style={styles.locationText}>
+                {item?.variants?.[0]?.productImages?.length}
+              </Text>
             </View>
             {/* <Text
             style={{
@@ -177,7 +194,7 @@ const ItemCard = props => {
           </LinearGradient>
         </ImageBackground>
         <View style={styles.contentView}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text
               style={{
                 flex: 1,
@@ -201,14 +218,14 @@ const ItemCard = props => {
           <Text style={styles.productName} numberOfLines={2}>
             {item?.product_name}
           </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={styles.productDiscountPrice}>
               {countryCode?.symbol}
-              {item?.variants?.[0]?.price}
+              {item?.variants?.[0]?.price / countryCode?.price_margin}
             </Text>
             <Text style={styles.productPrice}>
               {countryCode?.symbol}
-              {item?.variants?.[0]?.org_price}
+              {item?.variants?.[0]?.org_price / countryCode?.price_margin}
             </Text>
           </View>
           {/* <Text style={styles.productDiscountPrice} numberOfLines={1}>
@@ -247,9 +264,9 @@ const ItemCard = props => {
 
 export const ItemCardHorizontal = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
-  const { item: initialItem, navigation } = props;
+  const {item: initialItem, navigation} = props;
   const userData = useSelector(state => state.UserReducer.userData);
-  const { token } = userData;
+  const {token} = userData;
   const [reviewsData, setReviewsData] = useState({});
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
@@ -259,9 +276,11 @@ export const ItemCardHorizontal = props => {
   }, [initialItem]);
 
   const discount = parseInt(
-    ((item?.variants?.[0]?.org_price - item?.variants?.[0]?.price) /
-      item?.variants?.[0]?.org_price) *
-    100,
+    ((item?.variants?.[0]?.org_price / countryCode?.price_margin -
+      item?.variants?.[0]?.price / countryCode?.price_margin) /
+      item?.variants?.[0]?.org_price /
+      countryCode?.price_margin) *
+      100,
   );
 
   const getProduct = async () => {
@@ -324,7 +343,7 @@ export const ItemCardHorizontal = props => {
         borderColor: Color.lightgrey,
       }}
       onPress={() => {
-        navigation.navigate('ProductDetails', { id: item?.id });
+        navigation.navigate('ProductDetails', {id: item?.id});
       }}>
       <ImageBackground
         style={styles.Productimage}
@@ -347,7 +366,7 @@ export const ItemCardHorizontal = props => {
               <Text style={styles.offerText}>{discount}% off</Text>
             </View>
           ) : (
-            <View style={{ flex: 1 }} />
+            <View style={{flex: 1}} />
           )}
           <TouchableOpacity
             onPress={() => {
@@ -376,15 +395,15 @@ export const ItemCardHorizontal = props => {
         </View>
         <LinearGradient
           style={styles.locationView}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 0}}
           colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
           <Octicons name="location" size={15} color={Color.white} />
           <Text style={styles.locationText}>{item?.vendor?.country}</Text>
         </LinearGradient>
       </ImageBackground>
       <View style={styles.contentView}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
             style={{
               flex: 1,
@@ -400,14 +419,14 @@ export const ItemCardHorizontal = props => {
         <Text style={styles.productName} numberOfLines={1}>
           {item?.product_name}
         </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text style={styles.productDiscountPrice}>
             {countryCode?.symbol}
-            {item?.variants?.[0]?.price}
+            {item?.variants?.[0]?.price / countryCode?.price_margin}
           </Text>
           <Text style={styles.productPrice}>
             {countryCode?.symbol}
-            {item?.variants?.[0]?.org_price}
+            {item?.variants?.[0]?.org_price / countryCode?.price_margin}
           </Text>
         </View>
         {/* <Text style={styles.productDiscountPrice} numberOfLines={1}>

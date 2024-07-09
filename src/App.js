@@ -49,6 +49,8 @@ import EditProfile from './Screens/Profile/EditProfile';
 import SelectAddress from './Screens/Address/SelectAddress';
 import SearchDataList from './Screens/Home/SearchDataList';
 import {setUserId, setUserProperties} from './analytics';
+import {NativeModules} from 'react-native';
+// const SharedStorage = NativeModules.SharedStorage;
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -117,6 +119,9 @@ const MyDrawer = () => {
       subscription.remove();
     };
   }, []);
+  // SharedStorage.set(
+  //   JSON.stringify({text: 'This is data from the React Native app'}),
+  // );
   return (
     <PaperProvider>
       <NavigationContainer ref={navigationRef} linking={linking}>

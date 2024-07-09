@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -11,9 +11,9 @@ import {
   View,
 } from 'react-native';
 import Color from '../../../Global/Color';
-import { Manrope } from '../../../Global/FontFamily';
+import {Manrope} from '../../../Global/FontFamily';
 import fetchData from '../../../Config/fetchData';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import ItemCard from '../../../Components/ItemCard';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import common_fn from '../../../Config/common_fn';
@@ -22,18 +22,18 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
 import LinearGradient from 'react-native-linear-gradient';
-import { Media } from '../../../Global/Media';
-import { setDataCount } from '../../../Redux';
-import { ActivityIndicator } from 'react-native-paper';
+import {Media} from '../../../Global/Media';
+import {setDataCount} from '../../../Redux';
+import {ActivityIndicator} from 'react-native-paper';
 
-const { height } = Dimensions.get('screen');
-const WishList = ({ navigation }) => {
+const {height} = Dimensions.get('screen');
+const WishList = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [WishlistData, setWishlistData] = useState([]);
   const [loadingWishlist, setLoadingWishlist] = useState(null);
   const [reviewsData, setReviewsData] = useState({});
   const userData = useSelector(state => state.UserReducer.userData);
-  var { token } = userData;
+  var {token} = userData;
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -135,7 +135,7 @@ const WishList = ({ navigation }) => {
         <View style={{}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
-              style={{ flexDirection: 'row', alignItems: 'center' }}>
+              style={{flexDirection: 'row', alignItems: 'center'}}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -152,7 +152,7 @@ const WishList = ({ navigation }) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{ flexDirection: 'row', alignItems: 'center' }}>
+              style={{flexDirection: 'row', alignItems: 'center'}}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -169,7 +169,7 @@ const WishList = ({ navigation }) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{ flexDirection: 'row', alignItems: 'center' }}>
+              style={{flexDirection: 'row', alignItems: 'center'}}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -186,7 +186,7 @@ const WishList = ({ navigation }) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{ flexDirection: 'row', alignItems: 'center' }}>
+              style={{flexDirection: 'row', alignItems: 'center'}}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -209,15 +209,17 @@ const WishList = ({ navigation }) => {
           data={WishlistData}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => {
+          renderItem={({item, index}) => {
             var discount = parseInt(
-              ((item?.variant?.org_price - item?.variant?.price) /
-                item?.variant?.org_price) *
-              100,
+              ((item?.variant?.org_price / countryCode?.price_margin -
+                item?.variant?.price / countryCode?.price_margin) /
+                item?.variant?.org_price /
+                countryCode?.price_margin) *
+                100,
             );
             const isLoading = loadingWishlist === item.product.id;
             return (
-              <View style={{ width: '50%' }}>
+              <View style={{width: '50%'}}>
                 <TouchableOpacity
                   style={styles.product}
                   onPress={() => {
@@ -246,7 +248,7 @@ const WishList = ({ navigation }) => {
                           <Text style={styles.offerText}>{discount}% off</Text>
                         </View>
                       ) : (
-                        <View style={{ flex: 1 }} />
+                        <View style={{flex: 1}} />
                       )}
                       <TouchableOpacity
                         onPress={() => {
@@ -273,21 +275,39 @@ const WishList = ({ navigation }) => {
                     </View>
                     <LinearGradient
                       style={styles.locationView}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
                       colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
-                      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <Octicons name="location" size={15} color={Color.white} />
-                        <Text style={styles.locationText}>{item?.product?.vendor?.country}</Text>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                        }}>
+                        <Octicons
+                          name="location"
+                          size={15}
+                          color={Color.white}
+                        />
+                        <Text style={styles.locationText}>
+                          {item?.product?.vendor?.country}
+                        </Text>
                       </View>
-                      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center',
+                        }}>
                         <Feather name="camera" size={15} color={Color.white} />
-                        <Text style={styles.locationText}>{item?.variant?.productImages?.length}</Text>
+                        <Text style={styles.locationText}>
+                          {item?.variant?.productImages?.length}
+                        </Text>
                       </View>
                     </LinearGradient>
                   </ImageBackground>
                   <View style={styles.contentView}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
                         style={{
                           flex: 1,
@@ -307,8 +327,23 @@ const WishList = ({ navigation }) => {
                         Sold {item?.variant?.sold} / {item?.variant?.stock}
                       </Text>
                     </View>
-                    <View style={{ width: '100%', justifyContent: 'flex-start', alignItems: 'flex-start', paddingVertical: 3 }}>
-                      <Text style={{ textAlign: 'left', fontSize: 13, color: Color.lightBlack, fontFamily: Manrope.SemiBold, lineHeight: 20, letterSpacing: 0.5 }} numberOfLines={2}>
+                    <View
+                      style={{
+                        width: '100%',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        paddingVertical: 3,
+                      }}>
+                      <Text
+                        style={{
+                          textAlign: 'left',
+                          fontSize: 13,
+                          color: Color.lightBlack,
+                          fontFamily: Manrope.SemiBold,
+                          lineHeight: 20,
+                          letterSpacing: 0.5,
+                        }}
+                        numberOfLines={2}>
                         {item?.product?.product_name}
                       </Text>
                     </View>
@@ -319,11 +354,11 @@ const WishList = ({ navigation }) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {item?.variant?.price}
+                        {item?.variant?.price / countryCode?.price_margin}
                       </Text>
                       <Text style={styles.productPrice}>
                         {countryCode?.symbol}
-                        {item?.variant?.org_price}
+                        {item?.variant?.org_price / countryCode?.price_margin}
                       </Text>
                     </View>
                     {/* <View style={styles.productRatingView}>
@@ -379,7 +414,7 @@ const WishList = ({ navigation }) => {
                 </Text> */}
 
                 <Image
-                  source={{ uri: Media.empty_wishlist }}
+                  source={{uri: Media.empty_wishlist}}
                   style={{
                     width: 180,
                     height: 180,

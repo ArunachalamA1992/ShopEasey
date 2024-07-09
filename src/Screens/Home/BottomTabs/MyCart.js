@@ -190,7 +190,10 @@ const MyCart = ({}) => {
   };
 
   var total_price = cartData.reduce((accumulator, item) => {
-    return accumulator + (item.variant?.price * item?.quantity || 0);
+    return (
+      accumulator +
+      ((item.variant?.price / countryCode?.price_margin) * item?.quantity || 0)
+    );
   }, 0);
 
   const getCountData = async () => {
@@ -355,8 +358,10 @@ const MyCart = ({}) => {
               var discount =
                 100 -
                 parseInt(
-                  ((item?.variant?.org_price - item?.variant?.price) /
-                    item?.variant?.org_price) *
+                  ((item?.variant?.org_price / countryCode?.price_margin -
+                    item?.variant?.price / countryCode?.price_margin) /
+                    item?.variant?.org_price /
+                    countryCode?.price_margin) *
                     100,
                 );
               return (
@@ -492,10 +497,10 @@ const MyCart = ({}) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {item?.variant?.price}{' '}
+                        {item?.variant?.price / countryCode?.price_margin}{' '}
                         <Text style={styles.productPrice}>
                           {countryCode?.symbol}
-                          {item?.variant?.org_price}
+                          {item?.variant?.org_price / countryCode?.price_margin}
                         </Text>
                       </Text>
                     </View>

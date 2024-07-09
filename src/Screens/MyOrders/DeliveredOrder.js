@@ -84,6 +84,7 @@ const DeliveredOrder = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const [pdfPath, setPdfPath] = useState(null);
+  const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const [recommended, setRecommended] = useState([]);
@@ -407,7 +408,7 @@ const DeliveredOrder = ({navigation, route}) => {
         <Button
           mode="contained"
           onPress={() => {
-            const data = common_fn.generatePDF(orderData);
+            const data = common_fn.generatePDF(orderData, countryCode);
             setPdfPath(data);
           }}
           style={{

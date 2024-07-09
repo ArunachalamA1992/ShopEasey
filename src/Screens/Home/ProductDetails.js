@@ -123,7 +123,11 @@ const ProductDetails = ({route}) => {
   ]);
 
   var discount = parseInt(
-    ((singleData?.org_price - singleData?.price) / singleData?.org_price) * 100,
+    ((singleData?.org_price / countryCode?.price_margin -
+      singleData?.price / countryCode?.price_margin) /
+      singleData?.org_price /
+      countryCode?.price_margin) *
+      100,
   );
   const currentDate = moment();
   const yourDate = moment(singleData?.updated_at);
@@ -803,10 +807,10 @@ const ProductDetails = ({route}) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {singleData?.price}{' '}
+                        {singleData?.price / countryCode?.price_margin}{' '}
                         <Text style={styles.productPrice}>
                           {countryCode?.symbol}
-                          {singleData?.org_price}
+                          {singleData?.org_price / countryCode?.price_margin}
                         </Text>
                       </Text>
                       <Text

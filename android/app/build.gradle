@@ -75,6 +75,10 @@ def enableSeparateBuildPerCPUArchitecture = true
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
+
+    buildFeatures {
+        viewBinding true
+    }
     ndkVersion "25.1.8937393"
     buildToolsVersion "34.0.0"
     compileSdk 34

@@ -226,7 +226,7 @@ export const MyCartStack = () => {
     state => state.UserReducer.notificationCount,
   );
   return (
-    <Stack.Navigator initialRouteName="MyCart">
+    <Stack.Navigator>
       <Stack.Screen
         name="MyCart"
         component={MyCart}

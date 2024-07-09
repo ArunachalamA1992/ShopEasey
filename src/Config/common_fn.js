@@ -12,6 +12,7 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import RNFS from 'react-native-fs';
 import {Media} from '../Global/Media';
 import moment from 'moment';
+import {useSelector} from 'react-redux';
 
 const common_fn = {
   showToast: msg => {
@@ -166,22 +167,30 @@ const common_fn = {
     });
     return closestColor;
   },
-  generatePDF: async response => {
+  generatePDF: async (response, countryCode) => {
     var discount =
       100 -
       parseInt(
-        ((response?.variants?.org_price - response?.variants?.price) /
-          response?.variants?.org_price) *
+        ((response?.variants?.org_price / countryCode?.price_margin -
+          response?.variants?.price / countryCode?.price_margin) /
+          response?.variants?.org_price /
+          countryCode?.price_margin) *
           100,
       );
     const discount_price =
-      (response.variants?.org_price - response.variants?.price) *
+      (response.variants?.org_price / countryCode?.price_margin -
+        response.variants?.price / countryCode?.price_margin) *
         response?.quantity || 0;
     var tax_percent = parseInt(
-      (response?.order?.tax / response?.variants?.price) * 100,
+      (response?.order?.tax /
+        response?.variants?.price /
+        countryCode?.price_margin) *
+        100,
     );
     const tax_amount =
-      (response.variants?.price - response.order.tax) * response?.quantity || 0;
+      (response.variants?.price / countryCode?.price_margin -
+        response.order.tax) *
+        response?.quantity || 0;
     console.log('tax_amount', tax_amount);
     const htmlContent = `
     <!DOCTYPE html>
@@ -364,7 +373,7 @@ const common_fn = {
                     : response?.order?.region_id == 453
                     ? 'RM'
                     : '₹'
-                } ${response.price}`}</td>
+                } ${response.price / countryCode?.price_margin}`}</td>
                 <td style="text-align: center;">${response.quantity}</td>
                 <td style="text-align: right;">${`${
                   response?.order?.region_id == 454
