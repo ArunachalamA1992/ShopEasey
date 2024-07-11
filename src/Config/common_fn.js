@@ -191,7 +191,6 @@ const common_fn = {
       (response.variants?.price / countryCode?.price_margin -
         response.order.tax) *
         response?.quantity || 0;
-    console.log('tax_amount', tax_amount);
     const htmlContent = `
     <!DOCTYPE html>
 <html lang="en">

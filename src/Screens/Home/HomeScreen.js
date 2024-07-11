@@ -15,6 +15,8 @@ import {
   FlatList,
   PermissionsAndroid,
   Modal,
+  NativeEventEmitter,
+  NativeModules,
 } from 'react-native';
 import Color from '../../Global/Color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -180,6 +182,22 @@ const HomeScreen = () => {
   useEffect(() => {
     currentGeolocation();
   }, [currentCity, token]);
+
+  useEffect(() => {
+    const eventEmitter = new NativeEventEmitter(
+      NativeModules.DeviceEventManager,
+    );
+    const subscription = eventEmitter.addListener(
+      'OPEN_PRODUCT_DETAILS',
+      event => {
+        const {product_id} = event;
+        console.log('product_id-----------------', product_id);
+        navigation.navigate('ProductDetails', {id: product_id});
+      },
+    );
+
+    return () => subscription.remove();
+  }, [navigation]);
 
   const currentGeolocation = async () => {
     const locPermissionDenied = await common_fn.locationPermission();

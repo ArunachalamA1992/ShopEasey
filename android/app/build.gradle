@@ -158,7 +158,8 @@ dependencies {
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-fs')
     implementation project(':react-native-otp-verify')
-
+    implementation 'com.squareup.picasso:picasso:2.8'
+    
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

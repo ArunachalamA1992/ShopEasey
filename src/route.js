@@ -509,7 +509,6 @@ const TabNavigator = () => {
   var {token} = userData;
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
-  console.log('wishlist', wishlist);
 
   const dispatch = useDispatch();
 

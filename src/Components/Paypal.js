@@ -84,22 +84,15 @@ export const Paypal = ({route}) => {
             verifyData,
             token,
           );
-          console.log(
-            'verify_order',
-            verifyOrderResponse?.status,
-            verifyOrderResponse,
-          );
 
           if (verifyOrderResponse?.status) {
             navigation.dispatch(StackActions.replace('TabNavigator'));
             dispatch(setOrderSuccessVisible(true));
           } else {
-            console.log('Order verification failed:', verifyOrderResponse);
             navigation.dispatch(StackActions.replace('TabNavigator'));
             dispatch(setOrderCancelVisible(true));
           }
         } catch (err) {
-          console.log('Error during order verification:', err);
           dispatch(setOrderCancelVisible(true));
           navigation.dispatch(StackActions.replace('TabNavigator'));
         }

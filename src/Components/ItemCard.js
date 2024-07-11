@@ -343,7 +343,7 @@ export const ItemCardHorizontal = props => {
         borderColor: Color.lightgrey,
       }}
       onPress={() => {
-        navigation.navigate('ProductDetails', {id: item?.id});
+        navigation.replace('ProductDetails', {id: item?.id});
       }}>
       <ImageBackground
         style={styles.Productimage}

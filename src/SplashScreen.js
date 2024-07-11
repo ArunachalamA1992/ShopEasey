@@ -52,7 +52,6 @@ const SplashScreen = ({navigation}) => {
       if (userStateValue) {
         dispatch(setAsync(JSON.parse(userStateValue)));
         const {onboardVisible} = JSON.parse(userStateValue);
-        console.log('onboardVisible', onboardVisible);
         if (onboardVisible) {
           navigation.replace('TabNavigator');
           return;

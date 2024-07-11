@@ -26,7 +26,6 @@ const initialState = {
 };
 
 const storeCartData = async UserState => {
-  console.log('UserState', UserState);
   try {
     const jsonValue = JSON.stringify(UserState);
     await AsyncStorage.setItem('UserState', jsonValue);

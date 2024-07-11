@@ -70,8 +70,8 @@ const ProductDetails = ({route}) => {
       var param = id;
       var data = `color=${item?.color}`;
       console.log('data', data);
-      const color_change = await fetchData.single_property(param, data, token);
-      setSingleData(color_change?.data);
+      const color_data = await fetchData.single_property(param, data, token);
+      setSingleData(color_data?.data);
       setLoading(false);
     } catch (error) {
       console.log('error', error);
@@ -84,6 +84,7 @@ const ProductDetails = ({route}) => {
     setSelectedSize(item?.size);
     setSelectedVariantId(item?.id);
   };
+
   const dispatch = useDispatch();
   const filteredSizes = singleData?.variants_list?.color?.filter(
     variant => !selectedColor || variant.color === selectedColor,
@@ -93,6 +94,7 @@ const ProductDetails = ({route}) => {
   const [tabIndex, setIndex] = useState(0);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
+  const [addressData, setAddressCount] = useState(0);
 
   const [maxRating, setMaxRating] = useState([
     {
@@ -387,6 +389,8 @@ const ProductDetails = ({route}) => {
 
   const getCountData = async () => {
     try {
+      const getaddress = await fetchData.list_address(``, token);
+      setAddressCount(getaddress?.count);
       const getData = await fetchData.profile_data(``, token);
       dispatch(
         setDataCount({
@@ -2086,7 +2090,44 @@ const ProductDetails = ({route}) => {
               disabled={singleData?.stock == 0}
               onPress={() => {
                 if (token != undefined) {
-                  setBuyNow();
+                  if (addressData > 0) {
+                    setBuyNow();
+                  } else {
+                    navigation.navigate('AddAddress', {
+                      item: {},
+                      CheckOut: [
+                        {
+                          quantity: 1,
+                          product: singleData?.product,
+                          variant: {
+                            id: singleData?.id,
+                            product_id: singleData?.product_id,
+                            size: singleData?.size,
+                            color: singleData?.color,
+                            color_code: singleData?.color_code,
+                            color_group: singleData?.color_group,
+                            material: singleData?.material,
+                            package_unit: singleData?.package_unit,
+                            package_content: singleData?.package_content,
+                            package_weight: singleData?.package_weight,
+                            org_price: singleData?.org_price,
+                            price: singleData?.price,
+                            stock: singleData?.stock,
+                            sold: singleData?.sold,
+                            status: singleData?.status,
+                            created_at: singleData?.created_at,
+                            updated_at: singleData?.updated_at,
+                            is_wishlisted: singleData?.is_wishlisted,
+                            in_cart: singleData?.in_cart,
+                            productImages: singleData?.productImages,
+                            offer: singleData?.offer,
+                          },
+                          tax: singleData?.tax,
+                        },
+                      ],
+                      status: 'ADD',
+                    });
+                  }
                 } else {
                   navigation.navigate('Auth');
                 }

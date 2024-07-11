@@ -79,7 +79,6 @@ export const api = {
     });
   },
   deleteMethod: (url, token) => {
-    console.log('baseUrl + url', baseUrl + url);
     var headers = api.header(token);
     return new Promise((resolve, reject) => {
       axios

@@ -1,5 +1,11 @@
 import React, {useEffect} from 'react';
-import {Linking, LogBox, StatusBar, View} from 'react-native';
+import {
+  Linking,
+  LogBox,
+  NativeEventEmitter,
+  StatusBar,
+  View,
+} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -119,9 +125,22 @@ const MyDrawer = () => {
       subscription.remove();
     };
   }, []);
-  // SharedStorage.set(
-  //   JSON.stringify({text: 'This is data from the React Native app'}),
-  // );
+
+  useEffect(() => {
+    const eventEmitter = new NativeEventEmitter(
+      NativeModules.DeviceEventManager,
+    );
+    const subscription = eventEmitter.addListener(
+      'OPEN_PRODUCT_DETAILS',
+      event => {
+        const {product_id} = event;
+        console.log('product_id', product_id);
+        navigationRef.current?.navigate('ProductDetails', {id: product_id});
+      },
+    );
+
+    return () => subscription.remove();
+  }, [navigationRef]);
   return (
     <PaperProvider>
       <NavigationContainer ref={navigationRef} linking={linking}>
