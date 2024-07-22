@@ -220,7 +220,7 @@ const HomeScreen = () => {
             const address = response?.data?.address;
             if (address) {
               const city = `${address?.city},${address?.country_code}`;
-console.log('city', address)
+
               setCurrentCity(city);
             }
           } catch (error) {
