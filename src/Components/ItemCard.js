@@ -92,11 +92,6 @@ const ItemCard = props => {
       console.log('error', error);
     }
   };
-  console.log(
-    'item? ================= : ',
-    item?.variants?.[0]?.productImages?.length,
-  );
-
   const isLoading = loadingWishlist === item.id;
   return (
     <View style={{width: '50%'}}>

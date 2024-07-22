@@ -38,7 +38,7 @@ const ProductDetails = ({route}) => {
   const navigation = useNavigation();
   const [id] = useState(route?.params?.id);
   const [singleData, setSingleData] = useState({});
-  console.log('singleData', JSON.stringify(singleData));
+  // console.log('singleData', JSON.stringify(singleData));
   const [loading, setLoading] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
@@ -69,7 +69,6 @@ const ProductDetails = ({route}) => {
     try {
       var param = id;
       var data = `color=${item?.color}`;
-      console.log('data', data);
       const color_data = await fetchData.single_property(param, data, token);
       setSingleData(color_data?.data);
       setLoading(false);
@@ -80,9 +79,22 @@ const ProductDetails = ({route}) => {
     }
   };
 
-  const handleSizePress = item => {
+  const handleSizePress = async item => {
+    setLoading(true);
     setSelectedSize(item?.size);
-    setSelectedVariantId(item?.id);
+    try {
+      var param = id;
+      var data = `size=${item?.size}`;
+      if (selectedColor != null) {
+        data += `&color=${selectedColor}`;
+      }
+      const size_data = await fetchData.single_property(param, data, token);
+      setSingleData(size_data?.data);
+      setLoading(false);
+      setSelectedVariantId(size_data?.data?.id);
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   const dispatch = useDispatch();
@@ -294,6 +306,9 @@ const ProductDetails = ({route}) => {
         };
         const add_to_cart = await fetchData.add_to_cart(data, token);
         if (add_to_cart?.status == true) {
+          if (singleData?.is_wishlisted == true) {
+            toggle_WishList(singleData);
+          }
           common_fn.showToast(add_to_cart?.message);
           setModalVisible(false);
           getCountData();
@@ -747,7 +762,9 @@ const ProductDetails = ({route}) => {
                                 fontSize: 12,
                                 fontFamily: Manrope.Medium,
                               }}>
-                              {item?.color}
+                              {item?.color?.split('')[0]
+                                ? common_fn.getColorName(item?.color)
+                                : item?.color}
                             </Text>
                           </TouchableOpacity>
                         );
@@ -1066,7 +1083,9 @@ const ProductDetails = ({route}) => {
                                       ]}
                                     />
                                     <Text style={styles.colorNameText}>
-                                      {item?.color}
+                                      {item?.color?.split('')[0]
+                                        ? common_fn.getColorName(item?.color)
+                                        : item?.color}
                                     </Text>
                                   </TouchableOpacity>
                                 );
@@ -1166,7 +1185,9 @@ const ProductDetails = ({route}) => {
                                         ]}
                                       />
                                       <Text style={styles.colorNameText}>
-                                        {item?.color}
+                                        {item?.color?.split('')[0]
+                                          ? common_fn.getColorName(item?.color)
+                                          : item?.color}
                                       </Text>
                                     </TouchableOpacity>
                                   );

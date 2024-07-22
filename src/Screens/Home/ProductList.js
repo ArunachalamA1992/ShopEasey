@@ -23,6 +23,7 @@ import FilterModal from '../../Components/Filter/FilterModal';
 const {height} = Dimensions.get('screen');
 const ProductList = ({route, navigation}) => {
   const [category_id] = useState(route.params.category_id);
+  const [param] = useState(route.params.param);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
@@ -48,7 +49,7 @@ const ProductList = ({route, navigation}) => {
   const getData = async () => {
     try {
       var data = `/${category_id}`;
-      loadInitialProducts(category_id);
+      loadInitialProducts(category_id, param);
       const categories_data = await fetchData.categories(data, token);
       // let query = `category_id=${category_id}`;
       // const product_data = await fetchData.list_products(query, token);
@@ -62,6 +63,7 @@ const ProductList = ({route, navigation}) => {
 
   const loadInitialProducts = async (
     catId,
+    param,
     subCatId = null,
     subSubCatId = null,
   ) => {
@@ -72,6 +74,7 @@ const ProductList = ({route, navigation}) => {
       let query = `category_id=${catId}`;
       if (subCatId) query += `&sub_category_id=${subCatId}`;
       if (subSubCatId) query += `&sub_sub_category_id=${subSubCatId}`;
+      if (param) query += `&${param}`;
       const product_data = await fetchData.list_products(query, token);
       setProducts(product_data?.data);
     } catch (error) {
@@ -106,6 +109,7 @@ const ProductList = ({route, navigation}) => {
       setCategoryData(categories_data?.data);
       loadInitialProducts(
         category_id,
+        param,
         currentLevel ? sub_cat_id : item.id,
         currentLevel ? item.id : null,
       );

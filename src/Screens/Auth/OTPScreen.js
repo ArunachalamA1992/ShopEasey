@@ -209,13 +209,10 @@ const OTPScreen = ({route, AppState}) => {
 
   const otpHandler = message => {
     try {
-      console.log('Received SMS for OTP processing:', message);
       const otpMatch = /(\d{4})/g.exec(message);
-      console.log('otpMatch', otpMatch);
       if (otpMatch && otpMatch[1]) {
         const otpDigit = otpMatch[1];
         setOTPCode(prevOTP => prevOTP + otpDigit);
-        console.log('Updated OTP Code:', otpCode + otpDigit);
         if (otpCode.length + otpDigit.length === 4) {
           console.log('Complete OTP received:', otpCode + otpDigit);
         }

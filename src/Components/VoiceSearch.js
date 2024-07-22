@@ -74,9 +74,6 @@ const VoiceSearch = ({onSearch}) => {
           }}
         />
       </TouchableOpacity>
-      {/* <Text>{`Recognized: ${recognized}`}</Text>
-      <Text>{`Started: ${started}`}</Text>
-      <Text>{`Results: ${results.join(', ')}`}</Text> */}
     </View>
   );
 };

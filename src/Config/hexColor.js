@@ -140,4 +140,5 @@ export const colors = [
   {name: 'WhiteSmoke', hex: '#F5F5F5'},
   {name: 'Yellow', hex: '#FFFF00'},
   {name: 'YellowGreen', hex: '#9ACD32'},
+  {name: 'Light Slate Gray', hex: '#B0BEC5'},
 ];

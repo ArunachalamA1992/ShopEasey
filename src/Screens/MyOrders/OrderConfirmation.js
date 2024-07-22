@@ -38,7 +38,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const [isExpanded, setIsExpanded] = useState(CheckOut?.length == 1);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
-
+console.log('token', token)
   const [paymentMethod] = useState([
     {
       id: 1,

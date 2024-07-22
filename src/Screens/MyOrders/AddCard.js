@@ -32,7 +32,6 @@ const AddCard = () => {
     const { handleSubmit, formState } = formMethods
 
     function onSubmit(model) {
-        console.log("Success =============== :", checked + JSON.stringify(model));
         navigation.navigate("OrderConfirmation");
         // Alert.alert('Success: ' + JSON.stringify(model))
     }

@@ -151,4 +151,8 @@ export default {
     let url = api_name + 'auth/user';
     return api.deleteMethod(url, token);
   },
+  get_colors: (data, token) => {
+    let url = api_name + 'colors';
+    return api.getMethod(url, token);
+  },
 };

@@ -193,7 +193,6 @@ const HomeScreen = () => {
       'OPEN_PRODUCT_DETAILS',
       event => {
         const {product_id} = event;
-        console.log('product_id-----------------', product_id);
         navigation.navigate('ProductDetails', {id: product_id});
       },
     );
@@ -260,7 +259,7 @@ const HomeScreen = () => {
   const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
 
   const handleVoiceSearch = query => {
-    console.log('query', query);
+    console.log('query------------------', query)
     if (query != '') {
       navigation.navigate('Search', {searchProduct: query});
     }
@@ -798,9 +797,10 @@ const HomeScreen = () => {
                 <TouchableOpacity
                   style={{marginHorizontal: 10}}
                   onPress={() => {
-                    navigation.navigate('WishListTab');
+                    // navigation.navigate('WishListTab');
+                    navigation.navigate('MyRewards');
                   }}>
-                  {wishlist != 0 ? (
+                  {/* {wishlist != 0 ? (
                     <Badge
                       style={{
                         position: 'absolute',
@@ -814,8 +814,14 @@ const HomeScreen = () => {
                       }}>
                       {wishlist}
                     </Badge>
-                  ) : null}
-                  <AntDesign name="hearto" size={22} color={Color.white} />
+                  ) : null} */}
+                  {/* <AntDesign name="hearto" size={22} color={Color.white} /> */}
+                  <Iconviewcomponent
+                    Icontag={'FontAwesome5'}
+                    iconname={'award'}
+                    icon_size={22}
+                    icon_color={Color.white}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{marginHorizontal: 10}}

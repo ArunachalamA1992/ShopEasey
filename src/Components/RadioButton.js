@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Color from '../Global/Color';
 import {Manrope} from '../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,8 +17,7 @@ export const CheckboxData = ({label, checked, onPress}) => {
   );
 };
 
-export const RadioData = ({label, checked, onPress}) => {
-  console.log('checked', checked);
+export const RadioData = ({label, checked, color_code, onPress}) => {
   return (
     <TouchableOpacity style={styles.checkboxContainer} onPress={onPress}>
       <Icon
@@ -26,6 +25,17 @@ export const RadioData = ({label, checked, onPress}) => {
         size={25}
         color={!checked ? Color.cloudyGrey : '#309CD2'}
       />
+      {color_code && (
+        <View
+          style={{
+            backgroundColor: `${color_code}`,
+            width: 20,
+            height: 20,
+            borderRadius: 100,
+            marginLeft: 5,
+          }}
+        />
+      )}
       <Text style={styles.TextData}>{label}</Text>
     </TouchableOpacity>
   );
@@ -52,7 +62,7 @@ const styles = StyleSheet.create({
   TextData: {
     fontSize: 14,
     color: Color.black,
-    marginHorizontal: 10,
+    marginLeft: 5,
     fontFamily: Manrope.SemiBold,
   },
 });

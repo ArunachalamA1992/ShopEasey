@@ -74,7 +74,6 @@ const AddAddress = ({route}) => {
           is_default: defaultAddress == true ? 1 : 0,
         };
         const add_address = await fetchData.add_address(data, token);
-        console.log('add_address', add_address);
         if (add_address?.status == true) {
           navigation.dispatch(
             StackActions.replace('OrderConfirmation', {CheckOut}),
@@ -120,7 +119,6 @@ const AddAddress = ({route}) => {
           data,
           token,
         );
-        console.log('update_address', update_address);
         if (update_address?.status == true) {
           navigation.goBack();
           common_fn.showToast(update_address?.message);

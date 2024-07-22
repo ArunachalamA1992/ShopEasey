@@ -134,7 +134,6 @@ const MyDrawer = () => {
       'OPEN_PRODUCT_DETAILS',
       event => {
         const {product_id} = event;
-        console.log('product_id', product_id);
         navigationRef.current?.navigate('ProductDetails', {id: product_id});
       },
     );

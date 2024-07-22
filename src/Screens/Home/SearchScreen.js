@@ -93,7 +93,6 @@ const SearchScreen = ({navigation, route}) => {
 
   const getSearchData = async () => {
     try {
-      console.log('search----------', searchProduct, selectData);
       if (searchProduct != '') {
         navigation.navigate('SearchDataList', {searchProduct, selectData});
       } else {
