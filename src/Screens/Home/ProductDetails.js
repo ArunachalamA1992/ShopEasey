@@ -14,7 +14,7 @@ import {
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Badge, Button} from 'react-native-paper';
+import {Badge} from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -23,9 +23,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import ImageView from '../../Components/imageView';
 import {Media} from '../../Global/Media';
 import moment from 'moment';
-import {products} from '../../Config/Content';
-import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
-import {scr_height, scr_width} from '../../Utils/Dimensions';
+import {ItemCardHorizontal} from '../../Components/ItemCard';
+import {scr_width} from '../../Utils/Dimensions';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
 import RenderHtml from 'react-native-render-html';
@@ -39,6 +38,7 @@ const ProductDetails = ({route}) => {
   const navigation = useNavigation();
   const [id] = useState(route?.params?.id);
   const [singleData, setSingleData] = useState({});
+  console.log('singleData', JSON.stringify(singleData));
   const [loading, setLoading] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
@@ -124,13 +124,15 @@ const ProductDetails = ({route}) => {
     },
   ]);
 
-  var discount = parseInt(
+  var discount = parseFloat(
     ((singleData?.org_price / countryCode?.price_margin -
-      singleData?.price / countryCode?.price_margin) /
+    singleData?.offer_price
+      ? singleData?.offer_price
+      : singleData?.price / countryCode?.price_margin) /
       singleData?.org_price /
       countryCode?.price_margin) *
       100,
-  );
+  ).toFixed(2);
   const currentDate = moment();
   const yourDate = moment(singleData?.updated_at);
 
@@ -240,7 +242,7 @@ const ProductDetails = ({route}) => {
     try {
       var param = `${id}`;
       const setFollow = await fetchData.post_follow(param, {}, token);
-      // console.log("Follow =============== : ", setFollow);
+      console.log('setFollow', setFollow);
       if (setFollow.status == true) {
         setFollowStatus('Follow');
       } else {
@@ -416,7 +418,7 @@ const ProductDetails = ({route}) => {
   const hasNonEmptyColor = singleData?.variants_list?.color?.some(
     item => item?.color && item?.color !== '',
   );
-  console.log('singleData?.productImages', singleData?.productImages?.[0]?.id);
+
   return (
     <View
       style={{
@@ -509,128 +511,142 @@ const ProductDetails = ({route}) => {
       {loading ? (
         <View style={{padding: 10}}>
           <SkeletonPlaceholder>
-            <SkeletonPlaceholder.Item style={{}}>
+            <SkeletonPlaceholder.Item
+              width={'100%'}
+              height={300}
+              borderRadius={10}
+            />
+            <SkeletonPlaceholder.Item
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+              }}>
               <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={300}
+                width={'30%'}
+                height={40}
+                borderRadius={10}
+                marginRight={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'30%'}
+                height={40}
                 borderRadius={10}
               />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              width={'100%'}
+              height={20}
+              borderRadius={10}
+              marginTop={10}
+            />
+            <SkeletonPlaceholder.Item
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+              }}>
               <SkeletonPlaceholder.Item
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 20,
-                }}>
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                />
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                  marginHorizontal={10}
-                />
-              </SkeletonPlaceholder.Item>
-              <SkeletonPlaceholder.Item
-                width={120}
-                height={20}
-                borderRadius={50}
-                marginHorizontal={10}
-                marginTop={10}
-              />
-              <SkeletonPlaceholder.Item
-                width={200}
-                height={20}
+                width={'30%'}
+                height={40}
                 borderRadius={10}
-                marginTop={10}
+                marginRight={10}
               />
               <SkeletonPlaceholder.Item
-                width={200}
-                height={20}
+                width={'30%'}
+                height={40}
                 borderRadius={10}
-                marginTop={10}
+                marginRight={10}
               />
               <SkeletonPlaceholder.Item
-                width={200}
-                height={20}
+                width={'30%'}
+                height={40}
                 borderRadius={10}
-                marginTop={10}
+              />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              width={'30%'}
+              height={20}
+              borderRadius={10}
+              marginTop={10}
+            />
+            <SkeletonPlaceholder.Item
+              width={'100%'}
+              height={20}
+              borderRadius={10}
+              marginTop={10}
+            />
+            <SkeletonPlaceholder.Item
+              width={'100%'}
+              height={20}
+              borderRadius={10}
+              marginTop={10}
+            />
+            <SkeletonPlaceholder.Item
+              width={'100%'}
+              height={20}
+              borderRadius={10}
+              marginTop={10}
+            />
+            <SkeletonPlaceholder.Item
+              width={'20%'}
+              height={40}
+              borderRadius={10}
+              marginTop={10}
+            />
+            <SkeletonPlaceholder.Item
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+              }}>
+              <SkeletonPlaceholder.Item
+                width={'30%'}
+                height={40}
+                borderRadius={10}
+                marginRight={10}
               />
               <SkeletonPlaceholder.Item
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 20,
-                }}>
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                />
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                  marginHorizontal={10}
-                />
-              </SkeletonPlaceholder.Item>
+                width={'30%'}
+                height={40}
+                borderRadius={10}
+                marginRight={10}
+              />
               <SkeletonPlaceholder.Item
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 20,
-                }}>
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                />
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                  marginHorizontal={10}
-                />
-              </SkeletonPlaceholder.Item>
+                width={'30%'}
+                height={40}
+                borderRadius={10}
+              />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              width={'20%'}
+              height={40}
+              borderRadius={10}
+              marginTop={10}
+            />
+            <SkeletonPlaceholder.Item
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+              }}>
               <SkeletonPlaceholder.Item
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 20,
-                }}>
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                />
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={20}
-                  borderRadius={50}
-                  marginHorizontal={10}
-                />
-              </SkeletonPlaceholder.Item>
+                width={'30%'}
+                height={40}
+                borderRadius={10}
+                marginRight={10}
+              />
               <SkeletonPlaceholder.Item
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginTop: 20,
-                }}>
-                <SkeletonPlaceholder.Item
-                  width={'45%'}
-                  height={50}
-                  borderRadius={10}
-                />
-                <SkeletonPlaceholder.Item
-                  width={'45%'}
-                  height={50}
-                  borderRadius={10}
-                  marginHorizontal={10}
-                />
-              </SkeletonPlaceholder.Item>
+                width={'30%'}
+                height={40}
+                borderRadius={10}
+                marginRight={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'30%'}
+                height={40}
+                borderRadius={10}
+              />
             </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>
@@ -675,38 +691,75 @@ const ProductDetails = ({route}) => {
                 ) : (
                   <Image
                     source={{uri: Media.no_image}}
-                    style={{width: '100%', height: 250, resizeMode: 'contain'}}
+                    style={{
+                      width: '100%',
+                      height: 250,
+                      resizeMode: 'contain',
+                    }}
                   />
                 )}
-                {/* {singleData?.variants_list?.color?.map((item, index) => {
-                  if (item?.color && item?.color !== '') {
-                    return (
-                      <TouchableOpacity
-                        key={index}
-                        style={{marginHorizontal: 10, marginTop: 20}}
-                        onPress={() => {
-                          setSelectedVariantId(item?.id);
-                          setSelectedVariantData(item);
-                        }}>
-                        <Image
-                          source={{
-                            uri: Media.user,
-                          }}
-                          style={{
-                            width: 100,
-                            height: 100,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </TouchableOpacity>
-                    );
-                  }
-                })} */}
                 <View
                   style={{
                     paddingHorizontal: 10,
                     backgroundColor: Color.white,
                     marginTop: 50,
+                  }}>
+                  {singleData?.variants_list?.color?.length > 1 && (
+                    <FlatList
+                      data={singleData?.variants_list?.color}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      renderItem={({item, index}) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            style={{
+                              marginRight: 10,
+                              marginTop: 10,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                            onPress={() => handleColorPress(item)}>
+                            <View
+                              key={index}
+                              style={{
+                                borderWidth: 1,
+                                borderColor:
+                                  selectedColor === item?.color
+                                    ? Color.primary
+                                    : Color.lightgrey,
+                                borderRadius: 100,
+                                padding: 10,
+                              }}>
+                              <Image
+                                source={{uri: item?.image}}
+                                style={{
+                                  width: 50,
+                                  height: 50,
+                                  resizeMode: 'contain',
+                                  borderRadius: 100,
+                                }}
+                              />
+                            </View>
+                            <Text
+                              style={{
+                                color: Color.black,
+                                fontSize: 12,
+                                fontFamily: Manrope.Medium,
+                              }}>
+                              {item?.color}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      }}
+                    />
+                  )}
+                </View>
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                    backgroundColor: Color.white,
+                    marginTop: 10,
                   }}>
                   <View
                     style={{
@@ -811,10 +864,16 @@ const ProductDetails = ({route}) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {singleData?.price / countryCode?.price_margin}{' '}
+                        {parseFloat(
+                          singleData?.offer_price
+                            ? singleData?.offer_price
+                            : singleData?.price / countryCode?.price_margin,
+                        ).toFixed(2)}{' '}
                         <Text style={styles.productPrice}>
                           {countryCode?.symbol}
-                          {singleData?.org_price / countryCode?.price_margin}
+                          {parseFloat(
+                            singleData?.org_price / countryCode?.price_margin,
+                          ).toFixed(2)}
                         </Text>
                       </Text>
                       <Text
@@ -985,10 +1044,6 @@ const ProductDetails = ({route}) => {
                             ]}>
                             {singleData?.variants_list?.color?.map(
                               (item, index) => {
-                                console.log(
-                                  'singleData?.variants_list?.color',
-                                  singleData?.variants_list,
-                                );
                                 // if (item?.color && item?.color !== '') {
                                 return (
                                   <TouchableOpacity
@@ -1391,9 +1446,13 @@ const ProductDetails = ({route}) => {
                             padding: 10,
                           }}
                           onPress={() => {
-                            navigation.navigate('SellerProfile', {
-                              vendor_id: singleData?.product?.vendor?.id,
-                            });
+                            if (token != undefined) {
+                              navigation.navigate('SellerProfile', {
+                                vendor_id: singleData?.product?.vendor?.id,
+                              });
+                            } else {
+                              navigation.navigate('Auth');
+                            }
                           }}>
                           <Feather
                             name="shopping-bag"
@@ -1422,7 +1481,11 @@ const ProductDetails = ({route}) => {
                             borderWidth: 1,
                           }}
                           onPress={() => {
-                            setFollowProfile(singleData?.product?.vendor?.id);
+                            if (token != undefined) {
+                              setFollowProfile(singleData?.product?.vendor?.id);
+                            } else {
+                              navigation.navigate('Auth');
+                            }
                           }}>
                           <Text
                             style={{
@@ -1719,7 +1782,7 @@ const ProductDetails = ({route}) => {
                   <View style={{width: scr_width}}>
                     <RenderHtml
                       tagsStyles={styles.htmlStyles}
-                      contentWidth={scr_width}
+                      contentWidth={'100%'}
                       source={{html: singleData?.product?.description}}
                     />
                   </View>
@@ -2181,19 +2244,19 @@ const styles = StyleSheet.create({
   },
   htmlStyles: {
     body: {
-      width: scr_width - 10,
+      width: '90%',
       fontFamily: Manrope.SemiBold,
       color: Color.cloudyGrey,
-      fontSize: 14,
-      lineHeight: 25,
+      fontSize: 12,
+      lineHeight: 20,
     },
     h1: {
-      fontSize: 24,
+      fontSize: 20,
       color: '#000000',
     },
     p: {
-      fontSize: 18,
-      marginVertical: 10,
+      fontSize: 16,
+      textAlign: 'justify',
     },
     strong: {
       fontWeight: '500',
@@ -2233,6 +2296,7 @@ const styles = StyleSheet.create({
     borderColor: Color.lightgrey,
     padding: 10,
     paddingHorizontal: 10,
+    marginTop: 10,
     borderRadius: 5,
   },
   colorView: {

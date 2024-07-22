@@ -92,11 +92,11 @@ export default {
     return api.getMethod(url, token);
   },
   postOrder: (data, token) => {
-    let url = api_name + 'orders';
+    let url = api_name + 'orders/v2';
     return api.postMethod(url, data, token);
   },
   verify_order: (data, token) => {
-    let url = api_name + 'orders/paypal_verify';
+    let url = api_name + 'orders/paypal_verify-v2';
     return api.postMethod(url, data, token);
   },
   list_order: (data, token) => {

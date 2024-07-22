@@ -12,6 +12,7 @@ export const Paypal = ({route}) => {
   const navigation = useNavigation();
   const [approvalUrl, setApprovalUrl] = useState(route.params.approval_url);
   const [data] = useState(route.params.data);
+  const [orders] = useState(route.params.orders);
   const [accessToken, setAccessToken] = useState(null);
   const [paymentId, setPaymentId] = useState(null);
   const userData = useSelector(state => state.UserReducer.userData);
@@ -78,7 +79,7 @@ export const Paypal = ({route}) => {
             currency: data?.currency,
             payer_id: payerId,
             payment_id: paymentId,
-            unique_order_id: data?.unique_order_id,
+            orders: orders,
           };
           const verifyOrderResponse = await fetchData.verify_order(
             verifyData,

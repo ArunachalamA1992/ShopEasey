@@ -64,6 +64,7 @@ const HomeScreen = () => {
   const [imageVisible, setImageVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
+  const [latestProducts, setLatestProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
@@ -167,6 +168,7 @@ const HomeScreen = () => {
     {id: 6, title: 'Offer Banner', data: ['Offer Banner']},
     {id: 7, title: 'Flash Selling', data: ['Flash Selling']},
     {id: 8, title: 'product', data: ['product']},
+    {id: 9, title: 'Latest Product', data: ['Latest Product']},
   ]);
 
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
@@ -218,7 +220,7 @@ const HomeScreen = () => {
             const address = response?.data?.address;
             if (address) {
               const city = `${address?.city},${address?.country_code}`;
-
+console.log('city', address)
               setCurrentCity(city);
             }
           } catch (error) {
@@ -258,6 +260,7 @@ const HomeScreen = () => {
   const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
 
   const handleVoiceSearch = query => {
+    console.log('query', query);
     if (query != '') {
       navigation.navigate('Search', {searchProduct: query});
     }
@@ -343,6 +346,8 @@ const HomeScreen = () => {
         token,
       );
       setTrendingProducts(trending_products?.data);
+      const latest_products = await fetchData.list_products(``, token);
+      setLatestProduct(latest_products?.data);
       // var banner_data = `seller=home_page`;
       // const getBannerData = await fetchData.get_banner(banner_data, token);
       // setBannerData(getBannerData?.data);
@@ -456,14 +461,14 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -472,14 +477,14 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -488,14 +493,14 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -504,14 +509,14 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -520,14 +525,14 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -536,14 +541,14 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -552,14 +557,14 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -568,14 +573,78 @@ const HomeScreen = () => {
               <SkeletonPlaceholder.Item
                 style={{alignItems: 'center', mediaType: 10}}>
                 <SkeletonPlaceholder.Item
-                  width={50}
-                  height={50}
+                  width={60}
+                  height={60}
                   borderRadius={100}
                   marginHorizontal={10}
                   marginTop={10}
                 />
                 <SkeletonPlaceholder.Item
-                  width={50}
+                  width={60}
+                  height={10}
+                  borderRadius={10}
+                  marginTop={10}
+                />
+              </SkeletonPlaceholder.Item>
+              <SkeletonPlaceholder.Item
+                style={{alignItems: 'center', mediaType: 10}}>
+                <SkeletonPlaceholder.Item
+                  width={60}
+                  height={60}
+                  borderRadius={100}
+                  marginHorizontal={10}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  width={60}
+                  height={10}
+                  borderRadius={10}
+                  marginTop={10}
+                />
+              </SkeletonPlaceholder.Item>
+              <SkeletonPlaceholder.Item
+                style={{alignItems: 'center', mediaType: 10}}>
+                <SkeletonPlaceholder.Item
+                  width={60}
+                  height={60}
+                  borderRadius={100}
+                  marginHorizontal={10}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  width={60}
+                  height={10}
+                  borderRadius={10}
+                  marginTop={10}
+                />
+              </SkeletonPlaceholder.Item>
+              <SkeletonPlaceholder.Item
+                style={{alignItems: 'center', mediaType: 10}}>
+                <SkeletonPlaceholder.Item
+                  width={60}
+                  height={60}
+                  borderRadius={100}
+                  marginHorizontal={10}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  width={60}
+                  height={10}
+                  borderRadius={10}
+                  marginTop={10}
+                />
+              </SkeletonPlaceholder.Item>
+              <SkeletonPlaceholder.Item
+                style={{alignItems: 'center', mediaType: 10}}>
+                <SkeletonPlaceholder.Item
+                  width={60}
+                  height={60}
+                  borderRadius={100}
+                  marginHorizontal={10}
+                  marginTop={10}
+                />
+                <SkeletonPlaceholder.Item
+                  width={60}
                   height={10}
                   borderRadius={10}
                   marginTop={10}
@@ -1609,7 +1678,7 @@ const HomeScreen = () => {
                     <View
                       style={{
                         backgroundColor: Color.white,
-                        marginBottom: 20,
+                        marginBottom: 10,
                         padding: 10,
                       }}>
                       <FlatList
@@ -1645,6 +1714,59 @@ const HomeScreen = () => {
                         </TouchableOpacity>
                       )}
                     </View>
+                  );
+                case 'Latest Product':
+                  return (
+                    latestProducts?.length > 0 && (
+                      <View
+                        style={{
+                          paddingStart: 10,
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginVertical: 10,
+                          }}>
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontSize: 16,
+                              color: Color.black,
+                              fontFamily: Manrope.SemiBold,
+                            }}>
+                            Latest Products
+                          </Text>
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('latest');
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Bold,
+                                marginRight: 10,
+                              }}>
+                              View All
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                        <FlatList
+                          data={latestProducts}
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          renderItem={({item, index}) => {
+                            return (
+                              <ItemCardHorizontal
+                                item={item}
+                                navigation={navigation}
+                              />
+                            );
+                          }}
+                        />
+                      </View>
+                    )
                   );
               }
             }}

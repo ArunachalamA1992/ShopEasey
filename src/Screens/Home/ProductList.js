@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
 import {ActivityIndicator, Badge} from 'react-native-paper';
 import ItemCard from '../../Components/ItemCard';
 import Color from '../../Global/Color';
@@ -19,13 +18,14 @@ import fetchData from '../../Config/fetchData';
 import {useDispatch, useSelector} from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {setDataCount} from '../../Redux';
+import FilterModal from '../../Components/Filter/FilterModal';
 
 const {height} = Dimensions.get('screen');
-const ProductList = ({route}) => {
+const ProductList = ({route, navigation}) => {
   const [category_id] = useState(route.params.category_id);
-  const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
   const [products, setProducts] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
   const {token} = userData;
@@ -154,11 +154,18 @@ const ProductList = ({route}) => {
             navigation.navigate('Search', {searchProduct: ''});
           }}>
           <AntDesign name="search1" size={22} color={Color.cloudyGrey} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search...."
-            placeholderTextColor={Color.cloudyGrey}
-          />
+          <View style={styles.searchInput}>
+            <Text
+              style={{
+                fontSize: 14,
+                color: Color.black,
+                fontFamily: Manrope.SemiBold,
+                textAlign: 'left',
+                marginLeft: 10,
+              }}>
+              Search
+            </Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
           style={{marginRight: 10}}
@@ -327,7 +334,7 @@ const ProductList = ({route}) => {
               paddingVertical: 10,
             }}>
             {products.length > 0 ? (
-              <View
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'center',
@@ -336,6 +343,9 @@ const ProductList = ({route}) => {
                   padding: 10,
                   borderRadius: 5,
                   marginHorizontal: 10,
+                }}
+                onPress={() => {
+                  setFilterVisible(true);
                 }}>
                 <Feather name="filter" size={16} color={Color.white} />
                 <Text
@@ -347,7 +357,7 @@ const ProductList = ({route}) => {
                   }}>
                   Filter
                 </Text>
-              </View>
+              </TouchableOpacity>
             ) : null}
             <FlatList
               data={CategoryData}
@@ -446,6 +456,13 @@ const ProductList = ({route}) => {
           />
         </View>
       )}
+      {filterVisible && (
+        <FilterModal
+          setFilterVisible={setFilterVisible}
+          filterVisible={filterVisible}
+          navigation={navigation}
+        />
+      )}
     </View>
   );
 };
@@ -474,11 +491,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     width: '90%',
-    fontSize: 14,
-    color: Color.black,
-    fontFamily: Manrope.SemiBold,
-    textAlign: 'left',
-    textAlignVertical: 'center',
+    backgroundColor: Color.white,
   },
   CategoryContainer: {
     backgroundColor: Color.white,

@@ -142,9 +142,7 @@ android {
 }
 
 dependencies {
-    // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-
     implementation project(':react-native-vector-icons')
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-analytics")
@@ -154,16 +152,17 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation "com.facebook.react:react-native:+"
     implementation 'com.google.android.material:material:1.11.0'
-    implementation 'com.google.android.play:core:1.10.3'
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-fs')
     implementation project(':react-native-otp-verify')
     implementation 'com.squareup.picasso:picasso:2.8'
-    
-    if (hermesEnabled.toBoolean()) {
+    implementation 'com.google.android.play:core:1.10.0'
+
+
+    if (hermesEnabled) {
         implementation("com.facebook.react:hermes-android")
     } else {
-        implementation jscFlavor
+        implementation "org.webkit:android-jsc:+"
     }
 }
 

@@ -189,12 +189,17 @@ const MyCart = ({}) => {
     }
   };
 
-  var total_price = cartData.reduce((accumulator, item) => {
-    return (
-      accumulator +
-      ((item.variant?.price / countryCode?.price_margin) * item?.quantity || 0)
-    );
-  }, 0);
+  var total_price = cartData
+    .reduce((accumulator, item) => {
+      const price = item?.variant?.offer_price
+        ? item?.variant?.offer_price
+        : item.variant?.price || 0;
+      const priceMargin = countryCode?.price_margin || 1;
+      const quantity = item?.quantity || 0;
+
+      return accumulator + (price / priceMargin) * quantity;
+    }, 0)
+    .toFixed(2);
 
   const getCountData = async () => {
     try {
@@ -355,15 +360,16 @@ const MyCart = ({}) => {
             data={cartData}
             keyExtractor={(item, index) => String(index)}
             renderItem={({item, index}) => {
-              var discount =
+              var discount = parseFloat(
                 100 -
-                parseInt(
                   ((item?.variant?.org_price / countryCode?.price_margin -
-                    item?.variant?.price / countryCode?.price_margin) /
+                  item?.variant?.offer_price
+                    ? item?.variant?.offer_price
+                    : item?.variant?.price / countryCode?.price_margin) /
                     item?.variant?.org_price /
                     countryCode?.price_margin) *
                     100,
-                );
+              ).toFixed(2);
               return (
                 <TouchableOpacity
                   key={index}
@@ -497,10 +503,17 @@ const MyCart = ({}) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {item?.variant?.price / countryCode?.price_margin}{' '}
+                        {parseFloat(
+                          item?.variant?.offer_price
+                            ? item?.variant?.offer_price
+                            : item?.variant?.price / countryCode?.price_margin,
+                        ).toFixed(2)}{' '}
                         <Text style={styles.productPrice}>
                           {countryCode?.symbol}
-                          {item?.variant?.org_price / countryCode?.price_margin}
+                          {parseFloat(
+                            item?.variant?.org_price /
+                              countryCode?.price_margin,
+                          ).toFixed(2)}
                         </Text>
                       </Text>
                     </View>
@@ -724,7 +737,7 @@ const MyCart = ({}) => {
                     }}
                     numberOfLines={1}>
                     {countryCode?.symbol}
-                    {total_price}
+                    {parseFloat(total_price)}
                   </Text>
                 </View>
                 <View

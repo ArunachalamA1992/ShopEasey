@@ -56,7 +56,7 @@ import SelectAddress from './Screens/Address/SelectAddress';
 import SearchDataList from './Screens/Home/SearchDataList';
 import {setUserId, setUserProperties} from './analytics';
 import {NativeModules} from 'react-native';
-// const SharedStorage = NativeModules.SharedStorage;
+import {checkUpdate} from '../InAppUpdate';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -169,6 +169,10 @@ const logAppOpen = async () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    checkUpdate();
+  }, []);
+
   const firebaseConfig = {
     apiKey: 'AIzaSyDi0wxP2QTmOcNdbfyHP3Qb_5C_gAgcJ1A',
     authDomain: 'shopeasey-8855b.firebaseapp.com',

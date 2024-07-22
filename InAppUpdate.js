@@ -1,0 +1,7 @@
+import {NativeModules} from 'react-native';
+
+const {InAppUpdate} = NativeModules;
+
+export const checkUpdate = () => {
+  InAppUpdate.checkUpdate();
+};

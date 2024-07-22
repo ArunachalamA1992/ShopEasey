@@ -210,13 +210,15 @@ const WishList = ({navigation}) => {
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => {
-            var discount = parseInt(
+            var discount = parseFloat(
               ((item?.variant?.org_price / countryCode?.price_margin -
-                item?.variant?.price / countryCode?.price_margin) /
+              item?.variant?.offer_price
+                ? item?.variant?.offer_price
+                : item?.variant?.price / countryCode?.price_margin) /
                 item?.variant?.org_price /
                 countryCode?.price_margin) *
                 100,
-            );
+            ).toFixed(2);
             const isLoading = loadingWishlist === item.product.id;
             return (
               <View style={{width: '50%'}}>
@@ -354,11 +356,17 @@ const WishList = ({navigation}) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {item?.variant?.price / countryCode?.price_margin}
+                        {parseFloat(
+                          item?.variant?.offer_price
+                            ? item?.variant?.offer_price
+                            : item?.variant?.price / countryCode?.price_margin,
+                        ).toFixed(2)}
                       </Text>
                       <Text style={styles.productPrice}>
                         {countryCode?.symbol}
-                        {item?.variant?.org_price / countryCode?.price_margin}
+                        {parseFloat(
+                          item?.variant?.org_price / countryCode?.price_margin,
+                        ).toFixed(2)}
                       </Text>
                     </View>
                     {/* <View style={styles.productRatingView}>

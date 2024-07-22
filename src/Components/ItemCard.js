@@ -34,13 +34,15 @@ const ItemCard = props => {
     setItem(initialItem);
   }, [initialItem]);
 
-  const discount = parseInt(
+  const discount = parseFloat(
     ((item?.variants?.[0]?.org_price / countryCode?.price_margin -
-      item?.variants?.[0]?.price / countryCode?.price_margin) /
+    item?.variants?.[0]?.offer_price
+      ? item?.variants?.[0]?.offer_price
+      : item?.variants?.[0]?.price / countryCode?.price_margin) /
       item?.variants?.[0]?.org_price /
       countryCode?.price_margin) *
       100,
-  );
+  ).toFixed(2);
 
   const getProduct = async () => {
     try {
@@ -221,11 +223,17 @@ const ItemCard = props => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={styles.productDiscountPrice}>
               {countryCode?.symbol}
-              {item?.variants?.[0]?.price / countryCode?.price_margin}
+              {parseFloat(
+                item?.variants?.[0]?.offer_price
+                  ? item?.variants?.[0]?.offer_price
+                  : item?.variants?.[0]?.price / countryCode?.price_margin,
+              ).toFixed(2)}
             </Text>
             <Text style={styles.productPrice}>
               {countryCode?.symbol}
-              {item?.variants?.[0]?.org_price / countryCode?.price_margin}
+              {parseFloat(
+                item?.variants?.[0]?.org_price / countryCode?.price_margin,
+              ).toFixed(2)}
             </Text>
           </View>
           {/* <Text style={styles.productDiscountPrice} numberOfLines={1}>
@@ -275,13 +283,15 @@ export const ItemCardHorizontal = props => {
     setItem(initialItem);
   }, [initialItem]);
 
-  const discount = parseInt(
+  const discount = parseFloat(
     ((item?.variants?.[0]?.org_price / countryCode?.price_margin -
-      item?.variants?.[0]?.price / countryCode?.price_margin) /
+    item?.variants?.[0]?.offer_price
+      ? item?.variants?.[0]?.offer_price
+      : item?.variants?.[0]?.price / countryCode?.price_margin) /
       item?.variants?.[0]?.org_price /
       countryCode?.price_margin) *
       100,
-  );
+  ).toFixed(2);
 
   const getProduct = async () => {
     try {
@@ -343,7 +353,7 @@ export const ItemCardHorizontal = props => {
         borderColor: Color.lightgrey,
       }}
       onPress={() => {
-        navigation.replace('ProductDetails', {id: item?.id});
+        navigation.push('ProductDetails', {id: item?.id});
       }}>
       <ImageBackground
         style={styles.Productimage}
@@ -422,11 +432,17 @@ export const ItemCardHorizontal = props => {
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text style={styles.productDiscountPrice}>
             {countryCode?.symbol}
-            {item?.variants?.[0]?.price / countryCode?.price_margin}
+            {parseFloat(
+              item?.variants?.[0]?.offer_price
+                ? item?.variants?.[0]?.offer_price
+                : item?.variants?.[0]?.price / countryCode?.price_margin,
+            ).toFixed(2)}
           </Text>
           <Text style={styles.productPrice}>
             {countryCode?.symbol}
-            {item?.variants?.[0]?.org_price / countryCode?.price_margin}
+            {parseFloat(
+              item?.variants?.[0]?.org_price / countryCode?.price_margin,
+            ).toFixed(2)}
           </Text>
         </View>
         {/* <Text style={styles.productDiscountPrice} numberOfLines={1}>

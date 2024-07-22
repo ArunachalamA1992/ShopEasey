@@ -34,8 +34,7 @@ import common_fn from '../../Config/common_fn';
 
 LogBox.ignoreAllLogs();
 
-const SellerProfile = ({route}) => {
-  const navigation = useNavigation();
+const SellerProfile = ({route, navigation}) => {
   const [vendor_id] = useState(route.params.vendor_id);
   const [sellerData, setSellerData] = useState({});
   const [topPicks, setTopPicks] = useState([]);
@@ -172,7 +171,7 @@ const SellerProfile = ({route}) => {
     try {
       var data = `id=${vendor_id}`;
       const getdata = await fetchData.seller_list(data, token);
-      // console.log("getdata shop ========= ", getdata);
+      console.log("getdata shop ========= ", getdata);
       setSellerData(getdata?.data?.[0]);
       var product_data = `project=top-picks&vendor_id=${vendor_id}`;
       const get_products = await fetchData.list_products(product_data, token);

@@ -80,19 +80,24 @@ const OrderConfirmation = ({navigation, route}) => {
   };
 
   const Sub_total = CheckOut?.reduce((accumulator, item) => {
-    return (
-      accumulator +
-      ((item.variant?.price / countryCode?.price_margin) * item?.quantity || 0)
-    );
-  }, 0);
+    const price = item?.variant?.offer_price
+      ? item?.variant?.offer_price
+      : item.variant?.price || 0;
+    const priceMargin = countryCode?.price_margin || 1;
+    const quantity = item?.quantity || 0;
+
+    return accumulator + (price / priceMargin) * quantity;
+  }, 0).toFixed(2);
 
   const discount_price = CheckOut?.reduce((accumulator, item) => {
-    return (
+    return parseFloat(
       accumulator +
-      ((item.variant?.org_price / countryCode?.price_margin -
-        item.variant?.price / countryCode?.price_margin) *
-        item?.quantity || 0)
-    );
+        (item.variant?.org_price / countryCode?.price_margin -
+        item?.variant?.offer_price
+          ? item?.variant?.offer_price
+          : item.variant?.price / countryCode?.price_margin) *
+          item?.quantity || 0,
+    ).toFixed(2);
   }, 0);
 
   const product_tax = CheckOut?.map(orderItem => {
@@ -107,33 +112,92 @@ const OrderConfirmation = ({navigation, route}) => {
   });
   const overall_tax = product_tax?.reduce((acc, curr) => acc + curr, 0);
 
+  // const postOrder = async () => {
+  //   try {
+  //     const total_price = parseFloat(Sub_total) + overall_tax;
+  //     const data = {
+  //       address_id: selectAddress?.id,
+  //       region_id: countryCode?.id,
+  //       total: total_price,
+  //       sub_total: Sub_total,
+  //       tax: overall_tax,
+  //       payment_method:
+  //         selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
+  //       products: CheckOut?.flatMap(item =>
+  //         item.tax?.flatMap(tax_item => {
+  //           if (tax_item?.region_id == countryCode?.id) {
+  //             return {
+  //               product_id: item?.product?.id,
+  //               variant_id: item?.variant?.id,
+  //               quantity: item?.quantity,
+  //               price: parseFloat(
+  //                 item?.variant?.price / countryCode?.price_margin,
+  //               ).toFixed(2),
+  //               tax: tax_item?.tax * item?.quantity,
+  //             };
+  //           }
+  //           return [];
+  //         }),
+  //       ),
+  //     };
+  //     const post_order = await fetchData.postOrder(data, token);
+  //     if (selectPayment?.name === 'cash on delivery') {
+  //       handleCODOrder(post_order);
+  //     } else {
+  //       if (countryCode?.id == 452) {
+  //         handleOnlineOrder(post_order);
+  //       } else {
+  //         navigation.navigate('Paypal', {
+  //           approval_url: post_order?.approval_url,
+  //           data: post_order?.data,
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error in postOrder:', error);
+  //     common_fn.showToast(
+  //       'An error occurred while placing the order. Please try again.',
+  //     );
+  //   }
+  // };
   const postOrder = async () => {
     try {
-      const total_price = Sub_total + overall_tax;
+      const total_price = parseFloat(Sub_total) + overall_tax;
       const data = {
-        address_id: selectAddress?.id,
-        region_id: countryCode?.id,
         total: total_price,
-        sub_total: Sub_total,
-        tax: overall_tax,
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-        products: CheckOut?.flatMap(item =>
+        order: CheckOut?.flatMap(item =>
           item.tax?.flatMap(tax_item => {
             if (tax_item?.region_id == countryCode?.id) {
               return {
-                product_id: item?.product?.id,
-                variant_id: item?.variant?.id,
-                quantity: item?.quantity,
-                price: item?.variant?.price / countryCode?.price_margin,
+                address_id: selectAddress?.id,
+                total: item?.variant?.offer_price
+                  ? item?.variant?.offer_price
+                  : item?.variant?.price / countryCode?.price_margin +
+                    tax_item?.tax * item?.quantity,
+                sub_total: item?.variant?.offer_price
+                  ? item?.variant?.offer_price
+                  : item?.variant?.price / countryCode?.price_margin,
                 tax: tax_item?.tax * item?.quantity,
+                products: {
+                  product_id: item?.product?.id,
+                  variant_id: item?.variant?.id,
+                  quantity: item?.quantity,
+                  price: item?.variant?.offer_price
+                    ? item?.variant?.offer_price
+                    : item?.variant?.price / countryCode?.price_margin,
+                  tax: tax_item?.tax * item?.quantity,
+                },
               };
             }
             return [];
           }),
         ),
       };
+      console.log('data', JSON.stringify(data));
       const post_order = await fetchData.postOrder(data, token);
+      console.log('post_order', post_order);
       if (selectPayment?.name === 'cash on delivery') {
         handleCODOrder(post_order);
       } else {
@@ -143,6 +207,7 @@ const OrderConfirmation = ({navigation, route}) => {
           navigation.navigate('Paypal', {
             approval_url: post_order?.approval_url,
             data: post_order?.data,
+            orders: post_order?.orders,
           });
         }
       }
@@ -169,9 +234,9 @@ const OrderConfirmation = ({navigation, route}) => {
     RazorpayCheckout.open(post_order?.data)
       .then(async ({razorpay_signature, razorpay_payment_id}) => {
         const data = {
-          unique_order_id: post_order?.unique_order_id,
           order_id: post_order?.data?.order_id,
           payment_id: razorpay_payment_id,
+          orders: post_order?.orders,
         };
         const placeOrder = await fetchData.verify_pay(
           data,
@@ -362,15 +427,16 @@ const OrderConfirmation = ({navigation, route}) => {
             {isExpanded ? (
               <View style={{width: '100%'}}>
                 {CheckOut?.map(item => {
-                  var discount =
+                  var discount = parseFloat(
                     100 -
-                    parseInt(
                       ((item?.variant?.org_price / countryCode?.price_margin -
-                        item?.variant?.price / countryCode?.price_margin) /
+                      item?.variant?.offer_price
+                        ? item?.variant?.offer_price
+                        : item?.variant?.price / countryCode?.price_margin) /
                         item?.variant?.org_price /
                         countryCode?.price_margin) *
                         100,
-                    );
+                  ).toFixed(2);
                   return (
                     <TouchableOpacity
                       style={{
@@ -443,12 +509,18 @@ const OrderConfirmation = ({navigation, route}) => {
                           }}>
                           <Text style={styles.productDiscountPrice}>
                             {countryCode?.symbol}
-                            {item?.variant?.price /
-                              countryCode?.price_margin}{' '}
+                            {parseFloat(
+                              item?.variant?.offer_price
+                                ? item?.variant?.offer_price
+                                : item?.variant?.price /
+                                    countryCode?.price_margin,
+                            ).toFixed(2)}{' '}
                             <Text style={styles.productPrice}>
                               {countryCode?.symbol}
-                              {item?.variant?.org_price /
-                                countryCode?.price_margin}
+                              {parseFloat(
+                                item?.variant?.org_price /
+                                  countryCode?.price_margin,
+                              ).toFixed(2)}
                             </Text>
                           </Text>
                         </View>
@@ -893,7 +965,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {Sub_total + overall_tax}
+                  {parseFloat(Sub_total) + overall_tax}
                 </Text>
               </View>
             </View>
@@ -976,7 +1048,7 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {Sub_total + overall_tax}
+            {parseFloat(Sub_total) + overall_tax}
           </Text>
         </View>
         <View style={{flex: 1}}>

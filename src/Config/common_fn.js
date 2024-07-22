@@ -168,29 +168,34 @@ const common_fn = {
     return closestColor;
   },
   generatePDF: async (response, countryCode) => {
-    var discount =
+    var discount = parseFloat(
       100 -
-      parseInt(
         ((response?.variants?.org_price / countryCode?.price_margin -
-          response?.variants?.price / countryCode?.price_margin) /
+        response?.variants?.offer_price
+          ? response?.variants?.offer_price
+          : response?.variants?.price / countryCode?.price_margin) /
           response?.variants?.org_price /
           countryCode?.price_margin) *
           100,
-      );
-    const discount_price =
+    ).toFixed(2);
+    const discount_price = parseFloat(
       (response.variants?.org_price / countryCode?.price_margin -
-        response.variants?.price / countryCode?.price_margin) *
-        response?.quantity || 0;
-    var tax_percent = parseInt(
-      (response?.order?.tax /
-        response?.variants?.price /
-        countryCode?.price_margin) *
-        100,
-    );
-    const tax_amount =
-      (response.variants?.price / countryCode?.price_margin -
-        response.order.tax) *
-        response?.quantity || 0;
+      response?.variants?.offer_price
+        ? response?.variants?.offer_price
+        : response.variants?.price / countryCode?.price_margin) *
+        response?.quantity || 0,
+    ).toFixed(2);
+    var tax_percent = parseFloat(
+      (response?.order?.tax / response?.variants?.offer_price
+        ? response?.variants?.offer_price
+        : response?.variants?.price / countryCode?.price_margin) * 100,
+    ).toFixed(2);
+    const tax_amount = parseFloat(
+      (response?.variants?.offer_price
+        ? response?.variants?.offer_price
+        : response.variants?.price / countryCode?.price_margin -
+          response.order.tax) * response?.quantity || 0,
+    ).toFixed(2);
     const htmlContent = `
     <!DOCTYPE html>
 <html lang="en">
@@ -372,7 +377,11 @@ const common_fn = {
                     : response?.order?.region_id == 453
                     ? 'RM'
                     : '₹'
-                } ${response.price / countryCode?.price_margin}`}</td>
+                } ${parseFloat(
+                  response?.variants?.offer_price
+                    ? response?.variants?.offer_price
+                    : response.price / countryCode?.price_margin,
+                ).toFixed(2)}`}</td>
                 <td style="text-align: center;">${response.quantity}</td>
                 <td style="text-align: right;">${`${
                   response?.order?.region_id == 454

@@ -19,15 +19,9 @@ import TermsandConditions from './Screens/Sidemenu/TermsandConditions';
 import FAQs from './Screens/Sidemenu/FAQs';
 import ContactUs from './Screens/Sidemenu/ContactUs';
 import AboutUs from './Screens/Sidemenu/AboutUs';
-import EditProfile from './Screens/Profile/EditProfile';
-import MyOrders from './Screens/MyOrders/MyOrders';
-import AddAddress from './Screens/Address/AddAddress';
-import SelectAddress from './Screens/Address/SelectAddress';
-import ProfileView from './Screens/Profile/ProfileView';
-import FollowingSellers from './Screens/Profile/FollowingSellers';
-import SellerProfile from './Screens/Profile/SellerProfile';
 import {setDataCount} from './Redux';
 import fetchData from './Config/fetchData';
+import LatestProductList from './Screens/Home/LatestProductList';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,6 +33,30 @@ export const HomeStack = () => {
         name="Home"
         component={HomeScreen}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="latest"
+        component={LatestProductList}
+        options={({navigation, route}) => ({
+          headerTitle: 'Latest Product',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: Color.black,
+            fontSize: 18,
+            fontFamily: Manrope.Bold,
+          },
+          headerStyle: {backgroundColor: Color.white},
+          headerLeft: () => (
+            <View style={{marginHorizontal: 10}}>
+              <Icon
+                name="arrow-back"
+                size={30}
+                color={Color.black}
+                onPress={() => navigation.goBack()}
+              />
+            </View>
+          ),
+        })}
       />
       <Stack.Screen
         name="AboutUs"
@@ -226,7 +244,7 @@ export const MyCartStack = () => {
     state => state.UserReducer.notificationCount,
   );
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="MyCart">
       <Stack.Screen
         name="MyCart"
         component={MyCart}
@@ -260,7 +278,7 @@ export const ProfileStack = () => {
     state => state.UserReducer.notificationCount,
   );
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Profile">
       <Stack.Screen
         name="Profile"
         component={Profile}
