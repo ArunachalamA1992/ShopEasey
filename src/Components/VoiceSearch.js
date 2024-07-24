@@ -14,7 +14,7 @@ const VoiceSearch = ({onSearch}) => {
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechResults = onSpeechResults;
-    Voice.onSpeechError = onSpeechError; // Add error callback
+    Voice.onSpeechError = onSpeechError;
 
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
@@ -22,17 +22,17 @@ const VoiceSearch = ({onSearch}) => {
   }, []);
 
   const onSpeechStart = e => {
-    console.log('onSpeechStart: ', e); // Log the event
+    console.log('onSpeechStart: ', e);
     setStarted('√');
   };
 
   const onSpeechRecognized = e => {
-    console.log('onSpeechRecognized: ', e); // Log the event
+    console.log('onSpeechRecognized: ', e);
     setRecognized('√');
   };
 
   const onSpeechResults = e => {
-    console.log('onSpeechResults: ', e); // Log the event
+    console.log('onSpeechResults: ', e);
     setResults(e.value);
     if (onSearch) {
       onSearch(e.value[0]);
@@ -40,7 +40,7 @@ const VoiceSearch = ({onSearch}) => {
   };
 
   const onSpeechError = e => {
-    console.log('onSpeechError: ', e); // Log the event
+    console.log('onSpeechError: ', e);
     setMicOff(false);
   };
 
@@ -84,7 +84,6 @@ const VoiceSearch = ({onSearch}) => {
           }}
         />
       </TouchableOpacity>
-      {results.length > 0 && <Text>{results[0]}</Text>}
     </View>
   );
 };
