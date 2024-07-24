@@ -44,7 +44,7 @@ public class Widget extends AppWidgetProvider {
             }
         } else if (ACTION_OPEN_PRODUCT.equals(intent.getAction())) {
             String productId = intent.getStringExtra("product_id");
-            Intent productIntent = new Intent(context, MainActivity.class); // MainActivity will handle the product details
+            Intent productIntent = new Intent(context, MainActivity.class);
             productIntent.putExtra("product_id", productId);
             productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(productIntent);

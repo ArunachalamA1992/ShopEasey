@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Button, Text, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import Voice from '@react-native-voice/voice';
 import Color from '../Global/Color';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -14,24 +14,34 @@ const VoiceSearch = ({onSearch}) => {
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechError = onSpeechError; // Add error callback
+
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
 
   const onSpeechStart = e => {
+    console.log('onSpeechStart: ', e); // Log the event
     setStarted('√');
   };
 
   const onSpeechRecognized = e => {
+    console.log('onSpeechRecognized: ', e); // Log the event
     setRecognized('√');
   };
 
   const onSpeechResults = e => {
+    console.log('onSpeechResults: ', e); // Log the event
     setResults(e.value);
     if (onSearch) {
       onSearch(e.value[0]);
     }
+  };
+
+  const onSpeechError = e => {
+    console.log('onSpeechError: ', e); // Log the event
+    setMicOff(false);
   };
 
   const startRecognizing = async () => {
@@ -59,7 +69,7 @@ const VoiceSearch = ({onSearch}) => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          if (micOn == false) {
+          if (!micOn) {
             startRecognizing();
           } else {
             stopRecognizing();
@@ -74,6 +84,7 @@ const VoiceSearch = ({onSearch}) => {
           }}
         />
       </TouchableOpacity>
+      {results.length > 0 && <Text>{results[0]}</Text>}
     </View>
   );
 };

@@ -128,17 +128,22 @@ const MyDrawer = () => {
 
   useEffect(() => {
     const eventEmitter = new NativeEventEmitter(
-      NativeModules.DeviceEventManager,
+      NativeModules.DeviceEventManagerModule,
     );
+    console.log('eventEmitter', eventEmitter);
     const subscription = eventEmitter.addListener(
       'OPEN_PRODUCT_DETAILS',
       event => {
         const {product_id} = event;
-        navigationRef.current?.navigate('ProductDetails', {id: product_id});
+        if (product_id) {
+          navigationRef.navigate('ProductDetails', {id: product_id});
+        }
       },
     );
 
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+    };
   }, [navigationRef]);
   return (
     <PaperProvider>

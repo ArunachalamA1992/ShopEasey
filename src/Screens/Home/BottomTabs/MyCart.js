@@ -98,6 +98,22 @@ const MyCart = ({}) => {
   };
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      getAPIData();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getAPIData = async () => {
+    try {
+      const getCart = await fetchData.list_cart(``, token);
+      setCartData(getCart?.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  useEffect(() => {
     getCountData();
     setLoading(true);
     getCartData()
@@ -371,7 +387,7 @@ const MyCart = ({}) => {
                     100,
               ).toFixed(2);
               return (
-                <TouchableOpacity
+                <View
                   key={index}
                   style={{
                     backgroundColor: Color.white,
@@ -382,13 +398,14 @@ const MyCart = ({}) => {
                     flexDirection: 'row',
                     // alignItems: 'center',
                     padding: 10,
-                  }}
-                  onPress={() => {
-                    navigation.navigate('ProductDetails', {
-                      id: item?.product?.id,
-                    });
                   }}>
-                  <View style={{}}>
+                  <TouchableOpacity
+                    style={{}}
+                    onPress={() => {
+                      navigation.navigate('ProductDetails', {
+                        id: item?.product?.id,
+                      });
+                    }}>
                     <TouchableOpacity
                       onPress={() => {
                         handleCheckboxToggle(item);
@@ -445,88 +462,98 @@ const MyCart = ({}) => {
                         marginTop: 5,
                         textAlign: 'center',
                       }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
-                  </View>
+                  </TouchableOpacity>
                   <View
                     style={{
                       flex: 1,
                       marginLeft: 10,
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: Color.black,
-                        fontFamily: Manrope.SemiBold,
-                      }}
-                      numberOfLines={2}>
-                      {item?.product?.product_name}
-                    </Text>
-                    <View style={styles.productRatingView}>
-                      {maxRating.map((item, index) => {
-                        return (
-                          <View activeOpacity={0.7} key={index} style={{}}>
-                            <AntDesign
-                              name={
-                                item.rating <= defaultRating ? 'star' : 'staro'
-                              }
-                              size={14}
-                              color={Color.sunShade}
-                            />
-                          </View>
-                        );
-                      })}
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('ProductDetails', {
+                          id: item?.product?.id,
+                        });
+                      }}>
                       <Text
                         style={{
-                          fontFamily: Manrope.Bold,
-                          fontSize: 12,
-                          paddingHorizontal: 5,
+                          fontSize: 14,
                           color: Color.black,
-                        }}>
-                        {item?.rating}
+                          fontFamily: Manrope.SemiBold,
+                        }}
+                        numberOfLines={2}>
+                        {item?.product?.product_name}
+                      </Text>
+                      <View style={styles.productRatingView}>
+                        {maxRating.map((item, index) => {
+                          return (
+                            <View activeOpacity={0.7} key={index} style={{}}>
+                              <AntDesign
+                                name={
+                                  item.rating <= defaultRating
+                                    ? 'star'
+                                    : 'staro'
+                                }
+                                size={14}
+                                color={Color.sunShade}
+                              />
+                            </View>
+                          );
+                        })}
                         <Text
                           style={{
-                            fontFamily: Manrope.SemiBold,
-                            fontSize: 10,
-                            color: Color.cloudyGrey,
-                            letterSpacing: 0.5,
+                            fontFamily: Manrope.Bold,
+                            fontSize: 12,
+                            paddingHorizontal: 5,
+                            color: Color.black,
                           }}>
-                          {' '}
-                          ({item?.reviews} Reviews)
+                          {item?.rating}
+                          <Text
+                            style={{
+                              fontFamily: Manrope.SemiBold,
+                              fontSize: 10,
+                              color: Color.cloudyGrey,
+                              letterSpacing: 0.5,
+                            }}>
+                            {' '}
+                            ({item?.reviews} Reviews)
+                          </Text>
                         </Text>
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={styles.productDiscountPrice}>
-                        {countryCode?.symbol}
-                        {parseFloat(
-                          item?.variant?.offer_price
-                            ? item?.variant?.offer_price
-                            : item?.variant?.price / countryCode?.price_margin,
-                        ).toFixed(2)}{' '}
-                        <Text style={styles.productPrice}>
+                      </View>
+                      <View
+                        style={{
+                          width: '100%',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <Text style={styles.productDiscountPrice}>
                           {countryCode?.symbol}
                           {parseFloat(
-                            item?.variant?.org_price /
-                              countryCode?.price_margin,
-                          ).toFixed(2)}
+                            item?.variant?.offer_price
+                              ? item?.variant?.offer_price
+                              : item?.variant?.price /
+                                  countryCode?.price_margin,
+                          ).toFixed(2)}{' '}
+                          <Text style={styles.productPrice}>
+                            {countryCode?.symbol}
+                            {parseFloat(
+                              item?.variant?.org_price /
+                                countryCode?.price_margin,
+                            ).toFixed(2)}
+                          </Text>
                         </Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: '#0FAD45',
+                          fontFamily: Manrope.Bold,
+                          letterSpacing: 0.5,
+                        }}
+                        numberOfLines={1}>
+                        Save {discount}% OFF
                       </Text>
-                    </View>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: '#0FAD45',
-                        fontFamily: Manrope.Bold,
-                        letterSpacing: 0.5,
-                      }}
-                      numberOfLines={1}>
-                      Save {discount}% OFF
-                    </Text>
+                    </TouchableOpacity>
                     <View
                       style={{
                         flexDirection: 'row',
@@ -557,6 +584,8 @@ const MyCart = ({}) => {
                               alignItems: 'center',
                               padding: 5,
                               paddingHorizontal: 10,
+                              borderRightWidth: 1,
+                              borderRightColor: Color.cloudyGrey,
                             }}>
                             <Iconviewcomponent
                               Icontag={'AntDesign'}
@@ -580,6 +609,8 @@ const MyCart = ({}) => {
                               padding: 5,
                               paddingHorizontal: 10,
                               backgroundColor: Color.white,
+                              borderRightWidth: 1,
+                              borderRightColor: Color.cloudyGrey,
                             }}>
                             <Iconviewcomponent
                               Icontag={'AntDesign'}
@@ -594,10 +625,7 @@ const MyCart = ({}) => {
                             // flex: 1,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            padding: 5,
-                            paddingHorizontal: 10,
-                            borderLeftWidth: 1,
-                            borderLeftColor: Color.cloudyGrey,
+                            paddingHorizontal: 15,
                           }}>
                           <Text
                             style={{
@@ -668,7 +696,7 @@ const MyCart = ({}) => {
                   </TouchableOpacity> */}
                     </View>
                   </View>
-                </TouchableOpacity>
+                </View>
               );
             }}
             refreshControl={

@@ -34,27 +34,27 @@ const OrderConfirmation = ({navigation, route}) => {
   const [selectAddress, setSelectAddress] = useState({});
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
-  const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(CheckOut?.length == 1);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
-console.log('token', token)
+  const dispatch = useDispatch();
+
   const [paymentMethod] = useState([
     {
       id: 1,
       name: 'online',
       icon: 'online',
     },
-    {
-      id: 2,
-      name: 'cash on delivery',
-      icon: 'rupee',
-    },
+    // {
+    //   id: 2,
+    //   name: 'cash on delivery',
+    //   icon: 'rupee',
+    // },
   ]);
-
   useEffect(() => {
     if (address.length > 0) {
-      setSelectAddress(address[0]);
+      const defaultAddress = address.find(item => item?.is_default === 1);
+      setSelectAddress(defaultAddress || address[0]);
     }
   }, [address]);
 
@@ -80,9 +80,7 @@ console.log('token', token)
   };
 
   const Sub_total = CheckOut?.reduce((accumulator, item) => {
-    const price = item?.variant?.offer_price
-      ? item?.variant?.offer_price
-      : item.variant?.price || 0;
+    const price = item?.variant?.offer_price ?? item.variant?.price;
     const priceMargin = countryCode?.price_margin || 1;
     const quantity = item?.quantity || 0;
 
@@ -90,15 +88,16 @@ console.log('token', token)
   }, 0).toFixed(2);
 
   const discount_price = CheckOut?.reduce((accumulator, item) => {
-    return parseFloat(
-      accumulator +
-        (item.variant?.org_price / countryCode?.price_margin -
-        item?.variant?.offer_price
-          ? item?.variant?.offer_price
-          : item.variant?.price / countryCode?.price_margin) *
-          item?.quantity || 0,
-    ).toFixed(2);
-  }, 0);
+    const orgPrice = item.variant?.org_price ?? 0;
+    const offerPrice = item.variant?.offer_price ?? item.variant?.price;
+    const priceMargin = countryCode?.price_margin ?? 1;
+    const quantity = item?.quantity ?? 0;
+
+    const discountedPrice =
+      (orgPrice / priceMargin - offerPrice / priceMargin) * quantity;
+
+    return accumulator + discountedPrice;
+  }, 0).toFixed(2);
 
   const product_tax = CheckOut?.map(orderItem => {
     return orderItem?.tax
@@ -438,7 +437,7 @@ console.log('token', token)
                         100,
                   ).toFixed(2);
                   return (
-                    <TouchableOpacity
+                    <View
                       style={{
                         backgroundColor: Color.white,
                         marginTop: 10,
@@ -447,11 +446,6 @@ console.log('token', token)
                         borderRadius: 10,
                         flexDirection: 'row',
                         padding: 10,
-                      }}
-                      onPress={() => {
-                        navigation.navigate('ProductDetails', {
-                          id: item?.product?.id,
-                        });
                       }}>
                       <View style={{}}>
                         {item?.variant?.productImages?.length > 0 ? (
@@ -628,7 +622,7 @@ console.log('token', token)
                           </View>
                         </View>
                       </View>
-                    </TouchableOpacity>
+                    </View>
                   );
                 })}
 

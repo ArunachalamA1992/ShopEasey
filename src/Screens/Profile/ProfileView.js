@@ -15,8 +15,8 @@ import {useSelector} from 'react-redux';
 import {Media} from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {Divider} from 'react-native-paper';
 
-// create a component
 const ProfileView = () => {
   const navigation = useNavigation();
   const userData = useSelector(state => state.UserReducer.userData);
@@ -45,7 +45,7 @@ const ProfileView = () => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Color.white}}>
+    <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {loading ? (
           <View>
@@ -86,30 +86,23 @@ const ProfileView = () => {
             </SkeletonPlaceholder>
           </View>
         ) : (
-          <View
-            style={{
-              width: '100%',
-              alignItems: 'center',
-              padding: 10,
-              marginVertical: 0,
-            }}>
+          <View style={{}}>
             <View
               style={{
                 flex: 1,
-                width: '95%',
                 paddingVertical: 20,
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginVertical: 20,
                 backgroundColor: '#ECEFFE',
+                borderRadius: 10,
               }}>
               {profileData.profile?.length > 0 ? (
                 <Image
                   source={{uri: profileData.profile}}
                   style={{
-                    width: 100,
-                    height: 100,
-                    resizeMode: 'contain',
+                    width: 80,
+                    height: 80,
+                    resizeMode: 'cover',
                     borderRadius: 100,
                   }}
                 />
@@ -119,26 +112,25 @@ const ProfileView = () => {
                   style={{
                     width: 80,
                     height: 80,
-                    resizeMode: 'contain',
+                    resizeMode: 'cover',
+                    borderRadius: 100,
                   }}
                 />
               )}
             </View>
-            <View style={{flex: 1, width: '90%', alignItems: 'center'}}>
+            <View style={{flex: 1}}>
               <View
                 style={{
-                  width: '95%',
+                  marginTop: 20,
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
                 <Text
                   style={{
-                    textAlign: 'left',
                     fontSize: 18,
                     color: Color.black,
-                    fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
+                    fontFamily: Manrope.SemiBold,
                   }}>
                   Personal Details
                 </Text>
@@ -158,12 +150,11 @@ const ProfileView = () => {
                   <Text
                     style={{
                       textAlign: 'left',
-                      fontSize: 12,
+                      fontSize: 14,
                       color: Color.primary,
-                      fontFamily: Manrope.Bold,
+                      fontFamily: Manrope.SemiBold,
                       textDecorationLine: 'underline',
-                      letterSpacing: 0.5,
-                      paddingStart: 5,
+                      marginLeft: 5,
                     }}>
                     Edit Profile
                   </Text>
@@ -172,181 +163,123 @@ const ProfileView = () => {
 
               <View
                 style={{
-                  width: '95%',
-                  alignItems: 'flex-start',
-                  marginVertical: 15,
-                  marginTop: 30,
+                  marginTop: 20,
                 }}>
                 <Text
                   style={{
                     textAlign: 'left',
-                    fontSize: 12,
-                    color: Color.Venus,
+                    fontSize: 14,
+                    color: Color.cloudyGrey,
                     fontFamily: Manrope.Bold,
-                    letterSpacing: 0.5,
                   }}>
                   Name
                 </Text>
                 <Text
                   style={{
                     textAlign: 'left',
-                    fontSize: 14,
+                    fontSize: 16,
                     color: Color.black,
                     fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
                     paddingVertical: 5,
                     textTransform: 'capitalize',
                   }}>
                   {profileData.first_name + ' ' + profileData.last_name}
                 </Text>
-                <View
-                  style={{
-                    width: '95%',
-                    height: 1,
-                    backgroundColor: Color.Venus,
-                  }}></View>
+                <Divider style={{height: 1, marginVertical: 10}} />
               </View>
               {email != null ? (
                 <View
                   style={{
-                    width: '95%',
-                    alignItems: 'flex-start',
-                    marginVertical: 15,
+                    marginVertical: 10,
                   }}>
                   <Text
                     style={{
-                      textAlign: 'left',
                       fontSize: 12,
                       color: Color.Venus,
                       fontFamily: Manrope.Bold,
-                      letterSpacing: 0.5,
                     }}>
                     Email
                   </Text>
                   <Text
                     style={{
-                      textAlign: 'left',
                       fontSize: 14,
                       color: Color.black,
                       fontFamily: Manrope.Medium,
-                      letterSpacing: 0.5,
-                      paddingVertical: 5,
                     }}>
                     {profileData.email}
                   </Text>
-                  <View
-                    style={{
-                      width: '95%',
-                      height: 1,
-                      backgroundColor: Color.Venus,
-                    }}></View>
+                  <Divider style={{height: 1, marginVertical: 10}} />
                 </View>
               ) : null}
 
               <View
                 style={{
-                  width: '95%',
-                  alignItems: 'flex-start',
-                  marginVertical: 15,
+                  marginVertical: 10,
                 }}>
                 <Text
                   style={{
-                    textAlign: 'left',
                     fontSize: 12,
                     color: Color.Venus,
                     fontFamily: Manrope.Bold,
-                    letterSpacing: 0.5,
                   }}>
                   Mobile Number
                 </Text>
                 <Text
                   style={{
-                    textAlign: 'left',
                     fontSize: 14,
                     color: Color.black,
                     fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
-                    paddingVertical: 5,
                   }}>
                   {profileData.mobile}
                 </Text>
-                <View
-                  style={{
-                    width: '95%',
-                    height: 1,
-                    backgroundColor: Color.Venus,
-                  }}></View>
+                <Divider style={{height: 1, marginVertical: 10}} />
               </View>
 
               <View
                 style={{
-                  width: '95%',
-                  alignItems: 'flex-start',
-                  marginVertical: 15,
+                  marginVertical: 10,
                 }}>
                 <Text
                   style={{
-                    textAlign: 'left',
                     fontSize: 12,
                     color: Color.Venus,
                     fontFamily: Manrope.Bold,
-                    letterSpacing: 0.5,
                   }}>
                   Date of Birth
                 </Text>
                 <Text
                   style={{
-                    textAlign: 'left',
                     fontSize: 14,
                     color: Color.black,
                     fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
-                    paddingVertical: 5,
                   }}>
                   {profileData.dob}
                 </Text>
-                <View
-                  style={{
-                    width: '95%',
-                    height: 1,
-                    backgroundColor: Color.Venus,
-                  }}></View>
+                <Divider style={{height: 1, marginVertical: 10}} />
               </View>
 
               <View
                 style={{
-                  width: '95%',
-                  alignItems: 'flex-start',
-                  marginVertical: 15,
+                  marginVertical: 10,
                 }}>
                 <Text
                   style={{
-                    textAlign: 'left',
                     fontSize: 12,
                     color: Color.Venus,
                     fontFamily: Manrope.Bold,
-                    letterSpacing: 0.5,
                   }}>
                   Gender
                 </Text>
                 <Text
                   style={{
-                    textAlign: 'left',
                     fontSize: 14,
                     color: Color.black,
                     fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
-                    paddingVertical: 5,
                     textTransform: 'capitalize',
                   }}>
                   {profileData.gender}
                 </Text>
-                <View
-                  style={{
-                    width: '95%',
-                    height: 1,
-                    backgroundColor: Color.Venus,
-                  }}></View>
+                <Divider style={{height: 1, marginVertical: 10}} />
               </View>
             </View>
           </View>
@@ -356,14 +289,12 @@ const ProfileView = () => {
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: 'center',
     backgroundColor: Color.white,
+    padding: 10,
   },
 });
 
-//make this component available to the app
 export default ProfileView;

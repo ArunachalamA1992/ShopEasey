@@ -31,6 +31,22 @@ const Profile = () => {
   const [profileData, setProfileData] = useState({});
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      getApiData();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getApiData = async () => {
+    try {
+      const profile = await fetchData.profile_data(``, token);
+      setProfileData(profile.data);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  useEffect(() => {
     setLoading(true);
     getData().finally(() => {
       setLoading(false);
@@ -478,7 +494,6 @@ const Profile = () => {
           <View style={{width: '100%', alignItems: 'center'}}>
             <View
               style={{
-                width: '90%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 padding: 10,
@@ -486,19 +501,15 @@ const Profile = () => {
               }}>
               <View
                 style={{
-                  flex: 1.5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: Color.softGrey,
                   borderRadius: 100,
                 }}>
                 {profileData.profile?.length > 0 ? (
                   <Image
                     source={{uri: profileData.profile}}
                     style={{
-                      width: 100,
-                      height: 100,
-                      resizeMode: 'contain',
+                      width: 80,
+                      height: 80,
+                      resizeMode: 'cover',
                       borderRadius: 100,
                     }}
                   />
@@ -506,9 +517,9 @@ const Profile = () => {
                   <Image
                     source={{uri: Media.user}}
                     style={{
-                      width: 100,
-                      height: 100,
-                      resizeMode: 'contain',
+                      width: 80,
+                      height: 80,
+                      resizeMode: 'cover',
                       borderRadius: 100,
                     }}
                   />
@@ -530,7 +541,9 @@ const Profile = () => {
                       letterSpacing: 0.5,
                     }}
                     numberOfLines={2}>
-                    {profileData.first_name + ' ' + profileData.last_name}
+                    {profileData.first_name && profileData.last_name
+                      ? `${profileData.first_name} ${profileData.last_name}`
+                      : 'Your name'}
                   </Text>
                 ) : (
                   ''
@@ -544,7 +557,9 @@ const Profile = () => {
                       letterSpacing: 0.5,
                     }}
                     numberOfLines={1}>
-                    {profileData.email}
+                    {profileData.email != null
+                      ? profileData.email
+                      : 'Your email id'}
                   </Text>
                 ) : (
                   ''
@@ -985,7 +1000,7 @@ const Profile = () => {
                       fontFamily: Manrope.Medium,
                       letterSpacing: 0.5,
                     }}>
-                    Notification Setting
+                    Notification Settings
                   </Text>
                 </View>
                 <View
@@ -1549,13 +1564,13 @@ const Profile = () => {
                     borderRadius: 5,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: Color.primary,
+                    backgroundColor: '#ECEFFE',
                     marginVertical: 20,
                   }}>
                   <Text
                     style={{
                       fontSize: 15,
-                      color: Color.white,
+                      color: Color.primary,
                       fontFamily: Manrope.Bold,
                       letterSpacing: 0.5,
                     }}>

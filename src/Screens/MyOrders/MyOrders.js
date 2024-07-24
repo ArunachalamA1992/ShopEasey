@@ -11,11 +11,8 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {useNavigation} from '@react-navigation/native';
 import {Manrope} from '../../Global/FontFamily';
 import {Iconviewcomponent} from '../../Components/Icontag';
-import F6Icon from 'react-native-vector-icons/FontAwesome6';
-import Icon from 'react-native-vector-icons/Ionicons';
 import fetchData from '../../Config/fetchData';
 import {useSelector} from 'react-redux';
 import common_fn from '../../Config/common_fn';
@@ -41,7 +38,7 @@ const Placed = ({token, index, navigation}) => {
 
   const myorderData = async () => {
     try {
-      const order_data = await fetchData.list_order(``, token);
+      const order_data = await fetchData.list_order(`status=1`, token);
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -379,7 +376,374 @@ const Placed = ({token, index, navigation}) => {
                     fontSize: 14,
                     color: Color.black,
                   }}>
-                  No Products Found
+                  No Order's Placed
+                </Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+    </SafeAreaView>
+  );
+};
+
+const Missing = ({token, index, navigation}) => {
+  const [OrderLoading, setOrderLoading] = useState(false);
+  const [orderData, setOrderData] = useState([]);
+
+  useEffect(() => {
+    setOrderLoading(true);
+    myorderData()
+      .then(() => setOrderLoading(false))
+      .catch(error => {
+        console.log('Error fetching data:', error);
+        setOrderLoading(false);
+      });
+  }, [token, index]);
+
+  const myorderData = async () => {
+    try {
+      const order_data = await fetchData.list_order(`status=0`, token);
+      setOrderData(order_data?.data);
+      setOrderLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      {OrderLoading ? (
+        <View style={{padding: 10}}>
+          <SkeletonPlaceholder>
+            <SkeletonPlaceholder.Item style={{}}>
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+            </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+        </View>
+      ) : (
+        <FlatList
+          data={orderData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({item, index}) => {
+            const bgcolor = common_fn.getColorName(item?.variants?.color);
+            // const statusBgColor = statusColor(item?.order_status);
+            return (
+              <View
+                key={index}
+                style={{
+                  padding: 5,
+                  borderRadius: 5,
+                  borderColor: Color.lightgrey,
+                  borderWidth: 1,
+                  backgroundColor: Color.white,
+                  marginTop: 10,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    // alignItems: 'center',
+                    padding: 10,
+                    backgroundColor: Color.white,
+                  }}>
+                  {item?.variants?.productImages?.length > 0 ? (
+                    <Image
+                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      style={{
+                        width: 120,
+                        height: 120,
+                        resizeMode: 'cover',
+                        borderRadius: 10,
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      source={{uri: Media.no_image}}
+                      style={{
+                        width: 120,
+                        height: 120,
+                        resizeMode: 'cover',
+                        borderRadius: 10,
+                      }}
+                    />
+                  )}
+                  <View
+                    style={{
+                      flex: 1,
+                      marginLeft: 10,
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Medium,
+                        }}>
+                        Order ID #{item?.order?.id}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          color: Color.white,
+                          padding: 5,
+                          paddingHorizontal: 10,
+                          borderRadius: 50,
+                          backgroundColor: Color.green,
+                          fontFamily: Manrope.SemiBold,
+                          textTransform: 'capitalize',
+                          marginHorizontal: 10,
+                        }}>
+                        {item?.status}
+                      </Text>
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: Color.lightBlack,
+                        fontFamily: Manrope.SemiBold,
+                        letterSpacing: 0.5,
+                      }}
+                      numberOfLines={2}>
+                      {item?.products?.product_name}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        paddingVertical: 3,
+                      }}>
+                      {item?.variants?.color != '' && (
+                        <>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'flex-start',
+                              alignItems: 'center',
+                              borderRightWidth: 1,
+                              borderRightColor: Color.lightgrey,
+                              paddingHorizontal: 5,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Medium,
+                                marginRight: 5,
+                              }}>
+                              Color
+                            </Text>
+                            <View
+                              style={{
+                                width: 15,
+                                height: 15,
+                                backgroundColor: bgcolor,
+                                borderRadius: 30,
+                                borderWidth: 1,
+                                borderColor: Color.primary,
+                              }}></View>
+                          </View>
+                          <View
+                            style={{
+                              width: 1,
+                              height: 20,
+                              backgroundColor: Color.lightgrey,
+                            }}
+                          />
+                        </>
+                      )}
+                      {item?.variants?.size != '' && (
+                        <>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'flex-start',
+                              alignItems: 'center',
+                              paddingHorizontal: 5,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Medium,
+                                marginRight: 5,
+                              }}>
+                              Size -
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Medium,
+                              }}>
+                              {item?.variants?.size}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              width: 1,
+                              height: 20,
+                              backgroundColor: Color.lightgrey,
+                            }}
+                          />
+                        </>
+                      )}
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: Color.cloudyGrey,
+                            fontFamily: Manrope.Medium,
+                            letterSpacing: 0.5,
+                          }}>
+                          Quantity -{' '}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: Color.black,
+                            fontFamily: Manrope.SemiBold,
+                          }}>
+                          {item?.quantity}
+                        </Text>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        width: '100%',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        paddingVertical: 3,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Bold,
+                        }}>
+                        {item?.order?.region_id == 454
+                          ? '$'
+                          : item?.order?.region_id == 453
+                          ? 'RM'
+                          : '₹'}
+                        {item?.price}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                {/* <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderTopWidth: 1,
+                    borderColor: Color.lightgrey,
+                    borderStyle: 'dashed',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('TrackingDetails', {orderData: item});
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.primary,
+                      fontFamily: Manrope.Bold,
+                    }}>
+                    Track order
+                  </Text>
+                  <Iconviewcomponent
+                    Icontag={'Ionicons'}
+                    iconname={'chevron-forward-outline'}
+                    icon_size={15}
+                    icon_color={Color.primary}
+                  />
+                </TouchableOpacity> */}
+              </View>
+            );
+          }}
+          ListEmptyComponent={() => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  height: height / 1.5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Manrope.SemiBold,
+                    fontSize: 14,
+                    color: Color.black,
+                  }}>
+                  No Missing Order's
                 </Text>
               </View>
             );
@@ -746,7 +1110,7 @@ const Pending = ({token, index, navigation}) => {
                     fontSize: 14,
                     color: Color.black,
                   }}>
-                  No Products Found
+                  No Pending Orders
                 </Text>
               </View>
             );
@@ -1113,7 +1477,7 @@ const Proccesed = ({token, index, navigation}) => {
                     fontSize: 14,
                     color: Color.black,
                   }}>
-                  No Products Found
+                  No Order's Proccesed
                 </Text>
               </View>
             );
@@ -1128,7 +1492,6 @@ const Proccesed = ({token, index, navigation}) => {
 const OnShipping = ({token, index, navigation}) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
-
   useEffect(() => {
     setOrderLoading(true);
     myorderData()
@@ -1479,7 +1842,7 @@ const OnShipping = ({token, index, navigation}) => {
                     fontSize: 14,
                     color: Color.black,
                   }}>
-                  No Products Found
+                  No Order's Shipped
                 </Text>
               </View>
             );
@@ -1844,7 +2207,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                     fontSize: 14,
                     color: Color.black,
                   }}>
-                  No Products Found
+                  No Order's Delivered
                 </Text>
               </View>
             );
@@ -2198,7 +2561,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                     fontSize: 14,
                     color: Color.black,
                   }}>
-                  No Products Found
+                  No Order's Cancelled
                 </Text>
               </View>
             );
@@ -2243,9 +2606,9 @@ const MyOrders = ({navigation}) => {
     ...new Set(status?.slice(1)?.map(item => item?.status)),
   ];
 
-  const routes = uniqueStatuses.map(status => ({
-    key: status,
-    title: status
+  const routes = status.map(status => ({
+    key: status?.status,
+    title: status?.status
       .replace(/^\w/, c => c.toUpperCase())
       .replace(/orders|shipping/i, match => ` ${match}`),
   }));
@@ -2255,6 +2618,15 @@ const MyOrders = ({navigation}) => {
       case 'placed':
         return (
           <Placed
+            token={token}
+            index={index}
+            countryCode={countryCode}
+            navigation={navigation}
+          />
+        );
+      case 'missing':
+        return (
+          <Missing
             token={token}
             index={index}
             countryCode={countryCode}
@@ -2279,7 +2651,7 @@ const MyOrders = ({navigation}) => {
             navigation={navigation}
           />
         );
-      case 'onshipping':
+      case 'shipped':
         return (
           <OnShipping
             token={token}
@@ -2288,7 +2660,7 @@ const MyOrders = ({navigation}) => {
             navigation={navigation}
           />
         );
-      case 'arrivedorders':
+      case 'delivered':
         return (
           <ArrivedOrders
             token={token}
@@ -2297,7 +2669,7 @@ const MyOrders = ({navigation}) => {
             navigation={navigation}
           />
         );
-      case 'cancelledorders':
+      case 'cancelled':
         return (
           <CancelledOrders
             token={token}
@@ -2401,7 +2773,7 @@ const MyOrders = ({navigation}) => {
         </View>
       ) : (
         <>
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -2457,7 +2829,7 @@ const MyOrders = ({navigation}) => {
               onPress={() => {}}>
               <F6Icon color={Color.lightgrey} name="sliders" size={20} />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <TabView
             navigationState={{index, routes}}
             renderScene={renderScene}

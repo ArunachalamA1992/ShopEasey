@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -50,6 +50,10 @@ const SearchScreen = ({navigation, route}) => {
   const handleVoiceSearch = query => {
     setSearchProduct(query);
   };
+
+  useEffect(() => {
+    propertySearch(searchProduct);
+  }, [searchProduct]);
 
   const propertySearch = async data => {
     setSearchProduct(data);

@@ -420,7 +420,7 @@ const ProductList = ({route, navigation}) => {
             ListFooterComponent={() => {
               return (
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  {loadMore && (
+                  {loadMore && products?.length > 0 && (
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
                         style={{

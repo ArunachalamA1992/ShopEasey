@@ -1,4 +1,4 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   Image,
@@ -24,6 +24,7 @@ import {useSelector} from 'react-redux';
 import ImageResizer from 'react-native-image-resizer';
 import {Media} from '../../Global/Media';
 import common_fn from '../../Config/common_fn';
+import axios from 'axios';
 
 const genderData = [
   {
@@ -40,40 +41,25 @@ const genderData = [
   },
 ];
 
-// create a component
-const EditProfile = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
+const EditProfile = ({navigation, route}) => {
   const userData = route.params.profileData;
   const rootuserData = useSelector(state => state.UserReducer.userData);
   var {token} = rootuserData;
-  console.log('USER =========== :', token);
-
   const [firstName, setfirstName] = useState(userData.first_name);
   const [lastName, setLastName] = useState(userData.last_name);
   const [phoneNumber, setPhoneNumber] = useState(userData.mobile);
   const [email, setEmail] = useState(userData.email);
-  const [nameValidError, setnameValidError] = useState('');
   const [emailValidError, setEmailValidError] = useState('');
-
-  const [imageVisible, setImageVisible] = useState(false);
-  const [profileImage, setProfileImage] = useState([]);
+  const [profileImage, setProfileImage] = useState(userData.profile);
   const [image, setImage] = useState([]);
-
-  const [gender, setGender] = useState('Male');
-  const [userdob, setUserdob] = useState(userData.dob);
   const [dateofBirth, setDateOfBirth] = useState(
-    new Date().toLocaleDateString().replace(/\b(\d)\b/g, '0$1'),
+    userData.dob != undefined ? new Date(userData.dob) : new Date(),
   );
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const [selectgender, setSelectGender] = useState(userData.gender);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const [selectBtm, setSelectBtm] = useState('');
-
-  // useEffect(() => {
-  //     uploadProfileImage();
-  // }, [profileImage?.length]);
 
   const handleValidEmail = val => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -107,42 +93,33 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    const resizeImages = [];
-    Promise.all(
-      profileImage?.map(async (image, index) => {
-        var path = image?.uri;
-        var maxWidth = 1000,
-          maxHeight = 1000,
-          compressFormat = 'JPEG',
-          quality = 100,
-          rotation = 0,
-          keepMeta = false,
-          options = {};
-        var outputPath;
+    const resizeImage = async () => {
+      const resizedImages = [];
 
-        if (path) {
-          try {
-            const resizedImage = await ImageResizer.createResizedImage(
-              path,
-              maxWidth,
-              maxHeight,
-              compressFormat,
-              quality,
-              rotation,
-              outputPath,
-              keepMeta,
-              options,
-            );
-            resizeImages.push(resizedImage);
-          } catch (err) {
-            console.log(err);
-          }
+      if (profileImage) {
+        try {
+          const resizedImage = await ImageResizer.createResizedImage(
+            profileImage,
+            1000,
+            1000,
+            'JPEG',
+            100,
+            0,
+            undefined,
+            false,
+            {},
+          );
+          resizedImages.push(resizedImage);
+        } catch (err) {
+          console.log(err);
         }
-      }),
-    ).then(() => {
-      setImage(resizeImages);
-    });
-  }, [profileImage.length]);
+      }
+
+      setImage(resizedImages);
+    };
+
+    resizeImage();
+  }, [profileImage]);
 
   const captureImage = async () => {
     try {
@@ -158,7 +135,7 @@ const EditProfile = () => {
       const isCameraPermitted = await requestCameraPermission();
       if (isCameraPermitted) {
         launchCamera(options, async response => {
-          setProfileImage(response?.assets);
+          setProfileImage(response?.assets?.[0]?.uri);
           setSaleBottomSheetVisible(false);
         });
       } else {
@@ -179,7 +156,7 @@ const EditProfile = () => {
         selectionLimit: 0,
       };
       launchImageLibrary(options, async response => {
-        setProfileImage(response?.assets);
+        setProfileImage(response?.assets?.[0]?.uri);
         // await uploadProfileImage();
         setSaleBottomSheetVisible(false);
       });
@@ -213,24 +190,17 @@ const EditProfile = () => {
   //     }
   // };
 
-  function profileUpdate() {
+  const profileUpdate = async () => {
     try {
-      if (
-        firstName != '' &&
-        lastName != '' &&
-        email != '' &&
-        phoneNumber != ''
-      ) {
+      if (firstName && lastName && email && phoneNumber) {
         const myHeaders = new Headers();
-        myHeaders.append('Authorization', 'Bearer ' + token);
-
+        myHeaders.append('Authorization', `Bearer ${token}`);
         const formdata = new FormData();
         var {uri, fileName, name} = image[0];
         formdata.append('profile', {uri, type: 'image/jpeg', name});
-        formdata.append('profile', profileImage);
         formdata.append('first_name', firstName);
         formdata.append('last_name', lastName);
-        formdata.append('dob', dateofBirth);
+        formdata.append('dob', moment(dateofBirth).format('DD-MM-YYYY'));
         formdata.append('gender', selectgender);
         formdata.append('email', email);
         formdata.append('mobile', phoneNumber);
@@ -241,35 +211,21 @@ const EditProfile = () => {
           body: formdata,
           redirect: 'follow',
         };
+
         fetch(`${baseUrl}api/auth/user/update_profile`, requestOptions)
           .then(response => response.json())
           .then(result => {
-            console.log('Result ===========   ', result);
-            if (result?.status == true) {
-              common_fn.showToast(result?.message);
-              navigation.navigate('Profile');
-            } else {
-              common_fn.showToast(result?.message);
-            }
+            common_fn.showToast(result?.message);
+            navigation.navigate('Profile');
           })
-
-          .catch(error => console.error('catch in profile_update :', error));
-
-        // console.log("Name ===== : ", firstName + "\n" + "Email ======== :" + email + "\n" + "Phone ==========" + phone
-        //     + "DOB ======== :" + dateofBirth + "\n" + "Gender ==========" + selectgender
-        // );
-        // ToastAndroid.show("Your profile updated successfully", ToastAndroid.SHORT)
-        // navigation.navigate("Profile")
+          .catch(error => console.error(error));
       } else {
-        ToastAndroid.show(
-          'Please select all the mandatory fields',
-          ToastAndroid.SHORT,
-        );
+        common_fn.showToast('Please select all the mandatory fields');
       }
     } catch (error) {
       console.log('catch in profile_Update ', error);
     }
-  }
+  };
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -280,8 +236,7 @@ const EditProfile = () => {
   };
 
   const handleConfirm = date => {
-    console.warn('A date has been picked: ', date);
-    setDateOfBirth(moment(date).format('YYYY-MM-DD'));
+    setDateOfBirth(date);
     hideDatePicker();
   };
 
@@ -504,485 +459,320 @@ const EditProfile = () => {
       console.log('catch in Home_interior select_City :', error);
     }
   }
-  console.log('profileImage', profileImage);
+
   return (
-    <View style={{flex: 1, backgroundColor: Color.white}}>
+    <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
-            width: '100%',
+            flex: 1,
+            justifyContent: 'center',
             alignItems: 'center',
-            padding: 10,
+            backgroundColor: Color.white,
             marginVertical: 10,
           }}>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: Color.white,
-              marginVertical: 10,
-            }}>
-            {/* {proimage?.length != 0 ? (
-              <Image
-                source={{ uri: proimage[0]?.uri }}
-                style={{
-                  width: 130,
-                  height: 130,
-                  resizeMode: 'contain',
-                  borderRadius: 100,
-                }}
-              />
-            ) : profile?.length > 0 ? (
-              <Image
-                source={{
-                  uri:
-                    // base_profile +
-                    profile,
-                }}
-                style={{
-                  width: 130,
-                  height: 130,
-                  resizeMode: 'contain',
-                  borderRadius: 100,
-                }}
-              />
-            ) : (
-              <Image
-                source={{ uri: Media.Userpng }}
-                style={{
-                  width: 130,
-                  height: 130,
-                  resizeMode: 'contain',
-                }}
-              />
-            )} */}
-            {profileImage?.length > 0 ? (
-              <Image
-                source={{uri: profileImage?.[0]?.uri}}
-                style={{
-                  width: 120,
-                  height: 120,
-                  resizeMode: 'contain',
-                  borderRadius: 100,
-                  borderWidth: 1,
-                  borderColor: Color.lightgrey,
-                }}
-              />
-            ) : (
-              <Image
-                source={{uri: Media.user}}
-                style={{
-                  width: 120,
-                  height: 120,
-                  resizeMode: 'contain',
-                  borderRadius: 100,
-                  borderWidth: 1,
-                  borderColor: Color.lightgrey,
-                }}
-              />
-            )}
-            <TouchableOpacity
-              onPress={() => sale_toggleBottomView('Profile')}
+          {profileImage != '' ? (
+            <Image
+              source={{uri: profileImage}}
               style={{
-                backgroundColor: '#DBF8FF',
-                bottom: -10,
-                left: 35,
-                borderRadius: 40,
-                padding: 10,
-                position: 'absolute',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Iconviewcomponent
-                Icontag={'MaterialCommunityIcons'}
-                iconname={'account-edit-outline'}
-                icon_size={16}
-                icon_color={Color.lightBlack}
-              />
-            </TouchableOpacity>
-          </View>
-          <View
+                width: 100,
+                height: 100,
+                resizeMode: 'cover',
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: Color.lightgrey,
+              }}
+            />
+          ) : (
+            <Image
+              source={{uri: Media.user}}
+              style={{
+                width: 100,
+                height: 100,
+                resizeMode: 'cover',
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: Color.lightgrey,
+              }}
+            />
+          )}
+          <TouchableOpacity
+            onPress={() => sale_toggleBottomView('Profile')}
             style={{
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginVertical: 10,
+              position: 'absolute',
+              backgroundColor: '#DBF8FF',
+              bottom: -10,
+              right: 120,
+              borderRadius: 100,
+              padding: 10,
             }}>
-            <View
-              style={{width: '90%', alignItems: 'center', marginVertical: 10}}>
-              <Text
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  paddingVertical: 10,
-                  fontSize: 14,
-                  color: Color.cloudyGrey,
-                  fontFamily: Manrope.Medium,
-                }}>
-                First Name *
-              </Text>
-              <View style={styles.NumberBoxConatiner}>
-                <Iconviewcomponent
-                  Icontag={'Feather'}
-                  iconname={'user'}
-                  icon_size={22}
-                  iconstyle={{color: Color.cloudyGrey}}
-                />
-                <TextInput
-                  style={styles.numberTextBox}
-                  placeholder="Enter First Name"
-                  placeholderTextColor={Color.cloudyGrey}
-                  value={firstName}
-                  onChangeText={value => {
-                    setfirstName(value);
-                  }}
-                  keyboardType="name-phone-pad"
-                />
-              </View>
+            <Iconviewcomponent
+              Icontag={'MaterialCommunityIcons'}
+              iconname={'account-edit-outline'}
+              icon_size={16}
+              icon_color={Color.lightBlack}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            marginVertical: 10,
+          }}>
+          <View style={{marginVertical: 10}}>
+            <Text
+              style={{
+                textAlign: 'left',
+                paddingVertical: 10,
+                fontSize: 14,
+                color: Color.cloudyGrey,
+                fontFamily: Manrope.Medium,
+              }}>
+              First Name *
+            </Text>
+            <View style={styles.NumberBoxConatiner}>
+              <Iconviewcomponent
+                Icontag={'Feather'}
+                iconname={'user'}
+                icon_size={22}
+                iconstyle={{color: Color.cloudyGrey}}
+              />
+              <TextInput
+                style={styles.numberTextBox}
+                placeholder="Enter First Name"
+                placeholderTextColor={Color.cloudyGrey}
+                value={firstName}
+                onChangeText={value => {
+                  setfirstName(value);
+                }}
+                keyboardType="name-phone-pad"
+              />
             </View>
+          </View>
 
-            <View
-              style={{width: '90%', alignItems: 'center', marginVertical: 10}}>
-              <Text
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  paddingVertical: 10,
-                  fontSize: 14,
-                  color: Color.cloudyGrey,
-                  fontFamily: Manrope.Medium,
-                }}>
-                Last Name *
-              </Text>
-              <View style={styles.NumberBoxConatiner}>
-                <Iconviewcomponent
-                  Icontag={'Feather'}
-                  iconname={'user'}
-                  icon_size={22}
-                  iconstyle={{color: Color.cloudyGrey}}
-                />
-                <TextInput
-                  style={styles.numberTextBox}
-                  placeholder="Enter Last Name"
-                  placeholderTextColor={Color.cloudyGrey}
-                  value={lastName}
-                  onChangeText={value => {
-                    setLastName(value);
-                  }}
-                  keyboardType="name-phone-pad"
-                />
-              </View>
+          <View style={{marginVertical: 10}}>
+            <Text
+              style={{
+                textAlign: 'left',
+                paddingVertical: 10,
+                fontSize: 14,
+                color: Color.cloudyGrey,
+                fontFamily: Manrope.Medium,
+              }}>
+              Last Name *
+            </Text>
+            <View style={styles.NumberBoxConatiner}>
+              <Iconviewcomponent
+                Icontag={'Feather'}
+                iconname={'user'}
+                icon_size={22}
+                iconstyle={{color: Color.cloudyGrey}}
+              />
+              <TextInput
+                style={styles.numberTextBox}
+                placeholder="Enter Last Name"
+                placeholderTextColor={Color.cloudyGrey}
+                value={lastName}
+                onChangeText={value => {
+                  setLastName(value);
+                }}
+                keyboardType="name-phone-pad"
+              />
             </View>
+          </View>
 
-            <View
-              style={{width: '90%', alignItems: 'center', marginVertical: 0}}>
+          <View style={{marginVertical: 0}}>
+            <Text
+              style={{
+                textAlign: 'left',
+                paddingVertical: 10,
+                fontSize: 14,
+                color: Color.cloudyGrey,
+                fontFamily: Manrope.Medium,
+              }}>
+              Enter Your Email Address *
+            </Text>
+            <View style={styles.NumberBoxConatiner}>
+              <Iconviewcomponent
+                Icontag={'Feather'}
+                iconname={'mail'}
+                icon_size={22}
+                iconstyle={{color: Color.cloudyGrey}}
+              />
+              <TextInput
+                style={styles.numberTextBox}
+                placeholder="Enter Your Email Address"
+                placeholderTextColor={Color.cloudyGrey}
+                value={email}
+                onChangeText={value => {
+                  setEmail(value);
+                  handleValidEmail(value);
+                }}
+                keyboardType="email-address"
+              />
+            </View>
+            {emailValidError ? (
               <Text
                 style={{
-                  width: '100%',
                   textAlign: 'left',
+                  fontFamily: Manrope.Regular,
                   paddingVertical: 10,
+                  paddingHorizontal: 10,
                   fontSize: 14,
-                  color: Color.cloudyGrey,
-                  fontFamily: Manrope.Medium,
+                  color: 'red',
                 }}>
-                Enter Your Email Address *
+                {emailValidError}
               </Text>
-              <View style={styles.NumberBoxConatiner}>
-                <Iconviewcomponent
-                  Icontag={'Feather'}
-                  iconname={'mail'}
-                  icon_size={22}
-                  iconstyle={{color: Color.cloudyGrey}}
-                />
-                <TextInput
-                  style={styles.numberTextBox}
-                  placeholder="Enter Your Email Address"
-                  placeholderTextColor={Color.cloudyGrey}
-                  value={email}
-                  onChangeText={value => {
-                    setEmail(value);
-                    handleValidEmail(value);
-                  }}
-                  keyboardType="email-address"
-                />
-              </View>
-              {emailValidError ? (
-                <Text
-                  style={{
+            ) : null}
+          </View>
+
+          <View style={{marginVertical: 10}}>
+            <Text
+              style={{
+                textAlign: 'left',
+                paddingVertical: 10,
+                fontSize: 14,
+                color: Color.cloudyGrey,
+                fontFamily: Manrope.Medium,
+              }}>
+              Enter Your Phone Number *
+            </Text>
+            <View style={styles.NumberBoxConatiner}>
+              <Iconviewcomponent
+                Icontag={'Feather'}
+                iconname={'phone'}
+                icon_size={22}
+                iconstyle={{color: Color.cloudyGrey}}
+              />
+              <TextInput
+                style={styles.numberTextBox}
+                placeholder="Enter Your Phone Number"
+                placeholderTextColor={Color.cloudyGrey}
+                value={phoneNumber?.toString()}
+                onChangeText={value => {
+                  setPhoneNumber(value);
+                }}
+                keyboardType="phone-pad"
+                maxLength={10}
+              />
+            </View>
+          </View>
+
+          <View style={{marginVertical: 10}}>
+            <Text
+              style={{
+                textAlign: 'left',
+                paddingVertical: 10,
+                fontSize: 14,
+                color: Color.cloudyGrey,
+                fontFamily: Manrope.Medium,
+              }}>
+              Enter Your Date of Birth *
+            </Text>
+            <TouchableOpacity
+              onPress={showDatePicker}
+              style={[
+                styles.NumberBoxConatiner,
+                {flex: 1, alignItems: 'center'},
+              ]}>
+              <Iconviewcomponent
+                Icontag={'AntDesign'}
+                iconname={'calendar'}
+                icon_size={22}
+                iconstyle={{color: Color.cloudyGrey}}
+              />
+              <Text
+                style={[
+                  styles.numberTextBox,
+                  {
                     width: '100%',
                     textAlign: 'left',
-                    fontFamily: Manrope.Regular,
-                    paddingVertical: 10,
-                    paddingHorizontal: 10,
-                    fontSize: 14,
-                    color: 'red',
-                  }}>
-                  {emailValidError}
-                </Text>
-              ) : null}
-            </View>
-
-            <View
-              style={{width: '90%', alignItems: 'center', marginVertical: 10}}>
-              <Text
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  paddingVertical: 10,
-                  fontSize: 14,
-                  color: Color.cloudyGrey,
-                  fontFamily: Manrope.Medium,
-                }}>
-                Enter Your Phone Number *
-              </Text>
-              <View style={styles.NumberBoxConatiner}>
-                <Iconviewcomponent
-                  Icontag={'Feather'}
-                  iconname={'phone'}
-                  icon_size={22}
-                  iconstyle={{color: Color.cloudyGrey}}
-                />
-                <TextInput
-                  style={styles.numberTextBox}
-                  placeholder="Enter Your Phone Number"
-                  placeholderTextColor={Color.cloudyGrey}
-                  value={phoneNumber}
-                  onChangeText={value => {
-                    setPhoneNumber(value);
-                  }}
-                  keyboardType="phone-pad"
-                  maxLength={10}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{width: '90%', alignItems: 'center', marginVertical: 10}}>
-              <Text
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  paddingVertical: 10,
-                  fontSize: 14,
-                  color: Color.cloudyGrey,
-                  fontFamily: Manrope.Medium,
-                }}>
-                Enter Your Date of Birth *
-              </Text>
-              <TouchableOpacity
-                onPress={showDatePicker}
-                style={[
-                  styles.NumberBoxConatiner,
-                  {flex: 1, alignItems: 'center'},
+                    paddingHorizontal: 20,
+                    textAlignVertical: 'center',
+                  },
                 ]}>
-                <Iconviewcomponent
-                  Icontag={'AntDesign'}
-                  iconname={'calendar'}
-                  icon_size={22}
-                  iconstyle={{color: Color.cloudyGrey}}
-                />
-                <Text
-                  style={[
-                    styles.numberTextBox,
-                    {
-                      width: '100%',
-                      textAlign: 'left',
-                      paddingHorizontal: 20,
-                      textAlignVertical: 'center',
-                    },
-                  ]}>
-                  {!userData?.dob ? dateofBirth : userData.dob}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View
-              style={{width: '90%', alignItems: 'center', marginVertical: 10}}>
-              <Text
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  paddingVertical: 10,
-                  fontSize: 14,
-                  color: Color.cloudyGrey,
-                  fontFamily: Manrope.Medium,
-                }}>
-                Select Gender *
-              </Text>
-              <TouchableOpacity
-                onPress={() => sale_toggleBottomView('Gender')}
-                style={[
-                  styles.NumberBoxConatiner,
-                  {flex: 1, alignItems: 'center'},
-                ]}>
-                <Iconviewcomponent
-                  Icontag={'FontAwesome'}
-                  iconname={'transgender-alt'}
-                  icon_size={22}
-                  iconstyle={{color: Color.cloudyGrey}}
-                />
-                <Text
-                  style={[
-                    styles.numberTextBox,
-                    {
-                      width: '100%',
-                      textAlign: 'left',
-                      paddingHorizontal: 20,
-                      textAlignVertical: 'center',
-                    },
-                  ]}>
-                  {selectgender}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => profileUpdate()}
-              style={{
-                width: '90%',
-                height: 45,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: Color.primary,
-                borderRadius: 5,
-                marginVertical: 30,
-              }}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontSize: 14,
-                  color: Color.white,
-                  fontFamily: Manrope.Medium,
-                }}>
-                UPDATE
+                {moment(dateofBirth).format('YYYY-MM-DD')}
               </Text>
             </TouchableOpacity>
           </View>
+
+          <View style={{marginVertical: 10}}>
+            <Text
+              style={{
+                textAlign: 'left',
+                paddingVertical: 10,
+                fontSize: 14,
+                color: Color.cloudyGrey,
+                fontFamily: Manrope.Medium,
+              }}>
+              Select Gender *
+            </Text>
+            <TouchableOpacity
+              onPress={() => sale_toggleBottomView('Gender')}
+              style={[
+                styles.NumberBoxConatiner,
+                {flex: 1, alignItems: 'center'},
+              ]}>
+              <Iconviewcomponent
+                Icontag={'FontAwesome'}
+                iconname={'transgender-alt'}
+                icon_size={22}
+                iconstyle={{color: Color.cloudyGrey}}
+              />
+              <Text
+                style={[
+                  styles.numberTextBox,
+                  {
+                    width: '100%',
+                    textAlign: 'left',
+                    paddingHorizontal: 20,
+                    textAlignVertical: 'center',
+                  },
+                ]}>
+                {selectgender}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => profileUpdate()}
+            style={{
+              height: 45,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: Color.primary,
+              borderRadius: 5,
+              marginVertical: 30,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 14,
+                color: Color.white,
+                fontFamily: Manrope.Medium,
+              }}>
+              UPDATE
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <DateTimePickerModal
+          date={dateofBirth}
           isVisible={isDatePickerVisible}
           mode="date"
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
         />
-
-        {/* <Modal transparent={true} animationType="slide" visible={imageVisible}>
-                    <Pressable
-                        style={{
-                            flex: 1,
-                            backgroundColor: Color.transparantBlack,
-                        }}
-                        onPress={() => {
-                            setImageVisible(false);
-                        }}
-                    />
-                    <View
-                        style={{
-                            backgroundColor: Color.white,
-                            borderTopRightRadius: 10,
-                            borderTopLeftRadius: 10,
-                            padding: 20,
-                        }}>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                marginHorizontal: 5,
-                            }}>
-                            Please pick your image from camera or gallery
-                        </Text>
-                        <View
-                            style={{
-                                alignItems: 'center',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                marginVertical: 10,
-                            }}>
-                            <TouchableOpacity
-                                onPress={() => captureImage()}
-                                style={{
-                                    alignItems: 'center',
-                                    flexDirection: 'row',
-                                    marginHorizontal: 5,
-                                    borderWidth: 1,
-                                    borderColor: Color.lightgrey,
-                                    borderRadius: 10,
-                                    padding: 10,
-                                }}>
-                                <Iconviewcomponent
-                                    viewstyle={{
-                                        width: 40,
-                                        height: 40,
-                                        backgroundColor: Color.primary,
-                                        padding: 10,
-                                        borderRadius: 30,
-                                    }}
-                                    Icontag={'AntDesign'}
-                                    icon_size={18}
-                                    icon_color={'white'}
-                                    iconname={'camera'}
-                                />
-                                <Text
-                                    style={{
-                                        fontSize: 18,
-                                        color: Color.black,
-                                        fontFamily: Manrope.Bold,
-                                        marginHorizontal: 5,
-                                    }}>
-                                    Camera
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => imagePicker()}
-                                style={{
-                                    alignItems: 'center',
-                                    flexDirection: 'row',
-                                    marginHorizontal: 5,
-                                    borderWidth: 1,
-                                    borderColor: Color.lightgrey,
-                                    borderRadius: 10,
-                                    padding: 10,
-                                }}>
-                                <Iconviewcomponent
-                                    viewstyle={{
-                                        width: 40,
-                                        height: 40,
-                                        backgroundColor: Color.primary,
-                                        padding: 10,
-                                        borderRadius: 30,
-                                    }}
-                                    Icontag={'AntDesign'}
-                                    icon_size={18}
-                                    icon_color={'white'}
-                                    iconname={'picture'}
-                                />
-                                <Text
-                                    style={{
-                                        fontSize: 18,
-                                        color: Color.black,
-                                        fontFamily: Manrope.Bold,
-                                        marginHorizontal: 5,
-                                    }}>
-                                    Gallery
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </Modal> */}
       </ScrollView>
       {sale_BottomSheetmenu()}
     </View>
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: Color.white,
+    padding: 10,
   },
   NumberBoxConatiner: {
     display: 'flex',
@@ -1010,5 +800,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default EditProfile;

@@ -2,6 +2,7 @@ package com.shopeasey;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
@@ -44,6 +45,7 @@ public class MainActivity extends ReactActivity {
     }
 
     private void navigateToProductDetails(ReactContext reactContext, String productId) {
+        Log.d("MainActivity", "Navigating to product details with ID: " + productId);
         Intent productIntent = new Intent("OPEN_PRODUCT_DETAILS");
         productIntent.putExtra("product_id", productId);
         reactContext.sendBroadcast(productIntent);

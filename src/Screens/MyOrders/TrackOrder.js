@@ -56,7 +56,7 @@ const TrackOrder = ({navigation, route}) => {
   );
 
   const labels = filteredOrderData?.map(order => order.status);
-  console.log('labels =========  :', labels);
+
   const currentPosition = filteredOrderData.findIndex(
     order => order.status === orderData?.status,
   );
@@ -338,26 +338,6 @@ const TrackOrder = ({navigation, route}) => {
                 paddingVertical: 5,
                 color: Color.black,
               }}>
-              Name:
-            </Text>
-            <Text
-              style={{
-                color: Color.black,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-              }}>
-              Gokul Raj
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 14,
-                fontFamily: Manrope.Medium,
-                paddingVertical: 5,
-                color: Color.black,
-              }}>
               Order Id:
             </Text>
             <Text
@@ -366,7 +346,7 @@ const TrackOrder = ({navigation, route}) => {
                 fontSize: 14,
                 fontFamily: Manrope.Medium,
               }}>
-              123456
+              {orderData?.order?.user_address?.id}
             </Text>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -378,7 +358,7 @@ const TrackOrder = ({navigation, route}) => {
                 paddingVertical: 5,
                 color: Color.black,
               }}>
-              Tracking Id:
+              Name:
             </Text>
             <Text
               style={{
@@ -386,7 +366,7 @@ const TrackOrder = ({navigation, route}) => {
                 fontSize: 14,
                 fontFamily: Manrope.Medium,
               }}>
-              AMKRTSUWYSGW
+              {orderData?.order?.user_address?.name}
             </Text>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -398,7 +378,7 @@ const TrackOrder = ({navigation, route}) => {
                 paddingVertical: 5,
                 color: Color.black,
               }}>
-              Expected Delivery:
+              Address:
             </Text>
             <Text
               style={{
@@ -406,102 +386,180 @@ const TrackOrder = ({navigation, route}) => {
                 fontSize: 14,
                 fontFamily: Manrope.Medium,
               }}>
-              05 June 2024
+              {orderData?.order?.user_address?.address_line1}
             </Text>
           </View>
+          {orderData?.status_id != 0 && (
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text
+                style={{
+                  flex: 1,
+                  fontSize: 14,
+                  fontFamily: Manrope.Medium,
+                  paddingVertical: 5,
+                  color: Color.black,
+                }}>
+                Payment Method:
+              </Text>
+              <Text
+                style={{
+                  color: Color.black,
+                  fontSize: 14,
+                  fontFamily: Manrope.Medium,
+                }}>
+                {orderData?.order?.payment_method}
+              </Text>
+            </View>
+          )}
+          {orderData?.status_id != 0 && (
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text
+                style={{
+                  flex: 1,
+                  fontSize: 14,
+                  fontFamily: Manrope.Medium,
+                  paddingVertical: 5,
+                  color: Color.black,
+                }}>
+                Tracking Id:
+              </Text>
+              <Text
+                style={{
+                  color: Color.black,
+                  fontSize: 14,
+                  fontFamily: Manrope.Medium,
+                }}>
+                AMKRTSUWYSGW
+              </Text>
+            </View>
+          )}
+          {orderData?.status_id != 0 && (
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text
+                style={{
+                  flex: 1,
+                  fontSize: 14,
+                  fontFamily: Manrope.Medium,
+                  paddingVertical: 5,
+                  color: Color.black,
+                }}>
+                Expected Delivery:
+              </Text>
+              <Text
+                style={{
+                  color: Color.black,
+                  fontSize: 14,
+                  fontFamily: Manrope.Medium,
+                }}>
+                05 June 2024
+              </Text>
+            </View>
+          )}
         </View>
-        <View
-          style={{marginTop: 10, padding: 10, backgroundColor: Color.white}}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontFamily: Manrope.SemiBold,
-              paddingVertical: 5,
-              color: Color.black,
-            }}>
-            Order Status
-          </Text>
-          <View
-            style={{
-              height: 300,
-              borderWidth: 1,
-              borderColor: Color.lightgrey,
-              padding: 10,
-              borderRadius: 10,
-            }}>
-            <StepIndicator
-              customStyles={customStyles}
-              currentPosition={currentPosition}
-              stepCount={filteredOrderData.length}
-              labels={labels}
-              direction="vertical"
-              renderStepIndicator={({position, stepStatus}) => {
-                switch (stepStatus) {
-                  case 'current':
-                    return (
-                      <FOIcon
-                        name="radio-btn-active"
-                        size={20}
-                        color={Color.primary}
-                      />
-                    );
-                  case 'finished':
-                    return (
-                      <FOIcon
-                        name="radio-btn-active"
-                        size={20}
-                        color={Color.primary}
-                      />
-                    );
-                  case 'unfinished':
-                    return (
-                      <FOIcon
-                        name="radio-btn-active"
-                        size={20}
-                        color={Color.lightgrey}
-                      />
-                    );
-                  default:
-                    return null;
-                }
-              }}
-            />
-            <Divider style={{height: 1, marginVertical: 10}} />
-            <TouchableOpacity
+        {orderData?.status_id != 0 && (
+          <>
+            <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginVertical: 5,
+                marginTop: 10,
+                padding: 10,
+                backgroundColor: Color.white,
               }}>
               <Text
                 style={{
                   fontSize: 16,
-                  fontFamily: Manrope.Bold,
-                  color: Color.primary,
-                  textAlign: 'center',
+                  fontFamily: Manrope.SemiBold,
+                  paddingVertical: 5,
+                  color: Color.black,
                 }}>
-                View More
+                Order Status
               </Text>
-              <Icon name="chevron-forward" size={18} color={Color.primary} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <Button
-          mode="contained"
-          onPress={() => {
-            cancelOrder();
-          }}
-          style={{
-            backgroundColor: Color.white,
-            borderRadius: 10,
-            margin: 10,
-            borderWidth: 1,
-            borderColor: Color.primary,
-          }}
-          textColor={Color.primary}>
-          Cancel Order
-        </Button>
+              <View
+                style={{
+                  height: 300,
+                  borderWidth: 1,
+                  borderColor: Color.lightgrey,
+                  padding: 10,
+                  borderRadius: 10,
+                }}>
+                <StepIndicator
+                  customStyles={customStyles}
+                  currentPosition={currentPosition}
+                  stepCount={filteredOrderData.length}
+                  labels={labels}
+                  direction="vertical"
+                  renderStepIndicator={({position, stepStatus}) => {
+                    switch (stepStatus) {
+                      case 'current':
+                        return (
+                          <FOIcon
+                            name="radio-btn-active"
+                            size={20}
+                            color={Color.primary}
+                          />
+                        );
+                      case 'finished':
+                        return (
+                          <FOIcon
+                            name="radio-btn-active"
+                            size={20}
+                            color={Color.primary}
+                          />
+                        );
+                      case 'unfinished':
+                        return (
+                          <FOIcon
+                            name="radio-btn-active"
+                            size={20}
+                            color={Color.lightgrey}
+                          />
+                        );
+                      default:
+                        return null;
+                    }
+                  }}
+                />
+                <Divider style={{height: 1, marginVertical: 10}} />
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginVertical: 5,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: Manrope.Bold,
+                      color: Color.primary,
+                      textAlign: 'center',
+                    }}>
+                    View More
+                  </Text>
+                  <Icon
+                    name="chevron-forward"
+                    size={18}
+                    color={Color.primary}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Button
+              mode="contained"
+              onPress={() => {
+                cancelOrder();
+              }}
+              style={{
+                backgroundColor: Color.white,
+                borderRadius: 10,
+                margin: 10,
+                borderWidth: 1,
+                borderColor: Color.primary,
+              }}
+              textColor={Color.primary}>
+              Cancel Order
+            </Button>
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

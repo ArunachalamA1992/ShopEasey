@@ -34,8 +34,7 @@ import {setDataCount} from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {useNavigation} from '@react-navigation/native';
 
-const ProductDetails = ({route}) => {
-  const navigation = useNavigation();
+const ProductDetails = ({route, navigation}) => {
   const [id] = useState(route?.params?.id);
   const [singleData, setSingleData] = useState({});
   // console.log('singleData', JSON.stringify(singleData));
@@ -60,7 +59,6 @@ const ProductDetails = ({route}) => {
   const handleColorPress = async item => {
     setLoading(true);
     setSelectedColor(item?.color);
-    setSelectedVariantId(item?.id);
     // setSelectedVariantData(item);
     // setSelectedSize(null);
     // setSizeVisible(true);
@@ -71,6 +69,7 @@ const ProductDetails = ({route}) => {
       var data = `color=${item?.color}`;
       const color_data = await fetchData.single_property(param, data, token);
       setSingleData(color_data?.data);
+      setSelectedVariantId(color_data?.data?.id);
       setLoading(false);
     } catch (error) {
       console.log('error', error);
@@ -80,7 +79,7 @@ const ProductDetails = ({route}) => {
   };
 
   const handleSizePress = async item => {
-    setLoading(true);
+    // setLoading(true);
     setSelectedSize(item?.size);
     try {
       var param = id;
@@ -90,7 +89,7 @@ const ProductDetails = ({route}) => {
       }
       const size_data = await fetchData.single_property(param, data, token);
       setSingleData(size_data?.data);
-      setLoading(false);
+      // setLoading(false);
       setSelectedVariantId(size_data?.data?.id);
     } catch (error) {
       console.log('error', error);

@@ -187,17 +187,21 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const eventEmitter = new NativeEventEmitter(
-      NativeModules.DeviceEventManager,
+      NativeModules.DeviceEventManagerModule,
     );
     const subscription = eventEmitter.addListener(
       'OPEN_PRODUCT_DETAILS',
       event => {
         const {product_id} = event;
-        navigation.navigate('ProductDetails', {id: product_id});
+        if (product_id) {
+          navigation.navigate('ProductDetails', {id: product_id});
+        }
       },
     );
 
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+    };
   }, [navigation]);
 
   const currentGeolocation = async () => {
@@ -218,8 +222,9 @@ const HomeScreen = () => {
             );
             const address = response?.data?.address;
             if (address) {
-              const city = `${address?.city},${address?.country_code}`;
-
+              const city = `${address?.city ?? address?.suburb},${
+                address?.country_code
+              }`;
               setCurrentCity(city);
             }
           } catch (error) {
@@ -259,7 +264,7 @@ const HomeScreen = () => {
   const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
 
   const handleVoiceSearch = query => {
-    console.log('query------------------', query)
+    console.log('query------------------', query);
     if (query != '') {
       navigation.navigate('Search', {searchProduct: query});
     }
@@ -765,8 +770,8 @@ const HomeScreen = () => {
                       alignItems: 'center',
                     }}>
                     <Iconviewcomponent
-                      Icontag={'Fontisto'}
-                      iconname={'map-marker-alt'}
+                      Icontag={'Octicons'}
+                      iconname={'location'}
                       icon_size={20}
                       icon_color={Color.white}
                     />
@@ -774,7 +779,7 @@ const HomeScreen = () => {
                       style={{
                         fontSize: 14,
                         color: Color.white,
-                        marginHorizontal: 10,
+                        marginLeft: 5,
                         textTransform: 'capitalize',
                         fontFamily: Manrope.Bold,
                       }}>

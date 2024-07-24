@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,12 +21,12 @@ import {
   Linking,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { Media } from '../../Global/Media';
-import { scr_width } from '../../Utils/Dimensions';
-import { Manrope } from '../../Global/FontFamily';
-import { Iconviewcomponent } from '../../Components/Icontag';
+import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {Media} from '../../Global/Media';
+import {scr_width} from '../../Utils/Dimensions';
+import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../../Components/Icontag';
 
 const aboutData = [
   {
@@ -50,10 +50,10 @@ const TermsandConditions = () => {
   function renderHeaderItem() {
     try {
       return (
-        <View style={{ width: '100%', alignItems: 'center' }}>
-          <View style={{ width: scr_width }}>
+        <View style={{width: '100%', alignItems: 'center'}}>
+          <View style={{width: scr_width}}>
             <Image
-              source={{ uri: Media.terms }}
+              source={{uri: Media.terms}}
               style={{
                 width: scr_width,
                 height: 220,
@@ -62,7 +62,7 @@ const TermsandConditions = () => {
             />
           </View>
 
-          <View style={{ width: '95%', paddingTop: 20 }}>
+          <View style={{width: '95%', paddingTop: 20}}>
             <Text
               style={{
                 width: '100%',
@@ -109,7 +109,7 @@ const TermsandConditions = () => {
                 alignItems: 'center',
                 paddingVertical: 10,
               }}>
-              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -184,7 +184,7 @@ const TermsandConditions = () => {
                 alignItems: 'center',
                 paddingVertical: 10,
               }}>
-              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -225,7 +225,7 @@ const TermsandConditions = () => {
                 alignItems: 'center',
                 paddingVertical: 10,
               }}>
-              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
                 <Text
                   style={{
                     width: '100%',
@@ -262,7 +262,7 @@ const TermsandConditions = () => {
                 alignItems: 'center',
                 paddingVertical: 10,
               }}>
-              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
                 <Text
                   style={{
                     width: '100%',
@@ -328,7 +328,7 @@ const TermsandConditions = () => {
                 alignItems: 'center',
                 paddingVertical: 10,
               }}>
-              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
                 <Text
                   style={{
                     width: '100%',
@@ -815,7 +815,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -843,7 +843,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -871,7 +871,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -899,7 +899,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -927,7 +927,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -2306,7 +2306,7 @@ const TermsandConditions = () => {
               2. SERVICES
             </Text>
             <View
-              style={{ width: '100%', alignItems: 'center', paddingVertical: 0 }}>
+              style={{width: '100%', alignItems: 'center', paddingVertical: 0}}>
               <View
                 style={{
                   width: '100%',
@@ -2984,7 +2984,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -3014,7 +3014,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -3042,7 +3042,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -3070,7 +3070,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -3098,7 +3098,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -3129,7 +3129,7 @@ const TermsandConditions = () => {
                 iconname={'checkcircle'}
                 icon_size={20}
                 icon_color={Color.primary}
-                iconstyle={{ marginTop: 0 }}
+                iconstyle={{marginTop: 0}}
               />
               <Text
                 style={{
@@ -4002,7 +4002,7 @@ const TermsandConditions = () => {
               </Text>
             </Text>
 
-            <View style={{ width: '100%', alignItems: 'center' }}>
+            <View style={{width: '100%', alignItems: 'center'}}>
               <View
                 style={{
                   width: '100%',
@@ -4700,7 +4700,7 @@ const TermsandConditions = () => {
             alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <View style={{ width: '100%', alignItems: 'center', marginTop: 0 }}>
+          <View style={{width: '100%', alignItems: 'center', marginTop: 0}}>
             <Text
               style={{
                 width: '95%',
@@ -4749,6 +4749,9 @@ const TermsandConditions = () => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginVertical: 20,
+              }}
+              onPress={() => {
+                Linking.openURL('tel:9629332301');
               }}>
               <View
                 style={{
@@ -4764,7 +4767,7 @@ const TermsandConditions = () => {
                   Icontag={'Feather'}
                   iconname={'phone-call'}
                   icon_size={14}
-                  iconstyle={{ color: Color.primary }}
+                  iconstyle={{color: Color.primary}}
                 />
               </View>
               <Text
@@ -4784,6 +4787,9 @@ const TermsandConditions = () => {
                 width: '95%',
                 flexDirection: 'row',
                 alignItems: 'center',
+              }}
+              onPress={() => {
+                Linking.openURL('mailto:info@shopeasey.com');
               }}>
               <View
                 style={{
@@ -4799,7 +4805,7 @@ const TermsandConditions = () => {
                   Icontag={'Ionicons'}
                   iconname={'mail'}
                   icon_size={14}
-                  iconstyle={{ color: Color.primary }}
+                  iconstyle={{color: Color.primary}}
                 />
               </View>
               <Text
@@ -4823,7 +4829,7 @@ const TermsandConditions = () => {
               marginVertical: 20,
             }}></View>
           <View
-            style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+            style={{width: '95%', flexDirection: 'row', alignItems: 'center'}}>
             <View
               style={{
                 flex: 0,
@@ -4859,7 +4865,8 @@ const TermsandConditions = () => {
                   textAlign: 'justify',
                   color: Color.primary,
                   letterSpacing: 0.5,
-                  fontFamily: Manrope.SemiBold, paddingVertical: 5
+                  fontFamily: Manrope.SemiBold,
+                  paddingVertical: 5,
                 }}>
                 Shop Easey
               </Text>
@@ -5051,7 +5058,7 @@ const TermsandConditions = () => {
           ListHeaderComponent={() => renderHeaderItem()}
           // renderItem={({ item, index }) => renderFreeRentalItem(item, index)}
           ListFooterComponent={() => renderFooterItem()}
-          style={{ width: '95%' }}
+          style={{width: '95%'}}
           showsVerticalScrollIndicator={false}
         />
       </View>

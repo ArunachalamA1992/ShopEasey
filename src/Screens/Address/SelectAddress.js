@@ -1,149 +1,221 @@
-//import liraries
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
-    FlatList,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View, TextInput,
-    ToastAndroid,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  ToastAndroid,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { scr_height, scr_width } from '../../Utils/Dimensions';
-import { Manrope } from '../../Global/FontFamily';
-import { Iconviewcomponent } from '../../Components/Icontag';
-import { useNavigation } from '@react-navigation/native';
+import {scr_height, scr_width} from '../../Utils/Dimensions';
+import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../../Components/Icontag';
+import {useNavigation} from '@react-navigation/native';
+import fetchData from '../../Config/fetchData';
+import {useSelector} from 'react-redux';
+import common_fn from '../../Config/common_fn';
 
-const addressData = [
-    {
-        'addr_id': '0',
-        'addr_name': 'Home',
-        'addr_address': 'No. 120, W Periasamy Rd, R S Puram West, Coimbatore, Tamil Nadu 641002, India'
-    },
-    {
-        'addr_id': '1',
-        'addr_name': 'Work',
-        'addr_address': '23, vinayagar kovil street, krishnasamy nagar, ramanathapuram, coimbatore - 641045, Tamil Nadu 641002, India'
-    },
-    // {
-    //     'addr_id': '2',
-    //     'addr_name': 'Office',
-    // 'addr_address': 'Home'
-    // }
-]
+const selectAddressess = () => {
+  const navigation = useNavigation();
+  const [selectAddress, setSelectAddress] = useState({});
+  const [addressData, setAddressData] = useState([]);
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
 
-// create a component
-const SelectAddress = () => {
+  useEffect(() => {
+    getAddressData();
+  }, []);
 
-    const navigation = useNavigation();
-    const [selectaddr, setSelectAddr] = useState('Male');
-    function renderAddressItem(item, index) {
-        try {
-            return (
-                <View style={{ width: '100%', alignItems: 'center' }}>
-                    <View style={{ width: '95%', flexDirection: 'row', height: 100, justifyContent: 'space-between', alignItems: 'center' }}>
-                        <View style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                            <Iconviewcomponent
-                                Icontag={'FontAwesome5'}
-                                iconname={'map-marker-alt'}
-                                icon_size={24}
-                                iconstyle={{ color: Color.primary }}
-                            />
-                        </View>
-                        <View style={{ flex: 5, justifyContent: 'flex-start', alignItems: 'flex-start', paddingHorizontal: 10 }}>
-                            <Text style={{ fontSize: 18, textAlign: 'justify', color: Color.black, paddingVertical: 5, fontFamily: Manrope.Bold, letterSpacing: 0.5 }}>{item.addr_name}</Text>
-                            <Text style={{ fontSize: 14, textAlign: 'justify', paddingVertical: 5, color: Color.cloudyGrey, fontFamily: Manrope.Light, letterSpacing: 0.5 }}>{item.addr_address}</Text>
-                        </View>
-                        <View style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                            {selectaddr == item.addr_id ?
-                                <TouchableOpacity onPress={() => setSelectAddr(item.addr_id)}>
-                                    <Iconviewcomponent
-                                        Icontag={'Fontisto'}
-                                        iconname={'radio-btn-active'}
-                                        icon_size={24}
-                                        iconstyle={{ color: Color.primary }}
-                                    />
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity onPress={() => setSelectAddr(item.addr_id)}>
-                                    <Iconviewcomponent
-                                        Icontag={'Fontisto'}
-                                        iconname={'radio-btn-passive'}
-                                        icon_size={24}
-                                        iconstyle={{ color: Color.lightBlack }}
-                                    />
-                                </TouchableOpacity>
-                            }
-                        </View>
-                    </View>
-                    <View style={{ width: '95%', height: 0.5, backgroundColor: Color.Venus, marginVertical: 15 }}></View>
-                </View>
-            );
-        } catch (error) {
-            console.log("catch in renderAddress_Item ", error);
-        }
+  const getAddressData = async () => {
+    try {
+      const getaddress = await fetchData.list_address(``, token);
+      setAddressData(getaddress?.data);
+    } catch (error) {
+      console.log('error', error);
     }
+  };
 
-    function applyButtonClick() {
-        try {
-            console.log("clicked  ================= : ", selectaddr);
-            navigation.navigate("Profile")
-        } catch (error) {
-            console.log("catch in applyButton_Click ", error);
+  const defaultAddress = async () => {
+    try {
+      var data = {
+        is_default: 1,
+      };
+      if (selectAddress?.id != undefined) {
+        const updateAddress = await fetchData.update_address(
+          selectAddress?.id,
+          data,
+          token,
+        );
+        if (updateAddress) {
+          common_fn.showToast(updateAddress?.message);
         }
+      } else {
+        common_fn.showToast('please select the address to make default');
+      }
+    } catch (error) {
+      console.log('error', error);
     }
+  };
 
-    return (
-        <View style={{ flex: 1, backgroundColor: Color.white, alignItems: 'center' }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={{ width: scr_width, height: scr_height, alignItems: 'center' }}>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10 }}>
-                        <ScrollView showsVerticalScrollIndicator={false}>
-                            <FlatList
-                                data={addressData}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item, index }) => renderAddressItem(item, index)}
-                                showsVerticalScrollIndicator={false}
-                            />
-                        </ScrollView>
-
-                    </View>
-                    <View style={{ width: '100%', flex: 1, bottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => navigation.navigate("AddAddress", {
-                            item: "",
-                            CheckOut: "",
-                            status: '',
-                        })} style={{ width: '90%', flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.white, borderColor: Color.primary, borderWidth: 1, borderRadius: 5, marginVertical: 0 }}>
-                            <Iconviewcomponent
-                                Icontag={'AntDesign'}
-                                iconname={'plus'}
-                                icon_size={22}
-                                iconstyle={{ color: Color.primary }}
-                            />
-                            <Text style={{ textAlign: 'center', fontSize: 14, color: Color.primary, fontFamily: Manrope.SemiBold, paddingHorizontal: 5 }}>Add New Address</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => applyButtonClick()} style={{ width: '90%', height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.primary, borderRadius: 5, marginVertical: 20 }}>
-                            <Text style={{ textAlign: 'center', fontSize: 14, color: Color.white, fontFamily: Manrope.Medium }}>Apply</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView >
-        </View >
-    );
+  return (
+    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+      <FlatList
+        data={addressData}
+        keyExtractor={(item, index) => item + index}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item, index}) => {
+          return (
+            <View
+              key={index}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: Color.lightgrey,
+                padding: 10,
+              }}>
+              <Iconviewcomponent
+                Icontag={'Octicons'}
+                iconname={'location'}
+                icon_size={24}
+                iconstyle={{color: Color.primary, marginTop: 5}}
+              />
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'flex-start',
+                  alignItems: 'flex-start',
+                  paddingHorizontal: 10,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    textAlign: 'justify',
+                    color: Color.black,
+                    fontFamily: Manrope.Bold,
+                  }}>
+                  {item?.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    paddingVertical: 2,
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Medium,
+                    letterSpacing: 0.5,
+                  }}>
+                  {item?.phone}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    paddingVertical: 5,
+                    color: Color.lightBlack,
+                    fontFamily: Manrope.Medium,
+                    letterSpacing: 0.5,
+                  }}>
+                  {item?.address_type}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    textAlign: 'justify',
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Light,
+                  }}>
+                  {item.address_line1}
+                </Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 5,
+                }}>
+                <TouchableOpacity onPress={() => setSelectAddress(item)}>
+                  <Iconviewcomponent
+                    Icontag={'Fontisto'}
+                    iconname={
+                      selectAddress?.id == item.id
+                        ? 'radio-btn-active'
+                        : 'radio-btn-passive'
+                    }
+                    icon_size={20}
+                    iconstyle={{color: Color.primary}}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }}
+      />
+      <View style={{}}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('AddAddress', {
+              item: {},
+              CheckOut: [],
+              status: 'ADD',
+            })
+          }
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            height: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: Color.white,
+            borderColor: Color.primary,
+            borderWidth: 1,
+            borderRadius: 5,
+          }}>
+          <Iconviewcomponent
+            Icontag={'FontAwesome'}
+            iconname={'plus'}
+            icon_size={20}
+            iconstyle={{color: Color.primary}}
+          />
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 14,
+              color: Color.primary,
+              fontFamily: Manrope.SemiBold,
+              paddingHorizontal: 5,
+            }}>
+            Add New Address
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => defaultAddress()}
+          style={{
+            width: '100%',
+            height: 50,
+            backgroundColor: Color.primary,
+            borderRadius: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginVertical: 10,
+          }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 14,
+              color: Color.white,
+              fontFamily: Manrope.SemiBold,
+            }}>
+            Make as default
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 };
 
-// define your styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
-});
-
-//make this component available to the app
-export default SelectAddress;
+export default selectAddressess;

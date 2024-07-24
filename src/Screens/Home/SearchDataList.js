@@ -255,14 +255,9 @@ const SearchDataList = ({navigation, route}) => {
                   marginVertical: 10,
                   width: '100%',
                 }}>
-                <MCIcon
-                  name="briefcase-variant-off"
-                  color={Color.primary}
-                  size={20}
-                />
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 14,
                     padding: 5,
                     paddingHorizontal: 20,
                     marginStart: 5,
@@ -283,7 +278,7 @@ const SearchDataList = ({navigation, route}) => {
           ListFooterComponent={() => {
             return (
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                {loadMore && (
+                {loadMore && ProductData?.length > 0 && (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text
                       style={{
