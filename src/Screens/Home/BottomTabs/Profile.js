@@ -1,8 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Image,
+  Linking,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -63,6 +66,28 @@ const Profile = () => {
     }
   };
 
+  const onShare = async () => {
+    try {
+      const playStoreLink =
+        'https://play.google.com/store/apps/details?id=com.shopeasey&hl=en';
+
+      const result = await Share.share({
+        message: `Try Shopeasey, your ultimate shopping destination, is now available in India, Singapore, and Malaysia: ${playStoreLink}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(`Shared with activity type: ${result.activityType}`);
+        } else {
+          console.log('Shared successfully');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Share dismissed');
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
   return (
     <View style={{flex: 1, backgroundColor: Color.white}}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -1282,9 +1307,7 @@ const Profile = () => {
                   marginVertical: 10,
                 }}
                 onPress={() => {
-                  common_fn.showToast(
-                    'Only when the app is published on the Play Store can you share it with others.',
-                  );
+                  onShare();
                 }}>
                 <View
                   style={{

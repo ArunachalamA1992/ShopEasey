@@ -79,6 +79,7 @@ const selectAddressess = () => {
                 borderWidth: 1,
                 borderColor: Color.lightgrey,
                 padding: 10,
+                marginTop: 10,
               }}>
               <Iconviewcomponent
                 Icontag={'Octicons'}
@@ -197,12 +198,14 @@ const selectAddressess = () => {
           style={{
             width: '100%',
             height: 50,
-            backgroundColor: Color.primary,
+            backgroundColor:
+              selectAddress?.id == undefined ? Color.lightgrey : Color.primary,
             borderRadius: 5,
             justifyContent: 'center',
             alignItems: 'center',
             marginVertical: 10,
-          }}>
+          }}
+          disabled={selectAddress?.id == undefined}>
           <Text
             style={{
               textAlign: 'center',

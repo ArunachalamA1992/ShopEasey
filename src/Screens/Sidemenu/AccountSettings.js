@@ -28,7 +28,7 @@ const AccountSettings = ({navigation}) => {
     try {
       Alert.alert(
         'Alert',
-        'Are you sure you want to change the Country?',
+        'Are you sure you want to change the Country? If yes your account will get logout',
         [
           {
             text: 'Cancel',

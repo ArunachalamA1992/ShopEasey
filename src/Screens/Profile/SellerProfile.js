@@ -4,7 +4,6 @@ import {
   Text,
   Animated,
   View,
-  ScrollView,
   Image,
   SafeAreaView,
   TouchableOpacity,
@@ -12,20 +11,15 @@ import {
   StatusBar,
   FlatList,
   ImageBackground,
-  ToastAndroid,
   Linking,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import {Media} from '../../Global/Media';
-import CountdownTimer, {
-  SellerCountdownTimer,
-} from '../../Components/CountdownTimer';
+import {SellerCountdownTimer} from '../../Components/CountdownTimer';
 import {scr_width} from '../../Utils/Dimensions';
 import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {products} from '../../Config/Content';
-import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
+import {ItemCardHorizontal} from '../../Components/ItemCard';
 import {TextStroke} from '../../Utils/TextStroke';
 import moment from 'moment';
 import {useSelector} from 'react-redux';
@@ -45,7 +39,6 @@ const SellerProfile = ({route, navigation}) => {
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
   const [seller_follow, setSeller_follow] = useState('Follow');
-
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
@@ -169,9 +162,8 @@ const SellerProfile = ({route, navigation}) => {
 
   const getData = async () => {
     try {
-      var data = `id=${vendor_id}`;
+      var data = `vendor_id=${vendor_id}`;
       const getdata = await fetchData.seller_list(data, token);
-      console.log("getdata shop ========= ", getdata);
       setSellerData(getdata?.data?.[0]);
       var product_data = `project=top-picks&vendor_id=${vendor_id}`;
       const get_products = await fetchData.list_products(product_data, token);
@@ -716,7 +708,7 @@ const SellerProfile = ({route, navigation}) => {
                 return (
                   <View
                     style={{
-                      width: scr_width,
+                      flex: 1,
                       alignItems: 'center',
                       padding: 10,
                     }}>
@@ -810,7 +802,6 @@ const SellerProfile = ({route, navigation}) => {
                     style={{
                       width: '100%',
                       paddingStart: 10,
-                      padding: 10,
                     }}>
                     <View
                       style={{
@@ -824,9 +815,6 @@ const SellerProfile = ({route, navigation}) => {
                           fontSize: 16,
                           color: Color.black,
                           fontFamily: Manrope.SemiBold,
-                          letterSpacing: 0.5,
-                          paddingVertical: 5,
-                          paddingHorizontal: 10,
                         }}>
                         New Arrivals
                       </Text>
@@ -858,7 +846,6 @@ const SellerProfile = ({route, navigation}) => {
                 return (
                   <View
                     style={{
-                      width: '95%',
                       marginTop: 10,
                     }}>
                     {FlashOffers?.length > 0 &&
@@ -902,7 +889,7 @@ const SellerProfile = ({route, navigation}) => {
                           </View>
                         );
                       })}
-                    <View style={{width: '95%', paddingStart: 20}}>
+                    <View style={{paddingStart: 10}}>
                       <FlatList
                         data={products}
                         horizontal
@@ -927,12 +914,11 @@ const SellerProfile = ({route, navigation}) => {
                 return (
                   <View
                     style={{
-                      width: scr_width,
                       marginVertical: 20,
                     }}>
                     <View
                       style={{
-                        width: scr_width,
+                        flex: 1,
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between',
@@ -940,10 +926,11 @@ const SellerProfile = ({route, navigation}) => {
                       }}>
                       <View
                         style={{
+                          flex: 1,
                           flexDirection: 'row',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          padding: 15,
+                          padding: 10,
                         }}>
                         <Iconviewcomponent
                           Icontag={'MaterialCommunityIcons'}
@@ -964,10 +951,11 @@ const SellerProfile = ({route, navigation}) => {
                       </View>
                       <View
                         style={{
+                          flex: 1,
                           flexDirection: 'row',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          padding: 15,
+                          padding: 10,
                         }}>
                         <Iconviewcomponent
                           Icontag={'MaterialCommunityIcons'}
@@ -988,10 +976,11 @@ const SellerProfile = ({route, navigation}) => {
                       </View>
                       <View
                         style={{
+                          flex: 1,
                           flexDirection: 'row',
                           justifyContent: 'flex-start',
                           alignItems: 'flex-start',
-                          padding: 15,
+                          padding: 10,
                         }}>
                         <Iconviewcomponent
                           Icontag={'MaterialIcons'}

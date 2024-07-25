@@ -8,6 +8,9 @@ import {
   StyleSheet,
   FlatList,
   LayoutAnimation,
+  Linking,
+  Share,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Divider} from 'react-native-paper';
@@ -19,6 +22,7 @@ import {Manrope} from '../../Global/FontFamily';
 import {Iconviewcomponent} from '../Icontag';
 import {Media} from '../../Global/Media';
 import common_fn from '../../Config/common_fn';
+import {setOnBoardVisible, setUserData} from '../../Redux';
 
 const CustomDrawerContent = props => {
   const [itemSelected, setItemSelected] = useState('');
@@ -34,6 +38,28 @@ const CustomDrawerContent = props => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };
 
+  const onShare = async () => {
+    try {
+      const playStoreLink =
+        'https://play.google.com/store/apps/details?id=com.shopeasey&hl=en';
+
+      const result = await Share.share({
+        message: `Try Shopeasey, your ultimate shopping destination, is now available in India, Singapore, and Malaysia: ${playStoreLink}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(`Shared with activity type: ${result.activityType}`);
+        } else {
+          console.log('Shared successfully');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Share dismissed');
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>
       <View
@@ -491,11 +517,7 @@ const CustomDrawerContent = props => {
                 padding: 10,
               }}
               onPress={() => {
-                setItemSelected('share');
-                // onShare();
-                common_fn.showToast(
-                  'Only when the app is published on the Play Store can you share it with others.',
-                );
+                onShare();
               }}>
               <Iconviewcomponent
                 Icontag={'Ionicons'}

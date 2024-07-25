@@ -894,7 +894,7 @@ const HomeScreen = () => {
                   {`Search Products`}
                 </Text>
                 <VoiceSearch onSearch={handleVoiceSearch} />
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {
                     openCameraWithPermission();
                   }}>
@@ -906,7 +906,7 @@ const HomeScreen = () => {
                       marginHorizontal: 5,
                     }}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </TouchableOpacity>
             </View>
           </View>

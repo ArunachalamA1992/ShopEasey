@@ -1,23 +1,11 @@
-//import liraries
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {Switch} from 'react-native-paper';
 
-// create a component
-const NotificationSettings = () => {
-  const navigation = useNavigation();
+const NotificationSettings = ({navigation}) => {
   const dispatch = useDispatch();
 
   const [statusClick, setStatusClick] = useState('Email');
@@ -538,7 +526,6 @@ const NotificationSettings = () => {
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -547,5 +534,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default NotificationSettings;

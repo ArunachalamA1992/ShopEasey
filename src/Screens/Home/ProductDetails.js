@@ -904,14 +904,14 @@ const ProductDetails = ({route, navigation}) => {
                         {discount}% OFF
                       </Text>
                     </View>
-                    <Text
+                    {/* <Text
                       style={{
                         fontFamily: Manrope.SemiBold,
                         fontSize: 12,
                         color: Color.red,
                       }}>
                       ( Only {singleData?.stock} pending )
-                    </Text>
+                    </Text> */}
                   </View>
 
                   <View

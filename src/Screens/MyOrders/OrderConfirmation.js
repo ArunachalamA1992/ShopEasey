@@ -161,7 +161,7 @@ const OrderConfirmation = ({navigation, route}) => {
   // };
   const postOrder = async () => {
     try {
-      const total_price = parseFloat(Sub_total) + overall_tax;
+      const total_price = parseFloat(Sub_total) + overall_tax + 10;
       const data = {
         total: total_price,
         payment_method:
@@ -650,7 +650,8 @@ const OrderConfirmation = ({navigation, route}) => {
                       paddingHorizontal: 10,
                       fontFamily: Manrope.SemiBold,
                     }}>
-                    Delivery by tomorrow, Free Delivery
+                    Delivery by tomorrow,
+                    {/* Free Delivery */}
                   </Text>
                 </View>
               </View>
@@ -867,7 +868,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   {discount_price}
                 </Text>
               </View>
-              <View
+              {/* <View
                 style={{
                   width: '100%',
                   flexDirection: 'row',
@@ -897,8 +898,39 @@ const OrderConfirmation = ({navigation, route}) => {
                   {countryCode?.symbol}
                   {overall_tax}
                 </Text>
-              </View>
+              </View> */}
               <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  paddingHorizontal: 10,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingVertical: 3,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    textAlign: 'left',
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Medium,
+                  }}>
+                  Shipping
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    textAlign: 'right',
+                    color: Color.black,
+                    fontFamily: Manrope.Bold,
+                    paddingHorizontal: 5,
+                  }}
+                  numberOfLines={2}>
+                  {countryCode?.symbol}
+                  {10}
+                </Text>
+              </View>
+              {/* <View
                 style={{
                   width: '100%',
                   flexDirection: 'row',
@@ -929,7 +961,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   numberOfLines={2}>
                   Free Delievery
                 </Text>
-              </View>
+              </View> */}
               <View
                 style={{
                   width: '100%',
@@ -959,7 +991,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {parseFloat(Sub_total) + overall_tax}
+                  {parseFloat(Sub_total) + overall_tax + 10}
                 </Text>
               </View>
             </View>
@@ -1042,7 +1074,7 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {parseFloat(Sub_total) + overall_tax}
+            {parseFloat(Sub_total) + overall_tax + 10}
           </Text>
         </View>
         <View style={{flex: 1}}>

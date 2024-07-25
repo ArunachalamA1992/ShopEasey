@@ -130,7 +130,6 @@ const MyDrawer = () => {
     const eventEmitter = new NativeEventEmitter(
       NativeModules.DeviceEventManagerModule,
     );
-    console.log('eventEmitter', eventEmitter);
     const subscription = eventEmitter.addListener(
       'OPEN_PRODUCT_DETAILS',
       event => {

@@ -20,13 +20,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Button} from 'react-native-paper';
+import fetchData from '../../Config/fetchData';
 
 const OrderReview = ({navigation, route}) => {
   const [orderData] = useState(route.params.orderData);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const [defaultRating, setDefaultRating] = useState(0);
   const userData = useSelector(state => state.UserReducer.userData);
-  const [address, setAddress] = useState('');
+  const [review, setReview] = useState('');
   var {token} = userData;
   const [image, setImage] = useState([
     {
@@ -39,7 +40,7 @@ const OrderReview = ({navigation, route}) => {
       width: 0,
     },
   ]);
-  console.log('image', image);
+
   const [maxRating, setMaxRating] = useState([
     {
       id: 1,
@@ -94,6 +95,24 @@ const OrderReview = ({navigation, route}) => {
     } catch (error) {
       console.log('Error in requesting camera permission: ', error);
       return false;
+    }
+  };
+
+  const postReview = async () => {
+    try {
+      if (defaultRating > 0 && review != '') {
+        var data = {
+          product_id: orderData?.product_id,
+          rate: defaultRating,
+          review: review,
+        };
+        const post_review = await fetchData.post_review(data, token);
+        common_fn.showToast(post_review?.message);
+      } else {
+        common_fn.showToast('Please write the review and rating');
+      }
+    } catch (error) {
+      console.log('error', error);
     }
   };
 
@@ -392,9 +411,9 @@ const OrderReview = ({navigation, route}) => {
               textAlignVertical="top"
               placeholder="Add a Detailed Review Here"
               placeholderTextColor={Color.lightgrey}
-              value={address}
+              value={review}
               onChangeText={value => {
-                setAddress(value);
+                setReview(value);
               }}
             />
           </View>
@@ -512,7 +531,9 @@ const OrderReview = ({navigation, route}) => {
           </Button>
           <Button
             mode="contained"
-            onPress={() => {}}
+            onPress={() => {
+              postReview();
+            }}
             style={{
               backgroundColor: Color.primary,
               borderRadius: 5,
