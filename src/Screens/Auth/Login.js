@@ -280,7 +280,7 @@ const Login = () => {
               letterSpacing: 0.5,
               lineHeight: 22,
             }}>
-            SUBMIT
+            {loginType == '' ? 'LOGIN' : 'REGISTER'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -316,138 +316,92 @@ const Login = () => {
               fontFamily: Manrope.SemiBold,
               paddingHorizontal: 10,
             }}>
-            Login With Google
+            {loginType == '' ? 'Login With Google' : 'Register With Google'}
           </Text>
         </TouchableOpacity>
       </View>
-      {loginType == '' && (
+      <View
+        style={{
+          //   flex: 1,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
         <View
           style={{
-            //   flex: 1,
+            width: '45%',
+            height: 0.5,
+            backgroundColor: Color.transparantBlack,
+            borderRadius: 5,
+          }}></View>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 14,
+            color: Color.cloudyGrey,
+            fontFamily: Manrope.SemiBold,
+            letterSpacing: 0.5,
+            lineHeight: 22,
+          }}>
+          {' '}
+          or{' '}
+        </Text>
+        <View
+          style={{
+            width: '45%',
+            height: 0.5,
+            backgroundColor: Color.transparantBlack,
+            borderRadius: 5,
+          }}></View>
+      </View>
+      <View
+        style={{
+          //   flex: 1,
+          justifyContent: 'center',
+          padding: 10,
+          marginTop: 20,
+        }}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: Color.black,
+            fontFamily: Manrope.Bold,
+            // paddingHorizontal: 10,
+          }}>
+          {loginType == ''
+            ? "Don't Have An Account?"
+            : 'You already have an account'}
+        </Text>
+        <TouchableOpacity
+          style={{
+            height: 50,
             flexDirection: 'row',
+            marginVertical: 10,
+            backgroundColor: Color.white,
+            borderColor: Color.cloudyGrey,
+            borderWidth: 0.5,
+            justifyContent: 'center',
             alignItems: 'center',
+            borderRadius: 5,
+          }}
+          onPress={() => {
+            loginType == '' ? setLoginType('Register') : setLoginType('');
+            setNumber('');
           }}>
-          <View
-            style={{
-              width: '45%',
-              height: 0.5,
-              backgroundColor: Color.transparantBlack,
-              borderRadius: 5,
-            }}></View>
           <Text
             style={{
-              textAlign: 'center',
               fontSize: 14,
-              color: Color.cloudyGrey,
-              fontFamily: Manrope.SemiBold,
-              letterSpacing: 0.5,
-              lineHeight: 22,
-            }}>
-            {' '}
-            or{' '}
-          </Text>
-          <View
-            style={{
-              width: '45%',
-              height: 0.5,
-              backgroundColor: Color.transparantBlack,
-              borderRadius: 5,
-            }}></View>
-        </View>
-      )}
-      {loginType == '' ? (
-        <View
-          style={{
-            //   flex: 1,
-            justifyContent: 'center',
-            padding: 10,
-            marginTop: 20,
-          }}>
-          <Text
-            style={{
-              fontSize: 16,
               color: Color.black,
               fontFamily: Manrope.Bold,
-              // paddingHorizontal: 10,
+              paddingHorizontal: 10,
             }}>
-            Don't Have An Account?
+            {loginType == '' ? 'Sign Up' : 'Login'}
           </Text>
-          <TouchableOpacity
-            style={{
-              height: 50,
-              flexDirection: 'row',
-              marginVertical: 10,
-              backgroundColor: Color.white,
-              borderColor: Color.cloudyGrey,
-              borderWidth: 0.5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-            }}
-            onPress={() => {
-              setLoginType('Register');
-            }}>
-            <Text
-              style={{
-                fontSize: 14,
-                color: Color.black,
-                fontFamily: Manrope.Bold,
-                paddingHorizontal: 10,
-              }}>
-              Sign Up
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View
-          style={{
-            //   flex: 1,
-            justifyContent: 'center',
-            padding: 10,
-            marginTop: 20,
-          }}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: Color.black,
-              fontFamily: Manrope.Bold,
-              // paddingHorizontal: 10,
-            }}>
-            You Already have an account
-          </Text>
-          <TouchableOpacity
-            style={{
-              height: 50,
-              flexDirection: 'row',
-              marginVertical: 10,
-              backgroundColor: Color.white,
-              borderColor: Color.cloudyGrey,
-              borderWidth: 0.5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-            }}
-            onPress={() => {
-              setLoginType('');
-            }}>
-            <Text
-              style={{
-                fontSize: 14,
-                color: Color.black,
-                fontFamily: Manrope.Bold,
-                paddingHorizontal: 10,
-              }}>
-              Login
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+        </TouchableOpacity>
+      </View>
       <View
         style={{
           marginTop: 20,
           paddingHorizontal: 10,
-          // justifyContent: 'flex-end',
-          // padding: 10,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
@@ -456,7 +410,6 @@ const Login = () => {
               fontSize: 12,
               color: Color.cloudyGrey,
               fontFamily: Manrope.Medium,
-              letterSpacing: 0.5,
               lineHeight: 22,
             }}>
             By tapping continue with google, You agree to{' '}
@@ -466,8 +419,7 @@ const Login = () => {
               textAlign: 'justify',
               fontSize: 12,
               color: Color.black,
-              fontFamily: Manrope.SemiBold,
-              letterSpacing: 0.5,
+              fontFamily: Manrope.Bold,
               lineHeight: 22,
             }}>
             ShopEasey

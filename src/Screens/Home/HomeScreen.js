@@ -941,42 +941,40 @@ const HomeScreen = () => {
                               });
                             }}
                             style={{
-                              justifyContent: 'center',
+                              justifyContent: 'flex-start',
                               alignItems: 'center',
                               // marginHorizontal: 10,
                               width: '25%',
                               marginVertical: 10,
                             }}>
-                            <View style={{alignItems: 'center'}}>
-                              <View
+                            <View
+                              style={{
+                                backgroundColor: '#E6F5F8',
+                                borderRadius: 100,
+                                width: 65,
+                                height: 65,
+                              }}>
+                              <Image
+                                source={{uri: item?.file}}
                                 style={{
-                                  backgroundColor: '#E6F5F8',
-                                  borderRadius: 100,
                                   width: 65,
                                   height: 65,
-                                }}>
-                                <Image
-                                  source={{uri: item?.file}}
-                                  style={{
-                                    width: 65,
-                                    height: 65,
-                                    resizeMode: 'contain',
-                                    borderRadius: 100,
-                                  }}
-                                />
-                              </View>
-                              <Text
-                                style={{
-                                  textAlign: 'center',
-                                  fontSize: 12,
-                                  color: Color.black,
-                                  font: Manrope.SemiBold,
-                                  paddingVertical: 5,
+                                  resizeMode: 'contain',
+                                  borderRadius: 100,
                                 }}
-                                numberOfLines={2}>
-                                {item?.category_name}
-                              </Text>
+                              />
                             </View>
+                            <Text
+                              style={{
+                                textAlign: 'center',
+                                fontSize: 12,
+                                color: Color.black,
+                                font: Manrope.SemiBold,
+                                paddingVertical: 5,
+                              }}
+                              numberOfLines={2}>
+                              {item?.category_name}
+                            </Text>
                           </TouchableOpacity>
                         );
                       })}
