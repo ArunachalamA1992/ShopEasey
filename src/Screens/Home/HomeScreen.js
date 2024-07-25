@@ -268,6 +268,8 @@ const HomeScreen = () => {
     if (query != '') {
       navigation.navigate('Search', {searchProduct: query});
     }
+    
+    setVoiceSearchQuery(query);
   };
 
   const openCameraWithPermission = async () => {

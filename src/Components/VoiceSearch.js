@@ -1,25 +1,45 @@
-import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, PermissionsAndroid, Platform } from 'react-native';
 import Voice from '@react-native-voice/voice';
 import Color from '../Global/Color';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const VoiceSearch = ({onSearch}) => {
+const VoiceSearch = ({ onSearch }) => {
   const [recognized, setRecognized] = useState('');
   const [started, setStarted] = useState('');
   const [results, setResults] = useState([]);
-  const [micOn, setMicOff] = useState(false);
+  const [micOn, setMicOn] = useState(false);
 
   useEffect(() => {
-    Voice.onSpeechStart = onSpeechStart;
-    Voice.onSpeechRecognized = onSpeechRecognized;
-    Voice.onSpeechResults = onSpeechResults;
-    Voice.onSpeechError = onSpeechError;
-
+    requestMicrophonePermission();
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
+
+  const requestMicrophonePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: 'Microphone Permission',
+            message: 'This app needs access to your microphone to perform voice search.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Microphone permission granted');
+        } else {
+          console.log('Microphone permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
 
   const onSpeechStart = e => {
     console.log('onSpeechStart: ', e);
@@ -37,29 +57,36 @@ const VoiceSearch = ({onSearch}) => {
     if (onSearch) {
       onSearch(e.value[0]);
     }
+    setMicOn(false);
   };
 
   const onSpeechError = e => {
     console.log('onSpeechError: ', e);
-    setMicOff(false);
+    setMicOn(false);
   };
 
   const startRecognizing = async () => {
     try {
+      Voice.onSpeechStart = onSpeechStart;
+      Voice.onSpeechRecognized = onSpeechRecognized;
+      Voice.onSpeechResults = onSpeechResults;
+      Voice.onSpeechError = onSpeechError;
+
       await Voice.start('en-US');
       setRecognized('');
       setStarted('');
       setResults([]);
-      setMicOff(true);
+      setMicOn(true);
     } catch (e) {
       console.error(e);
+      setMicOn(false);
     }
   };
 
   const stopRecognizing = async () => {
     try {
       await Voice.stop();
-      setMicOff(false);
+      setMicOn(false);
     } catch (e) {
       console.error(e);
     }

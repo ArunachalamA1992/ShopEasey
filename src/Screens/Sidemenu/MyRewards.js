@@ -8,15 +8,22 @@ import {
   TouchableOpacity,
   Dimensions,
   FlatList,
+  Modal,
+  Pressable,
+  TextInput,
 } from 'react-native';
 import Color from '../../Global/Color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {Media} from '../../Global/Media';
 import {Manrope} from '../../Global/FontFamily';
+import Clipboard from '@react-native-clipboard/clipboard';
+import common_fn from '../../Config/common_fn';
+import {Button} from 'react-native-paper';
 
 const {width} = Dimensions.get('window');
 
 const MyRewards = () => {
+  const [rewardsModal, setRewardsModal] = useState({visible: false, data: {}});
   const [bannerData, setBannerData] = useState([
     {
       id: 1,
@@ -51,7 +58,9 @@ const MyRewards = () => {
       ban_name: 'Men',
       ban_image: require('../../assets/images/first.png'),
       created_at: '2024-05-01T08:00:00Z',
-      expired_at: '2024-07-23T13:04:37.163Z',
+      expired_at: '2024-07-25T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
     },
     {
       id: 2,
@@ -59,6 +68,8 @@ const MyRewards = () => {
       ban_image: require('../../assets/images/first.png'),
       created_at: '2024-05-01T08:00:00Z',
       expired_at: '2024-07-23T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
     },
     {
       id: 3,
@@ -66,6 +77,8 @@ const MyRewards = () => {
       ban_image: require('../../assets/images/first.png'),
       created_at: '2024-05-01T08:00:00Z',
       expired_at: '2024-07-23T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
     },
     {
       id: 4,
@@ -73,6 +86,8 @@ const MyRewards = () => {
       ban_image: require('../../assets/images/second.png'),
       created_at: '2024-05-01T08:00:00Z',
       expired_at: '2024-07-24T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
     },
     {
       id: 5,
@@ -80,6 +95,8 @@ const MyRewards = () => {
       ban_image: require('../../assets/images/first.png'),
       created_at: '2024-05-01T08:00:00Z',
       expired_at: '2024-07-22T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
     },
   ]);
 
@@ -103,6 +120,12 @@ const MyRewards = () => {
     return groupRewards;
   };
   const groupRewards = groupRewardsData();
+
+  const copyToClipboard = data => {
+    Clipboard.setString(data?.coupon_code);
+    common_fn.showToast('The code has been copied to the clipboard.');
+    setRewardsModal({visible: false, data: {}});
+  };
 
   return (
     <View style={styles.container}>
@@ -194,6 +217,9 @@ const MyRewards = () => {
                         backgroundColor: Color.white,
                         opacity:
                           item?.category == 'Rewards You’ve Missed' ? 0.5 : 1,
+                      }}
+                      onPress={() => {
+                        setRewardsModal({visible: true, data: single_reward});
                       }}>
                       <Image
                         source={single_reward.ban_image}
@@ -211,6 +237,94 @@ const MyRewards = () => {
           />
         </View>
       </ScrollView>
+      <Modal visible={rewardsModal.visible} animationType="slide" transparent>
+        <Pressable
+          onPress={() => {
+            setRewardsModal({visible: false, data: {}});
+          }}
+          style={{flex: 1, backgroundColor: Color.transparantBlack}}
+        />
+        <View
+          style={{
+            backgroundColor: Color.white,
+            padding: 10,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            paddingVertical: 30,
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 10,
+            }}>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 16,
+                color: Color.black,
+                marginLeft: 5,
+                textTransform: 'capitalize',
+                fontFamily: Manrope.Bold,
+              }}>
+              coupon name :
+            </Text>
+            <Text
+              style={{
+                fontSize: 18,
+                color: Color.black,
+                marginLeft: 5,
+                textTransform: 'capitalize',
+                fontFamily: Manrope.Bold,
+              }}>
+              {rewardsModal?.data?.coupon_name}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 10,
+            }}>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 16,
+                color: Color.black,
+                marginLeft: 5,
+                textTransform: 'capitalize',
+                fontFamily: Manrope.Bold,
+              }}>
+              coupon Code :
+            </Text>
+            <Text
+              style={{
+                fontSize: 18,
+                color: Color.black,
+                marginLeft: 5,
+                textTransform: 'capitalize',
+                fontFamily: Manrope.Bold,
+              }}>
+              {' '}
+              {rewardsModal?.data?.coupon_code}
+            </Text>
+          </View>
+          <Button
+            mode="contained"
+            onPress={() => {
+              copyToClipboard(rewardsModal?.data);
+            }}
+            style={{
+              marginVertical: 10,
+              backgroundColor: Color.primary,
+              borderRadius: 10,
+              width: '100%',
+            }}
+            labelStyle={{fontFamily: Manrope.Bold, fontSize: 16}}>
+            Copy Code
+          </Button>
+        </View>
+      </Modal>
     </View>
   );
 };

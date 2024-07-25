@@ -11,6 +11,10 @@ import {
   Platform,
   LogBox,
   StatusBar,
+  Modal,
+  Pressable,
+  FlatList,
+  TextInput,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
@@ -22,6 +26,7 @@ import FIcon from 'react-native-vector-icons/FontAwesome';
 import {Media} from '../../Global/Media';
 import {setOrderCancelVisible, setOrderSuccessVisible} from '../../Redux';
 import RazorpayCheckout from 'react-native-razorpay';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 LogBox.ignoreAllLogs();
 
@@ -32,6 +37,8 @@ const OrderConfirmation = ({navigation, route}) => {
   const [netInfo_State, setNetinfo] = useState(true);
   const [selectPayment, setSelectPayment] = useState(null);
   const [selectAddress, setSelectAddress] = useState({});
+  const [couponModal, setCouponModal] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
   const [isExpanded, setIsExpanded] = useState(CheckOut?.length == 1);
@@ -51,6 +58,85 @@ const OrderConfirmation = ({navigation, route}) => {
     //   icon: 'rupee',
     // },
   ]);
+
+  const [rewardsData, setRewardsData] = useState([
+    {
+      id: 1,
+      ban_name: 'Men',
+      ban_image: require('../../assets/images/first.png'),
+      created_at: '2024-05-01T08:00:00Z',
+      expired_at: '2024-07-25T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
+    },
+    {
+      id: 2,
+      ban_name: 'Women',
+      ban_image: require('../../assets/images/first.png'),
+      created_at: '2024-05-01T08:00:00Z',
+      expired_at: '2024-07-23T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
+    },
+    {
+      id: 3,
+      ban_name: 'Kid’s Wear',
+      ban_image: require('../../assets/images/first.png'),
+      created_at: '2024-05-01T08:00:00Z',
+      expired_at: '2024-07-23T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
+    },
+    {
+      id: 4,
+      ban_name: 'Men',
+      ban_image: require('../../assets/images/second.png'),
+      created_at: '2024-05-01T08:00:00Z',
+      expired_at: '2024-07-24T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
+    },
+    {
+      id: 5,
+      ban_name: 'Men',
+      ban_image: require('../../assets/images/first.png'),
+      created_at: '2024-05-01T08:00:00Z',
+      expired_at: '2024-07-22T13:04:37.163Z',
+      coupon_code: 'TestCode',
+      coupon_name: 'Test',
+    },
+  ]);
+
+  const groupRewardsData = () => {
+    const groupRewards = {
+      ongoing: [],
+    };
+
+    const currentDate = new Date();
+
+    rewardsData.forEach(reward => {
+      const expiredDate = new Date(reward.expired_at);
+      if (currentDate <= expiredDate) {
+        groupRewards.ongoing.push(reward);
+      }
+    });
+
+    return groupRewards;
+  };
+  const groupRewards = groupRewardsData();
+
+  const copyToClipboard = data => {
+    Clipboard.setString(data);
+    common_fn.showToast('The code has been copied to the clipboard.');
+    fetchCopiedText();
+    setCouponModal(false);
+  };
+
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString();
+    setCouponCode(text);
+  };
+
   useEffect(() => {
     if (address.length > 0) {
       const defaultAddress = address.find(item => item?.is_default === 1);
@@ -693,19 +779,84 @@ const OrderConfirmation = ({navigation, route}) => {
                   Offers & Rewards
                 </Text>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity
+                disabled={couponCode == ''}
+                style={{
+                  backgroundColor:
+                    couponCode == '' ? Color.lightgrey : Color.primary,
+                  padding: 10,
+                  borderRadius: 10,
+                }}>
                 <Text
                   style={{
                     fontSize: 12,
-                    color: Color.primary,
+                    color: Color.white,
                     fontFamily: Manrope.Bold,
                   }}>
                   Apply Now
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderStyle: 'dashed',
+                borderColor: Color.cloudyGrey,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                setCouponModal(true);
+              }}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: Color.cloudyGrey,
+                  paddingHorizontal: 5,
+                  fontFamily: Manrope.SemiBold,
+                  textAlign: 'center',
+                }}>
+                View More Coupon's
+              </Text>
+              <Iconviewcomponent
+                Icontag={'Ionicons'}
+                iconname={'chevron-forward'}
+                icon_size={20}
+                icon_color={Color.cloudyGrey}
+                iconstyle={{marginTop: 5}}
+              />
+            </TouchableOpacity>
 
+            <Text
+              style={{
+                fontSize: 14,
+                color: Color.cloudyGrey,
+                fontFamily: Manrope.Medium,
+                textAlign: 'center',
+                marginVertical: 10,
+              }}>
+              OR
+            </Text>
+            <TextInput
+              placeholder="Enter your Coupon Code"
+              placeholderTextColor={Color.cloudyGrey}
+              value={couponCode}
+              onChangeText={text => {
+                setCouponCode(text);
+              }}
+              style={{
+                backgroundColor: 'white',
+                borderColor: 'gray',
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                borderRadius: 5,
+                width: '100%',
+                color: Color.black,
+              }}
+            />
+          </View>
           <View
             style={{
               marginTop: 5,
@@ -1108,8 +1259,70 @@ const OrderConfirmation = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* {sale_BottomSheetmenu()} */}
+      <Modal visible={couponModal} transparent animationType="slide">
+        <Pressable
+          onPress={() => {
+            setCouponModal(false);
+          }}
+          style={{flex: 1, backgroundColor: Color.transparantBlack}}
+        />
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: Color.white,
+            padding: 10,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+          }}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: Color.black,
+              fontFamily: Manrope.Bold,
+              marginVertical: 10,
+            }}>
+            Select your coupon
+          </Text>
+          <FlatList
+            data={[
+              {
+                category: 'Ongoing Perks Just for You!',
+                data: groupRewards['ongoing'],
+              },
+            ]}
+            keyExtractor={(item, index) => item.category}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item, index}) => {
+              return (
+                <View key={index}>
+                  {item?.data?.map((single_reward, single_index) => (
+                    <TouchableOpacity
+                      key={single_index}
+                      style={{
+                        height: 150,
+                        backgroundColor: Color.white,
+                        opacity:
+                          item?.category == 'Rewards You’ve Missed' ? 0.5 : 1,
+                      }}
+                      onPress={() => {
+                        copyToClipboard(single_reward?.coupon_code);
+                      }}>
+                      <Image
+                        source={single_reward.ban_image}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          resizeMode: 'contain',
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              );
+            }}
+          />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
