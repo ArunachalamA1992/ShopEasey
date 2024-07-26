@@ -116,8 +116,8 @@ const Login = () => {
           data.mobile = number;
         }
         const login_data = await fetchData.login_with_otp(data, null);
-        if (login_data?.status == true) {
-          common_fn.showToast('OTP Sent to your Email');
+        if (login_data?.status) {
+          common_fn.showToast(login_data?.message);
           navigation.dispatch(
             StackActions.replace('OTPScreen', {
               number,
@@ -175,7 +175,9 @@ const Login = () => {
         setLoading(false);
       } else {
         common_fn.showToast(
-          'Invalid Phone Number Please Enter Your 10 Digit Phone Number',
+          `Invalid Phone Number Please Enter Your 10 Digit ${
+            countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+          } Number`,
         );
         setLoading(false);
       }
