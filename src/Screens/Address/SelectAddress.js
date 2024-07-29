@@ -162,6 +162,7 @@ const selectAddressess = () => {
             navigation.navigate('AddAddress', {
               item: {},
               CheckOut: [],
+              ids: [],
               status: 'ADD',
             })
           }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -10,22 +10,22 @@ import {
 } from 'react-native';
 
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
+import {Manrope} from '../../Global/FontFamily';
+import {useNavigation} from '@react-navigation/native';
 import fetchData from '../../Config/fetchData';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { Searchbar } from 'react-native-paper';
-import { Media } from '../../Global/Media';
+import {Searchbar} from 'react-native-paper';
+import {Media} from '../../Global/Media';
 
-const { height } = Dimensions.get('screen');
+const {height} = Dimensions.get('screen');
 const FollowingSellers = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [searchtext, setSearchtext] = useState('');
   const [sellerData, setSellerData] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  var { token } = userData;
+  var {token} = userData;
   const [inputs, setInputs] = useState('');
 
   useEffect(() => {
@@ -40,7 +40,6 @@ const FollowingSellers = () => {
   const getSellersData = async () => {
     try {
       const getSellerList = await fetchData.seller_list(``, token);
-      console.log('getSellerList?.data', getSellerList?.data);
       setSellerData(getSellerList?.data);
     } catch (error) {
       console.log('error', error);
@@ -104,7 +103,7 @@ const FollowingSellers = () => {
                 bottom: 0,
                 justifyContent: 'center',
               }}
-              onPress={() => { }}>
+              onPress={() => {}}>
               <Text
                 style={{
                   fontSize: 14,
@@ -116,7 +115,7 @@ const FollowingSellers = () => {
             </TouchableOpacity>
           );
         }}
-        inputStyle={{ color: Color.black }}
+        inputStyle={{color: Color.black}}
         iconColor={Color.cloudyGrey}
       />
       {loading ? (
@@ -168,7 +167,7 @@ const FollowingSellers = () => {
         <FlatList
           data={sellerData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({ item, index }) => {
+          renderItem={({item, index}) => {
             return item?.is_follow == true ? (
               <TouchableOpacity
                 onPress={() =>
@@ -191,7 +190,7 @@ const FollowingSellers = () => {
                 }}>
                 {item.profile != null ? (
                   <Image
-                    source={{ uri: item.profile }}
+                    source={{uri: item.profile}}
                     style={{
                       width: 60,
                       height: 60,
@@ -201,7 +200,7 @@ const FollowingSellers = () => {
                   />
                 ) : (
                   <Image
-                    source={{ uri: Media.user }}
+                    source={{uri: Media.user}}
                     style={{
                       width: 60,
                       height: 60,

@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     marginVertical: 5,
+    marginHorizontal: 5,
   },
   checkbox: {
     width: 20,

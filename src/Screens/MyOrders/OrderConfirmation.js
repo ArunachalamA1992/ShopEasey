@@ -31,7 +31,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 LogBox.ignoreAllLogs();
 
 const OrderConfirmation = ({navigation, route}) => {
-  const [CheckOut] = useState(route.params.CheckOut);
+  const {CheckOut, ids} = route.params;
   const [OrderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
@@ -41,10 +41,33 @@ const OrderConfirmation = ({navigation, route}) => {
   const [couponCode, setCouponCode] = useState('');
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(CheckOut?.length == 1);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getCartData();
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const getCartData = async () => {
+    try {
+      var data = `id=${ids?.join(',')}`;
+      const getCart = await fetchData.list_cart(data, token);
+      setOrderData(getCart?.data);
+      const getaddress = await fetchData.list_address(``, token);
+      setAddress(getaddress?.data);
+    } catch (error) {
+      console.log('error------', error);
+    }
+  };
+
+  var selectedData = ids?.length > 0 ? OrderData : CheckOut;
+  const [isExpanded, setIsExpanded] = useState(selectedData?.length == 1);
 
   const [paymentMethod] = useState([
     {
@@ -144,48 +167,31 @@ const OrderConfirmation = ({navigation, route}) => {
     }
   }, [address]);
 
-  useEffect(() => {
-    setLoading(true);
-    getCartData()
-      .then(() => setLoading(false))
-      .catch(() => {
-        setLoading(false);
-      });
-  }, [token]);
+  const Sub_total = selectedData
+    ?.reduce((accumulator, item) => {
+      const price = item?.variant?.offer_price ?? item.variant?.price;
+      const priceMargin = countryCode?.price_margin || 1;
+      const quantity = item?.quantity || 0;
 
-  const getCartData = async () => {
-    try {
-      var data = `id=${CheckOut?.join(',')}`;
-      const getCart = await fetchData.list_cart(data, token);
-      setOrderData(getCart?.data);
-      const getaddress = await fetchData.list_address(``, token);
-      setAddress(getaddress?.data);
-    } catch (error) {
-      console.log('error------', error);
-    }
-  };
+      return accumulator + (price / priceMargin) * quantity;
+    }, 0)
+    .toFixed(2);
 
-  const Sub_total = CheckOut?.reduce((accumulator, item) => {
-    const price = item?.variant?.offer_price ?? item.variant?.price;
-    const priceMargin = countryCode?.price_margin || 1;
-    const quantity = item?.quantity || 0;
+  const discount_price = selectedData
+    ?.reduce((accumulator, item) => {
+      const orgPrice = item.variant?.org_price ?? 0;
+      const offerPrice = item.variant?.offer_price ?? item.variant?.price;
+      const priceMargin = countryCode?.price_margin ?? 1;
+      const quantity = item?.quantity ?? 0;
 
-    return accumulator + (price / priceMargin) * quantity;
-  }, 0).toFixed(2);
+      const discountedPrice =
+        (orgPrice / priceMargin - offerPrice / priceMargin) * quantity;
 
-  const discount_price = CheckOut?.reduce((accumulator, item) => {
-    const orgPrice = item.variant?.org_price ?? 0;
-    const offerPrice = item.variant?.offer_price ?? item.variant?.price;
-    const priceMargin = countryCode?.price_margin ?? 1;
-    const quantity = item?.quantity ?? 0;
+      return accumulator + discountedPrice;
+    }, 0)
+    .toFixed(2);
 
-    const discountedPrice =
-      (orgPrice / priceMargin - offerPrice / priceMargin) * quantity;
-
-    return accumulator + discountedPrice;
-  }, 0).toFixed(2);
-
-  const product_tax = CheckOut?.map(orderItem => {
+  const product_tax = selectedData?.map(orderItem => {
     return orderItem?.tax
       ?.map(item => {
         if (item?.region_id == countryCode?.id) {
@@ -252,7 +258,7 @@ const OrderConfirmation = ({navigation, route}) => {
         total: total_price,
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-        order: CheckOut?.flatMap(item =>
+        order: selectedData?.flatMap(item =>
           item.tax?.flatMap(tax_item => {
             if (tax_item?.region_id == countryCode?.id) {
               return {
@@ -381,12 +387,44 @@ const OrderConfirmation = ({navigation, route}) => {
               }}>
               <Text
                 style={{
+                  flex: 1,
                   fontSize: 16,
                   color: Color.black,
                   fontFamily: Manrope.SemiBold,
                 }}>
                 Delivered Address
               </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('AddAddress', {
+                    item: {},
+                    CheckOut: CheckOut,
+                    ids: ids,
+                    status: 'ADD',
+                  })
+                }
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Iconviewcomponent
+                  Icontag={'FontAwesome'}
+                  iconname={'plus'}
+                  icon_size={14}
+                  iconstyle={{color: Color.primary}}
+                />
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 14,
+                    color: Color.primary,
+                    fontFamily: Manrope.SemiBold,
+                    paddingHorizontal: 5,
+                  }}>
+                  Add Address
+                </Text>
+              </TouchableOpacity>
             </View>
             {address?.map((item, index) => {
               return (
@@ -458,6 +496,7 @@ const OrderConfirmation = ({navigation, route}) => {
                       navigation.navigate('AddAddress', {
                         item,
                         CheckOut: CheckOut,
+                        ids: ids,
                         status: 'UPDATE',
                       });
                     }}
@@ -511,7 +550,7 @@ const OrderConfirmation = ({navigation, route}) => {
             </TouchableOpacity>
             {isExpanded ? (
               <View style={{width: '100%'}}>
-                {CheckOut?.map(item => {
+                {selectedData?.map(item => {
                   var discount = parseFloat(
                     100 -
                       ((item?.variant?.org_price / countryCode?.price_margin -
@@ -970,7 +1009,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     fontFamily: Manrope.Medium,
                     letterSpacing: 0.5,
                   }}>
-                  Price ( {CheckOut?.length} Items )
+                  Price ( {selectedData?.length} Items )
                 </Text>
                 <Text
                   style={{

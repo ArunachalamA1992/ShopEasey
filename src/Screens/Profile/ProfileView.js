@@ -183,7 +183,9 @@ const ProfileView = () => {
                     paddingVertical: 5,
                     textTransform: 'capitalize',
                   }}>
-                  {profileData.first_name + ' ' + profileData.last_name}
+                  {profileData.first_name && profileData.last_name
+                    ? `${profileData.first_name} ${profileData.last_name}`
+                    : 'Your name'}
                 </Text>
                 <Divider style={{height: 1, marginVertical: 10}} />
               </View>
@@ -206,7 +208,9 @@ const ProfileView = () => {
                       color: Color.black,
                       fontFamily: Manrope.Medium,
                     }}>
-                    {profileData.email}
+                    {profileData.email != null
+                      ? profileData.email
+                      : 'Your email id'}
                   </Text>
                   <Divider style={{height: 1, marginVertical: 10}} />
                 </View>

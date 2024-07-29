@@ -82,24 +82,15 @@ const OTPScreen = ({route, AppState}) => {
 
   const ResendOTP = async number => {
     setSeconds(30);
-    const ResendOtpVerify =
-      loginType == ''
-        ? await fetchData.login_verify_otp(
-            {
-              mobile: number,
-              otp: otpCode,
-              region_id: countryCode?.id,
-            },
-            token,
-          )
-        : await fetchData.Register_verify_otp(
-            {
-              mobile: number,
-              otp: otpCode,
-              region_id: countryCode?.id,
-            },
-            token,
-          );
+    var data = {
+      region_id: countryCode?.id,
+    };
+    if (isEmail(number)) {
+      data.email = number;
+    } else if (isMobile(number)) {
+      data.mobile = number;
+    }
+    const ResendOtpVerify = await fetchData.login_with_otp(data, null);
     if (ResendOtpVerify?.status == true) {
       if (Platform.OS === 'android') {
         common_fn.showToast(ResendOtpVerify?.message);

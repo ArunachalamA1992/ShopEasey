@@ -371,7 +371,7 @@ const ProductDetails = ({route, navigation}) => {
             tax: singleData?.tax,
           },
         ];
-        navigation.navigate('OrderConfirmation', {CheckOut});
+        navigation.navigate('OrderConfirmation', {CheckOut, ids: []});
         setModalVisible(false);
       } else {
         common_fn.showToast('Please Select the Color or Size');
@@ -937,7 +937,7 @@ const ProductDetails = ({route, navigation}) => {
                       {' '}
                       Damage Protection
                     </Text>
-                    <Text
+                    {/* <Text
                       style={{
                         fontSize: 14,
                         color: Color.blue,
@@ -945,7 +945,7 @@ const ProductDetails = ({route, navigation}) => {
                         textDecorationLine: 'underline',
                       }}>
                       Learn More
-                    </Text>
+                    </Text> */}
                   </View>
                   <View
                     style={{
@@ -974,8 +974,7 @@ const ProductDetails = ({route, navigation}) => {
                         fontFamily: Manrope.Bold,
                         marginHorizontal: 10,
                       }}>
-                      {' '}
-                      Free Shipping
+                      {countryCode?.symbol} {10}
                     </Text>
                   </View>
                   <View
@@ -1403,6 +1402,15 @@ const ProductDetails = ({route, navigation}) => {
                           fontSize: 14,
                           color: Color.black,
                           fontFamily: Manrope.Bold,
+                        }}
+                        onPress={() => {
+                          if (token != undefined) {
+                            navigation.navigate('SellerProfile', {
+                              vendor_id: singleData?.product?.vendor?.id,
+                            });
+                          } else {
+                            navigation.navigate('Auth');
+                          }
                         }}
                         numberOfLines={2}>
                         {singleData?.product?.vendor?.business_name}
@@ -2025,7 +2033,8 @@ const ProductDetails = ({route, navigation}) => {
                 {topPicks?.length > 0 && (
                   <View
                     style={{
-                      padding: 10,
+                      paddingLeft: 10,
+                      marginVertical: 10,
                     }}>
                     <View
                       style={{
@@ -2069,8 +2078,8 @@ const ProductDetails = ({route, navigation}) => {
                 {Categories_data?.length > 0 && (
                   <View
                     style={{
-                      padding: 10,
-                      marginBottom: 10,
+                      paddingLeft: 10,
+                      marginVertical: 10,
                     }}>
                     <Text
                       style={{
@@ -2078,6 +2087,7 @@ const ProductDetails = ({route, navigation}) => {
                         fontSize: 16,
                         color: Color.black,
                         fontFamily: Manrope.Bold,
+                        marginBottom: 10,
                       }}>
                       YOU MAY ALSO LIKE
                     </Text>

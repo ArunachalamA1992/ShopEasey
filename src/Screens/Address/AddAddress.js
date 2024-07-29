@@ -24,6 +24,7 @@ const AddAddress = ({route}) => {
   const navigation = useNavigation();
   const [itemData] = useState(route.params.item);
   const [CheckOut] = useState(route.params.CheckOut);
+  const [ids] = useState(route.params.ids);
   const [status] = useState(route.params.status);
   const [username, setUsername] = useState(itemData?.name);
   const [phone, setphone] = useState(itemData?.phone);
@@ -76,7 +77,7 @@ const AddAddress = ({route}) => {
         const add_address = await fetchData.add_address(data, token);
         if (add_address?.status == true) {
           navigation.dispatch(
-            StackActions.replace('OrderConfirmation', {CheckOut}),
+            StackActions.replace('OrderConfirmation', {CheckOut, ids}),
           );
           common_fn.showToast(add_address?.message);
         } else {

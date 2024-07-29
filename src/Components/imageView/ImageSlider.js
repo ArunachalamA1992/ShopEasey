@@ -95,7 +95,7 @@ export default class ImageSlider extends Component {
               {useNativeDriver: true},
             )}
           />
-          {images?.length > 0 && (
+          {images?.length > 1 && (
             <>
               <TouchableOpacity
                 onPress={this.backPress}

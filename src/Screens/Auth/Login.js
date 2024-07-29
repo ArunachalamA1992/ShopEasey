@@ -106,37 +106,52 @@ const Login = () => {
       setLoading(true);
       const numberIsEmail = isEmail(number);
       const numberIsMobile = isMobile(number);
-      if (numberIsEmail || (numberIsMobile && number.length === 10)) {
-        var data = {
-          region_id: countryCode?.id,
-        };
-        if (isEmail(number)) {
-          data.email = number;
-        } else if (isMobile(number)) {
-          data.mobile = number;
-        }
-        const login_data = await fetchData.login_with_otp(data, null);
-        if (login_data?.status) {
-          common_fn.showToast(login_data?.message);
-          navigation.dispatch(
-            StackActions.replace('OTPScreen', {
-              number,
-              token: login_data?.token,
-              loginType,
-            }),
-          );
+      if (number != '') {
+        if (numberIsEmail || (numberIsMobile && number.length === 10)) {
+          var data = {
+            region_id: countryCode?.id,
+          };
+          if (isEmail(number)) {
+            data.email = number;
+          } else if (isMobile(number)) {
+            data.mobile = number;
+          }
+          const login_data = await fetchData.login_with_otp(data, null);
+          if (login_data?.status) {
+            common_fn.showToast(login_data?.message);
+            navigation.dispatch(
+              StackActions.replace('OTPScreen', {
+                number,
+                token: login_data?.token,
+                loginType,
+              }),
+            );
+            setLoading(false);
+          } else {
+            var msg = login_data?.message;
+            setError(msg);
+            setLoading(false);
+          }
           setLoading(false);
         } else {
-          var msg = login_data?.message;
-          setError(msg);
+          let reg = /[A-Za-z- #*;,.<>\{\}\[\]\\\/]/gi;
+          if (reg.test(number)) {
+            common_fn.showToast(`Invalid Email ID`);
+          } else {
+            common_fn.showToast(
+              `Invalid ${
+                countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+              }  Number`,
+            );
+          }
           setLoading(false);
         }
-        setLoading(false);
       } else {
         common_fn.showToast(
-          'Invalid Phone Number Please Enter Your 10 Digit Phone Number',
+          `Enter your ${
+            countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+          } or email id`,
         );
-        setLoading(false);
       }
     } catch (error) {
       console.log('error', error);
@@ -149,37 +164,53 @@ const Login = () => {
       setLoading(true);
       const numberIsEmail = isEmail(number);
       const numberIsMobile = isMobile(number);
-      if (numberIsEmail || (numberIsMobile && number.length === 10)) {
-        var data = {
-          region_id: countryCode?.id,
-        };
-        if (isEmail(number)) {
-          data.email = number;
-        } else if (isMobile(number)) {
-          data.mobile = number;
-        }
-        const Register_data = await fetchData.Register_request_otp(data, null);
-        if (Register_data?.status == true) {
-          common_fn.showToast('OTP Sent to your Email');
-          navigation.navigate('OTPScreen', {
-            number,
-            token: Register_data?.token,
-            loginType,
-          });
+      if (number != '') {
+        if (numberIsEmail || (numberIsMobile && number.length === 10)) {
+          var data = {
+            region_id: countryCode?.id,
+          };
+          if (isEmail(number)) {
+            data.email = number;
+          } else if (isMobile(number)) {
+            data.mobile = number;
+          }
+          const Register_data = await fetchData.Register_request_otp(
+            data,
+            null,
+          );
+          if (Register_data?.status == true) {
+            common_fn.showToast('OTP Sent to your Email');
+            navigation.navigate('OTPScreen', {
+              number,
+              token: Register_data?.token,
+              loginType,
+            });
+            setLoading(false);
+          } else {
+            var msg = Register_data?.message;
+            setError(msg);
+            setLoading(false);
+          }
           setLoading(false);
         } else {
-          var msg = Register_data?.message;
-          setError(msg);
+          let reg = /[A-Za-z- #*;,.<>\{\}\[\]\\\/]/gi;
+          if (reg.test(number)) {
+            common_fn.showToast(`Invalid Email ID`);
+          } else {
+            common_fn.showToast(
+              `Invalid ${
+                countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+              }  Number`,
+            );
+          }
           setLoading(false);
         }
-        setLoading(false);
       } else {
         common_fn.showToast(
-          `Invalid Phone Number Please Enter Your 10 Digit ${
+          `Enter your ${
             countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
-          } Number`,
+          } or email id`,
         );
-        setLoading(false);
       }
     } catch (error) {
       console.log('error', error);
@@ -191,10 +222,11 @@ const Login = () => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          flex: 1,
-          justifyContent: 'flex-end',
-          alignItems: 'flex-start',
+          // flex: 1,
+          // justifyContent: 'flex-end',
+          // alignItems: 'flex-start',
           padding: 10,
+          marginTop: 20,
         }}>
         <Text
           style={{
@@ -288,8 +320,8 @@ const Login = () => {
       </View>
       <View
         style={{
-          //   flex: 1,
-          justifyContent: 'center',
+          // flex: 1,
+          // justifyContent: 'center',
           padding: 10,
         }}>
         <TouchableOpacity
@@ -402,8 +434,10 @@ const Login = () => {
       </View>
       <View
         style={{
+          flex: 1,
           marginTop: 20,
           paddingHorizontal: 10,
+          justifyContent: 'flex-end',
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
@@ -481,10 +515,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.white,
     padding: 10,
-    justifyContent: 'center',
   },
   NumberBoxConatiner: {
-    display: 'flex',
     borderColor: Color.cloudyGrey,
     borderWidth: 1,
     height: 50,

@@ -86,9 +86,10 @@ const MyCart = ({}) => {
         // if (selectedData?.includes(bottomData?.id)) {
         //   setSelectedData(selectedData.filter(id => id !== bottomData?.id));
         // }
-        setCheckOut(
-          CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
-        );
+        // setCheckOut(
+        //   CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+        // );
+        setSelectedData(selectedData.filter(id => id !== item.id));
       } else {
         common_fn.showToast(wishlist?.message);
       }
@@ -163,7 +164,7 @@ const MyCart = ({}) => {
       }
       const update_cart = await fetchData.update_cart(param, data, token);
       if (update_cart?.status == true) {
-        common_fn.showToast(update_cart?.message);
+        // common_fn.showToast(update_cart?.message);
         getCartData();
         getCountData();
       } else {
@@ -185,9 +186,10 @@ const MyCart = ({}) => {
       // if (selectedData?.includes(bottomData?.id)) {
       //   setSelectedData(selectedData.filter(id => id !== bottomData?.id));
       // }
-      setCheckOut(
-        CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
-      );
+      // setCheckOut(
+      //   CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+      // );
+      setSelectedData(selectedData.filter(id => id !== item.id));
     } catch (error) {
       console.log('error', error);
     }
@@ -196,12 +198,20 @@ const MyCart = ({}) => {
   const handleCheckboxToggle = item => {
     if (selectedData?.includes(item?.id)) {
       setSelectedData(selectedData.filter(id => id !== item.id));
-      setCheckOut(
-        CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
-      );
+      // setCheckOut(
+      //   CheckOut.filter(CheckOutItem => CheckOutItem?.id !== item.id),
+      // );
     } else {
       setSelectedData([...selectedData, item.id]);
-      setCheckOut([...CheckOut, item]);
+      // setCheckOut([...CheckOut, item]);
+    }
+  };
+  const handleSelectAll = () => {
+    if (selectedData.length === cartData.length) {
+      setSelectedData([]);
+    } else {
+      const allIds = cartData.map(item => item.id);
+      setSelectedData(allIds);
     }
   };
 
@@ -372,6 +382,38 @@ const MyCart = ({}) => {
         </View>
       ) : (
         <>
+          <TouchableOpacity
+            onPress={() => {
+              handleSelectAll();
+            }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 10,
+            }}>
+            <MCIcon
+              name={
+                cartData?.length == selectedData.length
+                  ? 'checkbox-marked'
+                  : 'checkbox-blank-outline'
+              }
+              size={25}
+              color={
+                cartData?.length == selectedData.length
+                  ? Color.primary
+                  : Color.black
+              }
+            />
+            <Text
+              style={{
+                fontSize: 16,
+                color: Color.black,
+                fontFamily: Manrope.Bold,
+                marginLeft: 5,
+              }}>
+              Select All
+            </Text>
+          </TouchableOpacity>
           <FlatList
             data={cartData}
             keyExtractor={(item, index) => String(index)}
@@ -780,11 +822,13 @@ const MyCart = ({}) => {
                         if (addressData > 0) {
                           navigation.navigate('OrderConfirmation', {
                             CheckOut: CheckOut,
+                            ids: selectedData,
                           });
                         } else {
                           navigation.navigate('AddAddress', {
                             item: {},
                             CheckOut: CheckOut,
+                            ids: selectedData,
                             status: 'ADD',
                           });
                         }

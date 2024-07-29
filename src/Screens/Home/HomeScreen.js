@@ -17,6 +17,7 @@ import {
   Modal,
   NativeEventEmitter,
   NativeModules,
+  TextInput,
 } from 'react-native';
 import Color from '../../Global/Color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -24,7 +25,7 @@ import {Iconviewcomponent} from '../../Components/Icontag';
 import {Manrope} from '../../Global/FontFamily';
 import {useNavigation} from '@react-navigation/native';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import {Badge, Button} from 'react-native-paper';
+import {Badge, Button, Divider} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -265,11 +266,11 @@ const HomeScreen = () => {
 
   const handleVoiceSearch = query => {
     console.log('query------------------', query);
-    if (query != '') {
-      navigation.navigate('Search', {searchProduct: query});
-    }
-    
+    // if (query != '') {
+    //   navigation.navigate('Search', {searchProduct: query});
+    // }
     setVoiceSearchQuery(query);
+    propertySearch(query);
   };
 
   const openCameraWithPermission = async () => {
@@ -405,6 +406,72 @@ const HomeScreen = () => {
     }
   };
 
+  const [searchProduct, setSearchProduct] = useState('');
+  const [selectData, setSelectData] = useState({});
+  const [searchloadMore, setSearchLoadMore] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchendReached, setSearchEndReached] = useState(false);
+  const [ProductSuggestions, setProductSuggestions] = useState({
+    data: [],
+    visible: false,
+  });
+
+  const propertySearch = async input => {
+    setSearchProduct(input);
+    try {
+      const data = `filter=${searchProduct}&page=1&limit=10`;
+      const getData = await fetchData.search(data, token);
+      setProductSuggestions({
+        data: getData?.data?.keyword?.rows,
+        visible: true,
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const loadSearchMoreData = async () => {
+    if (searchloadMore || searchendReached) {
+      return;
+    }
+    setSearchLoadMore(true);
+    try {
+      const nextPage = searchPage + 1;
+      var data = `filter=${searchProduct}&page=${nextPage}&limit=10`;
+      const filterData = await fetchData.search(data, token);
+      if (filterData.length > 0) {
+        setSearchPage(nextPage);
+        const updatedData = [
+          ...ProductSuggestions,
+          ...filterData?.data?.keyword?.rows,
+        ];
+        setProductSuggestions(updatedData);
+      } else {
+        setSearchEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setSearchLoadMore(false);
+    }
+  };
+
+  const getSearchData = async item => {
+    try {
+      setSearchProduct(item?.keyword);
+      setSelectData(item);
+      setProductSuggestions({
+        data: [],
+        visible: false,
+      });
+      navigation.navigate('SearchDataList', {
+        searchProduct: item?.keyword,
+        selectData: item,
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'light-content'} />
@@ -854,37 +921,50 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
             </View>
+          </View>
+          <View
+            style={{
+              width: '100%',
+              position: 'absolute',
+              alignItems: 'center',
+              top: 50,
+            }}>
             <View
+              activeOpacity={0.5}
               style={{
-                width: '100%',
-                position: 'absolute',
+                backgroundColor: Color.white,
+                flexDirection: 'row',
+                marginVertical: 20,
                 alignItems: 'center',
-                top: 50,
-              }}>
-              <TouchableOpacity
-                activeOpacity={0.5}
-                style={{
-                  backgroundColor: Color.white,
-                  flexDirection: 'row',
-                  marginVertical: 20,
-                  alignItems: 'center',
-                  borderRadius: 50,
-                  width: '90%',
-                  height: 50,
-                  paddingHorizontal: 20,
-                  borderWidth: 1,
-                  borderColor: Color.lightgrey,
-                }}
-                onPress={() => {
-                  navigation.navigate('Search', {searchProduct: ''});
-                }}>
-                <Iconviewcomponent
-                  Icontag={'AntDesign'}
-                  iconname={'search1'}
-                  icon_size={20}
-                  icon_color={Color.black}
-                />
-                <Text
+                borderRadius:
+                  ProductSuggestions?.visible == true && searchProduct != ''
+                    ? 20
+                    : 50,
+                borderBottomLeftRadius:
+                  ProductSuggestions?.visible == true && searchProduct != ''
+                    ? 0
+                    : 50,
+                borderBottomRightRadius:
+                  ProductSuggestions?.visible == true && searchProduct != ''
+                    ? 0
+                    : 50,
+                width: '90%',
+                height: 50,
+                paddingHorizontal: 20,
+                borderWidth: 1,
+                borderColor: Color.lightgrey,
+              }}
+              // onPress={() => {
+              //   navigation.navigate('Search', {searchProduct: ''});
+              // }}
+            >
+              <Iconviewcomponent
+                Icontag={'AntDesign'}
+                iconname={'search1'}
+                icon_size={20}
+                icon_color={Color.black}
+              />
+              {/* <Text
                   style={{
                     flex: 1,
                     fontSize: 14,
@@ -894,9 +974,22 @@ const HomeScreen = () => {
                   }}
                   numberOfLines={1}>
                   {`Search Products`}
-                </Text>
-                <VoiceSearch onSearch={handleVoiceSearch} />
-                {/* <TouchableOpacity
+                </Text> */}
+              <TextInput
+                placeholder="Search Products"
+                value={searchProduct}
+                style={{
+                  flex: 1,
+                  marginLeft: 10,
+                  color: Color.cloudyGrey,
+                  fontSize: 14,
+                  fontFamily: Manrope.SemiBold,
+                }}
+                placeholderTextColor={Color.cloudyGrey}
+                onChangeText={search => propertySearch(search)}
+              />
+              <VoiceSearch onSearch={handleVoiceSearch} />
+              {/* <TouchableOpacity
                   onPress={() => {
                     openCameraWithPermission();
                   }}>
@@ -909,9 +1002,64 @@ const HomeScreen = () => {
                     }}
                   />
                 </TouchableOpacity> */}
-              </TouchableOpacity>
             </View>
           </View>
+          {ProductSuggestions?.visible == true && searchProduct != '' && (
+            <View
+              style={{
+                width: '100%',
+                position: 'absolute',
+                alignItems: 'center',
+                top: 115,
+                zIndex: 1,
+              }}>
+              <View
+                style={{
+                  width: '90%',
+                  maxHeight: 200,
+                  backgroundColor: Color.white,
+                  padding: 10,
+                  marginTop: 5,
+                  borderWidth: 1,
+                  borderColor: Color.lightgrey,
+                  borderBottomLeftRadius: 20,
+                  borderBottomRightRadius: 20,
+                }}>
+                <FlatList
+                  data={ProductSuggestions?.data}
+                  keyExtractor={(item, index) => item + index}
+                  renderItem={({item, index}) => {
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                          getSearchData(item);
+                        }}
+                        style={{
+                          width: '90%',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            fontFamily: Manrope.Medium,
+                            color: Color.black,
+                          }}>
+                          {item?.keyword}
+                        </Text>
+                        {index < ProductSuggestions?.data.length - 1 && (
+                          <Divider style={{height: 1, marginVertical: 5}} />
+                        )}
+                      </TouchableOpacity>
+                    );
+                  }}
+                  onEndReached={() => {
+                    loadSearchMoreData();
+                  }}
+                  onEndReachedThreshold={3}
+                />
+              </View>
+            </View>
+          )}
           <Animated.SectionList
             sections={shopSection}
             scrollEnabled={true}

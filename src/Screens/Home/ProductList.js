@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
+  BackHandler,
   Dimensions,
   FlatList,
   StyleSheet,
@@ -40,20 +41,44 @@ const ProductList = ({route, navigation}) => {
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
 
+  const navigationStack = useRef([]);
+  console.log('navigationStack', navigationStack);
+
   useEffect(() => {
     setLoading(true);
     getData();
     getCountData();
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress,
+    );
+
+    return () => backHandler.remove();
   }, [category_id]);
+
+  const handleBackPress = () => {
+    if (navigationStack.current.length > 0) {
+      const previousState = navigationStack.current.pop();
+      setSelectedCategory(previousState.selectedCategory);
+      setCategoryData(previousState.CategoryData);
+      setCurrentLevel(previousState.currentLevel);
+      setSub_cat_id(previousState.sub_cat_id);
+      setProducts(previousState.products);
+      setPage(previousState.Page);
+      setEndReached(previousState.endReached);
+      return true;
+    } else {
+      navigation.goBack();
+      return true;
+    }
+  };
 
   const getData = async () => {
     try {
       var data = `/${category_id}`;
       loadInitialProducts(category_id, param);
       const categories_data = await fetchData.categories(data, token);
-      // let query = `category_id=${category_id}`;
-      // const product_data = await fetchData.list_products(query, token);
-      // setProducts(product_data?.data);
       setCurrentLevel(false);
       setCategoryData(categories_data?.data?.sub_categories);
     } catch (error) {
@@ -100,6 +125,16 @@ const ProductList = ({route, navigation}) => {
 
   const handleCategory = async item => {
     try {
+      navigationStack.current.push({
+        selectedCategory,
+        CategoryData,
+        currentLevel,
+        sub_cat_id,
+        products,
+        Page,
+        endReached,
+      });
+
       setSelectedCategory(item);
       setCurrentLevel(currentLevel ? false : true);
       setSub_cat_id(item?.id);
@@ -149,7 +184,7 @@ const ProductList = ({route, navigation}) => {
       <View style={styles.header}>
         <TouchableOpacity
           style={{marginRight: 10}}
-          onPress={() => navigation.goBack()}>
+          onPress={() => handleBackPress()}>
           <AntDesign name="arrowleft" size={30} color={Color.white} />
         </TouchableOpacity>
         <TouchableOpacity
