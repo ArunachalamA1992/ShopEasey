@@ -98,7 +98,10 @@ const ItemCard = props => {
       <TouchableOpacity
         style={styles.product}
         onPress={() => {
-          navigation.navigate('ProductDetails', {id: item?.id});
+          navigation.navigate('ProductDetails', {
+            id: item?.id,
+            variant_id: item?.variants[0]?.id,
+          });
         }}>
         <ImageBackground
           style={styles.Productimage}
@@ -348,7 +351,10 @@ export const ItemCardHorizontal = props => {
         borderColor: Color.lightgrey,
       }}
       onPress={() => {
-        navigation.push('ProductDetails', {id: item?.id});
+        navigation.push('ProductDetails', {
+          id: item?.id,
+          variant_id: item?.variants[0]?.id,
+        });
       }}>
       <ImageBackground
         style={styles.Productimage}

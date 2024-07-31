@@ -172,7 +172,7 @@ const SearchDataList = ({navigation, route}) => {
             marginHorizontal: 10,
           }}
           numberOfLines={1}>
-          {`skills for ${searchProduct}`}
+          {`Search for ${searchProduct}`}
         </Text>
         <VoiceSearch onSearch={handleVoiceSearch} />
       </TouchableOpacity>
@@ -311,7 +311,7 @@ const SearchDataList = ({navigation, route}) => {
           onPress={() => setSearchModalVisible(false)}
         />
         <View style={styles.searchModal}>
-          <Text
+          {/* <Text
             style={{
               fontSize: 14,
               fontFamily: Manrope.Medium,
@@ -319,7 +319,7 @@ const SearchDataList = ({navigation, route}) => {
               marginVertical: 5,
             }}>
             Enter Product Data
-          </Text>
+          </Text> */}
           <Searchbar
             placeholder="Search Products"
             placeholderTextColor={Color.grey}

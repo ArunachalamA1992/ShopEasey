@@ -65,5 +65,6 @@ const styles = StyleSheet.create({
     color: Color.black,
     marginLeft: 5,
     fontFamily: Manrope.SemiBold,
+    textTransform: 'capitalize',
   },
 });

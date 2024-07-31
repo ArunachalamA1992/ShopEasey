@@ -30,6 +30,13 @@ const selectAddressess = () => {
     getAddressData();
   }, []);
 
+  useEffect(() => {
+    if (addressData.length > 0) {
+      const defaultAddress = addressData.find(item => item?.is_default === 1);
+      setSelectAddress(defaultAddress);
+    }
+  }, [addressData]);
+
   const getAddressData = async () => {
     try {
       const getaddress = await fetchData.list_address(``, token);

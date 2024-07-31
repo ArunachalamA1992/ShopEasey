@@ -6,8 +6,9 @@ import {useSelector} from 'react-redux';
 import Color from '../../Global/Color';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const LatestProductList = ({navigation}) => {
-  const [latestProducts, setLatestProduct] = useState([]);
+const ViewAllProducts = ({navigation, route}) => {
+  const {key} = route.params;
+  const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
@@ -27,8 +28,11 @@ const LatestProductList = ({navigation}) => {
 
   const getData = async () => {
     try {
-      const latest_products = await fetchData.list_products(``, token);
-      setLatestProduct(latest_products?.data);
+      const latest_products =
+        key == 'latest'
+          ? await fetchData.list_products(``, token)
+          : await fetchData.list_products(`is_featured=1`, token);
+      setProduct(latest_products?.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -45,8 +49,8 @@ const LatestProductList = ({navigation}) => {
       const response = await fetchData.list_products(data, token);
       if (response?.data.length > 0) {
         setPage(nextPage);
-        const updatedData = [...latestProducts, ...response?.data];
-        setLatestProduct(updatedData);
+        const updatedData = [...product, ...response?.data];
+        setProduct(updatedData);
       } else {
         setEndReached(true);
       }
@@ -134,7 +138,7 @@ const LatestProductList = ({navigation}) => {
         </View>
       ) : (
         <FlatList
-          data={latestProducts}
+          data={product}
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => {
@@ -150,4 +154,4 @@ const LatestProductList = ({navigation}) => {
   );
 };
 
-export default LatestProductList;
+export default ViewAllProducts;

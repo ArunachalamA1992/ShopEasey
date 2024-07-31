@@ -2526,6 +2526,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                   onPress={() => {
                     navigation.navigate('ProductDetails', {
                       id: item?.product_id,
+                      variant_id: item?.variants?.id,
                     });
                   }}>
                   <Text

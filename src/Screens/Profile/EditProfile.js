@@ -53,7 +53,7 @@ const EditProfile = ({navigation, route}) => {
   const [profileImage, setProfileImage] = useState(userData.profile);
   const [image, setImage] = useState([]);
   const [dateofBirth, setDateOfBirth] = useState(
-    userData.dob != undefined ? new Date(userData.dob) : new Date(),
+    userData.dob != undefined ? new Date(userData.dob) : '',
   );
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -651,7 +651,7 @@ const EditProfile = ({navigation, route}) => {
                 onChangeText={value => {
                   setPhoneNumber(value);
                 }}
-                keyboardType="phone-pad"
+                keyboardType="number-pad"
                 maxLength={10}
               />
             </View>
@@ -690,7 +690,9 @@ const EditProfile = ({navigation, route}) => {
                     textAlignVertical: 'center',
                   },
                 ]}>
-                {moment(dateofBirth).format('YYYY-MM-DD')}
+                {dateofBirth != ''
+                  ? moment(dateofBirth).format('YYYY-MM-DD')
+                  : ''}
               </Text>
             </TouchableOpacity>
           </View>
@@ -756,7 +758,7 @@ const EditProfile = ({navigation, route}) => {
         </View>
 
         <DateTimePickerModal
-          date={dateofBirth}
+          date={dateofBirth != '' ? dateofBirth : new Date()}
           isVisible={isDatePickerVisible}
           mode="date"
           onConfirm={handleConfirm}

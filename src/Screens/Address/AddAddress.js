@@ -208,7 +208,7 @@ const AddAddress = ({route}) => {
     }
     setStateLoadMore(true);
     try {
-      const nextPage = page + 1;
+      const nextPage = statePage + 1;
       var data = 'page=' + nextPage;
       const response = await fetchData.get_state_data(data, token);
       if (response?.data.length > 0) {
@@ -231,7 +231,7 @@ const AddAddress = ({route}) => {
     }
     setCityLoadMore(true);
     try {
-      const nextPage = page + 1;
+      const nextPage = cityPage + 1;
       var data = `state_id=${selectState?.state_id}&page=${nextPage}`;
       const response = await fetchData.get_state_data(data, token);
       if (response?.data.length > 0) {
@@ -307,6 +307,7 @@ const AddAddress = ({route}) => {
                               onPress={() => {
                                 setSelectState(item);
                                 setSaleBottomSheetVisible(false);
+                                setSelectCity({});
                               }}
                               style={{
                                 width: '100%',

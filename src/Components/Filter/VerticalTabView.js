@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import axios from 'axios';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {CheckboxData, RadioData} from '../RadioButton';
 import common_fn from '../../Config/common_fn';
+import CustomRange from '../CustomRange';
 
 const TabContent = ({
   item,
@@ -34,6 +35,16 @@ const TabContent = ({
   maxRating,
   defaultRating,
   setDefaultRating,
+  //price
+  low,
+  setLow,
+  high,
+  setHigh,
+  min,
+  setMin,
+  max,
+  setMax,
+  handleValueChange,
 }) => {
   if (item?.category) {
     return (
@@ -54,22 +65,19 @@ const TabContent = ({
     return (
       <View
         style={{
-          flexDirection: 'row',
-          flex: 1,
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
           marginVertical: 10,
         }}>
-        {item?.price?.map((item, index) => {
-          return (
-            <RadioData
-              key={index}
-              label={`${countryCode?.symbol} ${item.price}`}
-              checked={priceSelectedItem.includes(item.price_id)}
-              onPress={() => handlePricePress(item.price_id)}
-            />
-          );
-        })}
+        <CustomRange
+          low={low}
+          setLow={setLow}
+          high={high}
+          setHigh={setHigh}
+          min={min}
+          setMin={setMin}
+          max={max}
+          setMax={setMax}
+          handleValueChange={handleValueChange}
+        />
       </View>
     );
   } else if (item?.brand) {
@@ -98,10 +106,8 @@ const TabContent = ({
     return (
       <View
         style={{
-          flexDirection: 'row',
           flex: 1,
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
           marginVertical: 10,
         }}>
         {item?.colors?.map((item, index) => {
@@ -188,6 +194,7 @@ const TabContent = ({
                   color: Color.black,
                   fontFamily: Manrope.Bold,
                   marginVertical: 10,
+                  textTransform: 'uppercase',
                 }}>
                 {item?.size}
               </Text>
@@ -265,6 +272,17 @@ const VerticalTabView = props => {
       price: '4999',
     },
   ]);
+
+  const [low, setLow] = useState(100);
+  const [high, setHigh] = useState(100000);
+  const [min, setMin] = useState(100);
+  const [max, setMax] = useState(100000);
+
+  const handleValueChange = useCallback((low, high) => {
+    setLow(low);
+    setHigh(high);
+  }, []);
+
   const [search, setSearch] = useState('');
   const [searchdiscounts, setSearchdiscounts] = useState('');
   const [discountsSuggestion, setdiscountsSuggestion] = useState({
@@ -279,13 +297,48 @@ const VerticalTabView = props => {
   const [brandData, setbrandData] = useState([
     {
       id: 1,
-      title: 'Jack & Jones',
-      value: 'Jack & Jones',
+      title: 'jack & jones',
+      value: 'jack & jones',
     },
     {
       id: 2,
-      title: 'Louis Philippe',
-      value: 'Louis Philippe',
+      title: 'louis philippe',
+      value: 'louis philippe',
+    },
+    {
+      id: 3,
+      title: 'looney tunes',
+      value: 'looney tunes',
+    },
+    {
+      id: 4,
+      title: 'massive dynamic',
+      value: 'massive dynamic',
+    },
+    {
+      id: 5,
+      title: 'xxl',
+      value: 'xxl',
+    },
+    {
+      id: 6,
+      title: 'pro tech gear',
+      value: 'pro tech gear',
+    },
+    {
+      id: 7,
+      title: 'soylent green',
+      value: 'soylent green',
+    },
+    {
+      id: 8,
+      title: 'the simpsons',
+      value: 'the simpsons',
+    },
+    {
+      id: 9,
+      title: 'weeds capital',
+      value: 'weeds capital',
     },
   ]);
 
@@ -345,15 +398,23 @@ const VerticalTabView = props => {
   const [sizeData, setsizeData] = useState([
     {
       id: 1,
-      size: 'L',
+      size: 'small',
     },
     {
       id: 2,
-      size: 'M',
+      size: 'medium',
     },
     {
       id: 3,
-      size: 'S',
+      size: 'large',
+    },
+    {
+      id: 4,
+      size: 'xl',
+    },
+    {
+      id: 5,
+      size: 'xxl',
     },
   ]);
   const [discountsData, setdiscountsData] = useState([
@@ -723,6 +784,16 @@ const VerticalTabView = props => {
               maxRating={maxRating}
               defaultRating={defaultRating}
               setDefaultRating={setDefaultRating}
+              //price
+              low={low}
+              setLow={setLow}
+              high={high}
+              setHigh={setHigh}
+              min={min}
+              setMin={setMin}
+              max={max}
+              setMax={setMax}
+              handleValueChange={handleValueChange}
             />
           </ScrollView>
         </View>

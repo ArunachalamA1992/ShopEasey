@@ -42,7 +42,6 @@ const ProductList = ({route, navigation}) => {
   const [endReached, setEndReached] = useState(false);
 
   const navigationStack = useRef([]);
-  console.log('navigationStack', navigationStack);
 
   useEffect(() => {
     setLoading(true);

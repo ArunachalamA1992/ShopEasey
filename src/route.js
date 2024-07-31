@@ -21,7 +21,7 @@ import ContactUs from './Screens/Sidemenu/ContactUs';
 import AboutUs from './Screens/Sidemenu/AboutUs';
 import {setDataCount} from './Redux';
 import fetchData from './Config/fetchData';
-import LatestProductList from './Screens/Home/LatestProductList';
+import ViewAllProducts from './Screens/Home/ViewProductsList';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,10 +35,13 @@ export const HomeStack = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="latest"
-        component={LatestProductList}
+        name="viewProducts"
+        component={ViewAllProducts}
         options={({navigation, route}) => ({
-          headerTitle: 'Latest Product',
+          headerTitle:
+            route.params?.key == 'latest'
+              ? 'Latest Products'
+              : 'Featured Products',
           headerTitleAlign: 'center',
           headerTitleStyle: {
             color: Color.black,

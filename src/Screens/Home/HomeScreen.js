@@ -66,6 +66,7 @@ const HomeScreen = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [latestProducts, setLatestProduct] = useState([]);
+  const [FeaturedProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
@@ -170,6 +171,7 @@ const HomeScreen = () => {
     {id: 7, title: 'Flash Selling', data: ['Flash Selling']},
     {id: 8, title: 'product', data: ['product']},
     {id: 9, title: 'Latest Product', data: ['Latest Product']},
+    {id: 10, title: 'Featured Product', data: ['Featured Product']},
   ]);
 
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
@@ -355,6 +357,11 @@ const HomeScreen = () => {
       setTrendingProducts(trending_products?.data);
       const latest_products = await fetchData.list_products(``, token);
       setLatestProduct(latest_products?.data);
+      const fetured_products = await fetchData.list_products(
+        `is_featured=1`,
+        token,
+      );
+      setFeaturedProducts(fetured_products?.data);
       // var banner_data = `seller=home_page`;
       // const getBannerData = await fetchData.get_banner(banner_data, token);
       // setBannerData(getBannerData?.data);
@@ -1898,7 +1905,9 @@ const HomeScreen = () => {
                           </Text>
                           <TouchableOpacity
                             onPress={() => {
-                              navigation.navigate('latest');
+                              navigation.navigate('viewProducts', {
+                                key: 'latest',
+                              });
                             }}>
                             <Text
                               style={{
@@ -1913,6 +1922,61 @@ const HomeScreen = () => {
                         </View>
                         <FlatList
                           data={latestProducts}
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          renderItem={({item, index}) => {
+                            return (
+                              <ItemCardHorizontal
+                                item={item}
+                                navigation={navigation}
+                              />
+                            );
+                          }}
+                        />
+                      </View>
+                    )
+                  );
+                case 'Featured Product':
+                  return (
+                    FeaturedProducts?.length > 0 && (
+                      <View
+                        style={{
+                          paddingStart: 10,
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginVertical: 10,
+                          }}>
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontSize: 16,
+                              color: Color.black,
+                              fontFamily: Manrope.SemiBold,
+                            }}>
+                            Featured Products
+                          </Text>
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('viewProducts', {
+                                key: 'featured',
+                              });
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Bold,
+                                marginRight: 10,
+                              }}>
+                              View All
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                        <FlatList
+                          data={FeaturedProducts}
                           horizontal
                           showsHorizontalScrollIndicator={false}
                           renderItem={({item, index}) => {

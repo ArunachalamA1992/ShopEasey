@@ -36,6 +36,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const ProductDetails = ({route, navigation}) => {
   const [id] = useState(route?.params?.id);
+  const [variant_id] = useState(route?.params?.variant_id);
   const [singleData, setSingleData] = useState({});
   // console.log('singleData', JSON.stringify(singleData));
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,11 @@ const ProductDetails = ({route, navigation}) => {
   const [selectedVariantData, setSelectedVariantData] = useState({});
   const [productImages, setProductImages] = useState([]);
   const [followStatus, setFollowStatus] = useState('Follow');
+
+  useEffect(() => {
+    setSelectedColor(singleData?.color);
+    setSelectedSize(singleData?.size);
+  }, [singleData]);
 
   const handleColorPress = async item => {
     setLoading(true);
@@ -230,7 +236,7 @@ const ProductDetails = ({route, navigation}) => {
 
   const getData = async () => {
     try {
-      var param = `${id}`;
+      var param = `${id}?id=${variant_id}`;
       const product_data = await fetchData.single_property(param, ``, token);
       setSingleData(product_data?.data);
       setProductImages(product_data?.data?.productImages);
@@ -318,7 +324,22 @@ const ProductDetails = ({route, navigation}) => {
           setModalVisible(false);
         }
       } else {
-        common_fn.showToast('Please Select the Color or Size');
+        common_fn.showToast(`Please Select the 
+                        Please select a{' '}
+                          ${
+                            singleData?.variants_list?.color?.length > 0 &&
+                            'color'
+                          }
+                          ${
+                            singleData?.variants_list?.color?.length > 0 &&
+                            singleData?.variants_list?.size?.length > 0 &&
+                            ' or '
+                          }
+                          ${
+                            singleData?.variants_list?.size?.length > 0 &&
+                            'size'
+                          }
+                          `);
         setModalVisible(true);
       }
     } catch (error) {
@@ -374,7 +395,20 @@ const ProductDetails = ({route, navigation}) => {
         navigation.navigate('OrderConfirmation', {CheckOut, ids: []});
         setModalVisible(false);
       } else {
-        common_fn.showToast('Please Select the Color or Size');
+        common_fn.showToast(`Please Select the
+                              ${
+                                singleData?.variants_list?.color?.length > 0 &&
+                                'color'
+                              }
+                              ${
+                                singleData?.variants_list?.color?.length > 0 &&
+                                singleData?.variants_list?.size?.length > 0 &&
+                                ' or '
+                              }
+                              ${
+                                singleData?.variants_list?.size?.length > 0 &&
+                                'size'
+                              }`);
         setModalVisible(true);
       }
     } catch (error) {
@@ -761,7 +795,7 @@ const ProductDetails = ({route, navigation}) => {
                                 fontSize: 12,
                                 fontFamily: Manrope.Medium,
                               }}>
-                              {item?.color?.split('')[0]
+                              {item?.color?.split('')[0] == '#'
                                 ? common_fn.getColorName(item?.color)
                                 : item?.color}
                             </Text>
@@ -1066,10 +1100,10 @@ const ProductDetails = ({route, navigation}) => {
                                     style={[
                                       styles.colorOption,
                                       {
-                                        borderColor:
+                                        backgroundColor:
                                           selectedColor === item?.color
-                                            ? Color.primary
-                                            : Color.lightgrey,
+                                            ? '#0D71BA50'
+                                            : Color.white,
                                       },
                                     ]}
                                     onPress={() => handleColorPress(item)}
@@ -1080,8 +1114,14 @@ const ProductDetails = ({route, navigation}) => {
                                         {backgroundColor: item?.color_code},
                                       ]}
                                     />
-                                    <Text style={styles.colorNameText}>
-                                      {item?.color?.split('')[0]
+                                    <Text
+                                      style={[
+                                        styles.colorNameText,
+                                        {
+                                          color: Color.black,
+                                        },
+                                      ]}>
+                                      {item?.color?.split('')[0] == '#'
                                         ? common_fn.getColorName(item?.color)
                                         : item?.color}
                                     </Text>
@@ -1105,15 +1145,7 @@ const ProductDetails = ({route, navigation}) => {
                             (item, index) => (
                               <TouchableOpacity
                                 key={index}
-                                style={[
-                                  styles.sizeOption,
-                                  {
-                                    borderColor:
-                                      selectedSize === item?.size
-                                        ? Color.primary
-                                        : Color.white,
-                                  },
-                                ]}
+                                style={styles.sizeOption}
                                 onPress={() => handleSizePress(item)}
                                 disabled={item?.stock == 0}>
                                 <View
@@ -1123,10 +1155,18 @@ const ProductDetails = ({route, navigation}) => {
                                       backgroundColor:
                                         item?.stock == 0
                                           ? '#EEEEEE80'
+                                          : selectedSize === item?.size
+                                          ? '#0D71BA50'
                                           : '#EEEEEE',
                                     },
                                   ]}>
-                                  <Text style={styles.sizeText}>
+                                  <Text
+                                    style={[
+                                      styles.sizeText,
+                                      {
+                                        color: Color.black,
+                                      },
+                                    ]}>
                                     {item?.size}
                                   </Text>
                                 </View>
@@ -1151,7 +1191,13 @@ const ProductDetails = ({route, navigation}) => {
                     />
                     <View style={styles.modalContainer}>
                       <Text style={styles.modalTitle}>
-                        Please select a color or size:
+                        Please select a{' '}
+                        {singleData?.variants_list?.color?.length > 0 &&
+                          'color'}
+                        {singleData?.variants_list?.color?.length > 0 &&
+                          singleData?.variants_list?.size?.length > 0 &&
+                          ' or '}
+                        {singleData?.variants_list?.size?.length > 0 && 'size'}
                       </Text>
 
                       {singleData?.variants_list?.color?.length > 0 ? (
@@ -1168,10 +1214,10 @@ const ProductDetails = ({route, navigation}) => {
                                       style={[
                                         styles.colorOption,
                                         {
-                                          borderColor:
+                                          backgroundColor:
                                             selectedColor === item?.color
-                                              ? Color.primary
-                                              : Color.lightgrey,
+                                              ? '#0D71BA50'
+                                              : Color.white,
                                         },
                                       ]}
                                       onPress={() => handleColorPress(item)}
@@ -1182,8 +1228,14 @@ const ProductDetails = ({route, navigation}) => {
                                           {backgroundColor: item?.color_code},
                                         ]}
                                       />
-                                      <Text style={styles.colorNameText}>
-                                        {item?.color?.split('')[0]
+                                      <Text
+                                        style={[
+                                          styles.colorNameText,
+                                          {
+                                            color: Color.black,
+                                          },
+                                        ]}>
+                                        {item?.color?.split('')[0] == '#'
                                           ? common_fn.getColorName(item?.color)
                                           : item?.color}
                                       </Text>
@@ -1207,15 +1259,7 @@ const ProductDetails = ({route, navigation}) => {
                               (item, index) => (
                                 <TouchableOpacity
                                   key={index}
-                                  style={[
-                                    styles.sizeOption,
-                                    {
-                                      borderColor:
-                                        selectedSize === item?.size
-                                          ? Color.primary
-                                          : Color.white,
-                                    },
-                                  ]}
+                                  style={styles.sizeOption}
                                   onPress={() => handleSizePress(item)}
                                   disabled={item?.stock == 0}>
                                   <View
@@ -1225,10 +1269,18 @@ const ProductDetails = ({route, navigation}) => {
                                         backgroundColor:
                                           item?.stock == 0
                                             ? '#EEEEEE80'
+                                            : selectedSize === item?.size
+                                            ? '#0D71BA50'
                                             : '#EEEEEE',
                                       },
                                     ]}>
-                                    <Text style={styles.sizeText}>
+                                    <Text
+                                      style={[
+                                        styles.sizeText,
+                                        {
+                                          color: Color.black,
+                                        },
+                                      ]}>
                                       {item?.size}
                                     </Text>
                                   </View>
@@ -2338,7 +2390,6 @@ const styles = StyleSheet.create({
   },
   colorNameText: {
     fontSize: 12,
-    color: Color.black,
     fontFamily: Manrope.Bold,
     marginHorizontal: 10,
     textTransform: 'capitalize',
@@ -2366,7 +2417,6 @@ const styles = StyleSheet.create({
   },
   sizeOption: {
     marginHorizontal: 10,
-    borderWidth: 1,
     marginTop: 10,
   },
   sizeView: {
@@ -2378,7 +2428,6 @@ const styles = StyleSheet.create({
   },
   sizeText: {
     fontSize: 12,
-    color: Color.black,
     fontFamily: Manrope.Bold,
     textAlign: 'center',
   },
