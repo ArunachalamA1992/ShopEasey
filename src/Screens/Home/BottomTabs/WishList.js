@@ -210,14 +210,14 @@ const WishList = ({navigation}) => {
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => {
-            var discount = parseFloat(
-              ((item?.variant?.org_price / countryCode?.price_margin -
-              item?.variant?.offer_price
-                ? item?.variant?.offer_price
-                : item?.variant?.price / countryCode?.price_margin) /
-                item?.variant?.org_price /
-                countryCode?.price_margin) *
-                100,
+            const originalPrice =
+              item?.variant?.org_price / countryCode?.price_margin;
+            const offerPrice = item?.variant?.offer_price
+              ? item?.variant?.offer_price
+              : item?.variant?.price / countryCode?.price_margin;
+
+            const discount = parseFloat(
+              ((originalPrice - offerPrice) / originalPrice) * 100,
             ).toFixed(2);
             const isLoading = loadingWishlist === item.product.id;
             return (

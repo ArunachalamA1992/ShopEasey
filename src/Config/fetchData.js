@@ -56,7 +56,7 @@ export default {
     return api.postMethod(url, data, token);
   },
   list_cart: (data, token) => {
-    let url = api_name + 'carts';
+    let url = api_name + 'carts?' + data;
     return api.getMethod(url, token);
   },
   update_cart: (param, data, token) => {

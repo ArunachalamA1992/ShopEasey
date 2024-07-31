@@ -57,6 +57,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const getCartData = async () => {
     try {
       var data = `id=${ids?.join(',')}`;
+      console.log('data', data)
       const getCart = await fetchData.list_cart(data, token);
       setOrderData(getCart?.data);
       const getaddress = await fetchData.list_address(``, token);

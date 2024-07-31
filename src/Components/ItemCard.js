@@ -34,15 +34,15 @@ const ItemCard = props => {
     setItem(initialItem);
   }, [initialItem]);
 
+  const originalPrice = item?.variants?.[0]?.org_price / countryCode?.price_margin;
+  const offerPrice = item?.variants?.[0]?.offer_price
+    ? item?.variants?.[0]?.offer_price
+    : item?.variants?.[0]?.price / countryCode?.price_margin;
+  
   const discount = parseFloat(
-    ((item?.variants?.[0]?.org_price / countryCode?.price_margin -
-    item?.variants?.[0]?.offer_price
-      ? item?.variants?.[0]?.offer_price
-      : item?.variants?.[0]?.price / countryCode?.price_margin) /
-      item?.variants?.[0]?.org_price /
-      countryCode?.price_margin) *
-      100,
+    ((originalPrice - offerPrice) / originalPrice) * 100
   ).toFixed(2);
+  
 
   const getProduct = async () => {
     try {
@@ -281,15 +281,17 @@ export const ItemCardHorizontal = props => {
     setItem(initialItem);
   }, [initialItem]);
 
+  const originalPrice = item?.variants?.[0]?.org_price / countryCode?.price_margin;
+  const offerPrice = item?.variants?.[0]?.offer_price
+    ? item?.variants?.[0]?.offer_price
+    : item?.variants?.[0]?.price / countryCode?.price_margin;
+
   const discount = parseFloat(
-    ((item?.variants?.[0]?.org_price / countryCode?.price_margin -
-    item?.variants?.[0]?.offer_price
-      ? item?.variants?.[0]?.offer_price
-      : item?.variants?.[0]?.price / countryCode?.price_margin) /
-      item?.variants?.[0]?.org_price /
-      countryCode?.price_margin) *
-      100,
+    ((originalPrice - offerPrice) / originalPrice) * 100
   ).toFixed(2);
+
+
+  console.log('discount', discount)
 
   const getProduct = async () => {
     try {

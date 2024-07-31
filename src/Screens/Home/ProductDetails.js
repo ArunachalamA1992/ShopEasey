@@ -141,15 +141,15 @@ const ProductDetails = ({route, navigation}) => {
     },
   ]);
 
-  var discount = parseFloat(
-    ((singleData?.org_price / countryCode?.price_margin -
-    singleData?.offer_price
-      ? singleData?.offer_price
-      : singleData?.price / countryCode?.price_margin) /
-      singleData?.org_price /
-      countryCode?.price_margin) *
-      100,
+  const originalPrice = singleData?.org_price / countryCode?.price_margin;
+  const offerPrice = singleData?.offer_price
+    ? singleData?.offer_price
+    : singleData?.price / countryCode?.price_margin;
+  
+  const discount = parseFloat(
+    ((originalPrice - offerPrice) / originalPrice) * 100
   ).toFixed(2);
+  
   const currentDate = moment();
   const yourDate = moment(singleData?.updated_at);
 
