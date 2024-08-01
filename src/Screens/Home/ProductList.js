@@ -499,6 +499,7 @@ const ProductList = ({route, navigation}) => {
           setFilterVisible={setFilterVisible}
           filterVisible={filterVisible}
           navigation={navigation}
+          category_id={category_id}
         />
       )}
     </View>

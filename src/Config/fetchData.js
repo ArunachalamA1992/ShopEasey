@@ -123,6 +123,10 @@ export default {
     let url = api_name + 'follow/sellers?' + data;
     return api.getMethod(url, token);
   },
+  following_seller_list: (data, token) => {
+    let url = api_name + 'follow';
+    return api.getMethod(url, token);
+  },
   post_follow: (param, data, token) => {
     let url = api_name + 'follow/' + param;
     return api.putMethod(url, data, token);

@@ -1,34 +1,63 @@
-import React from 'react';
-import {Modal, Pressable, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  BackHandler,
+  Modal,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
 import VerticalTabView from './VerticalTabView';
 
 const FilterModal = props => {
-  const {setFilterVisible, filterVisible, navigation} = props;
+  const {setFilterVisible, filterVisible, navigation, category_id} = props;
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress,
+    );
+
+    return () => {
+      if (backHandler) {
+        backHandler.remove();
+      }
+    };
+  }, [filterVisible]);
+
+  const handleBackPress = () => {
+    if (filterVisible) {
+      setFilterVisible(false);
+      return true;
+    }
+    return false;
+  };
 
   return (
     <Modal visible={filterVisible} transparent animationType="slide">
       <View style={styles.modalBackground}>
         <Pressable
-          onPress={() => {
-            setFilterVisible(false);
-          }}
+          onPress={() => setFilterVisible(false)}
           style={styles.pressableOverlay}
         />
         <View style={styles.modalContent}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Filter</Text>
             <TouchableOpacity
-              onPress={() => {
-                setFilterVisible(false);
-              }}
+              onPress={() => setFilterVisible(false)}
               style={styles.closeButton}>
               <Icon name="close" size={20} color={Color.primary} />
             </TouchableOpacity>
           </View>
-          <VerticalTabView navigation={navigation} visible={filterVisible}/>
+          <VerticalTabView
+            navigation={navigation}
+            visible={filterVisible}
+            category_id={category_id}
+            setFilterVisible={setFilterVisible}
+          />
         </View>
       </View>
     </Modal>

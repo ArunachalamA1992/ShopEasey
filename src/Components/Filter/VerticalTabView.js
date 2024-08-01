@@ -49,14 +49,29 @@ const TabContent = ({
   if (item?.category) {
     return (
       <>
-        {item?.category?.map((option, index) => {
+        {item?.category?.map((item, index) => {
           return (
-            <RadioData
-              key={index}
-              label={option.category_name}
-              checked={categorySelectedItem.id == option.id}
-              onPress={() => setcategorySelectedItem(option)}
-            />
+            <>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: Color.black,
+                  fontFamily: Manrope.Bold,
+                  marginVertical: 10,
+                }}>
+                {item?.category_name}
+              </Text>
+              {item?.sub_categories?.map((option, index) => {
+                return (
+                  <RadioData
+                    key={index}
+                    label={option.sub_category_name}
+                    checked={categorySelectedItem.id == option.id}
+                    onPress={() => setcategorySelectedItem(option)}
+                  />
+                );
+              })}
+            </>
           );
         })}
       </>
@@ -251,7 +266,7 @@ const TabContent = ({
 };
 
 const VerticalTabView = props => {
-  var {navigation} = props;
+  var {navigation, category_id, setFilterVisible} = props;
   const [selectedTab, setSelectedTab] = useState(0);
   const countryCode = useSelector(state => state.UserReducer.country);
   const [priceData, setPriceData] = useState([
@@ -467,7 +482,10 @@ const VerticalTabView = props => {
   const getApiData = async () => {
     try {
       // Category
-      const list_categories = await fetchData.categories(``, token);
+      const list_categories = await fetchData.categories(
+        `?id=${category_id}`,
+        token,
+      );
       setCategoriesData(list_categories?.data);
       //colors
       const list_colors = await fetchData.get_colors(``, token);
@@ -501,6 +519,23 @@ const VerticalTabView = props => {
     },
   ];
   const [categorySelectedItem, setcategorySelectedItem] = useState({});
+  // const [subSubCategorySelectedItem, setSubSubCategorySelectedItem] = useState(
+  //   [],
+  // );
+  // const handleSubSubCategorySelectedItemPress = itemId => {
+  //   if (subSubCategorySelectedItem.includes(itemId)) {
+  //     setSubSubCategorySelectedItem(
+  //       subSubCategorySelectedItem?.filter(single => single !== itemId),
+  //     );
+  //     setFilterSelectedItem(
+  //       filterSelectedItem?.price?.filter(single => single.price_id !== itemId),
+  //     );
+  //   } else {
+  //     setSubSubCategorySelectedItem([...subSubCategorySelectedItem, itemId]);
+  //     const selectedItem = priceData.find(single => single.price_id === itemId);
+  //     setFilterSelectedItem([...filterSelectedItem?.price, selectedItem]);
+  //   }
+  // };
   const [priceSelectedItem, setpriceSelectedItem] = useState([]);
   const handlePricePress = itemId => {
     if (priceSelectedItem.includes(itemId)) {
@@ -669,42 +704,41 @@ const VerticalTabView = props => {
   ];
 
   const dataPayload = () => {
-    const params = new URLSearchParams();
+    let params = '';
     const payload = {
       page: 1,
-      size: filterSelectedItem?.size
-        .filter(item => item.size)
-        .map(item => item.size)
-        .join(','),
-      color_group: filterSelectedItem?.colors
-        .filter(item => item.id)
-        .map(item => item.id)
-        .join(','),
+      size:
+        filterSelectedItem?.size
+          .filter(item => item.size)
+          .map(item => item.size)
+          .join(',') || '',
+      color_group:
+        filterSelectedItem?.colors
+          .filter(item => item.id)
+          .map(item => item.id)
+          .join(',') || '',
+      sub_category_id: categorySelectedItem?.id || '',
     };
+
     for (const key in payload) {
-      if (payload[key] != null && payload[key]?.length > 0) {
-        params.append(key, payload[key]);
+      if (payload[key] != null && payload[key] != '') {
+        params += `${key}=${decodeURIComponent(payload[key])}&`;
       }
     }
 
-    const queryString = params.toString();
-    const query = queryString.replace('%20', ' ');
-    return query;
+    return params.slice(0, -1);
   };
 
-  const appyFilter = async () => {
+  const applyFilter = async () => {
     try {
-      if (categorySelectedItem?.id == undefined) {
-        common_fn.showToast('Please Select the Category');
-      } else {
-        var data = dataPayload();
-        navigation.push('ProductList', {
-          param: data,
-          category_id: categorySelectedItem?.id,
-        });
-      }
+      const data = dataPayload();
+      navigation.push('ProductList', {
+        param: data,
+        category_id: category_id,
+      });
+      setFilterVisible(false);
     } catch (error) {
-      console.log('error', error);
+      console.error('Error in applyFilter:', error);
     }
   };
 
@@ -843,7 +877,7 @@ const VerticalTabView = props => {
         <Button
           mode="contained"
           onPress={() => {
-            appyFilter();
+            applyFilter();
           }}
           style={{
             marginVertical: 10,

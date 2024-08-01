@@ -39,7 +39,7 @@ const FollowingSellers = () => {
 
   const getSellersData = async () => {
     try {
-      const getSellerList = await fetchData.seller_list(``, token);
+      const getSellerList = await fetchData.following_seller_list(``, token);
       setSellerData(getSellerList?.data);
     } catch (error) {
       console.log('error', error);
@@ -82,7 +82,7 @@ const FollowingSellers = () => {
 
   return (
     <View style={styles.container}>
-      <Searchbar
+      {/* <Searchbar
         placeholder={`Search Sellers`}
         placeholderTextColor={Color.cloudyGrey}
         onChangeText={text => setSearchtext(text)}
@@ -117,7 +117,7 @@ const FollowingSellers = () => {
         }}
         inputStyle={{color: Color.black}}
         iconColor={Color.cloudyGrey}
-      />
+      /> */}
       {loading ? (
         <SkeletonPlaceholder>
           <SkeletonPlaceholder.Item
@@ -168,7 +168,7 @@ const FollowingSellers = () => {
           data={sellerData}
           keyExtractor={(item, index) => item + index}
           renderItem={({item, index}) => {
-            return item?.is_follow == true ? (
+            return (
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('SellerProfile', {
@@ -188,7 +188,7 @@ const FollowingSellers = () => {
                   // justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                {item.profile != null ? (
+                {item.profile != null || item.profile != '' ? (
                   <Image
                     source={{uri: item.profile}}
                     style={{
@@ -294,31 +294,14 @@ const FollowingSellers = () => {
                   </View>
                 )}
               </TouchableOpacity>
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  height: height / 1.5,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: Manrope.SemiBold,
-                    fontSize: 14,
-                    color: Color.black,
-                  }}>
-                  No Following Sellers
-                </Text>
-              </View>
             );
           }}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => {
             return (
               <View
                 style={{
-                  flex: 1,
-                  height: height / 1.5,
+                  // height: height / 1.5,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
@@ -333,7 +316,6 @@ const FollowingSellers = () => {
               </View>
             );
           }}
-          showsVerticalScrollIndicator={false}
         />
       )}
     </View>

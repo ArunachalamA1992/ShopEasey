@@ -151,7 +151,7 @@ const CustomRange = props => {
       </View>
 
       {/* Range slider */}
-      <RangeSlider
+      {/* <RangeSlider
         style={{marginTop: 15}}
         min={min || 0}
         max={max || 100}
@@ -168,7 +168,7 @@ const CustomRange = props => {
           setTextInputHigh(high.toString());
           handleValueChange(low, high);
         }}
-      />
+      /> */}
     </View>
   );
 };

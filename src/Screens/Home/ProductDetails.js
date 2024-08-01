@@ -32,13 +32,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import common_fn from '../../Config/common_fn';
 import {setDataCount} from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {useNavigation} from '@react-navigation/native';
 
 const ProductDetails = ({route, navigation}) => {
   const [id] = useState(route?.params?.id);
   const [variant_id] = useState(route?.params?.variant_id);
   const [singleData, setSingleData] = useState({});
-  // console.log('singleData', JSON.stringify(singleData));
   const [loading, setLoading] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
@@ -49,12 +47,7 @@ const ProductDetails = ({route, navigation}) => {
   const [reviewsData, setReviewsData] = useState({});
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedVariantId, setSelectedVariantId] = useState(null);
-  const [sizeVisible, setSizeVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [wishlistVariantId, setWishlistVariantId] = useState(null);
-  const [selectedVariantData, setSelectedVariantData] = useState({});
-  const [productImages, setProductImages] = useState([]);
   const [followStatus, setFollowStatus] = useState('Follow');
 
   useEffect(() => {
@@ -75,7 +68,6 @@ const ProductDetails = ({route, navigation}) => {
       var data = `color=${item?.color}`;
       const color_data = await fetchData.single_property(param, data, token);
       setSingleData(color_data?.data);
-      setSelectedVariantId(color_data?.data?.id);
       setLoading(false);
     } catch (error) {
       console.log('error', error);
@@ -96,7 +88,6 @@ const ProductDetails = ({route, navigation}) => {
       const size_data = await fetchData.single_property(param, data, token);
       setSingleData(size_data?.data);
       // setLoading(false);
-      setSelectedVariantId(size_data?.data?.id);
     } catch (error) {
       console.log('error', error);
     }
@@ -145,11 +136,11 @@ const ProductDetails = ({route, navigation}) => {
   const offerPrice = singleData?.offer_price
     ? singleData?.offer_price
     : singleData?.price / countryCode?.price_margin;
-  
+
   const discount = parseFloat(
-    ((originalPrice - offerPrice) / originalPrice) * 100
+    ((originalPrice - offerPrice) / originalPrice) * 100,
   ).toFixed(2);
-  
+
   const currentDate = moment();
   const yourDate = moment(singleData?.updated_at);
 
@@ -239,8 +230,6 @@ const ProductDetails = ({route, navigation}) => {
       var param = `${id}?id=${variant_id}`;
       const product_data = await fetchData.single_property(param, ``, token);
       setSingleData(product_data?.data);
-      setProductImages(product_data?.data?.productImages);
-      setSelectedVariantData(product_data?.data?.variants_list?.[0]);
       //top picks
       var top_picks_data = `project=top-picks`;
       const top_picks = await fetchData.list_products(top_picks_data, token);
@@ -454,7 +443,7 @@ const ProductDetails = ({route, navigation}) => {
   };
 
   const share_product = async id => {
-    const jobDeepLink = `https://shopeasey.com/product/${id}`;
+    const jobDeepLink = `https://shopeasey.com/product/${id}?id=${singleData?.id}`;
     const message = `Check out this Product: ${jobDeepLink}`;
 
     try {

@@ -51,6 +51,7 @@ const EditProfile = ({navigation, route}) => {
   const [email, setEmail] = useState(userData.email);
   const [emailValidError, setEmailValidError] = useState('');
   const [profileImage, setProfileImage] = useState(userData.profile);
+  const countryCode = useSelector(state => state.UserReducer.country);
   const [image, setImage] = useState([]);
   const [dateofBirth, setDateOfBirth] = useState(
     userData.dob != undefined ? new Date(userData.dob) : '',
@@ -643,6 +644,9 @@ const EditProfile = ({navigation, route}) => {
                 icon_size={22}
                 iconstyle={{color: Color.cloudyGrey}}
               />
+              <Text style={styles.numberCountryCode}>
+                {countryCode?.mobile_prefix}
+              </Text>
               <TextInput
                 style={styles.numberTextBox}
                 placeholder="Enter Your Phone Number"
@@ -652,7 +656,9 @@ const EditProfile = ({navigation, route}) => {
                   setPhoneNumber(value);
                 }}
                 keyboardType="number-pad"
-                maxLength={10}
+                maxLength={
+                  countryCode?.id == 452 || countryCode?.id == 453 ? 10 : 8
+                }
               />
             </View>
           </View>
@@ -790,7 +796,7 @@ const styles = StyleSheet.create({
     color: Color.black,
     fontSize: 14,
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingLeft: 15,
   },
   numberTextBox: {
     flex: 1,

@@ -42,7 +42,12 @@ const SellerProfile = ({route, navigation}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
-  const [defaultRating, setDefaultRating] = useState(sellerData?.rating);
+  const [defaultRating, setDefaultRating] = useState(0);
+
+  useEffect(() => {
+    const rating = parseFloat(sellerData?.rating || '0');
+    setDefaultRating(rating);
+  }, [sellerData]);
 
   const [shopSection] = useState([
     {id: 1, title: 'Profile', data: ['Profile']},
@@ -87,33 +92,7 @@ const SellerProfile = ({route, navigation}) => {
     },
   ]);
 
-  const [maxRating, setMaxRating] = useState([
-    {
-      id: 1,
-      rating: 1,
-      experience: 'poor',
-    },
-    {
-      id: 2,
-      rating: 2,
-      experience: 'Bad',
-    },
-    {
-      id: 3,
-      rating: 3,
-      experience: 'Okay',
-    },
-    {
-      id: 4,
-      rating: 4,
-      experience: 'Average',
-    },
-    {
-      id: 5,
-      rating: 5,
-      experience: 'Good',
-    },
-  ]);
+  const maxRating = [1, 2, 3, 4, 5];
 
   const currentDate = moment();
   const yourDate = moment(sellerData?.created_at);
@@ -151,14 +130,6 @@ const SellerProfile = ({route, navigation}) => {
       setResultDate(result);
     }
   }, [currentDate, yourDate]);
-
-  const handleRatingPress = item => {
-    if (defaultRating === item) {
-      setDefaultRating(null);
-    } else {
-      setDefaultRating(item);
-    }
-  };
 
   const getData = async () => {
     try {
@@ -335,6 +306,18 @@ const SellerProfile = ({route, navigation}) => {
                             alignItems: 'center',
                           }}>
                           {maxRating.map((item, index) => {
+                            let iconName;
+                            if (item <= Math.floor(defaultRating)) {
+                              iconName = 'star';
+                            } else if (
+                              item === Math.ceil(defaultRating) &&
+                              defaultRating % 1 !== 0
+                            ) {
+                              iconName = 'star-half-full';
+                            } else {
+                              iconName = 'star-o';
+                            }
+
                             return (
                               <View
                                 activeOpacity={0.7}
@@ -344,11 +327,7 @@ const SellerProfile = ({route, navigation}) => {
                                 }}>
                                 <Iconviewcomponent
                                   Icontag={'FontAwesome'}
-                                  iconname={
-                                    item.rating <= defaultRating
-                                      ? 'star'
-                                      : 'star-o'
-                                  }
+                                  iconname={iconName}
                                   icon_size={16}
                                   icon_color={Color.sunShade}
                                 />

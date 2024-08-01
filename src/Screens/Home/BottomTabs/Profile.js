@@ -568,7 +568,7 @@ const Profile = () => {
                     numberOfLines={2}>
                     {profileData.first_name && profileData.last_name
                       ? `${profileData.first_name} ${profileData.last_name}`
-                      : 'Your name'}
+                      : ''}
                   </Text>
                 ) : (
                   ''
