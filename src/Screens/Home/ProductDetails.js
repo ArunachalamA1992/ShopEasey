@@ -34,8 +34,7 @@ import {setDataCount} from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const ProductDetails = ({route, navigation}) => {
-  const [id] = useState(route?.params?.id);
-  const [variant_id] = useState(route?.params?.variant_id);
+  const {id, variant_id} = route.params;
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
   const [resultDate, setResultDate] = useState(null);
@@ -223,7 +222,7 @@ const ProductDetails = ({route, navigation}) => {
       setLoading(false);
     });
     getCountData();
-  }, []);
+  }, [id]);
 
   const getData = async () => {
     try {
@@ -248,7 +247,6 @@ const ProductDetails = ({route, navigation}) => {
     try {
       var param = `${id}`;
       const setFollow = await fetchData.post_follow(param, {}, token);
-      console.log('setFollow', setFollow);
       if (setFollow.status == true) {
         setFollowStatus('Follow');
       } else {

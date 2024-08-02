@@ -769,6 +769,7 @@ const EditProfile = ({navigation, route}) => {
           mode="date"
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
+          minimumDate={new Date()}
         />
       </ScrollView>
       {sale_BottomSheetmenu()}

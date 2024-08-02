@@ -211,10 +211,21 @@ const AddAddress = ({route}) => {
       const nextPage = statePage + 1;
       var data = 'page=' + nextPage;
       const response = await fetchData.get_state_data(data, token);
+
       if (response?.data.length > 0) {
-        setStatePage(nextPage);
-        const updatedData = [...stateData, ...response?.data];
-        setStateData(updatedData);
+        const newData = response?.data;
+
+        // Check if the new data is the same as the last loaded data
+        if (
+          JSON.stringify(newData) ===
+          JSON.stringify(stateData.slice(-newData.length))
+        ) {
+          setStateEndReached(true);
+        } else {
+          setStatePage(nextPage);
+          const updatedData = [...stateData, ...newData];
+          setStateData(updatedData);
+        }
       } else {
         setStateEndReached(true);
       }
@@ -620,9 +631,9 @@ const AddAddress = ({route}) => {
                     fontSize: 14,
                     color: Color.cloudyGrey,
                   }}>
-                  {selectState?.state != ''
-                    ? selectState?.state
-                    : 'Select State'}
+                  {selectState?.state == '' || selectState?.state == undefined
+                    ? 'Select State'
+                    : selectState?.state}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -645,7 +656,13 @@ const AddAddress = ({route}) => {
                 City *
               </Text>
               <TouchableOpacity
-                onPress={() => sale_toggleBottomView('City')}
+                onPress={() => {
+                  if (selectState?.state == undefined) {
+                    common_fn.showToast('Please select the state first');
+                  } else {
+                    sale_toggleBottomView('City');
+                  }
+                }}
                 style={styles.NumberBoxConatiner}>
                 <Text
                   style={{
@@ -653,7 +670,9 @@ const AddAddress = ({route}) => {
                     fontSize: 14,
                     color: Color.cloudyGrey,
                   }}>
-                  {selectCity?.city != '' ? selectCity?.city : 'Select City'}
+                  {selectCity?.city == '' || selectCity?.city == undefined
+                    ? 'Select City'
+                    : selectCity?.city}
                 </Text>
               </TouchableOpacity>
             </View>

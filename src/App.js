@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Linking,
   LogBox,
@@ -13,7 +13,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Provider, useDispatch} from 'react-redux';
 
 import {Provider as PaperProvider} from 'react-native-paper';
-import {navigationRef} from '../RootNavigation';
+// import {navigationRef} from '../RootNavigation';
 import Store from './Redux/Store';
 import SplashScreen from './SplashScreen';
 import OnboardScreen from './Screens/Onboarding/OnboardScreen';
@@ -35,7 +35,7 @@ import SellerProfile from './Screens/Profile/SellerProfile';
 import AddCard from './Screens/MyOrders/AddCard';
 import firebase from '@react-native-firebase/app';
 import AddAddress from './Screens/Address/AddAddress';
-import {setUserData} from './Redux';
+import {setCountryCode, setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrders from './Screens/MyOrders/MyOrders';
 import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
@@ -62,9 +62,11 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 LogBox.ignoreAllLogs;
+export const navigationRef = React.createRef();
 
 const MyDrawer = () => {
   const dispatch = useDispatch();
+  const [isCountryCodeSelected, setIsCountryCodeSelected] = useState(false);
 
   const linking = {
     prefixes: ['https://shopeasey.com/product', 'shopeasey://'],
@@ -75,56 +77,71 @@ const MyDrawer = () => {
           path: 'home',
         },
         ProductDetails: {
-          path: '/:id',
+          path: ':id',
         },
       },
     },
   };
 
   useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const value = await AsyncStorage.getItem('user_data');
-        if (value !== null) {
-          dispatch(setUserData(JSON.parse(value)));
-        }
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
-
     getUserData();
-  }, [dispatch]);
-
-  useEffect(() => {
-    const handleDeepLink = ({url}) => {
-      try {
-        const route = url.replace(/.*?:\/\//g, '');
-        const id = route.match(/\/([^\/]+)\/?$/)[1];
-      } catch (error) {
-        console.error('Error handling deep link:', error);
-      }
-    };
-
-    const subscription = Linking.addEventListener('url', handleDeepLink);
-
-    const handleInitialUrl = async () => {
-      try {
-        const initialUrl = await Linking.getInitialURL();
-        if (initialUrl) {
-          handleDeepLink({url: initialUrl});
-        }
-      } catch (error) {
-        console.error('Error handling initial URL:', error);
-      }
-    };
-
-    handleInitialUrl();
 
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [dispatch]);
+
+  const getUserData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user_data');
+      if (value !== null) {
+        dispatch(setUserData(JSON.parse(value)));
+      }
+      const countryData = await AsyncStorage.getItem('countryData');
+      console.log('countryData', countryData);
+      if (countryData === null) {
+        navigationRef.current?.navigate('OnboardScreen');
+        return;
+      } else {
+        dispatch(setCountryCode(JSON.parse(countryData)));
+        setIsCountryCodeSelected(true);
+        handleInitialUrl();
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const handleDeepLink = ({url}) => {
+    if (isCountryCodeSelected) {
+      try {
+        const route = url.replace(/.*?:\/\//g, '');
+        const route_value = route.match(/\/([^\/]+)\/?$/)[1];
+        const value = route_value.split('?id=');
+        navigationRef.current?.navigate('ProductDetails', {
+          id: value[0],
+          variant_id: value[1],
+        });
+      } catch (error) {
+        console.error('Error handling deep link:', error);
+      }
+    } else {
+      navigationRef.current?.navigate('OnboardScreen');
+    }
+  };
+
+  const handleInitialUrl = async () => {
+    try {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        handleDeepLink({url: initialUrl});
+      }
+    } catch (error) {
+      console.error('Error handling initial URL:', error);
+    }
+  };
+
+  const subscription = Linking.addEventListener('url', handleDeepLink);
 
   useEffect(() => {
     const eventEmitter = new NativeEventEmitter(
@@ -135,7 +152,11 @@ const MyDrawer = () => {
       event => {
         const {product_id} = event;
         if (product_id) {
-          navigationRef.navigate('ProductDetails', {id: product_id});
+          if (isCountryCodeSelected) {
+            navigationRef.current?.navigate('ProductDetails', {id: product_id});
+          } else {
+            navigationRef.current?.navigate('OnboardScreen');
+          }
         }
       },
     );
@@ -143,7 +164,8 @@ const MyDrawer = () => {
     return () => {
       subscription.remove();
     };
-  }, [navigationRef]);
+  }, [isCountryCodeSelected]);
+
   return (
     <PaperProvider>
       <NavigationContainer ref={navigationRef} linking={linking}>
@@ -159,6 +181,11 @@ const MyDrawer = () => {
           <Stack.Screen
             name="ProductDetails"
             component={ProductDetails}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="OnboardScreen"
+            component={OnboardScreen}
             options={{headerShown: false}}
           />
         </Drawer.Navigator>
