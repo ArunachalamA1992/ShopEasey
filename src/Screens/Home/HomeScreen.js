@@ -18,6 +18,7 @@ import {
   NativeEventEmitter,
   NativeModules,
   TextInput,
+  ImageBackground,
 } from 'react-native';
 import Color from '../../Global/Color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -25,7 +26,7 @@ import {Iconviewcomponent} from '../../Components/Icontag';
 import {Manrope} from '../../Global/FontFamily';
 import {useNavigation} from '@react-navigation/native';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import {Badge, Button, Divider} from 'react-native-paper';
+import {ActivityIndicator, Badge, Button, Divider} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -59,6 +60,9 @@ const HomeScreen = () => {
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
+  const [featuredloadMore, setfeaturedLoadMore] = useState(false);
+  const [featuredPage, setfeaturedPage] = useState(1);
+  const [featuredendReached, setfeaturedEndReached] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
@@ -413,6 +417,29 @@ const HomeScreen = () => {
     }
   };
 
+  const featuredLoadMoreData = async () => {
+    if (featuredloadMore || featuredendReached) {
+      return;
+    }
+    setfeaturedLoadMore(true);
+    try {
+      const nextPage = featuredPage + 1;
+      var data = `project=offer&page=${nextPage}`;
+      const response = await fetchData.list_products(data, token);
+      if (response?.data.length > 0) {
+        setfeaturedPage(nextPage);
+        const updatedData = [...FeaturedProducts, ...response?.data];
+        setFeaturedProducts(updatedData);
+      } else {
+        setfeaturedEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setfeaturedLoadMore(false);
+    }
+  };
+
   const [searchProduct, setSearchProduct] = useState('');
   const [selectData, setSelectData] = useState({});
   const [searchloadMore, setSearchLoadMore] = useState(false);
@@ -479,9 +506,41 @@ const HomeScreen = () => {
       console.log('error', error);
     }
   };
+
+  useEffect(() => {
+    const checkModalShown = async () => {
+      const modalShown = await AsyncStorage.getItem('modalShown');
+      if (!modalShown && token !== undefined) {
+        setImageVisible(true);
+        await AsyncStorage.setItem('modalShown', 'true');
+      }
+    };
+
+    checkModalShown();
+  }, [token]);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'light-content'} />
+      {netInfo_State ? null : (
+        <Animated.View
+          animation="fadeInRight"
+          style={{
+            flex: 1,
+            position: 'absolute',
+            zIndex: 9999,
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#626262',
+            opacity: 0.5,
+            padding: 10,
+            marginTop: Platform.OS == 'ios' ? 80 : 0,
+          }}>
+          <Text style={{color: 'white'}}>No Internet Connection</Text>
+        </Animated.View>
+      )}
       {loading ? (
         <View style={{marginHorizontal: 10}}>
           <SkeletonPlaceholder>
@@ -821,82 +880,57 @@ const HomeScreen = () => {
         <>
           <View
             style={{
-              height: 100,
+              height: 120,
               backgroundColor: Color.primary,
               marginBottom: 30,
             }}>
+            <ImageBackground
+              source={Media.home_back}
+              style={{
+                height: 120,
+                width: '100%',
+                opacity: 0.5,
+              }}
+            />
             <View
               style={{
-                backgroundColor: Color.primary,
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
                 justifyContent: 'center',
                 alignItems: 'center',
-                paddingTop: 10,
+                padding: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
               }}>
               <View
                 style={{
-                  padding: 20,
                   flexDirection: 'row',
-                  justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <View style={{flex: 1}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <Iconviewcomponent
-                      Icontag={'Octicons'}
-                      iconname={'location'}
-                      icon_size={20}
-                      icon_color={Color.white}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: Color.white,
-                        marginLeft: 5,
-                        textTransform: 'capitalize',
-                        fontFamily: Manrope.Bold,
-                      }}>
-                      {currentCity}
-                    </Text>
-                  </View>
-                </View>
-                {/* <TouchableOpacity
-                  style={{marginHorizontal: 10}}
-                  onPress={() => {}}>
-                  <Iconviewcomponent
-                    Icontag={'Ionicons'}
-                    iconname={'notifications-outline'}
-                    icon_size={26}
-                    icon_color={Color.white}
-                    iconstyle={{marginTop: 0}}
-                  />
-                </TouchableOpacity> */}
-
+                <Iconviewcomponent
+                  Icontag={'Octicons'}
+                  iconname={'location'}
+                  icon_size={20}
+                  icon_color={Color.white}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: Color.white,
+                    marginLeft: 5,
+                    textTransform: 'capitalize',
+                    fontFamily: Manrope.Bold,
+                  }}>
+                  {currentCity}
+                </Text>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   style={{marginHorizontal: 10}}
-                  onPress={() => {
-                    // navigation.navigate('WishListTab');
-                    navigation.navigate('MyRewards');
-                  }}>
-                  {/* {wishlist != 0 ? (
-                    <Badge
-                      style={{
-                        position: 'absolute',
-                        zIndex: 1,
-                        top: -10,
-                        right: -10,
-                        backgroundColor: Color.red,
-                        color: Color.white,
-                        fontFamily: Manrope.Bold,
-                        fontSize: 12,
-                      }}>
-                      {wishlist}
-                    </Badge>
-                  ) : null} */}
-                  {/* <AntDesign name="hearto" size={22} color={Color.white} /> */}
+                  onPress={() => navigation.navigate('MyRewards')}>
                   <Iconviewcomponent
                     Icontag={'FontAwesome5'}
                     iconname={'award'}
@@ -906,10 +940,8 @@ const HomeScreen = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{marginHorizontal: 10}}
-                  onPress={() => {
-                    navigation.navigate('MyCartTab');
-                  }}>
-                  {cart != 0 ? (
+                  onPress={() => navigation.navigate('MyCartTab')}>
+                  {cart !== 0 && (
                     <Badge
                       style={{
                         position: 'absolute',
@@ -923,18 +955,19 @@ const HomeScreen = () => {
                       }}>
                       {cart}
                     </Badge>
-                  ) : null}
+                  )}
                   <Feather name="shopping-cart" size={22} color={Color.white} />
                 </TouchableOpacity>
               </View>
             </View>
           </View>
+
           <View
             style={{
               width: '100%',
               position: 'absolute',
               alignItems: 'center',
-              top: 50,
+              top: 70,
             }}>
             <View
               activeOpacity={0.5}
@@ -1958,7 +1991,7 @@ const HomeScreen = () => {
                             }}>
                             Featured Products
                           </Text>
-                          <TouchableOpacity
+                          {/* <TouchableOpacity
                             onPress={() => {
                               navigation.navigate('viewProducts', {
                                 key: 'featured',
@@ -1973,18 +2006,46 @@ const HomeScreen = () => {
                               }}>
                               View All
                             </Text>
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </View>
                         <FlatList
                           data={FeaturedProducts}
-                          horizontal
-                          showsHorizontalScrollIndicator={false}
+                          numColumns={2}
                           renderItem={({item, index}) => {
                             return (
-                              <ItemCardHorizontal
-                                item={item}
-                                navigation={navigation}
-                              />
+                              <ItemCard item={item} navigation={navigation} />
+                            );
+                          }}
+                          onEndReachedThreshold={3}
+                          onEndReached={() => {
+                            featuredLoadMoreData();
+                          }}
+                          ListFooterComponent={() => {
+                            return (
+                              <View
+                                style={{
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}>
+                                {featuredloadMore && (
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 12,
+                                        color: Color.black,
+                                        marginHorizontal: 10,
+                                        fontFamily: Manrope.Medium,
+                                      }}>
+                                      Loading...
+                                    </Text>
+                                    <ActivityIndicator />
+                                  </View>
+                                )}
+                              </View>
                             );
                           }}
                         />
@@ -1994,67 +2055,61 @@ const HomeScreen = () => {
               }
             }}
           />
+          <Modal transparent={true} animationType="fade" visible={imageVisible}>
+            <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: 130,
+                    right: 20,
+                    zIndex: 1,
+                    padding: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setImageVisible(false);
+                    }}>
+                    <Iconviewcomponent
+                      Icontag={'AntDesign'}
+                      iconname={'closecircleo'}
+                      icon_size={35}
+                      icon_color={Color.white}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('ProductList', {
+                      category_id: 560,
+                    });
+                    setImageVisible(false);
+                  }}>
+                  <Image
+                    source={Media.popup}
+                    style={{
+                      width: 250,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: 250,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          <PostCompletedModal navigation={navigation} />
         </>
       )}
-      {netInfo_State ? null : (
-        <Animated.View
-          animation="fadeInRight"
-          style={{
-            flex: 1,
-            position: 'absolute',
-            zIndex: 9999,
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#626262',
-            opacity: 0.5,
-            padding: 10,
-            marginTop: Platform.OS == 'ios' ? 80 : 0,
-          }}>
-          <Text style={{color: 'white'}}>No Internet Connection</Text>
-        </Animated.View>
-      )}
-
-      <Modal transparent={true} animationType="fade" visible={imageVisible}>
-        <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <TouchableOpacity
-              style={{
-                position: 'absolute',
-                right: 60,
-                top: 200,
-                // padding: 10,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={() => setImageVisible(false)}>
-              <Iconviewcomponent
-                Icontag={'AntDesign'}
-                iconname={'closecircleo'}
-                icon_size={35}
-                icon_color={Color.white}
-              />
-            </TouchableOpacity>
-            <Image
-              source={require('../../assets/category/offer.png')}
-              style={{
-                flex: 1,
-                position: 'relative',
-                width: 250,
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: 250,
-                // transform: [{ rotate: '10deg' }],
-                resizeMode: 'contain',
-              }}
-            />
-          </View>
-        </View>
-      </Modal>
-      <PostCompletedModal navigation={navigation} />
     </SafeAreaView>
   );
 };

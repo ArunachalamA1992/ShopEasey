@@ -105,12 +105,14 @@ const MyDrawer = () => {
       } else {
         dispatch(setCountryCode(JSON.parse(countryData)));
         setIsCountryCodeSelected(true);
-        handleInitialUrl();
+        await handleInitialUrl(); // Check if there's an initial URL
       }
     } catch (error) {
       console.log('error', error);
     }
   };
+
+  const [pendingDeepLink, setPendingDeepLink] = useState(null);
 
   const handleDeepLink = ({url}) => {
     if (isCountryCodeSelected) {
@@ -126,6 +128,7 @@ const MyDrawer = () => {
         console.error('Error handling deep link:', error);
       }
     } else {
+      setPendingDeepLink(url);
       navigationRef.current?.navigate('OnboardScreen');
     }
   };
@@ -140,6 +143,13 @@ const MyDrawer = () => {
       console.error('Error handling initial URL:', error);
     }
   };
+
+  useEffect(() => {
+    if (isCountryCodeSelected && pendingDeepLink) {
+      handleDeepLink({url: pendingDeepLink});
+      setPendingDeepLink(null);
+    }
+  }, [isCountryCodeSelected]);
 
   const subscription = Linking.addEventListener('url', handleDeepLink);
 

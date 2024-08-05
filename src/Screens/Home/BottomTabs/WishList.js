@@ -227,7 +227,7 @@ const WishList = ({navigation}) => {
                   onPress={() => {
                     navigation.navigate('ProductDetails', {
                       id: item?.product?.id,
-                      variant_id: item?.variants[0]?.id,
+                      variant_id: item?.variant?.id,
                     });
                   }}>
                   <ImageBackground

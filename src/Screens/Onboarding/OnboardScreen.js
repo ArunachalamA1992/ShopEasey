@@ -6,6 +6,7 @@ import {
   Animated,
   TouchableOpacity,
   Image,
+  Linking,
 } from 'react-native';
 import {scr_height, scr_width} from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
@@ -31,6 +32,7 @@ const OnboardScreen = () => {
   const [countryData, setCountryData] = useState([]);
   const imageScale = new Animated.Value(0.1);
   const dispatch = useDispatch();
+  const [pendingDeepLink, setPendingDeepLink] = useState(null);
 
   Animated.timing(imageScale, {
     toValue: 1,
@@ -53,6 +55,54 @@ const OnboardScreen = () => {
       dispatch(setCountryCode(item));
       setSaleBottomSheetVisible(false);
       await AsyncStorage.setItem('countryData', JSON.stringify(item));
+
+      // Check if there's a pending deep link
+      if (pendingDeepLink) {
+        handleDeepLink(pendingDeepLink);
+        setPendingDeepLink(null);
+      } else {
+        // Normal navigation behavior
+        navigation.navigate('OnboardTwo');
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const handleDeepLink = url => {
+    try {
+      const route = url.replace(/.*?:\/\//g, '');
+      const route_value = route.match(/\/([^\/]+)\/?$/)[1];
+      const value = route_value.split('?id=');
+      navigation.navigate('ProductDetails', {
+        id: value[0],
+        variant_id: value[1],
+      });
+    } catch (error) {
+      console.error('Error handling deep link:', error);
+    }
+  };
+
+  const handleInitialUrl = async () => {
+    try {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        setPendingDeepLink(initialUrl);
+      }
+    } catch (error) {
+      console.error('Error handling initial URL:', error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+    handleInitialUrl();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const onboard_data = await fetchData.list_countries({}, null);
+      setCountryData(onboard_data?.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -160,39 +210,9 @@ const OnboardScreen = () => {
     }
   }
 
-  // Inside your component
-  const handleSignUpButtonClick = () => {
-    console.log('Log Event Start');
-    // Track the "Sign Up" button click event
-
-    getAnalytics().logEvent('bicket', {
-      id: '3745092',
-      item: 'Mens grey shirt',
-      description: ['round neck', 'long sleeved'],
-      size: 'L',
-    });
-    console.log('=========== Log ============ ');
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-    try {
-      const onboard_data = await fetchData.list_countries({}, null);
-      setCountryData(onboard_data?.data);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Animated.Image
-        // source={{
-        //   uri: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_shop.png',
-        // }}
         source={require('../../assets/images/onboard_shop.png')}
         style={styles.image}
       />

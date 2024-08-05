@@ -1,5 +1,7 @@
 export const Media = {
   user: 'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514850.png',
+  home_back: require('../assets/home_back.png'),
+  popup: require('../assets/popup.webp'),
   status:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514851.png',
   logo: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/black_logo.png',
@@ -23,7 +25,8 @@ export const Media = {
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_2.png',
   onboard_main:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_shop.png',
-  welcome: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_welcom.jpeg',
+  welcome:
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_welcom.jpeg',
   // welcome:'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/welcome.png',
   main_logo:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/main_logo.png',
@@ -122,9 +125,12 @@ export const Media = {
   flash_sell_ban_three:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/off_three.jpg',
 
-  no_image: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/no_image.png',
-  empty_cart: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/empty_cart.png',
-  empty_wishlist: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/empty-wishlist.png',
+  no_image:
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/no_image.png',
+  empty_cart:
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/empty_cart.png',
+  empty_wishlist:
+    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/empty-wishlist.png',
   LottieCheck: require('../assets/LottieCheck.json'),
   LottieCancelled: require('../assets/LottieCancelled.json'),
 };
