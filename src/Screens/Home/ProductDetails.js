@@ -30,8 +30,9 @@ import fetchData from '../../Config/fetchData';
 import RenderHtml from 'react-native-render-html';
 import {useDispatch, useSelector} from 'react-redux';
 import common_fn from '../../Config/common_fn';
-import {setDataCount} from '../../Redux/user/UserAction';
+import {setCountryCode, setDataCount} from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetails = ({route, navigation}) => {
   const {id, variant_id} = route.params;
@@ -52,7 +53,21 @@ const ProductDetails = ({route, navigation}) => {
   useEffect(() => {
     setSelectedColor(singleData?.color);
     setSelectedSize(singleData?.size);
+    getCountryData();
   }, [singleData]);
+
+  const getCountryData = async () => {
+    try {
+      const countryData = await AsyncStorage.getItem('countryData');
+      if (countryData === null) {
+        navigation.replace('OnboardScreen');
+        return;
+      }
+      dispatch(setCountryCode(JSON.parse(countryData)));
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
 
   const handleColorPress = async item => {
     setLoading(true);
@@ -1444,7 +1459,7 @@ const ProductDetails = ({route, navigation}) => {
                         }}
                         onPress={() => {
                           if (token != undefined) {
-                            navigation.navigate('SellerProfile', {
+                            navigation.push('SellerProfile', {
                               vendor_id: singleData?.product?.vendor?.id,
                             });
                           } else {
@@ -1514,7 +1529,7 @@ const ProductDetails = ({route, navigation}) => {
                           }}
                           onPress={() => {
                             if (token != undefined) {
-                              navigation.navigate('SellerProfile', {
+                              navigation.push('SellerProfile', {
                                 vendor_id: singleData?.product?.vendor?.id,
                               });
                             } else {
@@ -1536,7 +1551,7 @@ const ProductDetails = ({route, navigation}) => {
                             View Shop
                           </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -1563,7 +1578,7 @@ const ProductDetails = ({route, navigation}) => {
                             }}>
                             {followStatus}
                           </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                       </View>
                     </View>
                   </View>

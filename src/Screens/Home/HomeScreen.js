@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -22,24 +22,24 @@ import {
 } from 'react-native';
 import Color from '../../Global/Color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
-import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import {ActivityIndicator, Badge, Button, Divider} from 'react-native-paper';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { useNavigation } from '@react-navigation/native';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
+import { ActivityIndicator, Badge, Button, Divider } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {scr_width} from '../../Utils/Dimensions';
+import { scr_width } from '../../Utils/Dimensions';
 import CountdownTimer from '../../Components/CountdownTimer';
-import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
+import ItemCard, { ItemCardHorizontal } from '../../Components/ItemCard';
 import * as ImagePicker from 'react-native-image-picker';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {setDataCount, setUserData} from '../../Redux';
-import {useDispatch, useSelector} from 'react-redux';
+import { setDataCount, setUserData } from '../../Redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Geolocation from 'react-native-geolocation-service';
 import common_fn from '../../Config/common_fn';
 import axios from 'axios';
@@ -48,7 +48,7 @@ import PostCompletedModal from '../MyOrders/OrderCompletionModal';
 import VoiceSearch from '../../Components/VoiceSearch';
 
 LogBox.ignoreAllLogs();
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -65,7 +65,7 @@ const HomeScreen = () => {
   const [featuredendReached, setfeaturedEndReached] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const [imageVisible, setImageVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
@@ -73,7 +73,7 @@ const HomeScreen = () => {
   const [FeaturedProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const dataCount = useSelector(state => state.UserReducer.count);
-  var {wishlist, cart} = dataCount;
+  var { wishlist, cart } = dataCount;
 
   const [OfferBanner] = useState([
     {
@@ -166,16 +166,16 @@ const HomeScreen = () => {
   ]);
 
   const [shopSection] = useState([
-    {id: 1, title: 'Category Menu', data: ['Category Menu']},
-    {id: 2, title: 'banners', data: ['banners']},
-    {id: 3, title: 'hot deals', data: ['hot deals']},
-    {id: 4, title: 'Trend Brands', data: ['Trend Brands']},
-    {id: 5, title: 'Trend Product', data: ['Trend Product']},
-    {id: 6, title: 'Offer Banner', data: ['Offer Banner']},
-    {id: 7, title: 'Flash Selling', data: ['Flash Selling']},
-    {id: 8, title: 'product', data: ['product']},
-    {id: 9, title: 'Latest Product', data: ['Latest Product']},
-    {id: 10, title: 'Featured Product', data: ['Featured Product']},
+    { id: 1, title: 'Category Menu', data: ['Category Menu'] },
+    { id: 2, title: 'banners', data: ['banners'] },
+    { id: 3, title: 'hot deals', data: ['hot deals'] },
+    { id: 4, title: 'Trend Brands', data: ['Trend Brands'] },
+    { id: 5, title: 'Trend Product', data: ['Trend Product'] },
+    { id: 6, title: 'Offer Banner', data: ['Offer Banner'] },
+    { id: 7, title: 'Flash Selling', data: ['Flash Selling'] },
+    { id: 8, title: 'product', data: ['product'] },
+    { id: 9, title: 'Latest Product', data: ['Latest Product'] },
+    { id: 10, title: 'Featured Product', data: ['Featured Product'] },
   ]);
 
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
@@ -199,9 +199,9 @@ const HomeScreen = () => {
     const subscription = eventEmitter.addListener(
       'OPEN_PRODUCT_DETAILS',
       event => {
-        const {product_id} = event;
+        const { product_id } = event;
         if (product_id) {
-          navigation.navigate('ProductDetails', {id: product_id});
+          navigation.navigate('ProductDetails', { id: product_id });
         }
       },
     );
@@ -221,7 +221,7 @@ const HomeScreen = () => {
       Geolocation.getCurrentPosition(
         async position => {
           clearTimeout(timeoutId);
-          const {latitude, longitude} = position.coords;
+          const { latitude, longitude } = position.coords;
 
           try {
             const response = await axios.get(
@@ -229,9 +229,8 @@ const HomeScreen = () => {
             );
             const address = response?.data?.address;
             if (address) {
-              const city = `${address?.city ?? address?.suburb},${
-                address?.country_code
-              }`;
+              const city = `${address?.city ?? address?.suburb},${address?.country_code
+                }`;
               setCurrentCity(city);
             }
           } catch (error) {
@@ -541,15 +540,15 @@ const HomeScreen = () => {
             padding: 10,
             marginTop: Platform.OS == 'ios' ? 80 : 0,
           }}>
-          <Text style={{color: 'white'}}>No Internet Connection</Text>
+          <Text style={{ color: 'white' }}>No Internet Connection</Text>
         </Animated.View>
       )}
       {loading ? (
-        <View style={{marginHorizontal: 10}}>
+        <View style={{ marginHorizontal: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{flex: 1}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1 }}>
                 <SkeletonPlaceholder.Item
                   width={180}
                   height={20}
@@ -601,7 +600,7 @@ const HomeScreen = () => {
                 marginTop: 20,
               }}>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -617,7 +616,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -633,7 +632,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -649,7 +648,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -665,7 +664,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -681,7 +680,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -697,7 +696,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -713,7 +712,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -729,7 +728,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -745,7 +744,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -761,7 +760,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -777,7 +776,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -890,15 +889,15 @@ const HomeScreen = () => {
             <ImageBackground
               source={Media.home_back}
               style={{
-                height: 120,
                 width: '100%',
-                opacity: 0.5,
+                height: 160,
+                opacity: 0.5, resizeMode: 'contain'
               }}
             />
             <View
               style={{
                 position: 'absolute',
-                top: 0,
+                top: -20,
                 bottom: 0,
                 left: 0,
                 right: 0,
@@ -921,7 +920,7 @@ const HomeScreen = () => {
                 />
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 16,
                     color: Color.white,
                     marginLeft: 5,
                     textTransform: 'capitalize',
@@ -930,19 +929,19 @@ const HomeScreen = () => {
                   {currentCity}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity
-                  style={{marginHorizontal: 10}}
+                  style={{ marginHorizontal: 10 }}
                   onPress={() => navigation.navigate('MyRewards')}>
                   <Iconviewcomponent
                     Icontag={'FontAwesome5'}
                     iconname={'award'}
-                    icon_size={22}
+                    icon_size={24}
                     icon_color={Color.white}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{marginHorizontal: 10}}
+                  style={{ marginHorizontal: 10 }}
                   onPress={() => navigation.navigate('MyCartTab')}>
                   {cart !== 0 && (
                     <Badge
@@ -954,12 +953,12 @@ const HomeScreen = () => {
                         backgroundColor: Color.red,
                         color: Color.white,
                         fontFamily: Manrope.Bold,
-                        fontSize: 12,
+                        fontSize: 13,
                       }}>
                       {cart}
                     </Badge>
                   )}
-                  <Feather name="shopping-cart" size={22} color={Color.white} />
+                  <Feather name="shopping-cart" size={24} color={Color.white} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -997,9 +996,9 @@ const HomeScreen = () => {
                 borderWidth: 1,
                 borderColor: Color.lightgrey,
               }}
-              // onPress={() => {
-              //   navigation.navigate('Search', {searchProduct: ''});
-              // }}
+            // onPress={() => {
+            //   navigation.navigate('Search', {searchProduct: ''});
+            // }}
             >
               <Iconviewcomponent
                 Icontag={'AntDesign'}
@@ -1071,7 +1070,7 @@ const HomeScreen = () => {
                 <FlatList
                   data={ProductSuggestions?.data}
                   keyExtractor={(item, index) => item + index}
-                  renderItem={({item, index}) => {
+                  renderItem={({ item, index }) => {
                     return (
                       <TouchableOpacity
                         key={index}
@@ -1090,7 +1089,7 @@ const HomeScreen = () => {
                           {item?.keyword}
                         </Text>
                         {index < ProductSuggestions?.data.length - 1 && (
-                          <Divider style={{height: 1, marginVertical: 5}} />
+                          <Divider style={{ height: 1, marginVertical: 5 }} />
                         )}
                       </TouchableOpacity>
                     );
@@ -1111,7 +1110,7 @@ const HomeScreen = () => {
             scrollEventThrottle={1}
             nestedScrollEnabled
             initialNumToRender={5}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               switch (item) {
                 case 'Category Menu':
                   return (
@@ -1148,7 +1147,7 @@ const HomeScreen = () => {
                                 height: 65,
                               }}>
                               <Image
-                                source={{uri: item?.file}}
+                                source={{ uri: item?.file }}
                                 style={{
                                   width: 65,
                                   height: 65,
@@ -1182,7 +1181,7 @@ const HomeScreen = () => {
                           marginVertical: 10,
                           width: '25%',
                         }}>
-                        <View style={{alignItems: 'center'}}>
+                        <View style={{ alignItems: 'center' }}>
                           <View
                             style={{
                               backgroundColor: '#fff',
@@ -1239,7 +1238,7 @@ const HomeScreen = () => {
                           justifyContent: 'center',
                           alignItems: 'center',
                         }}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                           <TouchableOpacity
                             onPress={() => {
                               navigation.navigate('ProductList', {
@@ -1247,7 +1246,7 @@ const HomeScreen = () => {
                               });
                             }}>
                             <Image
-                              source={{uri: item.ban_image}}
+                              source={{ uri: item.ban_image }}
                               style={{
                                 width: width - 10,
                                 height: 130,
@@ -1276,7 +1275,7 @@ const HomeScreen = () => {
                           marginTop: 20,
                         }}>
                         <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          style={{ flexDirection: 'row', alignItems: 'center' }}>
                           <View
                             style={{
                               flexDirection: 'row',
@@ -1340,7 +1339,7 @@ const HomeScreen = () => {
                         data={hotDealsData}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({item, index}) => {
+                        renderItem={({ item, index }) => {
                           return (
                             <TouchableOpacity
                               key={index}
@@ -1355,7 +1354,7 @@ const HomeScreen = () => {
                                 });
                               }}>
                               <Image
-                                source={{uri: item?.image}}
+                                source={{ uri: item?.image }}
                                 style={{
                                   width: 170,
                                   height: 130,
@@ -1568,7 +1567,7 @@ const HomeScreen = () => {
                           data={trendingProducts}
                           horizontal
                           showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             return (
                               <ItemCardHorizontal
                                 item={item}
@@ -1603,7 +1602,7 @@ const HomeScreen = () => {
                         //   justifyContent: 'center',
                         //   alignItems: 'center',
                         // }}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                           <TouchableOpacity
                             style={{
                               width: scr_width,
@@ -1616,7 +1615,7 @@ const HomeScreen = () => {
                               });
                             }}>
                             <Image
-                              source={{uri: item?.category_image}}
+                              source={{ uri: item?.category_image }}
                               style={{
                                 width: '100%',
                                 height: 470,
@@ -1731,7 +1730,7 @@ const HomeScreen = () => {
                               borderRadius: 10,
                             }}>
                             <Image
-                              source={{uri: Media.flash_sell_ban_one}}
+                              source={{ uri: Media.flash_sell_ban_one }}
                               style={{
                                 height: 100,
                                 resizeMode: 'contain',
@@ -1750,7 +1749,7 @@ const HomeScreen = () => {
                               borderRadius: 10,
                             }}>
                             <Image
-                              source={{uri: Media.flash_sell_ban_two}}
+                              source={{ uri: Media.flash_sell_ban_two }}
                               style={{
                                 height: 100,
                                 resizeMode: 'contain',
@@ -1774,7 +1773,7 @@ const HomeScreen = () => {
                             size={46}
                             color={'#0095B6'}
                           />
-                          <View style={{flex: 1, marginLeft: 10}}>
+                          <View style={{ flex: 1, marginLeft: 10 }}>
                             <Text
                               style={{
                                 fontSize: 11,
@@ -1857,7 +1856,7 @@ const HomeScreen = () => {
                               alignItems: 'center',
                             }}>
                             <Image
-                              source={{uri: item.logo}}
+                              source={{ uri: item.logo }}
                               style={{
                                 width: 100,
                                 height: 60,
@@ -1887,7 +1886,7 @@ const HomeScreen = () => {
                         data={visibleData}
                         numColumns={2}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({item, index}) => {
+                        renderItem={({ item, index }) => {
                           return (
                             <ItemCard item={item} navigation={navigation} />
                           );
@@ -1960,7 +1959,7 @@ const HomeScreen = () => {
                           data={latestProducts}
                           horizontal
                           showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             return (
                               <ItemCardHorizontal
                                 item={item}
@@ -2014,7 +2013,7 @@ const HomeScreen = () => {
                         <FlatList
                           data={FeaturedProducts}
                           numColumns={2}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             return (
                               <ItemCard item={item} navigation={navigation} />
                             );
@@ -2059,7 +2058,7 @@ const HomeScreen = () => {
             }}
           />
           <Modal transparent={true} animationType="fade" visible={imageVisible}>
-            <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
+            <View style={{ backgroundColor: Color.transparantBlack, flex: 1 }}>
               <View
                 style={{
                   flex: 1,
@@ -2122,8 +2121,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.white,
   },
-  child: {width: Dimensions.get('window').width, justifyContent: 'center'},
-  text: {fontSize: 14, textAlign: 'center'},
+  child: { width: Dimensions.get('window').width, justifyContent: 'center' },
+  text: { fontSize: 14, textAlign: 'center' },
   categoryImage: {
     width: 80,
     height: 80,

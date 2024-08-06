@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,23 +15,25 @@ import {
   Pressable,
   FlatList,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import common_fn from '../../Config/common_fn';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import FIcon from 'react-native-vector-icons/FontAwesome';
-import {Media} from '../../Global/Media';
-import {setOrderCancelVisible, setOrderSuccessVisible} from '../../Redux';
+import { Media } from '../../Global/Media';
+import { setOrderCancelVisible, setOrderSuccessVisible } from '../../Redux';
 import RazorpayCheckout from 'react-native-razorpay';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 LogBox.ignoreAllLogs();
+const { height } = Dimensions.get('screen');
 
-const OrderConfirmation = ({navigation, route}) => {
-  const {CheckOut, ids} = route.params;
+const OrderConfirmation = ({ navigation, route }) => {
+  const { CheckOut, ids } = route.params;
   const [OrderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
@@ -42,7 +44,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -166,7 +168,7 @@ const OrderConfirmation = ({navigation, route}) => {
       const defaultAddress = address.find(item => item?.is_default === 1);
       setSelectAddress(defaultAddress || address[0]);
     }
-  }, [address]);
+  }, []);
 
   const Sub_total = selectedData
     ?.reduce((accumulator, item) => {
@@ -267,7 +269,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 total: item?.variant?.offer_price
                   ? item?.variant?.offer_price
                   : item?.variant?.price / countryCode?.price_margin +
-                    tax_item?.tax * item?.quantity,
+                  tax_item?.tax * item?.quantity,
                 sub_total: item?.variant?.offer_price
                   ? item?.variant?.offer_price
                   : item?.variant?.price / countryCode?.price_margin,
@@ -324,7 +326,7 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const handleOnlineOrder = post_order => {
     RazorpayCheckout.open(post_order?.data)
-      .then(async ({razorpay_signature, razorpay_payment_id}) => {
+      .then(async ({ razorpay_signature, razorpay_payment_id }) => {
         const data = {
           order_id: post_order?.data?.order_id,
           payment_id: razorpay_payment_id,
@@ -366,10 +368,10 @@ const OrderConfirmation = ({navigation, route}) => {
             padding: 10,
             marginTop: Platform.OS == 'ios' ? 80 : 0,
           }}>
-          <Text style={{color: 'white'}}>No Internet Connection</Text>
+          <Text style={{ color: 'white' }}>No Internet Connection</Text>
         </Animated.View>
       )}
-      <View style={{flex: 1, backgroundColor: Color.softGrey}}>
+      <View style={{ flex: 1, backgroundColor: Color.softGrey }}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -413,7 +415,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   Icontag={'FontAwesome'}
                   iconname={'plus'}
                   icon_size={14}
-                  iconstyle={{color: Color.primary}}
+                  iconstyle={{ color: Color.primary }}
                 />
                 <Text
                   style={{
@@ -438,7 +440,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}>
                   <TouchableOpacity
                     onPress={() => setSelectAddress(item)}
-                    style={{marginRight: 10, marginTop: 10}}>
+                    style={{ marginRight: 10, marginTop: 10 }}>
                     <Iconviewcomponent
                       Icontag={'Ionicons'}
                       iconname={
@@ -447,10 +449,10 @@ const OrderConfirmation = ({navigation, route}) => {
                           : 'radio-button-off-sharp'
                       }
                       icon_size={22}
-                      iconstyle={{color: Color.lightBlack}}
+                      iconstyle={{ color: Color.lightBlack }}
                     />
                   </TouchableOpacity>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -501,7 +503,7 @@ const OrderConfirmation = ({navigation, route}) => {
                         status: 'UPDATE',
                       });
                     }}
-                    style={{marginHorizontal: 10}}>
+                    style={{ marginHorizontal: 10 }}>
                     <FIcon name="pencil" size={20} color={Color.primary} />
                   </TouchableOpacity>
                 </View>
@@ -550,17 +552,17 @@ const OrderConfirmation = ({navigation, route}) => {
               />
             </TouchableOpacity>
             {isExpanded ? (
-              <View style={{width: '100%'}}>
+              <View style={{ width: '100%' }}>
                 {selectedData?.map(item => {
                   var discount = parseFloat(
                     100 -
-                      ((item?.variant?.org_price / countryCode?.price_margin -
+                    ((item?.variant?.org_price / countryCode?.price_margin -
                       item?.variant?.offer_price
-                        ? item?.variant?.offer_price
-                        : item?.variant?.price / countryCode?.price_margin) /
-                        item?.variant?.org_price /
-                        countryCode?.price_margin) *
-                        100,
+                      ? item?.variant?.offer_price
+                      : item?.variant?.price / countryCode?.price_margin) /
+                      item?.variant?.org_price /
+                      countryCode?.price_margin) *
+                    100,
                   ).toFixed(2);
                   return (
                     <View
@@ -588,7 +590,7 @@ const OrderConfirmation = ({navigation, route}) => {
                           />
                         ) : (
                           <Image
-                            source={{uri: Media.no_image}}
+                            source={{ uri: Media.no_image }}
                             style={{
                               width: 120,
                               height: 120,
@@ -633,13 +635,13 @@ const OrderConfirmation = ({navigation, route}) => {
                               item?.variant?.offer_price
                                 ? item?.variant?.offer_price
                                 : item?.variant?.price /
-                                    countryCode?.price_margin,
+                                countryCode?.price_margin,
                             ).toFixed(2)}{' '}
                             <Text style={styles.productPrice}>
                               {countryCode?.symbol}
                               {parseFloat(
                                 item?.variant?.org_price /
-                                  countryCode?.price_margin,
+                                countryCode?.price_margin,
                               ).toFixed(2)}
                             </Text>
                           </Text>
@@ -692,7 +694,7 @@ const OrderConfirmation = ({navigation, route}) => {
                                 }}></View>
                             </View>
                           )}
-                          {item?.variant?.size != '' && (
+                          {item?.variant?.size != '' || item?.variant?.size != null && (
                             <View
                               style={{
                                 flexDirection: 'row',
@@ -801,7 +803,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 borderRadius: 5,
                 backgroundColor: '#ECEFFE',
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Iconviewcomponent
                   Icontag={'MaterialCommunityIcons'}
                   iconname={'brightness-percent'}
@@ -865,7 +867,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 iconname={'chevron-forward'}
                 icon_size={20}
                 icon_color={Color.cloudyGrey}
-                iconstyle={{marginTop: 5}}
+                iconstyle={{ marginTop: 5 }}
               />
             </TouchableOpacity>
 
@@ -946,7 +948,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     </Text>
                     <TouchableOpacity
                       onPress={() => setSelectPayment(item)}
-                      style={{marginEnd: 20}}>
+                      style={{ marginEnd: 20 }}>
                       <Iconviewcomponent
                         Icontag={'Ionicons'}
                         iconname={
@@ -955,7 +957,7 @@ const OrderConfirmation = ({navigation, route}) => {
                             : 'radio-button-off-sharp'
                         }
                         icon_size={22}
-                        iconstyle={{color: Color.lightBlack}}
+                        iconstyle={{ color: Color.lightBlack }}
                       />
                     </TouchableOpacity>
                   </View>
@@ -1195,7 +1197,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 paddingHorizontal: 10,
                 marginVertical: 10,
               }}>
-              <View style={{paddingHorizontal: 10, elevation: 1}}>
+              <View style={{ paddingHorizontal: 10, elevation: 1 }}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -1268,7 +1270,7 @@ const OrderConfirmation = ({navigation, route}) => {
             {parseFloat(Sub_total) + overall_tax + 10}
           </Text>
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <TouchableOpacity
             onPress={() => {
               if (selectPayment && selectPayment.name) {
@@ -1304,7 +1306,7 @@ const OrderConfirmation = ({navigation, route}) => {
           onPress={() => {
             setCouponModal(false);
           }}
-          style={{flex: 1, backgroundColor: Color.transparantBlack}}
+          style={{ flex: 1, backgroundColor: Color.transparantBlack }}
         />
         <View
           style={{
@@ -1332,31 +1334,47 @@ const OrderConfirmation = ({navigation, route}) => {
             ]}
             keyExtractor={(item, index) => item.category}
             showsVerticalScrollIndicator={false}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return (
                 <View key={index}>
-                  {item?.data?.map((single_reward, single_index) => (
-                    <TouchableOpacity
-                      key={single_index}
-                      style={{
-                        height: 150,
-                        backgroundColor: Color.white,
-                        opacity:
-                          item?.category == 'Rewards You’ve Missed' ? 0.5 : 1,
-                      }}
-                      onPress={() => {
-                        copyToClipboard(single_reward?.coupon_code);
-                      }}>
-                      <Image
-                        source={single_reward.ban_image}
+                  {item?.data?.length > 0 ?
+                    item?.data?.map((single_reward, single_index) => (
+                      <TouchableOpacity
+                        key={single_index}
                         style={{
-                          width: '100%',
-                          height: '100%',
-                          resizeMode: 'contain',
+                          height: 150,
+                          backgroundColor: Color.white,
+                          opacity:
+                            item?.category == 'Rewards You’ve Missed' ? 0.5 : 1,
                         }}
-                      />
-                    </TouchableOpacity>
-                  ))}
+                        onPress={() => {
+                          copyToClipboard(single_reward?.coupon_code);
+                        }}>
+                        <Image
+                          source={single_reward.ban_image}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            resizeMode: 'contain',
+                          }}
+                        />
+                      </TouchableOpacity>
+                    )) :
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 150
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: Manrope.SemiBold,
+                          fontSize: 14,
+                          color: Color.black,
+                        }}>
+                        No Coupon Found
+                      </Text>
+                    </View>}
                 </View>
               );
             }}

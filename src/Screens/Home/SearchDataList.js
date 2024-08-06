@@ -27,6 +27,7 @@ import {Manrope} from '../../Global/FontFamily';
 import ItemCard from '../../Components/ItemCard';
 import VoiceSearch from '../../Components/VoiceSearch';
 
+
 const {height} = Dimensions.get('screen');
 const SearchDataList = ({navigation, route}) => {
   const [searchProduct, setSearchProduct] = useState(
@@ -46,6 +47,8 @@ const SearchDataList = ({navigation, route}) => {
     data: [],
     visible: false,
   });
+
+
   const [LocationSuggestion, setLocationSuggestion] = useState({
     data: [],
     visible: false,
@@ -54,9 +57,11 @@ const SearchDataList = ({navigation, route}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
+
   const handleVoiceSearch = query => {
     setVoiceSearchQuery(query);
   };
+
 
   const getData = useCallback(async () => {
     try {
@@ -71,14 +76,17 @@ const SearchDataList = ({navigation, route}) => {
     }
   }, [searchProduct, token]);
 
+
   useEffect(() => {
     getData();
   }, [token]);
 
+
   const handleSearch = async () => {
     try {
+      setLoading(true);
       const data = `filter=${searchProduct}&page=1&limit=10`;
-      const getData = await fetchData.search(data, token);
+      const get_search_data = await fetchData.search(data, token);
       setSearchModalVisible(false);
       getData();
     } catch (error) {
@@ -86,13 +94,14 @@ const SearchDataList = ({navigation, route}) => {
     }
   };
 
-  const propertySearch = async data => {
-    setSearchProduct(data);
+
+  const propertySearch = async input => {
+    setSearchProduct(input);
     try {
       const data = `filter=${searchProduct}&page=1&limit=10`;
       const getData = await fetchData.search(data, token);
       setProductSuggestions({
-        data: getData?.data?.keyword,
+        data: getData?.data?.keyword?.rows,
         visible: true,
       });
     } catch (error) {
@@ -100,18 +109,22 @@ const SearchDataList = ({navigation, route}) => {
     }
   };
 
+
   const loadSearchMoreData = async () => {
     if (SearchloadMore || SearchendReached) {
       return;
     }
     setSearchLoadMore(true);
     try {
-      const nextPage = page + 1;
+      const nextPage = Searchpage + 1;
       var data = `filter=${searchProduct}&page=${nextPage}&limit=10`;
       const filterData = await fetchData.search(data, token);
       if (filterData.length > 0) {
         setSearchPage(nextPage);
-        const updatedData = [...ProductSuggestions, ...filterData];
+        const updatedData = [
+          ...ProductSuggestions,
+          ...filterData?.data?.keyword?.rows,
+        ];
         setProductSuggestions(updatedData);
       } else {
         setSearchEndReached(true);
@@ -122,6 +135,7 @@ const SearchDataList = ({navigation, route}) => {
       setSearchLoadMore(false);
     }
   };
+
 
   const loadMoreData = async () => {
     if (loadMore || endReached) {
@@ -145,6 +159,7 @@ const SearchDataList = ({navigation, route}) => {
       setLoadMore(false);
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -404,7 +419,9 @@ const SearchDataList = ({navigation, route}) => {
   );
 };
 
+
 export default SearchDataList;
+
 
 const styles = StyleSheet.create({
   container: {

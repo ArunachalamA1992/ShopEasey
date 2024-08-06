@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
 import {useNavigation} from '@react-navigation/native';
@@ -17,6 +18,8 @@ import {useSelector} from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {Searchbar} from 'react-native-paper';
 import {Media} from '../../Global/Media';
+import common_fn from '../../Config/common_fn';
+
 
 const {height} = Dimensions.get('screen');
 const FollowingSellers = () => {
@@ -28,6 +31,7 @@ const FollowingSellers = () => {
   var {token} = userData;
   const [inputs, setInputs] = useState('');
 
+
   useEffect(() => {
     setLoading(true);
     getSellersData()
@@ -36,6 +40,7 @@ const FollowingSellers = () => {
         setLoading(false);
       });
   }, [token]);
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -46,6 +51,7 @@ const FollowingSellers = () => {
     };
   }, []);
 
+
   const getSellersData = async () => {
     try {
       const getSellerList = await fetchData.following_seller_list(``, token);
@@ -54,6 +60,23 @@ const FollowingSellers = () => {
       console.log('error', error);
     }
   };
+
+
+  const setFollowProfile = async id => {
+    try {
+      var param = `${id}`;
+      const setFollow = await fetchData.post_follow(param, {}, token);
+      if (setFollow.status === true) {
+        common_fn.showToast(setFollow?.message);
+      } else {
+        common_fn.showToast(setFollow?.message);
+      }
+      getSellersData();
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
 
   const searchItemClick = text => {
     try {
@@ -70,9 +93,11 @@ const FollowingSellers = () => {
     }
   };
 
+
   useEffect(() => {
     searchFilterFunction(inputs);
   }, [inputs]);
+
 
   const searchFilterFunction = text => {
     if (text) {
@@ -88,6 +113,7 @@ const FollowingSellers = () => {
       setSellerData(sellerData);
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -264,13 +290,16 @@ const FollowingSellers = () => {
                   </View>
                 </View>
                 {item?.is_follow === true ? (
-                  <View
+                  <TouchableOpacity
                     style={{
                       justifyContent: 'center',
                       alignItems: 'center',
                       borderRadius: 5,
                       backgroundColor: '#0FAD45',
                       padding: 5,
+                    }}
+                    onPress={() => {
+                      setFollowProfile(item?.vendor_id);
                     }}>
                     <Text
                       style={{
@@ -281,15 +310,18 @@ const FollowingSellers = () => {
                       }}>
                       Following
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : (
-                  <View
+                  <TouchableOpacity
                     style={{
                       justifyContent: 'center',
                       alignItems: 'center',
                       borderRadius: 5,
                       backgroundColor: '#0FAD45',
                       padding: 5,
+                    }}
+                    onPress={() => {
+                      setFollowProfile(item?.vendor_id);
                     }}>
                     <Text
                       style={{
@@ -300,7 +332,7 @@ const FollowingSellers = () => {
                       }}>
                       Follow
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 )}
               </TouchableOpacity>
             );
@@ -310,7 +342,7 @@ const FollowingSellers = () => {
             return (
               <View
                 style={{
-                  // height: height / 1.5,
+                  height: height / 1.5,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
@@ -330,6 +362,7 @@ const FollowingSellers = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -357,5 +390,6 @@ const styles = StyleSheet.create({
     fontFamily: Manrope.Medium,
   },
 });
+
 
 export default FollowingSellers;
