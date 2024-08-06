@@ -222,9 +222,10 @@ const SellerProfile = ({route, navigation}) => {
                       padding: 10,
                     }}>
                     <View style={{width: '100%', paddingHorizontal: 10}}>
-                      {sellerData?.profile != null ? (
+                      {sellerData?.profile == null ||
+                      sellerData?.profile == '' ? (
                         <Image
-                          source={{uri: sellerData?.profile}}
+                          source={{uri: Media.user}}
                           style={{
                             width: 80,
                             height: 80,
@@ -234,7 +235,7 @@ const SellerProfile = ({route, navigation}) => {
                         />
                       ) : (
                         <Image
-                          source={{uri: Media.user}}
+                          source={{uri: sellerData?.profile}}
                           style={{
                             width: 80,
                             height: 80,
@@ -761,6 +762,9 @@ const SellerProfile = ({route, navigation}) => {
                         backgroundColor: Color.primary,
                         borderBottomStartRadius: 10,
                         borderBottomRightRadius: 10,
+                      }}
+                      onPress={() => {
+                        navigation.navigate('MyRewards');
                       }}>
                       <Text
                         style={{

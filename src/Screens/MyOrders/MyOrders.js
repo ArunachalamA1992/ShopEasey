@@ -246,42 +246,43 @@ const Placed = ({token, index, navigation}) => {
                           />
                         </>
                       )}
-                      {item?.variants?.size != '' && (
-                        <>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              paddingHorizontal: 5,
-                            }}>
-                            <Text
+                      {item?.variants?.size != '' ||
+                        (item?.variants?.size != null && (
+                          <>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                marginRight: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                paddingHorizontal: 5,
                               }}>
-                              Size -
-                            </Text>
-                            <Text
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  marginRight: 5,
+                                }}>
+                                Size -
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                {item?.variants?.size}
+                              </Text>
+                            </View>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                              }}>
-                              {item?.variants?.size}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              width: 1,
-                              height: 20,
-                              backgroundColor: Color.lightgrey,
-                            }}
-                          />
-                        </>
-                      )}
+                                width: 1,
+                                height: 20,
+                                backgroundColor: Color.lightgrey,
+                              }}
+                            />
+                          </>
+                        ))}
                       <View
                         style={{
                           flexDirection: 'row',
@@ -613,42 +614,43 @@ const Missing = ({token, index, navigation}) => {
                           />
                         </>
                       )}
-                      {item?.variants?.size != '' && (
-                        <>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              paddingHorizontal: 5,
-                            }}>
-                            <Text
+                      {item?.variants?.size != '' ||
+                        (item?.variants?.size != null && (
+                          <>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                marginRight: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                paddingHorizontal: 5,
                               }}>
-                              Size -
-                            </Text>
-                            <Text
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  marginRight: 5,
+                                }}>
+                                Size -
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                {item?.variants?.size}
+                              </Text>
+                            </View>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                              }}>
-                              {item?.variants?.size}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              width: 1,
-                              height: 20,
-                              backgroundColor: Color.lightgrey,
-                            }}
-                          />
-                        </>
-                      )}
+                                width: 1,
+                                height: 20,
+                                backgroundColor: Color.lightgrey,
+                              }}
+                            />
+                          </>
+                        ))}
                       <View
                         style={{
                           flexDirection: 'row',
@@ -980,42 +982,43 @@ const Pending = ({token, index, navigation}) => {
                           />
                         </>
                       )}
-                      {item?.variants?.size != '' && (
-                        <>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              paddingHorizontal: 5,
-                            }}>
-                            <Text
+                      {item?.variants?.size != '' ||
+                        (item?.variants?.size != null && (
+                          <>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                marginRight: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                paddingHorizontal: 5,
                               }}>
-                              Size -
-                            </Text>
-                            <Text
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  marginRight: 5,
+                                }}>
+                                Size -
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                {item?.variants?.size}
+                              </Text>
+                            </View>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                              }}>
-                              {item?.variants?.size}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              width: 1,
-                              height: 20,
-                              backgroundColor: Color.lightgrey,
-                            }}
-                          />
-                        </>
-                      )}
+                                width: 1,
+                                height: 20,
+                                backgroundColor: Color.lightgrey,
+                              }}
+                            />
+                          </>
+                        ))}
                       <View
                         style={{
                           flexDirection: 'row',
@@ -1347,42 +1350,43 @@ const Proccesed = ({token, index, navigation}) => {
                           />
                         </>
                       )}
-                      {item?.variants?.size != '' && (
-                        <>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              paddingHorizontal: 5,
-                            }}>
-                            <Text
+                      {item?.variants?.size != '' ||
+                        (item?.variants?.size != null && (
+                          <>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                marginRight: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                paddingHorizontal: 5,
                               }}>
-                              Size -
-                            </Text>
-                            <Text
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  marginRight: 5,
+                                }}>
+                                Size -
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                {item?.variants?.size}
+                              </Text>
+                            </View>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                              }}>
-                              {item?.variants?.size}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              width: 1,
-                              height: 20,
-                              backgroundColor: Color.lightgrey,
-                            }}
-                          />
-                        </>
-                      )}
+                                width: 1,
+                                height: 20,
+                                backgroundColor: Color.lightgrey,
+                              }}
+                            />
+                          </>
+                        ))}
                       <View
                         style={{
                           flexDirection: 'row',
@@ -1712,42 +1716,43 @@ const OnShipping = ({token, index, navigation}) => {
                           />
                         </>
                       )}
-                      {item?.variants?.size != '' && (
-                        <>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                              paddingHorizontal: 5,
-                            }}>
-                            <Text
+                      {item?.variants?.size != '' ||
+                        (item?.variants?.size != null && (
+                          <>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                marginRight: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                paddingHorizontal: 5,
                               }}>
-                              Size -
-                            </Text>
-                            <Text
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  marginRight: 5,
+                                }}>
+                                Size -
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                {item?.variants?.size}
+                              </Text>
+                            </View>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                              }}>
-                              {item?.variants?.size}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              width: 1,
-                              height: 20,
-                              backgroundColor: Color.lightgrey,
-                            }}
-                          />
-                        </>
-                      )}
+                                width: 1,
+                                height: 20,
+                                backgroundColor: Color.lightgrey,
+                              }}
+                            />
+                          </>
+                        ))}
                       <View
                         style={{
                           flexDirection: 'row',
@@ -2078,41 +2083,42 @@ const ArrivedOrders = ({token, index, navigation}) => {
                           />
                         </>
                       )}
-                      {item?.variants?.size != '' && (
-                        <>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              alignItems: 'center',
-                            }}>
-                            <Text
+                      {item?.variants?.size != '' ||
+                        (item?.variants?.size != null && (
+                          <>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                marginRight: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
                               }}>
-                              Size -
-                            </Text>
-                            <Text
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  marginRight: 5,
+                                }}>
+                                Size -
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                {item?.variants?.size}
+                              </Text>
+                            </View>
+                            <View
                               style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                              }}>
-                              {item?.variants?.size}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              width: 1,
-                              height: 20,
-                              backgroundColor: Color.lightgrey,
-                            }}
-                          />
-                        </>
-                      )}
+                                width: 1,
+                                height: 20,
+                                backgroundColor: Color.lightgrey,
+                              }}
+                            />
+                          </>
+                        ))}
                       <View
                         style={{
                           flexDirection: 'row',
@@ -2435,36 +2441,37 @@ const CancelledOrders = ({token, index, navigation}) => {
                             }}></View>
                         </View>
                       )}
-                      {item?.variants?.size != '' && (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                            marginHorizontal: 5,
-                            borderRightWidth: 1,
-                            borderRightColor: Color.lightgrey,
-                            paddingHorizontal: 5,
-                          }}>
-                          <Text
+                      {item?.variants?.size != '' ||
+                        (item?.variants?.size != null && (
+                          <View
                             style={{
-                              fontSize: 12,
-                              color: Color.cloudyGrey,
-                              fontFamily: Manrope.Medium,
-                              marginRight: 5,
+                              flexDirection: 'row',
+                              justifyContent: 'flex-start',
+                              alignItems: 'center',
+                              marginHorizontal: 5,
+                              borderRightWidth: 1,
+                              borderRightColor: Color.lightgrey,
+                              paddingHorizontal: 5,
                             }}>
-                            Size -
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              color: Color.cloudyGrey,
-                              fontFamily: Manrope.Medium,
-                            }}>
-                            {item?.variants?.size}
-                          </Text>
-                        </View>
-                      )}
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Medium,
+                                marginRight: 5,
+                              }}>
+                              Size -
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Medium,
+                              }}>
+                              {item?.variants?.size}
+                            </Text>
+                          </View>
+                        ))}
                       <View
                         style={{
                           flexDirection: 'row',

@@ -26,24 +26,28 @@ const CustomRange = props => {
   const [textInputHigh, setTextInputHigh] = useState(high.toString());
 
   const handleTextInputLowChange = value => {
-    setTextInputLow(value);
-    setLow(parseInt(value));
-    if (parseInt(value) > high) {
-      setHigh(parseInt(value));
-      setTextInputHigh(value);
+    const newLow = parseInt(value) || 0;
+    if (newLow <= high) {
+      setLow(newLow);
+      setTextInputLow(value);
+    } else {
+      setLow(high);
+      setTextInputLow(high.toString());
     }
   };
 
   const handleTextInputHighChange = value => {
-    setTextInputHigh(value);
-    setHigh(parseInt(value));
-    if (parseInt(value) < low) {
-      setLow(parseInt(value));
-      setTextInputLow(value);
+    const newHigh = parseInt(value) || 0;
+    r;
+    if (newHigh >= low) {
+      setHigh(newHigh);
+      setTextInputHigh(value);
+    } else {
+      setHigh(low);
+      setTextInputHigh(low.toString());
     }
   };
 
-  // Render functions for range slider components
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
@@ -90,11 +94,12 @@ const CustomRange = props => {
               {countryCode?.symbol}
             </Text>
             <TextInput
-              placeholder="Enter your Min Amount"
+              placeholder="Min"
               placeholderTextColor={Color.cloudyGrey}
               value={textInputLow}
               onChangeText={handleTextInputLowChange}
               style={{
+                flex: 1,
                 color: Color.black,
                 fontSize: 14,
                 fontFamily: Manrope.SemiBold,
@@ -136,11 +141,12 @@ const CustomRange = props => {
               {countryCode?.symbol}
             </Text>
             <TextInput
-              placeholder="Enter your Max Amount"
+              placeholder="Max"
               placeholderTextColor={Color.cloudyGrey}
               value={textInputHigh}
               onChangeText={handleTextInputHighChange}
               style={{
+                flex: 1,
                 color: Color.black,
                 fontSize: 14,
                 fontFamily: Manrope.SemiBold,

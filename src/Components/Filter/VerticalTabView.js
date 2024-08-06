@@ -864,6 +864,9 @@ const VerticalTabView = props => {
             setcolorSelectedItem([]);
             setsizeSelectedItem([]);
             setdiscountSelectedItem([]);
+            setDefaultRating(0);
+            setLow(100);
+            setHigh(100000);
           }}
           style={{
             marginVertical: 10,

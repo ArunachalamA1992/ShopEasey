@@ -43,6 +43,7 @@ const AddAddress = ({route}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const [stateData, setStateData] = useState([]);
+  console.log('stateData', stateData);
   const [cityData, setCityData] = useState([]);
   const [stateloadMore, setStateLoadMore] = useState(false);
   const [statePage, setStatePage] = useState(1);
@@ -182,7 +183,7 @@ const AddAddress = ({route}) => {
     getData();
     getCityData();
   }, [token, selectState]);
-
+  console.log('token------------', token);
   const getData = async () => {
     try {
       const getState = await fetchData.get_state_data(``, token);

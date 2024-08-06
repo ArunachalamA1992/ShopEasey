@@ -383,49 +383,52 @@ const MyCart = ({}) => {
         </View>
       ) : (
         <>
-          <TouchableOpacity
-            onPress={() => {
-              handleSelectAll();
-            }}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 10,
-            }}>
-            <MCIcon
-              name={
-                cartData?.length == selectedData.length
-                  ? 'checkbox-marked'
-                  : 'checkbox-blank-outline'
-              }
-              size={25}
-              color={
-                cartData?.length == selectedData.length
-                  ? Color.primary
-                  : Color.black
-              }
-            />
-            <Text
+          {cartData?.length > 0 && (
+            <TouchableOpacity
+              onPress={() => {
+                handleSelectAll();
+              }}
               style={{
-                fontSize: 16,
-                color: Color.black,
-                fontFamily: Manrope.SemiBold,
-                marginLeft: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 10,
               }}>
-              Select All
-            </Text>
-          </TouchableOpacity>
+              <MCIcon
+                name={
+                  cartData?.length == selectedData.length
+                    ? 'checkbox-marked'
+                    : 'checkbox-blank-outline'
+                }
+                size={25}
+                color={
+                  cartData?.length == selectedData.length
+                    ? Color.primary
+                    : Color.black
+                }
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: Color.black,
+                  fontFamily: Manrope.SemiBold,
+                  marginLeft: 5,
+                }}>
+                Select All
+              </Text>
+            </TouchableOpacity>
+          )}
           <FlatList
             data={cartData}
             keyExtractor={(item, index) => String(index)}
             renderItem={({item, index}) => {
-              const originalPrice = item?.variant?.org_price / countryCode?.price_margin;
+              const originalPrice =
+                item?.variant?.org_price / countryCode?.price_margin;
               const offerPrice = item?.variant?.offer_price
                 ? item?.variant?.offer_price
                 : item?.variant?.price / countryCode?.price_margin;
-              
+
               const discount = parseFloat(
-                ((originalPrice - offerPrice) / originalPrice) * 100
+                ((originalPrice - offerPrice) / originalPrice) * 100,
               ).toFixed(2);
               return (
                 <View

@@ -25,6 +25,7 @@ const ProfileView = () => {
 
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState('');
+  const countryCode = useSelector(state => state.UserReducer.country);
 
   useEffect(() => {
     try {
@@ -232,7 +233,7 @@ const ProfileView = () => {
                     color: Color.black,
                     fontFamily: Manrope.Medium,
                   }}>
-                  {profileData.mobile}
+                  {countryCode?.mobile_prefix} {profileData.mobile}
                 </Text>
                 <Divider style={{height: 1, marginVertical: 10}} />
               </View>

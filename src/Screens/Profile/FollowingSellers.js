@@ -37,6 +37,15 @@ const FollowingSellers = () => {
       });
   }, [token]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getSellersData();
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   const getSellersData = async () => {
     try {
       const getSellerList = await fetchData.following_seller_list(``, token);
@@ -188,9 +197,9 @@ const FollowingSellers = () => {
                   // justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                {item.profile != null || item.profile != '' ? (
+                {item.profile == null || item.profile == '' ? (
                   <Image
-                    source={{uri: item.profile}}
+                    source={{uri: Media.user}}
                     style={{
                       width: 60,
                       height: 60,
@@ -200,7 +209,7 @@ const FollowingSellers = () => {
                   />
                 ) : (
                   <Image
-                    source={{uri: Media.user}}
+                    source={{uri: item.profile}}
                     style={{
                       width: 60,
                       height: 60,

@@ -62,6 +62,9 @@ const Login = () => {
       const userInfo = await GoogleSignin.signIn();
       if (userInfo) {
         var data = {
+          first_name: userInfo?.user?.givenName,
+          last_name: userInfo?.user?.familyName,
+          profile: userInfo?.user?.photo,
           region_id: countryCode?.id,
           email: userInfo?.user?.email,
         };
@@ -273,14 +276,25 @@ const Login = () => {
           <View style={styles.NumberBoxConatiner}>
             {/* <Text style={styles.numberCountryCode}>+91</Text> */}
             <TextInput
-              placeholder={`${
-                countryCode?.id == 452 ? 'Mobile' : 'WhatsApp'
-              } Number or Email`}
+              placeholder={
+                countryCode?.id == 452 ? 'Mobile' : 'WhatsApp Number or Email'
+              }
               placeholderTextColor={Color.cloudyGrey}
               value={number}
-              maxLength={isMobile(number) ? 10 : undefined}
+              maxLength={
+                isMobile(number) && [452, 453, 454].includes(countryCode?.id)
+                  ? countryCode?.id == 454
+                    ? 8
+                    : 10
+                  : undefined
+              }
               autoFocus={
-                isMobile(number) && number.length === 10 ? false : true
+                countryCode?.id == 454 && number?.length == 8
+                  ? false
+                  : (countryCode?.id == 454 && number?.length == 10) ||
+                    (countryCode?.id == 453 && number?.length == 10)
+                  ? false
+                  : true
               }
               onChangeText={input => {
                 chkNumber(input);

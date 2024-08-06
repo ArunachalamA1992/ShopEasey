@@ -492,8 +492,6 @@ const HomeScreen = () => {
 
   const getSearchData = async item => {
     try {
-      setSearchProduct(item?.keyword);
-      setSelectData(item);
       setProductSuggestions({
         data: [],
         visible: false,
@@ -502,6 +500,8 @@ const HomeScreen = () => {
         searchProduct: item?.keyword,
         selectData: item,
       });
+      setSearchProduct('');
+      setSelectData({});
     } catch (error) {
       console.log('error', error);
     }
@@ -517,6 +517,9 @@ const HomeScreen = () => {
     };
 
     checkModalShown();
+    // if (token !== undefined) {
+    //   setImageVisible(true);
+    // }
   }, [token]);
 
   return (
@@ -1050,7 +1053,7 @@ const HomeScreen = () => {
                 width: '100%',
                 position: 'absolute',
                 alignItems: 'center',
-                top: 115,
+                top: 125,
                 zIndex: 1,
               }}>
               <View
