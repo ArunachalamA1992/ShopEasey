@@ -60,7 +60,10 @@ const AddAddress = ({route}) => {
         houseAddr != '' &&
         landAddr != '' &&
         pincode != '' &&
-        selectedAddItem != ''
+        selectedAddItem != '' &&
+        selectState?.state_id != 0 &&
+        selectCity?.city_id != 0 &&
+        pincode != ''
       ) {
         var data = {
           name: username,
@@ -183,7 +186,7 @@ const AddAddress = ({route}) => {
     getData();
     getCityData();
   }, [token, selectState]);
-  console.log('token------------', token);
+
   const getData = async () => {
     try {
       const getState = await fetchData.get_state_data(``, token);

@@ -28,11 +28,13 @@ export const RadioData = ({label, checked, color_code, onPress}) => {
       {color_code && (
         <View
           style={{
-            backgroundColor: `${color_code}`,
+            backgroundColor: `${color_code?.toLowerCase()}`,
             width: 20,
             height: 20,
             borderRadius: 100,
             marginLeft: 5,
+            borderColor: Color.lightgrey,
+            borderWidth: 1,
           }}
         />
       )}

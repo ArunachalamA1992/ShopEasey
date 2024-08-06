@@ -159,6 +159,10 @@ export default {
     let url = api_name + 'colors';
     return api.getMethod(url, token);
   },
+  get_brand: (data, token) => {
+    let url = api_name + 'brand';
+    return api.getMethod(url, token);
+  },
   post_review: (data, token) => {
     let url = api_name + 'api/review';
     return api.postMethod(url, data, token);

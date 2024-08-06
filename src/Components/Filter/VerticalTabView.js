@@ -109,7 +109,7 @@ const TabContent = ({
           return (
             <RadioData
               key={index}
-              label={item.title}
+              label={item.name}
               checked={brandSelectedItem.includes(item.id)}
               onPress={() => handlebrandPress(item.id)}
             />
@@ -138,52 +138,54 @@ const TabContent = ({
         })}
       </View>
     );
-  } else if (item?.discounts) {
-    return (
-      <View
-        style={{
-          marginVertical: 10,
-        }}>
-        <Text
-          style={{
-            fontSize: 14,
-            color: Color.black,
-            fontFamily: Manrope.Bold,
-            marginVertical: 10,
-          }}>
-          Select Discounts
-        </Text>
-        {item?.discounts?.map((item, index) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                handleDiscountPress(item?.id);
-              }}
-              key={index}
-              style={{
-                borderWidth: 1,
-                borderColor: discountSelectedItem.includes(item.id)
-                  ? Color.primary
-                  : Color.lightgrey,
-                borderRadius: 10,
-                marginTop: 10,
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: Color.black,
-                  fontFamily: Manrope.Bold,
-                  marginVertical: 10,
-                }}>
-                {item?.discounts}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    );
-  } else if (item?.size) {
+  }
+  // else if (item?.discounts) {
+  //   return (
+  //     <View
+  //       style={{
+  //         marginVertical: 10,
+  //       }}>
+  //       <Text
+  //         style={{
+  //           fontSize: 14,
+  //           color: Color.black,
+  //           fontFamily: Manrope.Bold,
+  //           marginVertical: 10,
+  //         }}>
+  //         Select Discounts
+  //       </Text>
+  //       {item?.discounts?.map((item, index) => {
+  //         return (
+  //           <TouchableOpacity
+  //             onPress={() => {
+  //               handleDiscountPress(item?.id);
+  //             }}
+  //             key={index}
+  //             style={{
+  //               borderWidth: 1,
+  //               borderColor: discountSelectedItem.includes(item.id)
+  //                 ? Color.primary
+  //                 : Color.lightgrey,
+  //               borderRadius: 10,
+  //               marginTop: 10,
+  //               alignItems: 'center',
+  //             }}>
+  //             <Text
+  //               style={{
+  //                 fontSize: 14,
+  //                 color: Color.black,
+  //                 fontFamily: Manrope.Bold,
+  //                 marginVertical: 10,
+  //               }}>
+  //               {item?.discounts}
+  //             </Text>
+  //           </TouchableOpacity>
+  //         );
+  //       })}
+  //     </View>
+  //   );
+  // }
+  else if (item?.size) {
     return (
       <View
         style={{
@@ -218,51 +220,52 @@ const TabContent = ({
         })}
       </View>
     );
-  } else if (item?.rating) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          marginVertical: 10,
-        }}>
-        <Text
-          style={{
-            fontSize: 14,
-            color: Color.black,
-            fontFamily: Manrope.Bold,
-            marginVertical: 10,
-          }}>
-          Rating
-        </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            marginVertical: 10,
-          }}>
-          {maxRating.map((item, index) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  setDefaultRating(item.rating);
-                }}
-                activeOpacity={0.7}
-                key={index}
-                style={{marginRight: 5}}>
-                <FontAwesome
-                  name={item?.rating <= defaultRating ? 'star' : 'star-o'}
-                  size={30}
-                  color={Color.sunShade}
-                />
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-    );
   }
+  // else if (item?.rating) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         marginVertical: 10,
+  //       }}>
+  //       <Text
+  //         style={{
+  //           fontSize: 14,
+  //           color: Color.black,
+  //           fontFamily: Manrope.Bold,
+  //           marginVertical: 10,
+  //         }}>
+  //         Rating
+  //       </Text>
+  //       <View
+  //         style={{
+  //           flexDirection: 'row',
+  //           flex: 1,
+  //           justifyContent: 'space-between',
+  //           flexWrap: 'wrap',
+  //           marginVertical: 10,
+  //         }}>
+  //         {maxRating.map((item, index) => {
+  //           return (
+  //             <TouchableOpacity
+  //               onPress={() => {
+  //                 setDefaultRating(item.rating);
+  //               }}
+  //               activeOpacity={0.7}
+  //               key={index}
+  //               style={{marginRight: 5}}>
+  //               <FontAwesome
+  //                 name={item?.rating <= defaultRating ? 'star' : 'star-o'}
+  //                 size={30}
+  //                 color={Color.sunShade}
+  //               />
+  //             </TouchableOpacity>
+  //           );
+  //         })}
+  //       </View>
+  //     </View>
+  //   );
+  // }
 };
 
 const VerticalTabView = props => {
@@ -309,53 +312,7 @@ const VerticalTabView = props => {
 
   const [categoriesData, setCategoriesData] = useState([]);
 
-  const [brandData, setbrandData] = useState([
-    {
-      id: 1,
-      title: 'jack & jones',
-      value: 'jack & jones',
-    },
-    {
-      id: 2,
-      title: 'louis philippe',
-      value: 'louis philippe',
-    },
-    {
-      id: 3,
-      title: 'looney tunes',
-      value: 'looney tunes',
-    },
-    {
-      id: 4,
-      title: 'massive dynamic',
-      value: 'massive dynamic',
-    },
-    {
-      id: 5,
-      title: 'xxl',
-      value: 'xxl',
-    },
-    {
-      id: 6,
-      title: 'pro tech gear',
-      value: 'pro tech gear',
-    },
-    {
-      id: 7,
-      title: 'soylent green',
-      value: 'soylent green',
-    },
-    {
-      id: 8,
-      title: 'the simpsons',
-      value: 'the simpsons',
-    },
-    {
-      id: 9,
-      title: 'weeds capital',
-      value: 'weeds capital',
-    },
-  ]);
+  const [brandData, setbrandData] = useState([]);
 
   const [colorData, setcolorData] = useState([]);
 
@@ -405,23 +362,23 @@ const VerticalTabView = props => {
     price: [],
     brand: [],
     colors: [],
-    discounts: [],
+    // discounts: [],
     size: [],
-    rating: [],
+    // rating: [],
   });
 
   const [sizeData, setsizeData] = useState([
     {
       id: 1,
-      size: 'small',
+      size: 's',
     },
     {
       id: 2,
-      size: 'medium',
+      size: 'm',
     },
     {
       id: 3,
-      size: 'large',
+      size: 'l',
     },
     {
       id: 4,
@@ -488,6 +445,9 @@ const VerticalTabView = props => {
       );
       setCategoriesData(list_categories?.data);
       //colors
+      const list_brand = await fetchData.get_brand(``, token);
+      setbrandData(list_brand?.data);
+      //colors
       const list_colors = await fetchData.get_colors(``, token);
       setcolorData(list_colors?.data);
     } catch (error) {
@@ -508,15 +468,15 @@ const VerticalTabView = props => {
     {
       colors: colorData,
     },
-    {
-      discounts: discountsData,
-    },
+    // {
+    //   discounts: discountsData,
+    // },
     {
       size: sizeData,
     },
-    {
-      rating: maxRating,
-    },
+    // {
+    //   rating: maxRating,
+    // },
   ];
   const [categorySelectedItem, setcategorySelectedItem] = useState({});
   // const [subSubCategorySelectedItem, setSubSubCategorySelectedItem] = useState(
@@ -698,9 +658,9 @@ const VerticalTabView = props => {
     'Price',
     'Brand',
     'Colors',
-    'Discount',
+    // 'Discount',
     'Size',
-    'Rating',
+    // 'Rating',
   ];
 
   const dataPayload = () => {
@@ -717,12 +677,18 @@ const VerticalTabView = props => {
           .filter(item => item.id)
           .map(item => item.id)
           .join(',') || '',
+      brand_id:
+        filterSelectedItem?.brand
+          .filter(item => item.id)
+          .map(item => item.id)
+          .join(',') || '',
       sub_category_id: categorySelectedItem?.id || '',
+      price: low && high ? `${low},${high}` : '',
     };
 
     for (const key in payload) {
-      if (payload[key] != null && payload[key] != '') {
-        params += `${key}=${decodeURIComponent(payload[key])}&`;
+      if (payload[key] != null && payload[key] !== '') {
+        params += `${key}=${encodeURIComponent(payload[key])}&`;
       }
     }
 
@@ -779,7 +745,7 @@ const VerticalTabView = props => {
                 onPress={() => setSelectedTab(index)}>
                 <Text
                   style={{
-                    fontSize: 16,
+                    fontSize: 14,
                     color: selectedTab === index ? Color.white : Color.black,
                     fontFamily: Manrope.SemiBold,
                   }}>

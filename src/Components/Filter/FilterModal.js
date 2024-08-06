@@ -49,7 +49,7 @@ const FilterModal = props => {
             <TouchableOpacity
               onPress={() => setFilterVisible(false)}
               style={styles.closeButton}>
-              <Icon name="close" size={20} color={Color.primary} />
+              <Icon name="close" size={18} color={Color.primary} />
             </TouchableOpacity>
           </View>
           <VerticalTabView
@@ -87,7 +87,7 @@ const styles = {
   },
   headerText: {
     flex: 1,
-    fontSize: 20,
+    fontSize: 18,
     paddingHorizontal: 10,
     color: Color.black,
     fontFamily: Manrope.Bold,
