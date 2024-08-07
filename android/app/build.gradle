@@ -88,8 +88,8 @@ android {
         applicationId "com.shopeasey"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 3
-        versionName "1.0.3"
+        versionCode 6
+        versionName "1.0.6"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
     }
@@ -107,6 +107,12 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        release {
+            keyAlias 'shopeasey_alias'
+            keyPassword '123456789'
+            storeFile file("D://SHOPEASEY_APPS/PLAYSTORE_LIVE/KEYS/shopeasey.jks")
+            storePassword '123456789'
         }
     }
     buildTypes {
