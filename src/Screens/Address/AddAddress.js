@@ -8,6 +8,7 @@ import {
   View,
   TextInput,
   FlatList,
+  Keyboard,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Iconviewcomponent} from '../../Components/Icontag';
@@ -43,7 +44,6 @@ const AddAddress = ({route}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const [stateData, setStateData] = useState([]);
-  console.log('stateData', stateData);
   const [cityData, setCityData] = useState([]);
   const [stateloadMore, setStateLoadMore] = useState(false);
   const [statePage, setStatePage] = useState(1);
@@ -51,6 +51,16 @@ const AddAddress = ({route}) => {
   const [cityloadMore, setCityLoadMore] = useState(false);
   const [cityPage, setCityPage] = useState(1);
   const [cityendReached, setCityEndReached] = useState(false);
+
+  const chkNumber = phone => {
+    setphone(phone);
+    const isValidLength =
+      countryCode?.id === 454 ? phone?.length === 8 : phone?.length === 10;
+    const mobileRegex = countryCode?.id === 454 ? /^[0-9]{8}$/ : /^[0-9]{10}$/;
+    if (mobileRegex.test(phone) && isValidLength) {
+      Keyboard.dismiss();
+    }
+  };
 
   async function addAddressClick() {
     try {
@@ -488,8 +498,9 @@ const AddAddress = ({route}) => {
                 placeholder="Enter Your Phone Number"
                 placeholderTextColor={Color.cloudyGrey}
                 value={phone}
+                maxLength={countryCode?.id == 454 ? 8 : 10}
                 onChangeText={value => {
-                  setphone(value);
+                  chkNumber(value);
                 }}
                 keyboardType="phone-pad"
                 returnKeyType="next"

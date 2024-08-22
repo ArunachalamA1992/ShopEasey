@@ -11,17 +11,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Color from '../../../Global/Color';
-import {Manrope} from '../../../Global/FontFamily';
-import {Iconviewcomponent} from '../../../Components/Icontag';
+import Color from '../../Global/Color';
+import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../../Components/Icontag';
 import {useNavigation} from '@react-navigation/native';
-import {Media} from '../../../Global/Media';
+import {Media} from '../../Global/Media';
 import {useDispatch, useSelector} from 'react-redux';
-import fetchData from '../../../Config/fetchData';
+import fetchData from '../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {setUserData} from '../../../Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import common_fn from '../../../Config/common_fn';
+import {setUserData} from '../../Redux';
+import DeviceInfo from 'react-native-device-info';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -632,57 +632,59 @@ const Profile = () => {
                 alignItems: 'center',
                 marginTop: 10,
               }}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('ProfileView')}
-                style={{
-                  width: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: 10,
-                }}>
-                <View
+              {token != undefined && (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('ProfileView')}
                   style={{
-                    flex: 1,
-                    justifyContent: 'center',
+                    width: '100%',
+                    flexDirection: 'row',
                     alignItems: 'center',
+                    marginVertical: 10,
                   }}>
-                  <Iconviewcomponent
-                    Icontag={'Feather'}
-                    iconname={'user'}
-                    icon_size={20}
-                    icon_color={Color.lightBlack}
-                  />
-                </View>
-                <View
-                  style={{
-                    flex: 4,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                  }}>
-                  <Text
+                  <View
                     style={{
-                      fontSize: 15,
-                      color: Color.lightBlack,
-                      fontFamily: Manrope.Medium,
-                      letterSpacing: 0.5,
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}>
-                    Your Profile
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Iconviewcomponent
-                    Icontag={'Ionicons'}
-                    iconname={'chevron-forward-outline'}
-                    icon_size={18}
-                    icon_color={Color.cloudyGrey}
-                  />
-                </View>
-              </TouchableOpacity>
+                    <Iconviewcomponent
+                      Icontag={'Feather'}
+                      iconname={'user'}
+                      icon_size={20}
+                      icon_color={Color.lightBlack}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 4,
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: Color.lightBlack,
+                        fontFamily: Manrope.Medium,
+                        letterSpacing: 0.5,
+                      }}>
+                      Your Profile
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Iconviewcomponent
+                      Icontag={'Ionicons'}
+                      iconname={'chevron-forward-outline'}
+                      icon_size={18}
+                      icon_color={Color.cloudyGrey}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
 
               <View
                 style={{
@@ -983,7 +985,7 @@ const Profile = () => {
                 </View>
               </TouchableOpacity>
 
-              <View
+              {/* <View
                 style={{
                   width: '90%',
                   height: 0.5,
@@ -1041,7 +1043,7 @@ const Profile = () => {
                     icon_color={Color.cloudyGrey}
                   />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <View
                 style={{
@@ -1532,7 +1534,16 @@ const Profile = () => {
                   />
                 </View>
               </TouchableOpacity>
-
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: Color.primary,
+                  fontFamily: Manrope.Bold,
+                  textAlign: 'right',
+                  marginTop: 20,
+                }}>
+                AppVersion {DeviceInfo.getVersion()}
+              </Text>
               {/* <TouchableOpacity
                 style={{
                   width: '90%',
@@ -1573,7 +1584,6 @@ const Profile = () => {
                   </Text>
                 </View>
               </TouchableOpacity> */}
-
               {token != undefined ? (
                 <TouchableOpacity
                   onPress={() => {

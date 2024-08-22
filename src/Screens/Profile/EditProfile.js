@@ -154,7 +154,7 @@ const EditProfile = ({navigation, route}) => {
         maxWidth: 300,
         maxHeight: 550,
         quality: 1,
-        selectionLimit: 0,
+        selectionLimit: 1,
       };
       launchImageLibrary(options, async response => {
         setProfileImage(response?.assets?.[0]?.uri);
@@ -201,8 +201,8 @@ const EditProfile = ({navigation, route}) => {
         formdata.append('profile', {uri, type: 'image/jpeg', name});
         formdata.append('first_name', firstName);
         formdata.append('last_name', lastName);
-        formdata.append('dob', moment(dateofBirth).format('DD-MM-YYYY'));
-        formdata.append('gender', selectgender);
+        // formdata.append('dob', moment(dateofBirth).format('DD-MM-YYYY'));
+        // formdata.append('gender', selectgender);
         formdata.append('email', email);
         formdata.append('mobile', phoneNumber);
 
@@ -663,7 +663,7 @@ const EditProfile = ({navigation, route}) => {
             </View>
           </View>
 
-          <View style={{marginVertical: 10}}>
+          {/* <View style={{marginVertical: 10}}>
             <Text
               style={{
                 textAlign: 'left',
@@ -739,7 +739,7 @@ const EditProfile = ({navigation, route}) => {
                 {selectgender}
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <TouchableOpacity
             onPress={() => profileUpdate()}

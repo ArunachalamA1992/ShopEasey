@@ -9,19 +9,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Color from '../../../Global/Color';
-import {Manrope} from '../../../Global/FontFamily';
+import Color from '../../Global/Color';
+import {Manrope} from '../../Global/FontFamily';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {Iconviewcomponent} from '../../../Components/Icontag';
+import {Iconviewcomponent} from '../../Components/Icontag';
 import {BottomSheet} from 'react-native-btr';
 import {useDispatch, useSelector} from 'react-redux';
-import fetchData from '../../../Config/fetchData';
-import {Media} from '../../../Global/Media';
+import fetchData from '../../Config/fetchData';
+import {Media} from '../../Global/Media';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import common_fn from '../../../Config/common_fn';
+import common_fn from '../../Config/common_fn';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {setDataCount} from '../../../Redux';
+import {setDataCount} from '../../Redux';
 import {RefreshControl} from 'react-native-gesture-handler';
 
 const {height} = Dimensions.get('screen');
@@ -753,7 +753,7 @@ const MyCart = ({}) => {
                           onPress={() => {
                             updateCartData(item?.id, 'plus', item?.quantity);
                           }}
-                          disabled={item?.quantity == item?.variant?.stock}
+                          disabled={item?.quantity >= item?.variant?.stock}
                           style={{
                             // flex: 1,
                             justifyContent: 'center',

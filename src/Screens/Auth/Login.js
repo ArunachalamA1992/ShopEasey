@@ -34,7 +34,7 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const isEmail = input => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     return emailRegex.test(input);
   };
 
@@ -86,7 +86,10 @@ const Login = () => {
 
   const chkNumber = number => {
     setNumber(number);
-    if (number.length == 10) {
+    const isValidLength =
+      countryCode?.id === 454 ? number?.length === 8 : number?.length === 10;
+    const mobileRegex = countryCode?.id === 454 ? /^[0-9]{8}$/ : /^[0-9]{10}$/;
+    if (mobileRegex.test(number) && isValidLength) {
       Keyboard.dismiss();
     }
   };
@@ -109,8 +112,9 @@ const Login = () => {
       setLoading(true);
       const numberIsEmail = isEmail(number);
       const numberIsMobile = isMobile(number);
+      const num_len = countryCode?.id == 454 ? 8 : 10;
       if (number != '') {
-        if (numberIsEmail || (numberIsMobile && number.length === 10)) {
+        if (numberIsEmail || (numberIsMobile && number.length === num_len)) {
           var data = {
             region_id: countryCode?.id,
           };
@@ -167,8 +171,10 @@ const Login = () => {
       setLoading(true);
       const numberIsEmail = isEmail(number);
       const numberIsMobile = isMobile(number);
+      const num_len = countryCode?.id == 454 ? 8 : 10;
+
       if (number != '') {
-        if (numberIsEmail || (numberIsMobile && number.length === 10)) {
+        if (numberIsEmail || (numberIsMobile && number.length === num_len)) {
           var data = {
             region_id: countryCode?.id,
           };
@@ -177,11 +183,13 @@ const Login = () => {
           } else if (isMobile(number)) {
             data.mobile = number;
           }
+
           const Register_data = await fetchData.Register_request_otp(
             data,
             null,
           );
-          if (Register_data?.status == true) {
+
+          if (Register_data?.status) {
             common_fn.showToast('OTP Sent to your Email');
             navigation.navigate('OTPScreen', {
               number,
@@ -434,6 +442,7 @@ const Login = () => {
           onPress={() => {
             loginType == '' ? setLoginType('Register') : setLoginType('');
             setNumber('');
+            setError(false);
           }}>
           <Text
             style={{

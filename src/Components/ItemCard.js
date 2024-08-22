@@ -126,7 +126,7 @@ const ItemCard = props => {
             ) : (
               <View style={{flex: 1}} />
             )}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 if (token != undefined) {
                   toggle_WishList(item);
@@ -153,7 +153,7 @@ const ItemCard = props => {
                   }
                 />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <LinearGradient
             style={styles.locationView}
@@ -162,6 +162,7 @@ const ItemCard = props => {
             colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
             <View
               style={{
+                flex: 1,
                 flexDirection: 'row',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
@@ -341,12 +342,9 @@ export const ItemCardHorizontal = props => {
     <TouchableOpacity
       style={{
         width: 170,
-        // width: '50%',
-        // height: 285,
         backgroundColor: Color.white,
         margin: 5,
         borderRadius: 5,
-        flex: 1,
         borderWidth: 1,
         borderColor: Color.lightgrey,
       }}
@@ -379,7 +377,7 @@ export const ItemCardHorizontal = props => {
           ) : (
             <View style={{flex: 1}} />
           )}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               if (token != undefined) {
                 toggle_WishList(item);
@@ -402,7 +400,7 @@ export const ItemCardHorizontal = props => {
                 item?.variants?.[0]?.is_wishlisted ? Color.red : Color.black
               }
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <LinearGradient
           style={styles.locationView}
@@ -517,7 +515,7 @@ const styles = StyleSheet.create({
   locationView: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: 10,
   },

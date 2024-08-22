@@ -5,7 +5,6 @@ import {
   Modal,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -33,6 +32,7 @@ import common_fn from '../../Config/common_fn';
 import {setCountryCode, setDataCount} from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Share from 'react-native-share';
 
 const ProductDetails = ({route, navigation}) => {
   const {id, variant_id} = route.params;
@@ -455,16 +455,38 @@ const ProductDetails = ({route, navigation}) => {
     }
   };
 
-  const share_product = async id => {
-    const jobDeepLink = `https://shopeasey.com/product/${id}?id=${singleData?.id}`;
-    const message = `Check out this Product: ${jobDeepLink}`;
+  // const share_product = async id => {
+  //   const jobDeepLink = `https://shopeasey.com/product/${id}?id=${singleData?.id}`;
 
+  //   const options = {
+  //     title: singleData?.product_name,
+  //     message: `Check out this Product: ${jobDeepLink}`,
+  //   };
+  //   try {
+  //     await Share.share(options);
+  //   } catch (error) {
+  //     console.error(error.message);
+  //   }
+  // };
+  const share_product = async item => {
     try {
-      await Share.share({message});
+      const image_url = singleData?.productImages?.[0]?.image;
+      const base64String = await common_fn.urlToBase64(image_url);
+      const jobDeepLink = `https://shopeasey.com/product/${id}?id=${singleData?.id}`;
+
+      const shareOptions = {
+        title: 'Share via',
+        message: `Check out this property: ${jobDeepLink}`,
+        url: `data:image/jpeg;base64,${base64String}`,
+        type: 'image/jpeg',
+      };
+
+      await Share.open(shareOptions);
     } catch (error) {
-      console.error(error.message);
+      console.log('Error => ', error);
     }
   };
+
   const hasNonEmptyColor = singleData?.variants_list?.color?.some(
     item => item?.color && item?.color !== '',
   );

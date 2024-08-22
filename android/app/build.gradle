@@ -58,8 +58,8 @@ project.ext.react = [
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = true
-def enableSeparateBuildPerCPUArchitecture = true
+def enableProguardInReleaseBuilds = false
+def enableSeparateBuildPerCPUArchitecture = false
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)

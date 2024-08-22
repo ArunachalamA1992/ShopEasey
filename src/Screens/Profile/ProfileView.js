@@ -109,7 +109,7 @@ const ProfileView = () => {
                 />
               ) : (
                 <Image
-                  source={{uri: Media.profile_image}}
+                  source={{uri: Media.user}}
                   style={{
                     width: 80,
                     height: 80,
@@ -238,7 +238,7 @@ const ProfileView = () => {
                 <Divider style={{height: 1, marginVertical: 10}} />
               </View>
 
-              <View
+              {/* <View
                 style={{
                   marginVertical: 10,
                 }}>
@@ -283,7 +283,7 @@ const ProfileView = () => {
                   {profileData.gender}
                 </Text>
                 <Divider style={{height: 1, marginVertical: 10}} />
-              </View>
+              </View>*/}
             </View>
           </View>
         )}

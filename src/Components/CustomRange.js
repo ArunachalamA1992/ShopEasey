@@ -38,7 +38,6 @@ const CustomRange = props => {
 
   const handleTextInputHighChange = value => {
     const newHigh = parseInt(value) || 0;
-    r;
     if (newHigh >= low) {
       setHigh(newHigh);
       setTextInputHigh(value);

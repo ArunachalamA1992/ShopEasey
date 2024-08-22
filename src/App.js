@@ -21,7 +21,6 @@ import Color from './Global/Color';
 import TabNavigator, {Auth} from './route';
 import OnboardTwo from './Screens/Onboarding/OnboardTwo';
 import CustomDrawerContent from './Components/Nav/CustomDrawerContent';
-import WishList from './Screens/Home/BottomTabs/WishList';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ProductList from './Screens/Home/ProductList';
 import ProductDetails from './Screens/Home/ProductDetails';
@@ -38,7 +37,7 @@ import AddAddress from './Screens/Address/AddAddress';
 import {setCountryCode, setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrders from './Screens/MyOrders/MyOrders';
-import OrderConfirmation from './Screens/MyOrders/OrderConfirmation';
+import OrderConfirmation from './Screens/Cart/OrderConfirmation';
 import TrackOrder from './Screens/MyOrders/TrackOrder';
 import DeliveredOrder from './Screens/MyOrders/DeliveredOrder';
 import OrderReview from './Screens/MyOrders/OrderReview';
@@ -57,6 +56,10 @@ import SearchDataList from './Screens/Home/SearchDataList';
 import {setUserId, setUserProperties} from './analytics';
 import {NativeModules} from 'react-native';
 import {checkUpdate} from '../InAppUpdate';
+import WishList from './Screens/Wishlist/WishList';
+import ForegroundHandler from './Components/pushNotify/ForegroundHandler';
+import {StripeProvider} from '@stripe/stripe-react-native';
+import {Stripe} from './Components/Stripe';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -98,14 +101,13 @@ const MyDrawer = () => {
         dispatch(setUserData(JSON.parse(value)));
       }
       const countryData = await AsyncStorage.getItem('countryData');
-      console.log('countryData', countryData);
       if (countryData === null) {
         navigationRef.current?.navigate('OnboardScreen');
         return;
       } else {
         dispatch(setCountryCode(JSON.parse(countryData)));
         setIsCountryCodeSelected(true);
-        await handleInitialUrl(); // Check if there's an initial URL
+        await handleInitialUrl();
       }
     } catch (error) {
       console.log('error', error);
@@ -237,15 +239,18 @@ const App = () => {
   }, []);
 
   return (
-    <Provider store={Store}>
-      <MyDrawer />
-    </Provider>
+    <StripeProvider publishableKey="pk_test_51OChFxI0wQSu3P50i3ypxVwKVdDj0i56PjXMcmkeHTVJkI8nq6lBgUMLc2g3dezysH6ssCqjZ9gtfT2fzSqLHq9y00Jd17QQ0P">
+      <Provider store={Store}>
+        <MyDrawer />
+      </Provider>
+    </StripeProvider>
   );
 };
 
 const MainApp = () => {
   return (
     <>
+      <ForegroundHandler />
       <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
@@ -867,10 +872,14 @@ const MainApp = () => {
             ),
           })}
         />
-
         <Stack.Screen
           name="Paypal"
           component={Paypal}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Stripe"
+          component={Stripe}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

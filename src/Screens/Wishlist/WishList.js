@@ -10,20 +10,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Color from '../../../Global/Color';
-import {Manrope} from '../../../Global/FontFamily';
-import fetchData from '../../../Config/fetchData';
+import Color from '../../Global/Color';
+import {Manrope} from '../../Global/FontFamily';
+import fetchData from '../../Config/fetchData';
 import {useDispatch, useSelector} from 'react-redux';
-import ItemCard from '../../../Components/ItemCard';
+import ItemCard from '../../Components/ItemCard';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import common_fn from '../../../Config/common_fn';
+import common_fn from '../../Config/common_fn';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
 import LinearGradient from 'react-native-linear-gradient';
-import {Media} from '../../../Global/Media';
-import {setDataCount} from '../../../Redux';
+import {Media} from '../../Global/Media';
+import {setDataCount} from '../../Redux';
 import {ActivityIndicator} from 'react-native-paper';
 
 const {height} = Dimensions.get('screen');

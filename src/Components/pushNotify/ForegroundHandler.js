@@ -8,8 +8,8 @@ const ForegroundHandler = () => {
   useEffect(() => {
     PushNotification.createChannel(
       {
-        channelId: 'my-channel', // (required)
-        channelName: 'My channel', // (required)
+        channelId: 'my-channel',
+        channelName: 'My channel',
       },
       created => console.log(`CreateChannel returned '${created}'`),
     );
@@ -19,10 +19,6 @@ const ForegroundHandler = () => {
         console.log('FCM Token:', token);
       });
     const unsubcribe = messaging().onMessage(async remoteMessage => {
-      // console.log(
-      //   'Notification on foreground state ====================== : ',
-      //   JSON.stringify(remoteMessage),
-      // );
       var {notification, messageId} = remoteMessage;
       if (Platform.OS == 'ios') {
         PushNotificationIOS.addNotificationRequest({
@@ -41,7 +37,7 @@ const ForegroundHandler = () => {
           vibrate: true,
           vibration: 300,
           playSound: true,
-          soundName: 'default',
+          soundName: 'custom_notification.wav',
           date: new Date(new Date().getTime() + 3000),
         });
       }
