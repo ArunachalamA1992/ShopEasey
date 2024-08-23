@@ -1396,7 +1396,48 @@ const ProductDetails = ({route, navigation}) => {
                           disabled={singleData?.stock == 0}
                           onPress={() => {
                             if (token != undefined) {
-                              setBuyNow();
+                              if (addressData > 0) {
+                                setBuyNow();
+                              } else {
+                                navigation.navigate('AddAddress', {
+                                  item: {},
+                                  CheckOut: [
+                                    {
+                                      quantity: 1,
+                                      product: singleData?.product,
+                                      variant: {
+                                        id: singleData?.id,
+                                        product_id: singleData?.product_id,
+                                        size: singleData?.size,
+                                        color: singleData?.color,
+                                        color_code: singleData?.color_code,
+                                        color_group: singleData?.color_group,
+                                        material: singleData?.material,
+                                        package_unit: singleData?.package_unit,
+                                        package_content:
+                                          singleData?.package_content,
+                                        package_weight:
+                                          singleData?.package_weight,
+                                        org_price: singleData?.org_price,
+                                        price: singleData?.price,
+                                        stock: singleData?.stock,
+                                        sold: singleData?.sold,
+                                        status: singleData?.status,
+                                        created_at: singleData?.created_at,
+                                        updated_at: singleData?.updated_at,
+                                        is_wishlisted:
+                                          singleData?.is_wishlisted,
+                                        in_cart: singleData?.in_cart,
+                                        productImages:
+                                          singleData?.productImages,
+                                        offer: singleData?.offer,
+                                      },
+                                      tax: singleData?.tax,
+                                    },
+                                  ],
+                                  status: 'ADD',
+                                });
+                              }
                             } else {
                               navigation.navigate('Auth');
                             }
