@@ -132,7 +132,7 @@ export default {
     return api.putMethod(url, data, token);
   },
   get_banner: (data, token) => {
-    let url = api_name + 'banner/mobile?' + data;
+    let url = api_name + 'banner/user/mobile?' + data;
     return api.getMethod(url, token);
   },
   get_review: (data, token) => {

@@ -20,7 +20,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {setUserData} from '../../Redux';
+import {
+  setAsync,
+  setCountryCode,
+  setDataCount,
+  setOnBoardVisible,
+  setUserData,
+} from '../../Redux';
 import DeviceInfo from 'react-native-device-info';
 
 const Profile = () => {
@@ -1590,6 +1596,14 @@ const Profile = () => {
                     navigation.navigate('OnboardScreen');
                     AsyncStorage.clear();
                     dispatch(setUserData({}));
+                    dispatch(setCountryCode({}));
+                    dispatch(
+                      setDataCount({
+                        wishlist: 0,
+                        cart: 0,
+                      }),
+                    );
+                    dispatch(setOnBoardVisible(false));
                   }}
                   style={{
                     width: '90%',

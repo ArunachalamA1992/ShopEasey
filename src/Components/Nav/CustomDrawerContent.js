@@ -22,7 +22,13 @@ import {Manrope} from '../../Global/FontFamily';
 import {Iconviewcomponent} from '../Icontag';
 import {Media} from '../../Global/Media';
 import common_fn from '../../Config/common_fn';
-import {setOnBoardVisible, setUserData} from '../../Redux';
+import {
+  setAsync,
+  setCountryCode,
+  setDataCount,
+  setOnBoardVisible,
+  setUserData,
+} from '../../Redux';
 
 const CustomDrawerContent = props => {
   const [itemSelected, setItemSelected] = useState('');
@@ -559,9 +565,16 @@ const CustomDrawerContent = props => {
               }}
               onPress={() => {
                 setItemSelected('Logout');
-                props.navigation.navigate('Auth');
+                props.navigation.navigate('OnboardScreen');
                 AsyncStorage.clear();
                 dispatch(setUserData({}));
+                dispatch(setCountryCode({}));
+                dispatch(
+                  setDataCount({
+                    wishlist: 0,
+                    cart: 0,
+                  }),
+                );
                 dispatch(setOnBoardVisible(false));
               }}>
               <Iconviewcomponent

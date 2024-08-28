@@ -111,6 +111,8 @@ const ItemCard = props => {
                 ? item?.variants?.[0]?.productImages?.[0]?.image
                 : Media.no_image,
           }}
+          borderTopLeftRadius={10}
+          borderTopRightRadius={10}
           resizeMode="cover">
           <View style={styles.imageTopView}>
             {discount > 0 ? (
@@ -344,7 +346,7 @@ export const ItemCardHorizontal = props => {
         width: 170,
         backgroundColor: Color.white,
         margin: 5,
-        borderRadius: 5,
+        borderRadius: 10,
         borderWidth: 1,
         borderColor: Color.lightgrey,
       }}
@@ -488,7 +490,7 @@ const styles = StyleSheet.create({
     // height: 300,
     backgroundColor: Color.white,
     margin: 5,
-    borderRadius: 5,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: Color.lightgrey,
     flex: 1,

@@ -46,6 +46,9 @@ const ProductDetails = ({route, navigation}) => {
   const [Categories_data, setCategories_data] = useState([]);
   const [reviewsData, setReviewsData] = useState({});
   const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedAge, setSelectedAge] = useState(null);
+  const [selectedGender, setSelectedGender] = useState(null);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [followStatus, setFollowStatus] = useState('Follow');
@@ -53,12 +56,16 @@ const ProductDetails = ({route, navigation}) => {
   useEffect(() => {
     setSelectedColor(singleData?.color);
     setSelectedSize(singleData?.size);
+    setSelectedAge(singleData?.age);
+    setSelectedGender(singleData?.gender);
+    setSelectedMaterial(singleData?.material);
     getCountryData();
   }, [singleData]);
 
   const getCountryData = async () => {
     try {
       const countryData = await AsyncStorage.getItem('countryData');
+      console.log('countryData', countryData);
       if (countryData === null) {
         navigation.replace('OnboardScreen');
         return;
@@ -90,6 +97,69 @@ const ProductDetails = ({route, navigation}) => {
     }
   };
 
+  const handleAgePress = async item => {
+    setLoading(true);
+    setSelectedAge(item?.age);
+    // setSelectedVariantData(item);
+    // setSelectedSize(null);
+    // setSizeVisible(true);
+    // setWishlistVariantId(item?.id);
+    // setProductImages(item?.productImages);
+    try {
+      var param = id;
+      var data = `age=${item?.age}`;
+      const age_data = await fetchData.single_property(param, data, token);
+      setSingleData(age_data?.data);
+      setLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenderPress = async item => {
+    setLoading(true);
+    setSelectedGender(item?.gender);
+    // setSelectedVariantData(item);
+    // setSelectedSize(null);
+    // setSizeVisible(true);
+    // setWishlistVariantId(item?.id);
+    // setProductImages(item?.productImages);
+    try {
+      var param = id;
+      var data = `gender=${item?.gender}`;
+      const gender_data = await fetchData.single_property(param, data, token);
+      setSingleData(gender_data?.data);
+      setLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMaterialPress = async item => {
+    setLoading(true);
+    setSelectedMaterial(item?.material);
+    // setSelectedVariantData(item);
+    // setSelectedSize(null);
+    // setSizeVisible(true);
+    // setWishlistVariantId(item?.id);
+    // setProductImages(item?.productImages);
+    try {
+      var param = id;
+      var data = `material=${item?.material}`;
+      const material_data = await fetchData.single_property(param, data, token);
+      setSingleData(material_data?.data);
+      setLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSizePress = async item => {
     // setLoading(true);
     setSelectedSize(item?.size);
@@ -112,39 +182,19 @@ const ProductDetails = ({route, navigation}) => {
     variant => !selectedColor || variant.color === selectedColor,
   );
 
-  const [defaultRating, setDefaultRating] = useState(singleData?.shop?.rating);
+  const [defaultRating, setDefaultRating] = useState(0);
+  console.log('defaultRating', defaultRating);
+  useEffect(() => {
+    const rating = parseFloat(reviewsData?.rating || '0');
+    setDefaultRating(rating);
+  }, [reviewsData]);
+
   const [tabIndex, setIndex] = useState(0);
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const [addressData, setAddressCount] = useState(0);
 
-  const [maxRating, setMaxRating] = useState([
-    {
-      id: 1,
-      rating: 1,
-      experience: 'poor',
-    },
-    {
-      id: 2,
-      rating: 2,
-      experience: 'Bad',
-    },
-    {
-      id: 3,
-      rating: 3,
-      experience: 'Okay',
-    },
-    {
-      id: 4,
-      rating: 4,
-      experience: 'Average',
-    },
-    {
-      id: 5,
-      rating: 5,
-      experience: 'Good',
-    },
-  ]);
+  const maxRating = [1, 2, 3, 4, 5];
 
   const originalPrice = singleData?.org_price / countryCode?.price_margin;
   const offerPrice = singleData?.offer_price
@@ -252,10 +302,23 @@ const ProductDetails = ({route, navigation}) => {
       var review_data = `${id}`;
       const reviewData = await fetchData.get_review(review_data, token);
       setReviewsData(reviewData);
+      setVisibleData(reviewData?.data?.slice(0, 4));
       setLoading(false);
     } catch (error) {
       console.log('error', error);
     }
+  };
+  const [visibleData, setVisibleData] = useState(
+    reviewsData?.data?.slice(0, 4),
+  );
+  const [showLoadMore, setShowLoadMore] = useState(
+    reviewsData?.data?.length > 4,
+  );
+
+  const loadMoreItems = () => {
+    const newVisibleData = reviewsData?.data?.slice(0, visibleData?.length + 8);
+    setVisibleData(newVisibleData);
+    setShowLoadMore(newVisibleData.length < reviewsData?.data?.length);
   };
 
   const setFollowProfile = async id => {
@@ -892,19 +955,30 @@ const ProductDetails = ({route, navigation}) => {
                           {alignItems: 'center', marginTop: 5},
                         ]}>
                         {maxRating.map((item, index) => {
+                          let iconName;
+                          if (item <= Math.floor(defaultRating)) {
+                            iconName = 'star';
+                          } else if (
+                            item === Math.ceil(defaultRating) &&
+                            defaultRating % 1 !== 0
+                          ) {
+                            iconName = 'star-half-full';
+                          } else {
+                            iconName = 'star-o';
+                          }
+
                           return (
                             <View
                               activeOpacity={0.7}
                               key={index}
-                              style={{marginRight: 5}}>
-                              <FontAwesome
-                                name={
-                                  reviewsData.count <= defaultRating
-                                    ? 'star'
-                                    : 'star-o'
-                                }
-                                size={18}
-                                color={Color.sunShade}
+                              style={{
+                                marginRight: 5,
+                              }}>
+                              <Iconviewcomponent
+                                Icontag={'FontAwesome'}
+                                iconname={iconName}
+                                icon_size={16}
+                                icon_color={Color.sunShade}
                               />
                             </View>
                           );
@@ -1005,36 +1079,38 @@ const ProductDetails = ({route, navigation}) => {
                       Learn More
                     </Text> */}
                   </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: 5,
-                    }}>
-                    <Text
+                  {countryCode?.id != 452 && (
+                    <View
                       style={{
-                        fontSize: 13,
-                        color: Color.cloudyGrey,
-                        fontFamily: Manrope.SemiBold,
-                        marginRight: 10,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginVertical: 5,
                       }}>
-                      Shipping :
-                    </Text>
-                    <FontAwesome5
-                      name="shipping-fast"
-                      size={18}
-                      color={Color.primary}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: Color.lightBlack,
-                        fontFamily: Manrope.Bold,
-                        marginHorizontal: 10,
-                      }}>
-                      {countryCode?.symbol} {10}
-                    </Text>
-                  </View>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.SemiBold,
+                          marginRight: 10,
+                        }}>
+                        Shipping :
+                      </Text>
+                      <FontAwesome5
+                        name="shipping-fast"
+                        size={18}
+                        color={Color.primary}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: Color.lightBlack,
+                          fontFamily: Manrope.Bold,
+                          marginHorizontal: 10,
+                        }}>
+                        {countryCode?.symbol} {10}
+                      </Text>
+                    </View>
+                  )}
                   <View
                     style={{
                       marginVertical: 10,
@@ -1053,7 +1129,7 @@ const ProductDetails = ({route, navigation}) => {
                         textAlign: 'justify',
                         marginLeft: 5,
                       }}>
-                      15-Day Returns{' '}
+                      3-Day Returns{' '}
                     </Text>
                     <TouchableOpacity
                       onPress={() => {
@@ -1096,6 +1172,26 @@ const ProductDetails = ({route, navigation}) => {
                       </Text>
                     </TouchableOpacity>
                   </View>
+                  {singleData?.gender != null && (
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: Color.black,
+                          fontFamily: Manrope.Bold,
+                        }}>
+                        Gender
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Bold,
+                        }}>
+                        {singleData?.gender}
+                      </Text>
+                    </View>
+                  )}
                 </View>
                 <View
                   style={{
@@ -1202,6 +1298,165 @@ const ProductDetails = ({route, navigation}) => {
                           )}
                         </View>
                       </View>
+                    ) : null}
+
+                    {singleData?.variants_list?.age?.length > 0 ? (
+                      <>
+                        <View style={styles.colorContainer}>
+                          <Text style={styles.label}>Age :</Text>
+                          <View
+                            style={[
+                              styles.colorOptions,
+                              {paddingHorizontal: 10, paddingVertical: 5},
+                            ]}>
+                            {singleData?.variants_list?.age?.map(
+                              (item, index) => {
+                                // if (item?.age && item?.age !== '') {
+                                return (
+                                  <TouchableOpacity
+                                    key={index}
+                                    style={[
+                                      styles.colorOption,
+                                      {
+                                        backgroundColor:
+                                          selectedAge === item?.age
+                                            ? '#0D71BA50'
+                                            : Color.white,
+                                      },
+                                    ]}
+                                    onPress={() => handleAgePress(item)}
+                                    disabled={item?.stock == 0}>
+                                    <View
+                                      style={[
+                                        styles.colorView,
+                                        {backgroundColor: item?.age},
+                                      ]}
+                                    />
+                                    <Text
+                                      style={[
+                                        styles.colorNameText,
+                                        {
+                                          color: Color.black,
+                                        },
+                                      ]}>
+                                      {item?.age}
+                                    </Text>
+                                  </TouchableOpacity>
+                                );
+                                // }
+                                // return null;
+                              },
+                            )}
+                          </View>
+                        </View>
+                        <View style={styles.separator}></View>
+                      </>
+                    ) : null}
+
+                    {singleData?.variants_list?.gender?.length > 0 ? (
+                      <>
+                        <View style={styles.colorContainer}>
+                          <Text style={styles.label}>Gender :</Text>
+                          <View
+                            style={[
+                              styles.colorOptions,
+                              {paddingHorizontal: 10, paddingVertical: 5},
+                            ]}>
+                            {singleData?.variants_list?.gender?.map(
+                              (item, index) => {
+                                // if (item?.gender && item?.gender !== '') {
+                                return (
+                                  <TouchableOpacity
+                                    key={index}
+                                    style={[
+                                      styles.colorOption,
+                                      {
+                                        backgroundColor:
+                                          selectedGender === item?.gender
+                                            ? '#0D71BA50'
+                                            : Color.white,
+                                      },
+                                    ]}
+                                    onPress={() => handleGenderPress(item)}
+                                    disabled={item?.stock == 0}>
+                                    <View
+                                      style={[
+                                        styles.colorView,
+                                        {backgroundColor: item?.gender},
+                                      ]}
+                                    />
+                                    <Text
+                                      style={[
+                                        styles.colorNameText,
+                                        {
+                                          color: Color.black,
+                                        },
+                                      ]}>
+                                      {item?.gender}
+                                    </Text>
+                                  </TouchableOpacity>
+                                );
+                                // }
+                                // return null;
+                              },
+                            )}
+                          </View>
+                        </View>
+                        <View style={styles.separator}></View>
+                      </>
+                    ) : null}
+
+                    {singleData?.variants_list?.material?.length > 0 ? (
+                      <>
+                        <View style={styles.colorContainer}>
+                          <Text style={styles.label}>Material :</Text>
+                          <View
+                            style={[
+                              styles.colorOptions,
+                              {paddingHorizontal: 10, paddingVertical: 5},
+                            ]}>
+                            {singleData?.variants_list?.material?.map(
+                              (item, index) => {
+                                // if (item?.material && item?.material !== '') {
+                                return (
+                                  <TouchableOpacity
+                                    key={index}
+                                    style={[
+                                      styles.colorOption,
+                                      {
+                                        backgroundColor:
+                                          selectedMaterial === item?.material
+                                            ? '#0D71BA50'
+                                            : Color.white,
+                                      },
+                                    ]}
+                                    onPress={() => handleMaterialPress(item)}
+                                    disabled={item?.stock == 0}>
+                                    <View
+                                      style={[
+                                        styles.colorView,
+                                        {backgroundColor: item?.material},
+                                      ]}
+                                    />
+                                    <Text
+                                      style={[
+                                        styles.colorNameText,
+                                        {
+                                          color: Color.black,
+                                        },
+                                      ]}>
+                                      {item?.material}
+                                    </Text>
+                                  </TouchableOpacity>
+                                );
+                                // }
+                                // return null;
+                              },
+                            )}
+                          </View>
+                        </View>
+                        <View style={styles.separator}></View>
+                      </>
                     ) : null}
                   </View>
                   <Modal
@@ -1396,7 +1651,48 @@ const ProductDetails = ({route, navigation}) => {
                           disabled={singleData?.stock == 0}
                           onPress={() => {
                             if (token != undefined) {
-                              setBuyNow();
+                              if (addressData > 0) {
+                                setBuyNow();
+                              } else {
+                                navigation.navigate('AddAddress', {
+                                  item: {},
+                                  CheckOut: [
+                                    {
+                                      quantity: 1,
+                                      product: singleData?.product,
+                                      variant: {
+                                        id: singleData?.id,
+                                        product_id: singleData?.product_id,
+                                        size: singleData?.size,
+                                        color: singleData?.color,
+                                        color_code: singleData?.color_code,
+                                        color_group: singleData?.color_group,
+                                        material: singleData?.material,
+                                        package_unit: singleData?.package_unit,
+                                        package_content:
+                                          singleData?.package_content,
+                                        package_weight:
+                                          singleData?.package_weight,
+                                        org_price: singleData?.org_price,
+                                        price: singleData?.price,
+                                        stock: singleData?.stock,
+                                        sold: singleData?.sold,
+                                        status: singleData?.status,
+                                        created_at: singleData?.created_at,
+                                        updated_at: singleData?.updated_at,
+                                        is_wishlisted:
+                                          singleData?.is_wishlisted,
+                                        in_cart: singleData?.in_cart,
+                                        productImages:
+                                          singleData?.productImages,
+                                        offer: singleData?.offer,
+                                      },
+                                      tax: singleData?.tax,
+                                    },
+                                  ],
+                                  status: 'ADD',
+                                });
+                              }
                             } else {
                               navigation.navigate('Auth');
                             }
@@ -1507,22 +1803,32 @@ const ProductDetails = ({route, navigation}) => {
                           alignItems: 'center',
                         }}>
                         {maxRating.map((item, index) => {
+                          let iconName;
+                          if (item <= Math.floor(defaultRating)) {
+                            iconName = 'star';
+                          } else if (
+                            item === Math.ceil(defaultRating) &&
+                            defaultRating % 1 !== 0
+                          ) {
+                            iconName = 'star-half-full';
+                          } else {
+                            iconName = 'star-o';
+                          }
+
                           return (
-                            <TouchableOpacity
+                            <View
                               activeOpacity={0.7}
                               key={index}
-                              onPress={() => handleRatingPress(item.rating)}
-                              style={{marginRight: 5}}>
-                              <AntDesign
-                                name={
-                                  item.rating <= defaultRating
-                                    ? 'star'
-                                    : 'staro'
-                                }
-                                size={14}
-                                color={Color.sunShade}
+                              style={{
+                                marginRight: 5,
+                              }}>
+                              <Iconviewcomponent
+                                Icontag={'FontAwesome'}
+                                iconname={iconName}
+                                icon_size={16}
+                                icon_color={Color.sunShade}
                               />
-                            </TouchableOpacity>
+                            </View>
                           );
                         })}
                         <Text
@@ -1606,9 +1912,8 @@ const ProductDetails = ({route, navigation}) => {
                   </View>
                 </View>
 
-                {/* <View
+                <View
                   style={{
-                    width: '95%',
                     backgroundColor: Color.white,
                     padding: 10,
                     marginTop: 10,
@@ -1618,257 +1923,55 @@ const ProductDetails = ({route, navigation}) => {
                       fontSize: 16,
                       color: Color.black,
                       fontFamily: Manrope.SemiBold,
-                      letterSpacing: 0.5,
                     }}>
                     Product Details
                   </Text>
-                  <View
-                    style={{
-                      width: '95%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Category
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: Color.lightBlack,
-                          fontFamily: Manrope.SemiBold,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Men polo t-shirt
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: '95%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Protection
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: Color.lightBlack,
-                          fontFamily: Manrope.SemiBold,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Damage Protection
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: '95%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Material
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: Color.lightBlack,
-                          fontFamily: Manrope.SemiBold,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Cotton
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: '95%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Brand
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: Color.lightBlack,
-                          fontFamily: Manrope.SemiBold,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        U.S Polo
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: '95%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Material
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: Color.lightBlack,
-                          fontFamily: Manrope.SemiBold,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Cotton
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: '95%',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Country of Origin
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: Color.lightBlack,
-                          fontFamily: Manrope.SemiBold,
-                          letterSpacing: 0.5,
-                          padding: 5,
-                        }}>
-                        Chennai, India
-                      </Text>
-                    </View>
-                  </View>
-                </View> */}
+                  {singleData?.product?.features != null &&
+                    singleData?.product?.features?.map((item, index) => {
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              justifyContent: 'flex-start',
+                              alignItems: 'flex-start',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Medium,
+                                padding: 5,
+                              }}>
+                              {item?.id}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              flex: 1,
+                              justifyContent: 'flex-start',
+                              alignItems: 'flex-start',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: Color.lightBlack,
+                                fontFamily: Manrope.SemiBold,
+                                letterSpacing: 0.5,
+                                padding: 5,
+                              }}>
+                              {item?.first_name}
+                            </Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                </View>
 
                 <View
                   style={{
@@ -1945,7 +2048,7 @@ const ProductDetails = ({route, navigation}) => {
                         alignItems: 'center',
                         marginVertical: 5,
                       }}>
-                      {review_tab?.map((item, index) => {
+                      {/* {review_tab?.map((item, index) => {
                         return (
                           <TouchableOpacity
                             onPress={() => {
@@ -1979,7 +2082,7 @@ const ProductDetails = ({route, navigation}) => {
                             </Text>
                           </TouchableOpacity>
                         );
-                      })}
+                      })} */}
                     </View>
                     <View
                       style={{
@@ -1987,7 +2090,7 @@ const ProductDetails = ({route, navigation}) => {
                         alignItems: 'center',
                         marginVertical: 5,
                       }}>
-                      {reviewsData?.data?.map((item, index) => {
+                      {visibleData?.map((item, index) => {
                         return (
                           <View style={{width: '100%', alignItems: 'center'}}>
                             <View
@@ -2030,7 +2133,9 @@ const ProductDetails = ({route, navigation}) => {
                                         color: Color.black,
                                         letterSpacing: 0.5,
                                       }}>
-                                      {item?.review}
+                                      {item?.User != null
+                                        ? item?.User?.first_name
+                                        : 'Shopeasey User'}
                                     </Text>
                                   </View>
                                   <View
@@ -2084,26 +2189,31 @@ const ProductDetails = ({route, navigation}) => {
                         );
                       })}
                     </View>
-                    <View
-                      style={{
-                        width: '100%',
-                        justifyContent: 'flex-end',
-                        alignItems: 'flex-end',
-                        marginVertical: 0,
-                      }}>
-                      <TouchableOpacity onPress={() => {}}>
-                        <Text
-                          style={{
-                            fontFamily: Manrope?.SemiBold,
-                            fontSize: 13,
-                            color: Color.lightBlack,
-                            textDecorationLine: 'underline',
-                            letterSpacing: 0.5,
+                    {showLoadMore && (
+                      <View
+                        style={{
+                          width: '100%',
+                          justifyContent: 'flex-end',
+                          alignItems: 'flex-end',
+                          marginVertical: 0,
+                        }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            loadMoreItems();
                           }}>
-                          View All Reviews
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                          <Text
+                            style={{
+                              fontFamily: Manrope?.SemiBold,
+                              fontSize: 13,
+                              color: Color.lightBlack,
+                              textDecorationLine: 'underline',
+                              letterSpacing: 0.5,
+                            }}>
+                            View All Reviews
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
                   </View>
                 )}
                 {topPicks?.length > 0 && (
@@ -2127,14 +2237,21 @@ const ProductDetails = ({route, navigation}) => {
                         }}>
                         Recommended
                       </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Bold,
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate('viewProducts', {
+                            key: 'topPicks',
+                          });
                         }}>
-                        See more
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: Color.cloudyGrey,
+                            fontFamily: Manrope.Bold,
+                          }}>
+                          See more
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                     <FlatList
                       data={topPicks}

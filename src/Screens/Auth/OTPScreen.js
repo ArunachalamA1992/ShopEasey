@@ -1,5 +1,5 @@
 //import liraries
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Image,
   StyleSheet,
@@ -16,9 +16,9 @@ import {
   Alert,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { Manrope } from '../../Global/FontFamily';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
+import {Manrope} from '../../Global/FontFamily';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import OTPInput from '../../Components/OTPInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import fetchData from '../../Config/fetchData';
@@ -26,13 +26,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import common_fn from '../../Config/common_fn';
 import RNOtpVerify from 'react-native-otp-verify';
 
-const DismissKeyboard = ({ children }) => (
+const DismissKeyboard = ({children}) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
   </TouchableWithoutFeedback>
 );
 
-const OTPScreen = ({ route, AppState }) => {
+const OTPScreen = ({route, AppState}) => {
   const navigation = useNavigation();
   const [number] = useState(route.params.number);
   const [token, setToken] = useState(route.params.token);
@@ -95,7 +95,7 @@ const OTPScreen = ({ route, AppState }) => {
         ? await fetchData.login_with_otp(data, null)
         : await fetchData.Register_request_otp(data, null);
     if (ResendOtpVerify?.status == true) {
-      setToken(ResendOtpVerify?.token)
+      setToken(ResendOtpVerify?.token);
       if (Platform.OS === 'android') {
         common_fn.showToast(ResendOtpVerify?.message);
       } else {
@@ -136,7 +136,7 @@ const OTPScreen = ({ route, AppState }) => {
         loginType == ''
           ? await fetchData.login_verify_otp(data, token)
           : await fetchData.Register_verify_otp(data, token);
-      if (VerifyOTP?.status == true) {
+      if (VerifyOTP?.status) {
         const UserLogin = {
           ...VerifyOTP?.data,
           token: VerifyOTP?.token,
@@ -230,7 +230,7 @@ const OTPScreen = ({ route, AppState }) => {
   };
   return (
     <ScrollView
-      contentContainerStyle={{ justifyContent: 'center', flex: 1 }}
+      contentContainerStyle={{justifyContent: 'center', flex: 1}}
       keyboardShouldPersistTaps="handled">
       <DismissKeyboard>
         <View
@@ -300,7 +300,7 @@ const OTPScreen = ({ route, AppState }) => {
                         }}>
                         Albion would like to Access the Camera?
                       </Text>
-                      <View style={{ width: '95%', alignItems: 'flex-start' }}>
+                      <View style={{width: '95%', alignItems: 'flex-start'}}>
                         <Text
                           style={{
                             textAlign: 'justify',
@@ -356,7 +356,7 @@ const OTPScreen = ({ route, AppState }) => {
                         }}>
                         Albion want to access your location
                       </Text>
-                      <View style={{ width: '95%', alignItems: 'flex-start' }}>
+                      <View style={{width: '95%', alignItems: 'flex-start'}}>
                         <Text
                           style={{
                             textAlign: 'justify',
@@ -396,7 +396,7 @@ const OTPScreen = ({ route, AppState }) => {
                       backgroundColor: Color.primary,
                       borderRadius: 40,
                     }}>
-                    <Text style={{ fontSize: 14, color: 'white' }}>Continue</Text>
+                    <Text style={{fontSize: 14, color: 'white'}}>Continue</Text>
                   </TouchableOpacity>
                 </View>
               </View>

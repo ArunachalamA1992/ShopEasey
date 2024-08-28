@@ -31,6 +31,8 @@ const ViewAllProducts = ({navigation, route}) => {
       const latest_products =
         key == 'latest'
           ? await fetchData.list_products(``, token)
+          : key == 'topPicks'
+          ? await fetchData.list_products(`project=top-picks`, token)
           : await fetchData.list_products(`is_featured=1`, token);
       setProduct(latest_products?.data);
     } catch (error) {

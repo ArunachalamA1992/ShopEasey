@@ -18,6 +18,7 @@ import {setOnBoardVisible} from '../../Redux';
 
 const OnboardTwo = () => {
   const navigation = useNavigation();
+  console.log('navigation.replace', navigation.replace);
   const dispatch = useDispatch();
 
   return (

@@ -216,7 +216,10 @@ const MyCart = ({}) => {
   };
 
   const total_price = cartData
-    .filter(item => selectedData.length === 0 || selectedData.includes(item.id))
+    .filter(item =>
+      // selectedData.length === 0 ||
+      selectedData.includes(item.id),
+    )
     .reduce((accumulator, item) => {
       const price = item?.variant?.offer_price
         ? item?.variant?.offer_price

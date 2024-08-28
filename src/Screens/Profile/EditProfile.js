@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
@@ -53,6 +54,7 @@ const EditProfile = ({navigation, route}) => {
   const [profileImage, setProfileImage] = useState(userData.profile);
   const countryCode = useSelector(state => state.UserReducer.country);
   const [image, setImage] = useState([]);
+  const [updateLoader, setUpdateLoader] = useState(false);
   const [dateofBirth, setDateOfBirth] = useState(
     userData.dob != undefined ? new Date(userData.dob) : '',
   );
@@ -194,11 +196,17 @@ const EditProfile = ({navigation, route}) => {
   const profileUpdate = async () => {
     try {
       if (firstName && lastName && email && phoneNumber) {
+        setUpdateLoader(true);
         const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
+
         const formdata = new FormData();
-        var {uri, fileName, name} = image[0];
-        formdata.append('profile', {uri, type: 'image/jpeg', name});
+
+        if (image && image.length > 0) {
+          const {uri, name} = image[0];
+          formdata.append('profile', {uri, type: 'image/jpeg', name});
+        }
+
         formdata.append('first_name', firstName);
         formdata.append('last_name', lastName);
         // formdata.append('dob', moment(dateofBirth).format('DD-MM-YYYY'));
@@ -213,18 +221,28 @@ const EditProfile = ({navigation, route}) => {
           redirect: 'follow',
         };
 
-        fetch(`${baseUrl}api/auth/user/update_profile`, requestOptions)
-          .then(response => response.json())
-          .then(result => {
-            common_fn.showToast(result?.message);
-            navigation.navigate('Profile');
-          })
-          .catch(error => console.error(error));
+        const response = await fetch(
+          `${baseUrl}api/auth/user/update_profile`,
+          requestOptions,
+        );
+        const result = await response.json();
+
+        if (response.ok) {
+          common_fn.showToast(result?.message);
+          navigation.navigate('Profile');
+          setUpdateLoader(false);
+        } else {
+          console.error('Profile update failed:', result);
+          common_fn.showToast('Profile update failed. Please try again.');
+          setUpdateLoader(false);
+        }
       } else {
         common_fn.showToast('Please select all the mandatory fields');
+        setUpdateLoader(false);
       }
     } catch (error) {
-      console.log('catch in profile_Update ', error);
+      console.error('Error in profileUpdate:', error);
+      common_fn.showToast('An error occurred. Please try again later.');
     }
   };
 
@@ -751,15 +769,19 @@ const EditProfile = ({navigation, route}) => {
               borderRadius: 5,
               marginVertical: 30,
             }}>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 14,
-                color: Color.white,
-                fontFamily: Manrope.Medium,
-              }}>
-              UPDATE
-            </Text>
+            {updateLoader ? (
+              <ActivityIndicator color={Color.white} />
+            ) : (
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 14,
+                  color: Color.white,
+                  fontFamily: Manrope.Medium,
+                }}>
+                UPDATE
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
 

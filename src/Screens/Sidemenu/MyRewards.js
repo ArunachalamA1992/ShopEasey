@@ -219,7 +219,15 @@ const MyRewards = () => {
                           item?.category == 'Rewards You’ve Missed' ? 0.5 : 1,
                       }}
                       onPress={() => {
-                        setRewardsModal({visible: true, data: single_reward});
+                        item?.category == 'Rewards You’ve Missed'
+                          ? setRewardsModal({
+                              visible: false,
+                              data: {},
+                            })
+                          : setRewardsModal({
+                              visible: true,
+                              data: single_reward,
+                            });
                       }}>
                       <Image
                         source={single_reward.ban_image}

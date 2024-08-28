@@ -40,6 +40,7 @@ const selectAddressess = () => {
   const getAddressData = async () => {
     try {
       const getaddress = await fetchData.list_address(``, token);
+      console.log('getaddress', getaddress);
       setAddressData(getaddress?.data);
     } catch (error) {
       console.log('error', error);

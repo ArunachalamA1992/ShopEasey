@@ -115,33 +115,19 @@ const HomeScreen = () => {
     },
   ]);
 
-  const [bannerData, setBannerData] = useState([
-    {
-      id: '0',
-      ban_name: 'Men',
-      ban_image: Media.banner_one,
-    },
-    {
-      id: '1',
-      ban_name: 'Women',
-      ban_image: Media.banner_two,
-    },
-    {
-      id: '2',
-      ban_name: 'Kid’s Wear',
-      ban_image: Media.banner_three,
-    },
-    {
-      id: '3',
-      ban_name: 'Men',
-      ban_image: Media.banner_four,
-    },
-    {
-      id: '4',
-      ban_name: 'Men',
-      ban_image: Media.banner_one,
-    },
-  ]);
+  const [bannerData, setBannerData] = useState([]);
+  const splitByCategory = data => {
+    return data.reduce((result, item) => {
+      const category = item.category;
+      if (!result[category]) {
+        result[category] = [];
+      }
+      result[category].push(item);
+      return result;
+    }, {});
+  };
+
+  const categorizedData = splitByCategory(bannerData);
 
   const [trendData, setTrendData] = useState([
     {
@@ -361,14 +347,17 @@ const HomeScreen = () => {
       setTrendingProducts(trending_products?.data);
       const latest_products = await fetchData.list_products(``, token);
       setLatestProduct(latest_products?.data);
+
       const fetured_products = await fetchData.list_products(
         `is_featured=1`,
         token,
       );
       setFeaturedProducts(fetured_products?.data);
-      // var banner_data = `seller=home_page`;
-      // const getBannerData = await fetchData.get_banner(banner_data, token);
-      // setBannerData(getBannerData?.data);
+
+      //banner
+      var banner_data = `seller=home_page`;
+      const getBannerData = await fetchData.get_banner(banner_data, null);
+      setBannerData(getBannerData?.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -1255,7 +1244,7 @@ const HomeScreen = () => {
                         autoplayLoop
                         index={1}
                         showPagination
-                        data={bannerData}
+                        data={categorizedData?.main_banner}
                         paginationActiveColor={Color.primary}
                         paginationStyleItem={{
                           width: 15,
@@ -1273,7 +1262,7 @@ const HomeScreen = () => {
                               });
                             }}>
                             <Image
-                              source={{uri: item.ban_image}}
+                              source={{uri: item.file_path}}
                               style={{
                                 width: width - 10,
                                 height: 130,
@@ -1363,7 +1352,7 @@ const HomeScreen = () => {
                         </View>
                       </View>
                       <FlatList
-                        data={hotDealsData}
+                        data={categorizedData?.hot_deals_banner}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         renderItem={({item, index}) => {
@@ -1381,7 +1370,7 @@ const HomeScreen = () => {
                                 });
                               }}>
                               <Image
-                                source={{uri: item?.image}}
+                                source={{uri: item?.file_path}}
                                 style={{
                                   width: 170,
                                   height: 130,
@@ -1619,7 +1608,7 @@ const HomeScreen = () => {
                         autoplayLoop
                         index={1}
                         // showPagination
-                        data={OfferBanner}
+                        data={categorizedData?.carousel_banner}
                         // paginationActiveColor={Color.primary}
                         // paginationStyleItem={{
                         //   width: 15,
@@ -1642,7 +1631,7 @@ const HomeScreen = () => {
                               });
                             }}>
                             <Image
-                              source={{uri: item?.category_image}}
+                              source={{uri: item?.file_path}}
                               style={{
                                 width: '100%',
                                 height: 470,
@@ -1746,44 +1735,29 @@ const HomeScreen = () => {
                             alignItems: 'center',
                             justifyContent: 'space-between',
                           }}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              navigation.navigate('ProductList', {
-                                category_id: 560,
-                              });
-                            }}
-                            style={{
-                              flex: 1,
-                              borderRadius: 10,
-                            }}>
-                            <Image
-                              source={{uri: Media.flash_sell_ban_one}}
-                              style={{
-                                height: 100,
-                                resizeMode: 'contain',
-                                marginHorizontal: 5,
-                              }}
-                            />
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => {
-                              navigation.navigate('ProductList', {
-                                category_id: 560,
-                              });
-                            }}
-                            style={{
-                              flex: 1,
-                              borderRadius: 10,
-                            }}>
-                            <Image
-                              source={{uri: Media.flash_sell_ban_two}}
-                              style={{
-                                height: 100,
-                                resizeMode: 'contain',
-                                marginHorizontal: 5,
-                              }}
-                            />
-                          </TouchableOpacity>
+                          {categorizedData?.offer_banner?.map((item, index) => {
+                            return (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  navigation.navigate('ProductList', {
+                                    category_id: 560,
+                                  });
+                                }}
+                                style={{
+                                  borderRadius: 10,
+                                  width: '50%',
+                                }}>
+                                <Image
+                                  source={{uri: item?.file_path}}
+                                  style={{
+                                    height: 100,
+                                    resizeMode: 'contain',
+                                    marginHorizontal: 5,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                            );
+                          })}
                         </View>
                         <View
                           style={{

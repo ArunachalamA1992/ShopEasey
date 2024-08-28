@@ -76,9 +76,9 @@ const ProductList = ({route, navigation}) => {
   const getData = async () => {
     try {
       var data = `/${category_id}`;
-      loadInitialProducts(category_id, param);
       const categories_data = await fetchData.categories(data, token);
       setCurrentLevel(false);
+      loadInitialProducts(category_id, param);
       setCategoryData(categories_data?.data?.sub_categories);
     } catch (error) {
       console.log('error', error);
@@ -95,10 +95,15 @@ const ProductList = ({route, navigation}) => {
       setLoading(true);
       setPage(1);
       setEndReached(false);
+
       let query = `category_id=${catId}`;
       if (subCatId) query += `&sub_category_id=${subCatId}`;
       if (subSubCatId) query += `&sub_sub_category_id=${subSubCatId}`;
-      if (param) query += `&${param}`;
+
+      if (param && param.trim() !== '') {
+        query += `&${param}`;
+      }
+
       const product_data = await fetchData.list_products(query, token);
       setProducts(product_data?.data);
     } catch (error) {
@@ -163,6 +168,7 @@ const ProductList = ({route, navigation}) => {
       if (currentLevel) query += `&sub_category_id=${sub_cat_id}`;
       if (selectedCategory?.id)
         query += `&sub_sub_category_id=${selectedCategory?.id}`;
+      if (param && param.trim() !== '') query += `&${param}`;
       const response = await fetchData.list_products(query, token);
       if (response?.data.length > 0) {
         setPage(nextPage);

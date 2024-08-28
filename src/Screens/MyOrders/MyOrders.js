@@ -2614,11 +2614,11 @@ const MyOrders = ({navigation}) => {
     ...new Set(status?.slice(1)?.map(item => item?.status)),
   ];
 
-  const routes = status.map(status => ({
-    key: status?.status,
-    title: status?.status
-      .replace(/^\w/, c => c.toUpperCase())
-      .replace(/orders|shipping/i, match => ` ${match}`),
+  const routes = uniqueStatuses.map(status => ({
+    key: status,
+    title: status
+      ?.replace(/^\w/, c => c.toUpperCase())
+      ?.replace(/orders|shipping/i, match => ` ${match}`),
   }));
 
   const renderScene = ({route}) => {

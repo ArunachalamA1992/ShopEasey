@@ -107,7 +107,7 @@ const TabContent = ({
         }}>
         {item?.brand?.map((item, index) => {
           return (
-            <RadioData
+            <CheckboxData
               key={index}
               label={item.name}
               checked={brandSelectedItem.includes(item.id)}
@@ -127,7 +127,7 @@ const TabContent = ({
         }}>
         {item?.colors?.map((item, index) => {
           return (
-            <RadioData
+            <CheckboxData
               key={index}
               label={item.color_group_name}
               color_code={item?.color_group_name}
@@ -291,9 +291,9 @@ const VerticalTabView = props => {
     },
   ]);
 
-  const [low, setLow] = useState(100);
+  const [low, setLow] = useState(0);
   const [high, setHigh] = useState(100000);
-  const [min, setMin] = useState(100);
+  const [min, setMin] = useState(0);
   const [max, setMax] = useState(100000);
 
   const handleValueChange = useCallback((low, high) => {
@@ -669,28 +669,36 @@ const VerticalTabView = props => {
       page: 1,
       size:
         filterSelectedItem?.size
-          .filter(item => item.size)
-          .map(item => item.size)
-          .join(',') || '',
+          ?.filter(item => item.size)
+          ?.map(item => item.size)
+          ?.join(',') || '',
       color_group:
         filterSelectedItem?.colors
-          .filter(item => item.id)
-          .map(item => item.id)
-          .join(',') || '',
+          ?.filter(item => item.id)
+          ?.map(item => item.id)
+          ?.join(',') || '',
       brand_id:
         filterSelectedItem?.brand
-          .filter(item => item.id)
-          .map(item => item.id)
-          .join(',') || '',
+          ?.filter(item => item.id)
+          ?.map(item => item.id)
+          ?.join(',') || '',
       sub_category_id: categorySelectedItem?.id || '',
-      price: low && high ? `${low},${high}` : '',
+      price: low > 0 && high ? `${low},${high}` : '',
     };
+
+    console.log('Payload:', payload);
 
     for (const key in payload) {
       if (payload[key] != null && payload[key] !== '') {
-        params += `${key}=${encodeURIComponent(payload[key])}&`;
+        if (key === 'size' || key === 'color_group' || key === 'price') {
+          params += `${key}=${payload[key]}&`;
+        } else {
+          params += `${key}=${encodeURIComponent(payload[key])}&`;
+        }
       }
     }
+
+    console.log('Params before slicing:', params);
 
     return params.slice(0, -1);
   };

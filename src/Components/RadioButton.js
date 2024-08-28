@@ -4,7 +4,7 @@ import {Manrope} from '../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export const CheckboxData = ({label, checked, onPress}) => {
+export const CheckboxData = ({label, checked, color_code, onPress}) => {
   return (
     <TouchableOpacity style={styles.checkboxContainer} onPress={onPress}>
       <MCIcon
@@ -12,6 +12,19 @@ export const CheckboxData = ({label, checked, onPress}) => {
         size={25}
         color={!checked ? Color.cloudyGrey : '#309CD2'}
       />
+      {color_code && (
+        <View
+          style={{
+            backgroundColor: `${color_code?.toLowerCase()}`,
+            width: 20,
+            height: 20,
+            borderRadius: 100,
+            marginLeft: 5,
+            borderColor: Color.lightgrey,
+            borderWidth: 1,
+          }}
+        />
+      )}
       <Text style={styles.TextData}>{label}</Text>
     </TouchableOpacity>
   );

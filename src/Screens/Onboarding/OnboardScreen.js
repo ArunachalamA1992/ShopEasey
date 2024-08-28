@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -30,15 +30,18 @@ const OnboardScreen = () => {
   const [selectImage, setSelectImage] = useState('');
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const [countryData, setCountryData] = useState([]);
-  const imageScale = new Animated.Value(0.1);
   const dispatch = useDispatch();
   const [pendingDeepLink, setPendingDeepLink] = useState(null);
 
-  Animated.timing(imageScale, {
-    toValue: 1,
-    duration: 1000,
-    useNativeDriver: true,
-  }).start();
+  const imageScale = useRef(new Animated.Value(0.5)).current;
+
+  useEffect(() => {
+    Animated.timing(imageScale, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   function sale_toggleBottomView(type) {
     try {
