@@ -27,7 +27,6 @@ import {Manrope} from '../../Global/FontFamily';
 import ItemCard from '../../Components/ItemCard';
 import VoiceSearch from '../../Components/VoiceSearch';
 
-
 const {height} = Dimensions.get('screen');
 const SearchDataList = ({navigation, route}) => {
   const [searchProduct, setSearchProduct] = useState(
@@ -48,7 +47,6 @@ const SearchDataList = ({navigation, route}) => {
     visible: false,
   });
 
-
   const [LocationSuggestion, setLocationSuggestion] = useState({
     data: [],
     visible: false,
@@ -57,11 +55,9 @@ const SearchDataList = ({navigation, route}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
 
-
   const handleVoiceSearch = query => {
     setVoiceSearchQuery(query);
   };
-
 
   const getData = useCallback(async () => {
     try {
@@ -76,11 +72,9 @@ const SearchDataList = ({navigation, route}) => {
     }
   }, [searchProduct, token]);
 
-
   useEffect(() => {
     getData();
   }, [token]);
-
 
   const handleSearch = async () => {
     try {
@@ -93,7 +87,6 @@ const SearchDataList = ({navigation, route}) => {
       console.log(`error`, error);
     }
   };
-
 
   const propertySearch = async input => {
     setSearchProduct(input);
@@ -108,7 +101,6 @@ const SearchDataList = ({navigation, route}) => {
       console.log('error', error);
     }
   };
-
 
   const loadSearchMoreData = async () => {
     if (SearchloadMore || SearchendReached) {
@@ -136,7 +128,6 @@ const SearchDataList = ({navigation, route}) => {
     }
   };
 
-
   const loadMoreData = async () => {
     if (loadMore || endReached) {
       return;
@@ -159,7 +150,6 @@ const SearchDataList = ({navigation, route}) => {
       setLoadMore(false);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -342,8 +332,12 @@ const SearchDataList = ({navigation, route}) => {
             value={searchProduct}
             iconColor={Color.grey}
             inputStyle={{color: Color.black}}
-            onChangeText={search => propertySearch(search)}
+            onChangeText={search => {
+              const sanitizedSearch = search.replace(/[^a-zA-Z0-9\s]/g, '');
+              propertySearch(sanitizedSearch);
+            }}
           />
+
           {ProductSuggestions?.visible == true && (
             <View
               style={{
@@ -419,9 +413,7 @@ const SearchDataList = ({navigation, route}) => {
   );
 };
 
-
 export default SearchDataList;
-
 
 const styles = StyleSheet.create({
   container: {

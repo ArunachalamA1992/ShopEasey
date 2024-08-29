@@ -24,7 +24,7 @@ import FilterModal from '../../Components/Filter/FilterModal';
 const {height} = Dimensions.get('screen');
 const ProductList = ({route, navigation}) => {
   const [category_id] = useState(route.params.category_id);
-  const [param] = useState(route.params.param);
+  const [param] = useState(route.params.param, category_id);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);

@@ -34,6 +34,8 @@ const SearchScreen = ({navigation, route}) => {
     visible: false,
   });
 
+  console.log('ProductSuggestions?.visible', ProductSuggestions?.visible);
+
   const [RecentlySearch] = useState([
     {
       id: 1,
@@ -50,10 +52,6 @@ const SearchScreen = ({navigation, route}) => {
   const handleVoiceSearch = query => {
     setSearchProduct(query);
   };
-
-  useEffect(() => {
-    propertySearch(searchProduct);
-  }, [searchProduct]);
 
   const propertySearch = async data => {
     setSearchProduct(data);
@@ -84,7 +82,7 @@ const SearchScreen = ({navigation, route}) => {
           ...ProductSuggestions,
           ...filterData?.data?.keyword?.rows,
         ];
-        setProductSuggestions(updatedData);
+        setProductSuggestions({data: updatedData, visible: true});
       } else {
         setEndReached(true);
       }
@@ -126,50 +124,87 @@ const SearchScreen = ({navigation, route}) => {
         />
         <VoiceSearch onSearch={handleVoiceSearch} />
       </TouchableOpacity>
-      {ProductSuggestions?.visible == true && (
+
+      {ProductSuggestions?.visible == true && searchProduct != '' && (
         <View
           style={{
-            maxHeight: 200,
-            padding: 10,
-            backgroundColor: Color.white,
-            elevation: 3,
-            borderRadius: 5,
-            marginTop: 5,
+            width: '100%',
+            alignItems: 'center',
           }}>
-          <FlatList
-            data={ProductSuggestions?.data}
-            keyExtractor={(item, index) => item + index}
-            renderItem={({item, index}) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    setSearchProduct(item?.keyword);
-                    setSelectData(item);
-                    setProductSuggestions({
-                      data: [],
-                      visible: false,
-                    });
-                  }}>
-                  <Text
+          <View
+            style={{
+              width: '100%',
+              maxHeight: 200,
+              backgroundColor: Color.white,
+              padding: 10,
+              borderWidth: 1,
+              borderColor: Color.lightgrey,
+              borderBottomLeftRadius: 20,
+              borderBottomRightRadius: 20,
+            }}>
+            <FlatList
+              data={ProductSuggestions?.data}
+              keyExtractor={(item, index) => item + index}
+              renderItem={({item, index}) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      setSearchProduct(item?.keyword);
+                      setSelectData(item);
+                      setProductSuggestions({
+                        data: [],
+                        visible: false,
+                      });
+                    }}
                     style={{
-                      fontSize: 16,
-                      fontFamily: Manrope.Medium,
-                      color: Color.black,
+                      width: '90%',
                     }}>
-                    {item?.keyword}
-                  </Text>
-                  {index < ProductSuggestions?.data.length - 1 && (
-                    <Divider style={{height: 1, marginVertical: 5}} />
-                  )}
-                </TouchableOpacity>
-              );
-            }}
-            onEndReached={() => {
-              loadMoreData();
-            }}
-            onEndReachedThreshold={3}
-          />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontFamily: Manrope.Medium,
+                        color: Color.black,
+                      }}>
+                      {item?.keyword}
+                    </Text>
+                    {index < ProductSuggestions?.data.length - 1 && (
+                      <Divider style={{height: 1, marginVertical: 5}} />
+                    )}
+                  </TouchableOpacity>
+                );
+              }}
+              onEndReached={() => {
+                loadMoreData();
+              }}
+              ListEmptyComponent={() => {
+                return (
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginVertical: 10,
+                      width: '100%',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        padding: 5,
+                        paddingHorizontal: 20,
+                        marginStart: 5,
+                        borderRadius: 5,
+                        marginVertical: 10,
+                        color: Color.primary,
+                        fontFamily: Manrope.Bold,
+                      }}>
+                      No Data
+                    </Text>
+                  </View>
+                );
+              }}
+              onEndReachedThreshold={3}
+            />
+          </View>
         </View>
       )}
       <TouchableOpacity

@@ -60,9 +60,9 @@ const HomeScreen = () => {
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
-  const [featuredloadMore, setfeaturedLoadMore] = useState(false);
-  const [featuredPage, setfeaturedPage] = useState(1);
-  const [featuredendReached, setfeaturedEndReached] = useState(false);
+  const [latestloadMore, setlatestloadMore] = useState(false);
+  const [latestPage, setlatestPage] = useState(1);
+  const [latestendReached, setlatestendReached] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
@@ -131,24 +131,66 @@ const HomeScreen = () => {
 
   const [trendData, setTrendData] = useState([
     {
-      id: '0',
-      ban_name: 'Casual Shirts',
-      ban_image: require('../../assets/images/casual.png'),
+      id: 1,
+      ban_image: require('../../assets/Brands/banner-down-1.png'),
+      banners: [
+        {
+          id: 1,
+          image: require('../../assets/Brands/men1.jpg'),
+        },
+        {
+          id: 2,
+          image: require('../../assets/Brands/men2.jpg'),
+        },
+        {
+          id: 3,
+          image: require('../../assets/Brands/men3.jpg'),
+        },
+        {
+          id: 4,
+          image: require('../../assets/Brands/men4.jpg'),
+        },
+      ],
     },
     {
-      id: '1',
-      ban_name: 'Ethnic Wear',
-      ban_image: require('../../assets/images/casual.png'),
+      id: 2,
+      ban_image: require('../../assets/Brands/img4.png'),
+      banners: [
+        {
+          id: 1,
+          image: require('../../assets/Brands/img1.jpg'),
+        },
+        {
+          id: 2,
+          image: require('../../assets/Brands/img2.jpg'),
+        },
+        {
+          id: 3,
+          image: require('../../assets/Brands/img3.jpg'),
+        },
+        {
+          id: 4,
+          image: require('../../assets/Brands/men4.jpg'),
+        },
+      ],
     },
     {
-      id: '2',
-      ban_name: 'Kid’s Wear',
-      ban_image: require('../../assets/images/casual.png'),
-    },
-    {
-      id: '3',
-      ban_name: 'Fruits & Snacks',
-      ban_image: require('../../assets/images/casual.png'),
+      id: 3,
+      ban_image: require('../../assets/Brands/banner-down-2.png'),
+      banners: [
+        {
+          id: 1,
+          image: require('../../assets/Brands/slide-1.png'),
+        },
+        {
+          id: 2,
+          image: require('../../assets/Brands/slide-2.png'),
+        },
+        {
+          id: 3,
+          image: require('../../assets/Brands/slide-3.png'),
+        },
+      ],
     },
   ]);
 
@@ -161,8 +203,8 @@ const HomeScreen = () => {
     {id: 6, title: 'Offer Banner', data: ['Offer Banner']},
     {id: 7, title: 'Flash Selling', data: ['Flash Selling']},
     {id: 8, title: 'product', data: ['product']},
-    {id: 9, title: 'Latest Product', data: ['Latest Product']},
-    {id: 10, title: 'Featured Product', data: ['Featured Product']},
+    {id: 9, title: 'Featured Product', data: ['Featured Product']},
+    {id: 10, title: 'Latest Product', data: ['Latest Product']},
   ]);
 
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
@@ -406,26 +448,26 @@ const HomeScreen = () => {
     }
   };
 
-  const featuredLoadMoreData = async () => {
-    if (featuredloadMore || featuredendReached) {
+  const latestLoadMoreData = async () => {
+    if (latestloadMore || latestendReached) {
       return;
     }
-    setfeaturedLoadMore(true);
+    setlatestloadMore(true);
     try {
-      const nextPage = featuredPage + 1;
-      var data = `project=offer&page=${nextPage}`;
+      const nextPage = latestPage + 1;
+      var data = `page=${nextPage}`;
       const response = await fetchData.list_products(data, token);
       if (response?.data.length > 0) {
-        setfeaturedPage(nextPage);
-        const updatedData = [...FeaturedProducts, ...response?.data];
-        setFeaturedProducts(updatedData);
+        setlatestPage(nextPage);
+        const updatedData = [...latestProducts, ...response?.data];
+        setLatestProduct(updatedData);
       } else {
-        setfeaturedEndReached(true);
+        setlatestendReached(true);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setfeaturedLoadMore(false);
+      setlatestloadMore(false);
     }
   };
 
@@ -1436,108 +1478,45 @@ const HomeScreen = () => {
                                   });
                                 }}
                                 style={{
-                                  width: 150,
-                                  height: 170,
                                   justifyContent: 'center',
                                   alignItems: 'center',
-                                  margin: 5,
+                                  margin: 10,
                                 }}>
-                                <Image
-                                  source={item.ban_image}
+                                <View
                                   style={{
                                     width: 150,
-                                    height: 160,
-                                    resizeMode: 'contain',
-                                  }}
-                                />
-                                <View
-                                  style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    backgroundColor: Color.lightBlack,
-                                    paddingHorizontal: 10,
-                                    padding: 5,
-                                    marginHorizontal: 10,
-                                    position: 'absolute',
-                                    top: 10,
-                                    right: -10,
+                                    height: 200,
+                                    justifyContent: 'flex-end',
                                   }}>
-                                  <FontAwesome6
-                                    name="award"
-                                    size={14}
-                                    color={Color.white}
-                                  />
-                                  <Text
-                                    style={{
-                                      color: Color.white,
-                                      fontSize: 12,
-                                      fontFamily: Manrope.Medium,
-                                      marginHorizontal: 5,
-                                    }}>
-                                    Best Seller
-                                  </Text>
-                                </View>
-                                {calculateTotalDiscountPercentage(
-                                  item?.ban_name,
-                                ) != 0 ? (
-                                  <View
-                                    style={{
+                                  <ScrollView
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    contentContainerStyle={{
                                       flexDirection: 'row',
-                                      alignItems: 'center',
-                                      paddingHorizontal: 10,
-                                      padding: 5,
-                                      position: 'absolute',
-                                      top: 40,
-                                      right: -10,
                                     }}>
-                                    <Image
-                                      source={require('../../assets/category/rect.png')}
-                                      style={{
-                                        width: 60,
-                                        height: 30,
-                                        resizeMode: 'contain',
-                                      }}
-                                    />
-                                    <Text
-                                      style={{
-                                        color: Color.white,
-                                        fontSize: 12,
-                                        right: 20,
-                                        fontFamily: Manrope.Medium,
-                                        position: 'absolute',
-                                      }}>
-                                      {calculateTotalDiscountPercentage(
-                                        item?.ban_name,
-                                      )}{' '}
-                                      %
-                                    </Text>
-                                  </View>
-                                ) : null}
-                                <View
-                                  style={{
-                                    width: '100%',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: Color.primary,
-                                    position: 'absolute',
-                                    flexDirection: 'row',
-                                    padding: 5,
-                                    bottom: 2,
-                                  }}>
-                                  <Text
+                                    {item.banners.map((single_item, index) => (
+                                      <Image
+                                        key={index}
+                                        source={single_item.image}
+                                        style={{
+                                          width: 150,
+                                          height: 170,
+                                          borderRadius: 10,
+                                          marginRight: 10,
+                                        }}
+                                      />
+                                    ))}
+                                  </ScrollView>
+                                  <ImageBackground
+                                    source={item.ban_image}
                                     style={{
-                                      flex: 1,
-                                      color: Color.white,
-                                      fontSize: 12,
-                                      fontFamily: Manrope.Bold,
-                                      letterSpacing: 0.5,
-                                    }}>
-                                    {item.ban_name}
-                                  </Text>
-                                  <Icon
-                                    name="arrow-forward-circle"
-                                    size={25}
-                                    color={Color.white}
+                                      position: 'absolute',
+                                      bottom: 0,
+                                      width: 150,
+                                      left: 0,
+                                      right: 0,
+                                      height: 60,
+                                    }}
                                   />
                                 </View>
                               </TouchableOpacity>
@@ -1727,7 +1706,7 @@ const HomeScreen = () => {
                         style={{
                           marginTop: 10,
                           backgroundColor: '#E6F5F860',
-                          padding: 10,
+                          // padding: 10,
                         }}>
                         <View
                           style={{
@@ -1759,7 +1738,7 @@ const HomeScreen = () => {
                             );
                           })}
                         </View>
-                        <View
+                        {/* <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -1803,28 +1782,7 @@ const HomeScreen = () => {
                               Min spent 2000$ of cart value
                             </Text>
                           </View>
-                          {/* <View
-                            style={{
-                              padding: 10,
-                              paddingHorizontal: 20,
-                              backgroundColor: Color.primary,
-                              borderRadius: 5,
-                            }}>
-                            <Text style={{fontSize: 12, color: Color.white}}>
-                              Claim
-                            </Text>
-                          </View> */}
-                          {/* <Button
-                            mode="contained"
-                            onPress={() => { }}
-                            style={{
-                              backgroundColor: Color.primary,
-                              borderRadius: 5,
-                            }}
-                            textColor={Color.white}>
-
-                          </Button> */}
-                        </View>
+                        </View> */}
                       </View>
                     </View>
                   );
@@ -1917,61 +1875,6 @@ const HomeScreen = () => {
                       )}
                     </View>
                   );
-                case 'Latest Product':
-                  return (
-                    latestProducts?.length > 0 && (
-                      <View
-                        style={{
-                          paddingStart: 10,
-                        }}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginVertical: 10,
-                          }}>
-                          <Text
-                            style={{
-                              flex: 1,
-                              fontSize: 16,
-                              color: Color.black,
-                              fontFamily: Manrope.SemiBold,
-                            }}>
-                            Latest Products
-                          </Text>
-                          <TouchableOpacity
-                            onPress={() => {
-                              navigation.navigate('viewProducts', {
-                                key: 'latest',
-                              });
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Bold,
-                                marginRight: 10,
-                              }}>
-                              View All
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                        <FlatList
-                          data={latestProducts}
-                          horizontal
-                          showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
-                            return (
-                              <ItemCardHorizontal
-                                item={item}
-                                navigation={navigation}
-                              />
-                            );
-                          }}
-                        />
-                      </View>
-                    )
-                  );
                 case 'Featured Product':
                   return (
                     FeaturedProducts?.length > 0 && (
@@ -1994,9 +1897,64 @@ const HomeScreen = () => {
                             }}>
                             Featured Products
                           </Text>
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('viewProducts', {
+                                key: 'featured',
+                              });
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Bold,
+                                marginRight: 10,
+                              }}>
+                              View All
+                            </Text>
+                          </TouchableOpacity>
                         </View>
                         <FlatList
                           data={FeaturedProducts}
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          renderItem={({item, index}) => {
+                            return (
+                              <ItemCardHorizontal
+                                item={item}
+                                navigation={navigation}
+                              />
+                            );
+                          }}
+                        />
+                      </View>
+                    )
+                  );
+                case 'Latest Product':
+                  return (
+                    latestProducts?.length > 0 && (
+                      <View
+                        style={{
+                          paddingStart: 10,
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginVertical: 10,
+                          }}>
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontSize: 16,
+                              color: Color.black,
+                              fontFamily: Manrope.SemiBold,
+                            }}>
+                            Latest Products
+                          </Text>
+                        </View>
+                        <FlatList
+                          data={latestProducts}
                           numColumns={2}
                           renderItem={({item, index}) => {
                             return (
@@ -2005,7 +1963,7 @@ const HomeScreen = () => {
                           }}
                           onEndReachedThreshold={3}
                           onEndReached={() => {
-                            featuredLoadMoreData();
+                            latestLoadMoreData();
                           }}
                           ListFooterComponent={() => {
                             return (
@@ -2014,7 +1972,7 @@ const HomeScreen = () => {
                                   alignItems: 'center',
                                   justifyContent: 'center',
                                 }}>
-                                {featuredloadMore && (
+                                {latestloadMore && (
                                   <View
                                     style={{
                                       flexDirection: 'row',

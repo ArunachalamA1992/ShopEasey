@@ -190,7 +190,7 @@ const Login = () => {
           );
 
           if (Register_data?.status) {
-            common_fn.showToast('OTP Sent to your Email');
+            common_fn.showToast(Register_data?.message);
             navigation.navigate('OTPScreen', {
               number,
               token: Register_data?.token,
