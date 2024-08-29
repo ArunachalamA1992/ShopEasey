@@ -1258,46 +1258,49 @@ const ProductDetails = ({route, navigation}) => {
                     ) : null}
 
                     {singleData?.variants_list?.size?.length > 0 ? (
-                      <View style={styles.sizeContainer}>
-                        <Text style={styles.sizeLabel}>Size :</Text>
-                        <View style={styles.sizeOptions}>
-                          {singleData?.variants_list?.size?.map(
-                            (item, index) => (
-                              <TouchableOpacity
-                                key={index}
-                                style={styles.sizeOption}
-                                onPress={() => handleSizePress(item)}
-                                disabled={item?.stock == 0}>
-                                <View
-                                  style={[
-                                    styles.sizeView,
-                                    {
-                                      backgroundColor:
-                                        item?.stock == 0
-                                          ? '#EEEEEE80'
-                                          : selectedSize === item?.size
-                                          ? '#0D71BA50'
-                                          : '#EEEEEE',
-                                    },
-                                  ]}>
-                                  <Text
+                      <>
+                        <View style={styles.sizeContainer}>
+                          <Text style={styles.sizeLabel}>Size :</Text>
+                          <View style={styles.sizeOptions}>
+                            {singleData?.variants_list?.size?.map(
+                              (item, index) => (
+                                <TouchableOpacity
+                                  key={index}
+                                  style={styles.sizeOption}
+                                  onPress={() => handleSizePress(item)}
+                                  disabled={item?.stock == 0}>
+                                  <View
                                     style={[
-                                      styles.sizeText,
+                                      styles.sizeView,
                                       {
-                                        color: Color.black,
+                                        backgroundColor:
+                                          item?.stock == 0
+                                            ? '#EEEEEE80'
+                                            : selectedSize === item?.size
+                                            ? '#0D71BA50'
+                                            : '#EEEEEE',
                                       },
                                     ]}>
-                                    {item?.size}
-                                  </Text>
-                                </View>
-                                {item?.stock == 0 && (
-                                  <Text style={styles.soldText}>sold</Text>
-                                )}
-                              </TouchableOpacity>
-                            ),
-                          )}
+                                    <Text
+                                      style={[
+                                        styles.sizeText,
+                                        {
+                                          color: Color.black,
+                                        },
+                                      ]}>
+                                      {item?.size}
+                                    </Text>
+                                  </View>
+                                  {item?.stock == 0 && (
+                                    <Text style={styles.soldText}>sold</Text>
+                                  )}
+                                </TouchableOpacity>
+                              ),
+                            )}
+                          </View>
                         </View>
-                      </View>
+                        <View style={styles.separator}></View>
+                      </>
                     ) : null}
 
                     {singleData?.variants_list?.age?.length > 0 ? (
@@ -2500,7 +2503,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Color.black,
     fontFamily: Manrope.SemiBold,
-    marginVertical: 10,
   },
   colorOptions: {
     width: '100%',
@@ -2538,7 +2540,6 @@ const styles = StyleSheet.create({
   separator: {
     width: '100%',
     paddingVertical: 5,
-    marginVertical: 10,
     backgroundColor: Color.softGrey,
   },
   sizeContainer: {
@@ -2554,7 +2555,6 @@ const styles = StyleSheet.create({
   sizeOptions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginVertical: 10,
   },
   sizeOption: {
     marginHorizontal: 10,
