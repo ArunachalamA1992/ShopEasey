@@ -171,6 +171,16 @@ const OrderConfirmation = ({navigation, route}) => {
     }
   }, [address]);
 
+  const original_total = selectedData
+    ?.reduce((accumulator, item) => {
+      const price = item?.variant?.offer_price ?? item.variant?.org_price;
+      const priceMargin = countryCode?.price_margin || 1;
+      const quantity = item?.quantity || 0;
+
+      return accumulator + (price / priceMargin) * quantity;
+    }, 0)
+    .toFixed(2);
+
   const Sub_total = selectedData
     ?.reduce((accumulator, item) => {
       const price = item?.variant?.offer_price ?? item.variant?.price;
@@ -1048,7 +1058,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   fontFamily: Manrope.SemiBold,
                   letterSpacing: 0.5,
                 }}>
-                Total
+                Shipping Details
               </Text>
 
               <View
@@ -1067,7 +1077,6 @@ const OrderConfirmation = ({navigation, route}) => {
                     textAlign: 'left',
                     color: Color.cloudyGrey,
                     fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
                   }}>
                   Price ( {selectedData?.length} Items )
                 </Text>
@@ -1077,12 +1086,11 @@ const OrderConfirmation = ({navigation, route}) => {
                     textAlign: 'right',
                     color: Color.black,
                     fontFamily: Manrope.Bold,
-                    letterSpacing: 0.5,
                     paddingHorizontal: 5,
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {Sub_total}
+                  {original_total}
                 </Text>
               </View>
               <View
@@ -1110,12 +1118,44 @@ const OrderConfirmation = ({navigation, route}) => {
                     textAlign: 'right',
                     color: Color.black,
                     fontFamily: Manrope.Bold,
-                    letterSpacing: 0.5,
                     paddingHorizontal: 5,
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
                   {discount_price}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  paddingHorizontal: 10,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingVertical: 3,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    textAlign: 'left',
+                    color: Color.cloudyGrey,
+                    fontFamily: Manrope.Medium,
+                    letterSpacing: 0.5,
+                  }}>
+                  Sub Total ( {selectedData?.length} Items )
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    textAlign: 'right',
+                    color: Color.black,
+                    fontFamily: Manrope.Bold,
+                    letterSpacing: 0.5,
+                    paddingHorizontal: 5,
+                  }}
+                  numberOfLines={2}>
+                  {countryCode?.symbol}
+                  {Sub_total}
                 </Text>
               </View>
               {/* <View
@@ -1219,24 +1259,26 @@ const OrderConfirmation = ({navigation, route}) => {
                   paddingHorizontal: 10,
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  borderColor: Color.lightgrey,
+                  padding: 10,
                 }}>
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 16,
                     textAlign: 'left',
-                    color: Color.cloudyGrey,
-                    fontFamily: Manrope.Medium,
-                    letterSpacing: 0.5,
+                    color: Color.black,
+                    fontFamily: Manrope.Bold,
                   }}>
                   Total Amount
                 </Text>
                 <Text
                   style={{
-                    fontSize: 16,
+                    fontSize: 18,
                     textAlign: 'right',
-                    color: Color.black,
+                    color: Color.primary,
                     fontFamily: Manrope.Bold,
-                    letterSpacing: 0.5,
                     paddingHorizontal: 5,
                   }}
                   numberOfLines={2}>
