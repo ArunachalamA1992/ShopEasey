@@ -60,6 +60,7 @@ import WishList from './Screens/Wishlist/WishList';
 import ForegroundHandler from './Components/pushNotify/ForegroundHandler';
 import {StripeProvider} from '@stripe/stripe-react-native';
 import {Stripe} from './Components/Stripe';
+import NotificationScreen from './Screens/Home/NotificationScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -610,6 +611,30 @@ const MainApp = () => {
           component={OrderConfirmation}
           options={({navigation, route}) => ({
             headerTitle: 'Order Confirmation',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+              color: Color.black,
+              fontSize: 18,
+              fontFamily: Manrope.Bold,
+            },
+            headerStyle: {backgroundColor: Color.white},
+            headerLeft: () => (
+              <View style={{marginHorizontal: 10}}>
+                <Icon
+                  name="arrow-back"
+                  size={30}
+                  color={Color.black}
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="notification"
+          component={NotificationScreen}
+          options={({navigation, route}) => ({
+            headerTitle: 'Notification',
             headerTitleAlign: 'center',
             headerTitleStyle: {
               color: Color.black,

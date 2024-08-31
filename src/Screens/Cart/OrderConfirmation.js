@@ -1283,7 +1283,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {parseFloat(Sub_total) + overall_tax + 10}
+                  {parseFloat(Sub_total + overall_tax + 10).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -1366,7 +1366,7 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {parseFloat(Sub_total) + overall_tax + 10}
+            {parseFloat(Sub_total + overall_tax + 10).toFixed(2)}
           </Text>
         </View>
         <View style={{flex: 1}}>
