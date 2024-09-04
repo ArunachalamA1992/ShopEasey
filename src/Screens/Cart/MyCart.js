@@ -374,13 +374,6 @@ const MyCart = ({}) => {
                 marginTop={10}
                 marginRight={10}
               />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={150}
-                borderRadius={10}
-                marginTop={10}
-                marginRight={10}
-              />
             </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>
@@ -880,8 +873,7 @@ const MyCart = ({}) => {
                       fontFamily: Manrope.Bold,
                     }}
                     numberOfLines={1}>
-                    {countryCode?.symbol}
-                    {parseFloat(total_price)}
+                    {countryCode?.symbol} {parseFloat(total_price).toFixed(2)}
                   </Text>
                 </View>
                 <View

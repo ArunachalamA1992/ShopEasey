@@ -71,6 +71,9 @@ const HomeScreen = () => {
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [latestProducts, setLatestProduct] = useState([]);
   const [FeaturedProducts, setFeaturedProducts] = useState([]);
+  const [FeaturedloadMore, setFeaturedLoadMore] = useState(false);
+  const [FeaturedPage, setFeaturedPage] = useState(1);
+  const [FeaturedendReached, setFeaturedEndReached] = useState(false);
   const [loading, setLoading] = useState(false);
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
@@ -206,6 +209,20 @@ const HomeScreen = () => {
     {id: 9, title: 'Featured Product', data: ['Featured Product']},
     {id: 10, title: 'Latest Product', data: ['Latest Product']},
   ]);
+
+  const [FeaturedVisibleData, setFeaturedVisibleData] = useState(
+    FeaturedProducts.slice(0, 4),
+  );
+  const [FeaturedShowLoadMore, setFeaturedShowLoadMore] = useState(
+    FeaturedProducts.length > 4,
+  );
+
+  const loadFeaturedMoreItems = () => {
+    const currentLength = FeaturedVisibleData.length;
+    const nextBatch = FeaturedProducts.slice(currentLength, currentLength + 8);
+    setFeaturedVisibleData([...FeaturedVisibleData, ...nextBatch]);
+    setFeaturedShowLoadMore(currentLength + 8 < FeaturedProducts.length);
+  };
 
   const [visibleData, setVisibleData] = useState(products.slice(0, 4));
   const [showLoadMore, setShowLoadMore] = useState(products.length > 4);
@@ -395,6 +412,8 @@ const HomeScreen = () => {
         token,
       );
       setFeaturedProducts(fetured_products?.data);
+      setFeaturedVisibleData(fetured_products?.data?.slice(0, 4));
+      setFeaturedShowLoadMore(fetured_products?.data?.length > 4);
 
       //banner
       var banner_data = `seller=home_page`;
@@ -445,6 +464,29 @@ const HomeScreen = () => {
       console.error('Error fetching data:', error);
     } finally {
       setLoadMore(false);
+    }
+  };
+
+  const featuredLoadMoreData = async () => {
+    if (FeaturedloadMore || FeaturedendReached) {
+      return;
+    }
+    setFeaturedLoadMore(true);
+    try {
+      const nextPage = FeaturedPage + 1;
+      var data = `is_featured=1&page=${nextPage}`;
+      const response = await fetchData.list_products(data, token);
+      if (response?.data.length > 0) {
+        setFeaturedPage(nextPage);
+        const updatedData = [...FeaturedProducts, ...response?.data];
+        setFeaturedProducts(updatedData);
+      } else {
+        setFeaturedEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setFeaturedLoadMore(false);
     }
   };
 
@@ -580,14 +622,14 @@ const HomeScreen = () => {
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
               style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{flex: 1}}>
-                <SkeletonPlaceholder.Item
-                  width={180}
-                  height={20}
-                  borderRadius={10}
-                  marginTop={10}
-                />
-              </View>
+              {/* <View style={{flex: 1}}> */}
+              <SkeletonPlaceholder.Item
+                width={180}
+                height={20}
+                borderRadius={10}
+                marginTop={10}
+              />
+              {/* </View> */}
               <SkeletonPlaceholder.Item
                 width={30}
                 height={30}
@@ -872,42 +914,6 @@ const HomeScreen = () => {
               borderRadius={10}
               marginTop={20}
             />
-            <SkeletonPlaceholder.Item
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 10,
-              }}>
-              <SkeletonPlaceholder.Item
-                width={'50%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-                marginHorizontal={10}
-              />
-              <SkeletonPlaceholder.Item
-                width={'50%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-                marginHorizontal={10}
-              />
-            </SkeletonPlaceholder.Item>
-            <SkeletonPlaceholder.Item
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 20,
-              }}>
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={180}
-                borderRadius={10}
-                marginTop={10}
-              />
-            </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>
       ) : (
@@ -1897,7 +1903,7 @@ const HomeScreen = () => {
                             }}>
                             Featured Products
                           </Text>
-                          <TouchableOpacity
+                          {/* <TouchableOpacity
                             onPress={() => {
                               navigation.navigate('viewProducts', {
                                 key: 'featured',
@@ -1912,21 +1918,40 @@ const HomeScreen = () => {
                               }}>
                               View All
                             </Text>
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </View>
                         <FlatList
-                          data={FeaturedProducts}
-                          horizontal
+                          data={FeaturedVisibleData}
+                          numColumns={2}
                           showsHorizontalScrollIndicator={false}
                           renderItem={({item, index}) => {
                             return (
-                              <ItemCardHorizontal
-                                item={item}
-                                navigation={navigation}
-                              />
+                              <ItemCard item={item} navigation={navigation} />
                             );
                           }}
+                          onEndReached={() => {
+                            featuredLoadMoreData();
+                          }}
+                          onEndReachedThreshold={3}
                         />
+                        {FeaturedShowLoadMore && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              loadFeaturedMoreItems();
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                fontFamily: Manrope.Bold,
+                                color: Color.primary,
+                                marginHorizontal: 5,
+                                textDecorationLine: 'underline',
+                                textAlign: 'center',
+                              }}>
+                              See more
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                       </View>
                     )
                   );

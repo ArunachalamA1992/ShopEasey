@@ -280,7 +280,7 @@ const WishList = ({navigation}) => {
                       style={styles.locationView}
                       start={{x: 0, y: 0}}
                       end={{x: 1, y: 0}}
-                      colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
+                      colors={['#1D1D1D78', '#1D1D1D4F']}>
                       <View
                         style={{
                           flexDirection: 'row',

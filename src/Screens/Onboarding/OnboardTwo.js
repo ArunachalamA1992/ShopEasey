@@ -18,7 +18,6 @@ import {setOnBoardVisible} from '../../Redux';
 
 const OnboardTwo = () => {
   const navigation = useNavigation();
-  console.log('navigation.replace', navigation.replace);
   const dispatch = useDispatch();
 
   return (
@@ -226,7 +225,7 @@ const OnboardTwo = () => {
             iconstyle={{color: Color.white, paddingHorizontal: 5}}
           />
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             height: 50,
             marginVertical: 10,
@@ -252,7 +251,7 @@ const OnboardTwo = () => {
             }}>
             Continue as guest
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

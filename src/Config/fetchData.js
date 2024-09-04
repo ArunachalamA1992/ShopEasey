@@ -140,7 +140,7 @@ export default {
     return api.getMethod(url, token);
   },
   verify_pay: (data, token, header) => {
-    let url = api_name + 'orders/verify';
+    let url = api_name + 'orders/verify-v2';
     return api.postMethod(url, data, token, header);
   },
   update_order: (param, data, token) => {

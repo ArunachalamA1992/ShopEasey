@@ -70,8 +70,7 @@ const OrderConfirmation = ({navigation, route}) => {
   };
 
   var selectedData = ids?.length > 0 ? OrderData : CheckOut;
-
-  const [isExpanded, setIsExpanded] = useState(selectedData?.length == 1);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const [paymentMethod] = useState([
     {
@@ -165,11 +164,14 @@ const OrderConfirmation = ({navigation, route}) => {
   };
 
   useEffect(() => {
+    if (selectedData?.length == 1) {
+      setIsExpanded(true);
+    }
     if (address.length > 0) {
       const defaultAddress = address.find(item => item?.is_default === 1);
       setSelectAddress(defaultAddress || address[0]);
     }
-  }, [address]);
+  }, [address, selectedData]);
 
   const original_total = selectedData
     ?.reduce((accumulator, item) => {
@@ -317,7 +319,7 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const postOrder = async () => {
     try {
-      const total_price = parseFloat(Sub_total) + overall_tax + 10;
+      const total_price = parseInt(Sub_total) + overall_tax + 10;
       const data = {
         total: total_price,
         payment_method:
@@ -398,6 +400,7 @@ const OrderConfirmation = ({navigation, route}) => {
           payment_id: razorpay_payment_id,
           orders: post_order?.orders,
         };
+
         const placeOrder = await fetchData.verify_pay(
           data,
           token,
@@ -612,7 +615,9 @@ const OrderConfirmation = ({navigation, route}) => {
               </Text>
               <Iconviewcomponent
                 Icontag={'Entypo'}
-                iconname={'chevron-small-down'}
+                iconname={
+                  isExpanded ? 'chevron-small-up' : 'chevron-small-down'
+                }
                 icon_size={25}
                 icon_color={Color.black}
               />
@@ -821,7 +826,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   );
                 })}
 
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     marginVertical: 10,
@@ -846,9 +851,8 @@ const OrderConfirmation = ({navigation, route}) => {
                       fontFamily: Manrope.SemiBold,
                     }}>
                     Delivery by tomorrow,
-                    {/* Free Delivery */}
                   </Text>
-                </View>
+                </View> */}
               </View>
             ) : null}
           </View>
@@ -1283,7 +1287,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {parseFloat(Sub_total) + overall_tax + 10}
+                  {parseInt(Sub_total) + overall_tax + 10}
                 </Text>
               </View>
             </View>
@@ -1366,7 +1370,7 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {parseFloat(Sub_total) + overall_tax + 10}
+            {parseInt(Sub_total) + overall_tax + 10}
           </Text>
         </View>
         <View style={{flex: 1}}>

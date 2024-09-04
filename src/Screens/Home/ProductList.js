@@ -20,9 +20,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {setDataCount} from '../../Redux';
 import FilterModal from '../../Components/Filter/FilterModal';
+import {useNavigation} from '@react-navigation/native';
 
 const {height} = Dimensions.get('screen');
-const ProductList = ({route, navigation}) => {
+const ProductList = ({route}) => {
+  const navigation = useNavigation();
   const [category_id] = useState(route.params.category_id);
   const [param] = useState(route.params.param, category_id);
   const [selectedCategory, setSelectedCategory] = useState([]);
@@ -103,7 +105,7 @@ const ProductList = ({route, navigation}) => {
       if (param && param.trim() !== '') {
         query += `&${param}`;
       }
-
+      console.log('query', query);
       const product_data = await fetchData.list_products(query, token);
       setProducts(product_data?.data);
     } catch (error) {
@@ -236,7 +238,7 @@ const ProductList = ({route, navigation}) => {
         <TouchableOpacity
           style={{marginRight: 10, padding: 5}}
           onPress={() => {
-            navigation.navigate('MyCartTab');
+            navigation.navigate('MyCart');
           }}>
           {cart != 0 ? (
             <Badge
@@ -295,23 +297,6 @@ const ProductList = ({route, navigation}) => {
                 borderRadius={10}
                 marginTop={10}
                 marginRight={10}
-              />
-            </SkeletonPlaceholder.Item>
-            <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <SkeletonPlaceholder.Item
-                width={'45%'}
-                height={200}
-                borderRadius={10}
-                marginTop={10}
-                marginHorizontal={10}
-              />
-              <SkeletonPlaceholder.Item
-                width={'45%'}
-                height={200}
-                borderRadius={10}
-                marginTop={10}
-                marginHorizontal={10}
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item

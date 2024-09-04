@@ -161,7 +161,7 @@ const ItemCard = props => {
             style={styles.locationView}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
+            colors={['#1D1D1D78', '#1D1D1D4F']}>
             <View
               style={{
                 flex: 1,
@@ -408,7 +408,7 @@ export const ItemCardHorizontal = props => {
           style={styles.locationView}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 0}}
-          colors={['#1D1D1D78', '#1D1D1D4F', '#1D1D1D08']}>
+          colors={['#1D1D1D78', '#1D1D1D4F']}>
           <Octicons name="location" size={15} color={Color.white} />
           <Text style={styles.locationText}>{item?.vendor?.country}</Text>
         </LinearGradient>

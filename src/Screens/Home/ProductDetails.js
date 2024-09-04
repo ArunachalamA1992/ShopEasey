@@ -33,8 +33,10 @@ import {setCountryCode, setDataCount} from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Share from 'react-native-share';
+import {useNavigation} from '@react-navigation/native';
 
-const ProductDetails = ({route, navigation}) => {
+const ProductDetails = ({route}) => {
+  const navigation = useNavigation();
   const {id, variant_id} = route.params;
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -51,7 +53,7 @@ const ProductDetails = ({route, navigation}) => {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [followStatus, setFollowStatus] = useState('Follow');
+  const [followStatus, setFollowStatus] = useState(false);
 
   useEffect(() => {
     setSelectedColor(singleData?.color);
@@ -65,7 +67,6 @@ const ProductDetails = ({route, navigation}) => {
   const getCountryData = async () => {
     try {
       const countryData = await AsyncStorage.getItem('countryData');
-      console.log('countryData', countryData);
       if (countryData === null) {
         navigation.replace('OnboardScreen');
         return;
@@ -183,7 +184,7 @@ const ProductDetails = ({route, navigation}) => {
   );
 
   const [defaultRating, setDefaultRating] = useState(0);
-  console.log('defaultRating', defaultRating);
+
   useEffect(() => {
     const rating = parseFloat(reviewsData?.rating || '0');
     setDefaultRating(rating);
@@ -303,6 +304,11 @@ const ProductDetails = ({route, navigation}) => {
       const reviewData = await fetchData.get_review(review_data, token);
       setReviewsData(reviewData);
       setVisibleData(reviewData?.data?.slice(0, 4));
+      //seller Data
+
+      var data = `vendor_id=${singleData?.product?.vendor?.id}`;
+      const getdata = await fetchData.seller_list(data, token);
+      setFollowStatus(getdata?.data?.[0]?.is_follow);
       setLoading(false);
     } catch (error) {
       console.log('error', error);
@@ -325,10 +331,10 @@ const ProductDetails = ({route, navigation}) => {
     try {
       var param = `${id}`;
       const setFollow = await fetchData.post_follow(param, {}, token);
-      if (setFollow.status == true) {
-        setFollowStatus('Follow');
+      if (setFollow.status?.message == 'Follow successful') {
+        setFollowStatus(true);
       } else {
-        setFollowStatus('UnFollow');
+        setFollowStatus(false);
       }
       getData();
       common_fn.showToast(setFollow?.message);
@@ -376,9 +382,9 @@ const ProductDetails = ({route, navigation}) => {
         };
         const add_to_cart = await fetchData.add_to_cart(data, token);
         if (add_to_cart?.status == true) {
-          if (singleData?.is_wishlisted == true) {
-            toggle_WishList(singleData);
-          }
+          // if (singleData?.is_wishlisted == true) {
+          //   toggle_WishList(singleData);
+          // }
           common_fn.showToast(add_to_cart?.message);
           setModalVisible(false);
           getCountData();
@@ -518,19 +524,6 @@ const ProductDetails = ({route, navigation}) => {
     }
   };
 
-  // const share_product = async id => {
-  //   const jobDeepLink = `https://shopeasey.com/product/${id}?id=${singleData?.id}`;
-
-  //   const options = {
-  //     title: singleData?.product_name,
-  //     message: `Check out this Product: ${jobDeepLink}`,
-  //   };
-  //   try {
-  //     await Share.share(options);
-  //   } catch (error) {
-  //     console.error(error.message);
-  //   }
-  // };
   const share_product = async item => {
     try {
       const image_url = singleData?.productImages?.[0]?.image;
@@ -1773,7 +1766,7 @@ const ProductDetails = ({route, navigation}) => {
                         flex: 3,
                         justifyContent: 'center',
                         alignItems: 'flex-start',
-                        marginLeft: 10,
+                        marginLeft: 15,
                       }}>
                       <Text
                         style={{
@@ -1885,7 +1878,7 @@ const ProductDetails = ({route, navigation}) => {
                             View Shop
                           </Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity
+                        <TouchableOpacity
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -1910,9 +1903,9 @@ const ProductDetails = ({route, navigation}) => {
                               fontFamily: Manrope.Bold,
                               marginHorizontal: 5,
                             }}>
-                            {followStatus}
+                            {followStatus ? 'Following' : 'Follow'}
                           </Text>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>

@@ -224,7 +224,7 @@ const AddAddress = ({route}) => {
     try {
       const nextPage = statePage + 1;
       var data = 'page=' + nextPage;
-      const response = await fetchData.get_state_data(data, token);
+      const response = await fetchData.get_state_data(``, token);
 
       if (response?.data.length > 0) {
         const newData = response?.data;
@@ -236,7 +236,7 @@ const AddAddress = ({route}) => {
         ) {
           setStateEndReached(true);
         } else {
-          setStatePage(nextPage);
+          // setStatePage(nextPage);
           const updatedData = [...stateData, ...newData];
           setStateData(updatedData);
         }
@@ -249,7 +249,7 @@ const AddAddress = ({route}) => {
       setStateLoadMore(false);
     }
   };
-
+  console.log('selectState?.state_id', selectState?.state_id);
   const loadMoreCityData = async () => {
     if (cityloadMore || cityendReached) {
       return;
@@ -257,10 +257,10 @@ const AddAddress = ({route}) => {
     setCityLoadMore(true);
     try {
       const nextPage = cityPage + 1;
-      var data = `state_id=${selectState?.state_id}&page=${nextPage}`;
+      var data = `state_id=${selectState?.state_id}`;
       const response = await fetchData.get_state_data(data, token);
       if (response?.data.length > 0) {
-        setCityPage(nextPage);
+        // setCityPage(nextPage);
         const updatedData = [...cityData, ...response?.data];
         setCityData(updatedData);
       } else {
@@ -367,10 +367,10 @@ const AddAddress = ({route}) => {
                             </TouchableOpacity>
                           );
                         }}
-                        onEndReached={() => {
-                          loadMoreStateData();
-                        }}
-                        onEndReachedThreshold={3}
+                        // onEndReached={() => {
+                        //   loadMoreStateData();
+                        // }}
+                        // onEndReachedThreshold={3}
                       />
                     </View>
                   ) : null}
@@ -421,10 +421,10 @@ const AddAddress = ({route}) => {
                             </TouchableOpacity>
                           );
                         }}
-                        onEndReached={() => {
-                          loadMoreCityData();
-                        }}
-                        onEndReachedThreshold={3}
+                        // onEndReached={() => {
+                        //   loadMoreCityData();
+                        // }}
+                        // onEndReachedThreshold={3}
                       />
                     </View>
                   ) : null}
@@ -493,6 +493,9 @@ const AddAddress = ({route}) => {
               Mobile Number *
             </Text>
             <View style={styles.NumberBoxConatiner}>
+              <Text style={styles.numberCountryCode}>
+                {countryCode?.mobile_prefix}
+              </Text>
               <TextInput
                 style={styles.numberTextBox}
                 placeholder="Enter Your Phone Number"

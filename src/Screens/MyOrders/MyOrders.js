@@ -99,12 +99,6 @@ const Placed = ({token, index, navigation}) => {
                 borderRadius={10}
                 marginTop={10}
               />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
             </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>
@@ -419,12 +413,6 @@ const Missing = ({token, index, navigation}) => {
         <View style={{padding: 10}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
               <SkeletonPlaceholder.Item
                 width={'100%'}
                 height={100}
@@ -835,12 +823,6 @@ const Pending = ({token, index, navigation}) => {
                 borderRadius={10}
                 marginTop={10}
               />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
             </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>
@@ -1203,12 +1185,6 @@ const Proccesed = ({token, index, navigation}) => {
                 borderRadius={10}
                 marginTop={10}
               />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
             </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>
@@ -1521,12 +1497,6 @@ const OnShipping = ({token, index, navigation}) => {
         <View style={{padding: 10}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
               <SkeletonPlaceholder.Item
                 width={'100%'}
                 height={100}
@@ -1936,12 +1906,6 @@ const ArrivedOrders = ({token, index, navigation}) => {
                 borderRadius={10}
                 marginTop={10}
               />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
             </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>
@@ -2255,12 +2219,6 @@ const CancelledOrders = ({token, index, navigation}) => {
         <View style={{padding: 5}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
               <SkeletonPlaceholder.Item
                 width={'100%'}
                 height={100}
@@ -2696,25 +2654,9 @@ const MyOrders = ({navigation}) => {
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
-                style={{flexDirection: 'row', alignItems: 'center'}}>
-                <SkeletonPlaceholder.Item
-                  width={'80%'}
-                  height={50}
-                  borderRadius={10}
-                />
-                <SkeletonPlaceholder.Item
-                  width={'20%'}
-                  height={50}
-                  borderRadius={10}
-                  marginHorizontal={10}
-                />
-              </SkeletonPlaceholder.Item>
-
-              <SkeletonPlaceholder.Item
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginTop: 20,
                 }}>
                 <SkeletonPlaceholder.Item
                   width={120}

@@ -118,24 +118,6 @@ const CategoryScreen = ({navigation}) => {
                 borderRadius={10}
                 marginTop={10}
               />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
             </SkeletonPlaceholder.Item>
           </SkeletonPlaceholder>
         </View>

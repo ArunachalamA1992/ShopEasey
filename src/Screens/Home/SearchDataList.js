@@ -61,7 +61,6 @@ const SearchDataList = ({navigation, route}) => {
 
   const getData = useCallback(async () => {
     try {
-      setLoading(true);
       var data = `${selectData?.type}=${selectData?.value}`;
       const Product_list = await fetchData.list_products(data, token);
       setProductData(Product_list?.data);
@@ -70,19 +69,23 @@ const SearchDataList = ({navigation, route}) => {
     } finally {
       setLoading(false);
     }
-  }, [searchProduct, token]);
+  }, [searchProduct]);
 
   useEffect(() => {
     getData();
-  }, [token]);
+  }, [token, getData]);
 
-  const handleSearch = async () => {
+  const handleSearch = async item => {
     try {
       setLoading(true);
-      const data = `filter=${searchProduct}&page=1&limit=10`;
+      setProductSuggestions({
+        data: [],
+        visible: false,
+      });
+      getData();
+      const data = `filter=${item?.keyword}&page=1&limit=10`;
       const get_search_data = await fetchData.search(data, token);
       setSearchModalVisible(false);
-      getData();
     } catch (error) {
       console.log(`error`, error);
     }
@@ -153,7 +156,65 @@ const SearchDataList = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      <View style={styles.searchModal}>
+        <Searchbar
+          placeholder="Search Products"
+          placeholderTextColor={Color.grey}
+          style={styles.searchView}
+          value={searchProduct}
+          iconColor={Color.grey}
+          inputStyle={{color: Color.black}}
+          onChangeText={search => {
+            const sanitizedSearch = search.replace(/[^a-zA-Z0-9\s]/g, '');
+            propertySearch(sanitizedSearch);
+          }}
+        />
+
+        {ProductSuggestions?.visible == true && (
+          <View
+            style={{
+              maxHeight: 200,
+              padding: 10,
+              backgroundColor: Color.white,
+              elevation: 3,
+              borderRadius: 5,
+              marginTop: 5,
+            }}>
+            <FlatList
+              data={ProductSuggestions?.data}
+              keyExtractor={(item, index) => item + index}
+              renderItem={({item, index}) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      setSearchProduct(item?.keyword);
+                      setSelectData(item);
+                      handleSearch(item);
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontFamily: Manrope.Medium,
+                        color: Color.black,
+                      }}>
+                      {item?.keyword}
+                    </Text>
+                    {index < ProductSuggestions?.data.length - 1 && (
+                      <Divider style={{height: 1, marginVertical: 5}} />
+                    )}
+                  </TouchableOpacity>
+                );
+              }}
+              onEndReached={() => {
+                loadSearchMoreData();
+              }}
+              onEndReachedThreshold={3}
+            />
+          </View>
+        )}
+      </View>
+      {/* <TouchableOpacity
         onPress={() => setSearchModalVisible(true)}
         activeOpacity={0.7}
         style={{
@@ -180,17 +241,11 @@ const SearchDataList = ({navigation, route}) => {
           {`Search for ${searchProduct}`}
         </Text>
         <VoiceSearch onSearch={handleVoiceSearch} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {loading ? (
         <View style={{padding: 10}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
-              <SkeletonPlaceholder.Item
-                width={'100%'}
-                height={100}
-                borderRadius={10}
-                marginTop={10}
-              />
               <SkeletonPlaceholder.Item
                 width={'100%'}
                 height={100}
@@ -302,113 +357,6 @@ const SearchDataList = ({navigation, route}) => {
           }}
         />
       )}
-      <Modal
-        visible={isSearchModalVisible}
-        transparent={true}
-        animationType={'fade'}>
-        <Pressable
-          style={{
-            backgroundColor: Color.transparantBlack,
-            flex: 1,
-            alignItems: 'flex-end',
-            justifyContent: 'flex-end',
-          }}
-          onPress={() => setSearchModalVisible(false)}
-        />
-        <View style={styles.searchModal}>
-          {/* <Text
-            style={{
-              fontSize: 14,
-              fontFamily: Manrope.Medium,
-              color: Color.cloudyGrey,
-              marginVertical: 5,
-            }}>
-            Enter Product Data
-          </Text> */}
-          <Searchbar
-            placeholder="Search Products"
-            placeholderTextColor={Color.grey}
-            style={styles.searchView}
-            value={searchProduct}
-            iconColor={Color.grey}
-            inputStyle={{color: Color.black}}
-            onChangeText={search => {
-              const sanitizedSearch = search.replace(/[^a-zA-Z0-9\s]/g, '');
-              propertySearch(sanitizedSearch);
-            }}
-          />
-
-          {ProductSuggestions?.visible == true && (
-            <View
-              style={{
-                maxHeight: 200,
-                padding: 10,
-                backgroundColor: Color.white,
-                elevation: 3,
-                borderRadius: 5,
-                marginTop: 5,
-              }}>
-              <FlatList
-                data={ProductSuggestions?.data}
-                keyExtractor={(item, index) => item + index}
-                renderItem={({item, index}) => {
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => {
-                        setSearchProduct(item?.keyword);
-                        setSelectData(item);
-                        setProductSuggestions({
-                          data: [],
-                          visible: false,
-                        });
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontFamily: Manrope.Medium,
-                          color: Color.black,
-                        }}>
-                        {item?.keyword}
-                      </Text>
-                      {index < ProductSuggestions?.data.length - 1 && (
-                        <Divider style={{height: 1, marginVertical: 5}} />
-                      )}
-                    </TouchableOpacity>
-                  );
-                }}
-                onEndReached={() => {
-                  loadSearchMoreData();
-                }}
-                onEndReachedThreshold={3}
-              />
-            </View>
-          )}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}>
-            <Button
-              mode="contained"
-              onPress={() => {
-                setSearchModalVisible(false);
-              }}
-              style={styles.searchButton}>
-              cancel
-            </Button>
-            <Button
-              mode="contained"
-              onPress={() => {
-                handleSearch();
-              }}
-              style={styles.searchButton}>
-              Search
-            </Button>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -430,8 +378,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    padding: 20,
   },
   searchButton: {
     marginVertical: 10,
