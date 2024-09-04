@@ -749,19 +749,20 @@ const MyCart = ({}) => {
                           onPress={() => {
                             updateCartData(item?.id, 'plus', item?.quantity);
                           }}
-                          disabled={item?.quantity >= item?.variant?.stock}
+                          disabled={item?.quantity === item?.variant?.stock}
                           style={{
-                            // flex: 1,
                             justifyContent: 'center',
                             alignItems: 'center',
                             padding: 5,
                             paddingHorizontal: 10,
                             backgroundColor:
-                              item?.quantity == item?.variant?.stock
+                              item?.quantity === item?.variant?.stock
                                 ? Color.lightgrey
                                 : Color.white,
                             borderLeftWidth: 1,
                             borderLeftColor: Color.cloudyGrey,
+                            opacity:
+                              item?.quantity === item?.variant?.stock ? 0.5 : 1,
                           }}>
                           <Iconviewcomponent
                             Icontag={'AntDesign'}

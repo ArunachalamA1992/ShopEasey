@@ -207,7 +207,7 @@ const ProductDetails = ({route}) => {
   ).toFixed(2);
 
   const currentDate = moment();
-  const yourDate = moment(singleData?.updated_at);
+  const yourDate = moment(singleData?.created_at);
 
   useEffect(() => {
     const daysAgo = currentDate.diff(yourDate, 'days');
@@ -353,7 +353,7 @@ const ProductDetails = ({route}) => {
       var like_this_param = `category_id=${singleData?.product?.category_id}`;
       const like_this_data = await fetchData.list_products(
         like_this_param,
-        token,
+        null,
       );
       setCategories_data(like_this_data?.data);
     } catch (error) {
@@ -1322,12 +1322,6 @@ const ProductDetails = ({route}) => {
                                     ]}
                                     onPress={() => handleAgePress(item)}
                                     disabled={item?.stock == 0}>
-                                    <View
-                                      style={[
-                                        styles.colorView,
-                                        {backgroundColor: item?.age},
-                                      ]}
-                                    />
                                     <Text
                                       style={[
                                         styles.colorNameText,
@@ -1375,12 +1369,6 @@ const ProductDetails = ({route}) => {
                                     ]}
                                     onPress={() => handleGenderPress(item)}
                                     disabled={item?.stock == 0}>
-                                    <View
-                                      style={[
-                                        styles.colorView,
-                                        {backgroundColor: item?.gender},
-                                      ]}
-                                    />
                                     <Text
                                       style={[
                                         styles.colorNameText,
@@ -1428,12 +1416,6 @@ const ProductDetails = ({route}) => {
                                     ]}
                                     onPress={() => handleMaterialPress(item)}
                                     disabled={item?.stock == 0}>
-                                    <View
-                                      style={[
-                                        styles.colorView,
-                                        {backgroundColor: item?.material},
-                                      ]}
-                                    />
                                     <Text
                                       style={[
                                         styles.colorNameText,
@@ -1917,14 +1899,16 @@ const ProductDetails = ({route}) => {
                     padding: 10,
                     marginTop: 10,
                   }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: Color.black,
-                      fontFamily: Manrope.SemiBold,
-                    }}>
-                    Product Details
-                  </Text>
+                  {singleData?.product?.features != null && (
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: Color.black,
+                        fontFamily: Manrope.SemiBold,
+                      }}>
+                      Product Details
+                    </Text>
+                  )}
                   {singleData?.product?.features != null &&
                     singleData?.product?.features?.map((item, index) => {
                       return (
@@ -2301,140 +2285,164 @@ const ProductDetails = ({route}) => {
               </View>
             </ScrollView>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginHorizontal: 10,
-            }}>
-            <TouchableOpacity
-              activeOpacity={0.5}
+          {singleData?.status == 1 && singleData?.stock > 0 ? (
+            <View
               style={{
-                width: '50%',
-                height: 50,
-                bottom: 10,
-                marginHorizontal: 5,
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
-                borderRadius: 5,
-                backgroundColor: Color.white,
-                borderWidth: 1,
-                borderColor: Color.lightBlack,
-              }}
-              onPress={() => {
-                if (singleData?.stock == 0) {
-                } else {
-                  if (singleData?.in_cart) {
-                    navigation.navigate('MyCartTab');
+                marginHorizontal: 10,
+              }}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={{
+                  width: '50%',
+                  height: 50,
+                  bottom: 10,
+                  marginHorizontal: 5,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 5,
+                  backgroundColor: Color.white,
+                  borderWidth: 1,
+                  borderColor: Color.lightBlack,
+                }}
+                onPress={() => {
+                  if (singleData?.stock == 0) {
                   } else {
-                    if (token != undefined) {
-                      setAdd_cart();
+                    if (singleData?.in_cart) {
+                      navigation.navigate('MyCartTab');
                     } else {
-                      navigation.navigate('Auth');
+                      if (token != undefined) {
+                        setAdd_cart();
+                      } else {
+                        navigation.navigate('Auth');
+                      }
                     }
                   }
-                }
-              }}>
-              <Iconviewcomponent
-                Icontag={'AntDesign'}
-                iconname={'shoppingcart'}
-                icon_size={20}
-                icon_color={Color.black}
-              />
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: Color.black,
-                  fontFamily: Manrope.SemiBold,
-                  letterSpacing: 0.5,
-                  paddingHorizontal: 10,
                 }}>
-                {singleData?.stock == 0
-                  ? 'Notify Me'
-                  : singleData?.in_cart
-                  ? `Go to Cart`
-                  : `Add to Cart`}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={{
-                width: '50%',
-                height: 50,
-                bottom: 10,
-                marginHorizontal: 5,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 5,
-                backgroundColor:
-                  singleData?.stock == 0 ? Color.lightgrey : Color.primary,
-              }}
-              disabled={singleData?.stock == 0}
-              onPress={() => {
-                if (token != undefined) {
-                  if (addressData > 0) {
-                    setBuyNow();
-                  } else {
-                    navigation.navigate('AddAddress', {
-                      item: {},
-                      CheckOut: [
-                        {
-                          quantity: 1,
-                          product: singleData?.product,
-                          variant: {
-                            id: singleData?.id,
-                            product_id: singleData?.product_id,
-                            size: singleData?.size,
-                            color: singleData?.color,
-                            color_code: singleData?.color_code,
-                            color_group: singleData?.color_group,
-                            material: singleData?.material,
-                            package_unit: singleData?.package_unit,
-                            package_content: singleData?.package_content,
-                            package_weight: singleData?.package_weight,
-                            org_price: singleData?.org_price,
-                            price: singleData?.price,
-                            stock: singleData?.stock,
-                            sold: singleData?.sold,
-                            status: singleData?.status,
-                            created_at: singleData?.created_at,
-                            updated_at: singleData?.updated_at,
-                            is_wishlisted: singleData?.is_wishlisted,
-                            in_cart: singleData?.in_cart,
-                            productImages: singleData?.productImages,
-                            offer: singleData?.offer,
+                <Iconviewcomponent
+                  Icontag={'AntDesign'}
+                  iconname={'shoppingcart'}
+                  icon_size={20}
+                  icon_color={Color.black}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: Color.black,
+                    fontFamily: Manrope.SemiBold,
+                    letterSpacing: 0.5,
+                    paddingHorizontal: 10,
+                  }}>
+                  {singleData?.stock == 0
+                    ? 'Notify Me'
+                    : singleData?.in_cart
+                    ? `Go to Cart`
+                    : `Add to Cart`}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={{
+                  width: '50%',
+                  height: 50,
+                  bottom: 10,
+                  marginHorizontal: 5,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 5,
+                  backgroundColor:
+                    singleData?.stock == 0 ? Color.lightgrey : Color.primary,
+                }}
+                disabled={singleData?.stock == 0}
+                onPress={() => {
+                  if (token != undefined) {
+                    if (addressData > 0) {
+                      setBuyNow();
+                    } else {
+                      navigation.navigate('AddAddress', {
+                        item: {},
+                        CheckOut: [
+                          {
+                            quantity: 1,
+                            product: singleData?.product,
+                            variant: {
+                              id: singleData?.id,
+                              product_id: singleData?.product_id,
+                              size: singleData?.size,
+                              color: singleData?.color,
+                              color_code: singleData?.color_code,
+                              color_group: singleData?.color_group,
+                              material: singleData?.material,
+                              package_unit: singleData?.package_unit,
+                              package_content: singleData?.package_content,
+                              package_weight: singleData?.package_weight,
+                              org_price: singleData?.org_price,
+                              price: singleData?.price,
+                              stock: singleData?.stock,
+                              sold: singleData?.sold,
+                              status: singleData?.status,
+                              created_at: singleData?.created_at,
+                              updated_at: singleData?.updated_at,
+                              is_wishlisted: singleData?.is_wishlisted,
+                              in_cart: singleData?.in_cart,
+                              productImages: singleData?.productImages,
+                              offer: singleData?.offer,
+                            },
+                            tax: singleData?.tax,
                           },
-                          tax: singleData?.tax,
-                        },
-                      ],
-                      status: 'ADD',
-                    });
+                        ],
+                        status: 'ADD',
+                      });
+                    }
+                  } else {
+                    navigation.navigate('Auth');
                   }
-                } else {
-                  navigation.navigate('Auth');
-                }
-              }}>
-              <Iconviewcomponent
-                Icontag={'Feather'}
-                iconname={'shopping-bag'}
-                icon_size={20}
-                icon_color={Color.white}
-              />
+                }}>
+                <Iconviewcomponent
+                  Icontag={'Feather'}
+                  iconname={'shopping-bag'}
+                  icon_size={20}
+                  icon_color={Color.white}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: Color.white,
+                    fontFamily: Manrope.SemiBold,
+                    letterSpacing: 0.5,
+                    paddingHorizontal: 10,
+                  }}>
+                  Buy Now
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : singleData?.stock == 0 ? (
+            <View style={{padding: 10, alignItems: 'center'}}>
               <Text
                 style={{
-                  fontSize: 14,
-                  color: Color.white,
+                  color: Color.black,
+                  fontSize: 16,
                   fontFamily: Manrope.SemiBold,
-                  letterSpacing: 0.5,
-                  paddingHorizontal: 10,
                 }}>
-                Buy Now
+                This product is currently Unavailable
               </Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+          ) : (
+            <View style={{padding: 10, alignItems: 'center'}}>
+              <Text
+                style={{
+                  color: Color.black,
+                  fontSize: 16,
+                  fontFamily: Manrope.SemiBold,
+                }}>
+                This product is not available for your region
+              </Text>
+            </View>
+          )}
         </>
       )}
     </View>

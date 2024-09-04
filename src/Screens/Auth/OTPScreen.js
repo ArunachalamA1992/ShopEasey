@@ -126,6 +126,7 @@ const OTPScreen = ({route, AppState}) => {
       var data = {
         otp: otpCode,
         region_id: countryCode?.id,
+        fcm_token: token,
       };
       if (isEmail(number)) {
         data.email = number;

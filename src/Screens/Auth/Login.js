@@ -14,6 +14,7 @@ import {Manrope} from '../../Global/FontFamily';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import {StackActions, useNavigation} from '@react-navigation/native';
 import {Media} from '../../Global/Media';
+import messaging from '@react-native-firebase/messaging';
 
 import {
   GoogleSignin,
@@ -31,6 +32,7 @@ const Login = () => {
   const [number, setNumber] = useState('');
   const [error, setError] = useState(false);
   const [loginType, setLoginType] = useState('');
+  const [token, setToken] = useState('');
   const dispatch = useDispatch();
 
   const isEmail = input => {
@@ -51,10 +53,32 @@ const Login = () => {
           '573868691501-50tudos3b49fgfjar4q841sjmhmmm12e.apps.googleusercontent.com',
         offlineAccess: false,
       });
+      getFCMToken();
     } catch (error) {
       console.log('error ----------- : ', error);
     }
   }, []);
+
+  const getFCMToken = async () => {
+    try {
+      let fcmToken = await AsyncStorage.getItem('fcmToken');
+      console.log('fcmToken', fcmToken);
+      if (!fcmToken) {
+        try {
+          const token = await messaging().getToken();
+          if (token) {
+            await AsyncStorage.setItem('fcmToken', token);
+            setToken(token);
+          } else {
+          }
+        } catch (error) {
+          console.log('Error fetching token :', error);
+        }
+      }
+    } catch (error) {
+      console.log('Catch in getFcmToken  : ', error);
+    }
+  };
 
   const googleSignIn = async () => {
     try {
@@ -67,6 +91,7 @@ const Login = () => {
           profile: userInfo?.user?.photo,
           region_id: countryCode?.id,
           email: userInfo?.user?.email,
+          fcm_token: token,
         };
         const updateProfiledata = await fetchData.login_with_gmail(data, null);
         if (updateProfiledata.message) {

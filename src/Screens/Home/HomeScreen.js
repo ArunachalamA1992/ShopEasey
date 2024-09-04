@@ -618,7 +618,8 @@ const HomeScreen = () => {
         </Animated.View>
       )}
       {loading ? (
-        <View style={{marginHorizontal: 10}}>
+        <View
+          style={{marginHorizontal: 10, backgroundColor: Color.white, flex: 1}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
               style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -969,6 +970,11 @@ const HomeScreen = () => {
                 </Text>
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={{marginHorizontal: 10}}
+                  onPress={() => navigation.navigate('notification')}>
+                  <Feather name="bell" size={24} color={Color.white} />
+                </TouchableOpacity>
                 <TouchableOpacity
                   style={{marginHorizontal: 10}}
                   onPress={() => navigation.navigate('MyRewards')}>
