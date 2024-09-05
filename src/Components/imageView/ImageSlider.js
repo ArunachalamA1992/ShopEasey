@@ -42,6 +42,7 @@ export default class ImageSlider extends Component {
       this.flatlistRef.current.scrollToIndex({
         animated: true,
         index: nextIndex,
+        viewPosition: 0.5,
       });
       this.setState({currentIndex: nextIndex});
     }
@@ -54,9 +55,16 @@ export default class ImageSlider extends Component {
       this.flatlistRef.current.scrollToIndex({
         animated: true,
         index: prevIndex,
+        viewPosition: 0.5,
       });
       this.setState({currentIndex: prevIndex});
     }
+  };
+
+  onScroll = event => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const currentIndex = Math.round(scrollPosition / scr_width);
+    this.setState({currentIndex});
   };
 
   render() {
@@ -76,7 +84,10 @@ export default class ImageSlider extends Component {
           <Animated.FlatList
             ref={this.flatlistRef}
             horizontal
-            pagingEnabled
+            pagingEnabled={false}
+            snapToAlignment="center"
+            decelerationRate="fast"
+            snapToInterval={scr_width}
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={10}
             data={images}
@@ -92,7 +103,7 @@ export default class ImageSlider extends Component {
             )}
             onScroll={Animated.event(
               [{nativeEvent: {contentOffset: {x: animScrollXVal}}}],
-              {useNativeDriver: true},
+              {useNativeDriver: true, listener: this.onScroll},
             )}
           />
           {images?.length > 1 && (

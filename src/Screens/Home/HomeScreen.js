@@ -46,6 +46,7 @@ import axios from 'axios';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import PostCompletedModal from '../Cart/OrderCompletionModal';
 import VoiceSearch from '../../Components/VoiceSearch';
+import LinearGradient from 'react-native-linear-gradient';
 
 LogBox.ignoreAllLogs();
 const {width} = Dimensions.get('window');
@@ -919,21 +920,30 @@ const HomeScreen = () => {
         </View>
       ) : (
         <>
-          <View
+          <LinearGradient
             style={{
               height: 120,
-              backgroundColor: Color.primary,
+              // backgroundColor: Color.primary,
               marginBottom: 30,
-            }}>
-            <ImageBackground
-              source={Media.home_back}
+            }}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#0D71BA', '#2994CB', '#0D71BA']}>
+            {/* <View
               style={{
-                width: '100%',
-                height: 160,
-                opacity: 0.5,
-                resizeMode: 'contain',
-              }}
-            />
+                height: 120,
+                backgroundColor: Color.primary,
+                marginBottom: 30,
+              }}> */}
+            {/* <ImageBackground
+                source={Media.home_back}
+                style={{
+                  width: '100%',
+                  height: 160,
+                  opacity: 0.5,
+                  resizeMode: 'contain',
+                }}
+              /> */}
             <View
               style={{
                 position: 'absolute',
@@ -1007,7 +1017,8 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+            {/* </View> */}
+          </LinearGradient>
 
           <View
             style={{
@@ -1871,6 +1882,12 @@ const HomeScreen = () => {
                         <TouchableOpacity
                           onPress={() => {
                             loadMoreItems();
+                          }}
+                          style={{
+                            padding: 10,
+                            borderWidth: 1,
+                            borderColor: Color.primary,
+                            borderRadius: 10,
                           }}>
                           <Text
                             style={{

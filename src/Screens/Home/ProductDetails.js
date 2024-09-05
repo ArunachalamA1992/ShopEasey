@@ -353,7 +353,7 @@ const ProductDetails = ({route}) => {
       var like_this_param = `category_id=${singleData?.product?.category_id}`;
       const like_this_data = await fetchData.list_products(
         like_this_param,
-        null,
+        token,
       );
       setCategories_data(like_this_data?.data);
     } catch (error) {
@@ -547,6 +547,52 @@ const ProductDetails = ({route}) => {
     item => item?.color && item?.color !== '',
   );
 
+  const splitByHighlights = data => {
+    const highlights = [];
+
+    data?.forEach(item => {
+      const highlight = item?.highlight;
+      if (highlight) {
+        highlights.push(item);
+      }
+    });
+
+    return highlights;
+  };
+
+  const highlightData = splitByHighlights(singleData?.product?.features);
+  const materialdata = [
+    {
+      id: 1,
+      name: 'category',
+      value: singleData?.product?.category?.category_name,
+    },
+    {
+      id: 2,
+      name: 'Material',
+      value: singleData?.material,
+    },
+    {
+      id: 3,
+      name: 'Country of Origin',
+      value: countryCode?.country,
+    },
+    {
+      id: 4,
+      name: 'Package Count',
+      value: singleData?.package_count,
+    },
+    {
+      id: 5,
+      name: 'Package Unit',
+      value: singleData?.package_unit,
+    },
+    {
+      id: 6,
+      name: 'Package Weight',
+      value: singleData?.package_weight,
+    },
+  ];
   return (
     <View
       style={{
@@ -1165,6 +1211,67 @@ const ProductDetails = ({route}) => {
                       </Text>
                     </TouchableOpacity>
                   </View>
+                  {highlightData?.length > 0 && (
+                    <View style={{marginTop: 10}}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Bold,
+                          padding: 5,
+                        }}>
+                        Highlights
+                      </Text>
+                      {highlightData?.map((item, index) => {
+                        return (
+                          <View
+                            key={index}
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              borderColor: Color.lightBlack,
+                              borderRadius: 5,
+                              borderWidth: 1,
+                            }}>
+                            <View
+                              style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  padding: 5,
+                                }}>
+                                {item?.name}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderLeftColor: Color.lightBlack,
+                                borderLeftWidth: 1,
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 14,
+                                  color: Color.lightBlack,
+                                  fontFamily: Manrope.SemiBold,
+                                  padding: 5,
+                                }}>
+                                {item?.value}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  )}
                   {singleData?.gender != null && (
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
@@ -1895,69 +2002,6 @@ const ProductDetails = ({route}) => {
 
                 <View
                   style={{
-                    backgroundColor: Color.white,
-                    padding: 10,
-                    marginTop: 10,
-                  }}>
-                  {singleData?.product?.features != null && (
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: Color.black,
-                        fontFamily: Manrope.SemiBold,
-                      }}>
-                      Product Details
-                    </Text>
-                  )}
-                  {singleData?.product?.features != null &&
-                    singleData?.product?.features?.map((item, index) => {
-                      return (
-                        <View
-                          key={index}
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                          }}>
-                          <View
-                            style={{
-                              flex: 1,
-                              justifyContent: 'flex-start',
-                              alignItems: 'flex-start',
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                color: Color.cloudyGrey,
-                                fontFamily: Manrope.Medium,
-                                padding: 5,
-                              }}>
-                              {item?.id}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flex: 1,
-                              justifyContent: 'flex-start',
-                              alignItems: 'flex-start',
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                color: Color.lightBlack,
-                                fontFamily: Manrope.SemiBold,
-                                letterSpacing: 0.5,
-                                padding: 5,
-                              }}>
-                              {item?.first_name}
-                            </Text>
-                          </View>
-                        </View>
-                      );
-                    })}
-                </View>
-
-                <View
-                  style={{
                     width: '100%',
                     padding: 10,
                   }}>
@@ -1977,6 +2021,139 @@ const ProductDetails = ({route}) => {
                     />
                   </View>
                 </View>
+                {singleData?.product?.features?.length > 0 ? (
+                  <View
+                    style={{
+                      backgroundColor: Color.white,
+                      padding: 10,
+                      marginTop: 10,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: Color.black,
+                        fontFamily: Manrope.SemiBold,
+                        marginBottom: 10,
+                      }}>
+                      Product Details
+                    </Text>
+                    {singleData?.product?.features?.map((item, index) => {
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            borderColor: Color.lightBlack,
+                            borderRadius: 5,
+                            borderWidth: 1,
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: Color.cloudyGrey,
+                                fontFamily: Manrope.Medium,
+                                padding: 5,
+                              }}>
+                              {item?.name}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              flex: 1,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderLeftColor: Color.lightBlack,
+                              borderLeftWidth: 1,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: Color.lightBlack,
+                                fontFamily: Manrope.SemiBold,
+                                padding: 5,
+                              }}>
+                              {item?.value}
+                            </Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      backgroundColor: Color.white,
+                      padding: 10,
+                      marginTop: 10,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: Color.black,
+                        fontFamily: Manrope.SemiBold,
+                        marginBottom: 10,
+                      }}>
+                      Product Details
+                    </Text>
+                    {materialdata?.map((item, index) => {
+                      return (
+                        item?.value != null && (
+                          <View
+                            key={index}
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              borderColor: Color.lightBlack,
+                              borderRadius: 5,
+                              borderWidth: 1,
+                            }}>
+                            <View
+                              style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  padding: 5,
+                                }}>
+                                {item?.name}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderLeftColor: Color.lightBlack,
+                                borderLeftWidth: 1,
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 14,
+                                  color: Color.lightBlack,
+                                  fontFamily: Manrope.SemiBold,
+                                  padding: 5,
+                                }}>
+                                {item?.value}
+                              </Text>
+                            </View>
+                          </View>
+                        )
+                      );
+                    })}
+                  </View>
+                )}
                 {reviewsData?.data?.length > 0 && (
                   <View
                     style={{
@@ -1988,7 +2165,6 @@ const ProductDetails = ({route}) => {
                         fontSize: 16,
                         color: Color.black,
                         fontFamily: Manrope.SemiBold,
-                        letterSpacing: 0.5,
                       }}>
                       Product Ratings & Reviews
                     </Text>
@@ -2023,49 +2199,6 @@ const ProductDetails = ({route}) => {
                         }}>
                         {'  '}({reviewsData?.count} Reviews)
                       </Text>
-                    </View>
-                    <View
-                      style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                      }}>
-                      {/* {review_tab?.map((item, index) => {
-                        return (
-                          <TouchableOpacity
-                            onPress={() => {
-                              setIndex(index);
-                            }}
-                            style={{
-                              borderWidth: 1,
-                              borderColor:
-                                tabIndex == index
-                                  ? Color.primary
-                                  : Color.lightgrey,
-                              padding: 5,
-                              paddingHorizontal: 10,
-                              borderRadius: 50,
-                              margin: 5,
-                              backgroundColor:
-                                tabIndex == index ? '#0D71BA30' : Color.white,
-                            }}
-                            key={index}>
-                            <Text
-                              style={{
-                                fontFamily: Manrope?.Medium,
-                                fontSize: 12,
-                                paddingHorizontal: 10,
-                                color:
-                                  tabIndex == index
-                                    ? Color.primary
-                                    : Color.black,
-                              }}>
-                              {item?.name}
-                            </Text>
-                          </TouchableOpacity>
-                        );
-                      })} */}
                     </View>
                     <View
                       style={{
@@ -2178,7 +2311,6 @@ const ProductDetails = ({route}) => {
                           width: '100%',
                           justifyContent: 'flex-end',
                           alignItems: 'flex-end',
-                          marginVertical: 0,
                         }}>
                         <TouchableOpacity
                           onPress={() => {
@@ -2187,10 +2319,9 @@ const ProductDetails = ({route}) => {
                           <Text
                             style={{
                               fontFamily: Manrope?.SemiBold,
-                              fontSize: 13,
+                              fontSize: 12,
                               color: Color.lightBlack,
                               textDecorationLine: 'underline',
-                              letterSpacing: 0.5,
                             }}>
                             View All Reviews
                           </Text>
