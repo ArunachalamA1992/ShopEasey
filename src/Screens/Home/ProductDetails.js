@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   FlatList,
   Image,
+  Linking,
   Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
@@ -67,6 +69,14 @@ const ProductDetails = ({route}) => {
 
   const currentDate = moment();
   const yourDate = moment(singleData?.created_at);
+  const windowDimensions = useWindowDimensions();
+  const htmlRef = useRef(null);
+
+  useEffect(() => {
+    if (htmlRef?.current) {
+      htmlRef?.current?.setNativeProps({contentWidth: windowDimensions?.width});
+    }
+  }, [windowDimensions?.width]);
 
   useEffect(() => {
     setSelectedColor(singleData?.color);
@@ -76,6 +86,38 @@ const ProductDetails = ({route}) => {
     setSelectedMaterial(singleData?.material);
     getCountryData();
   }, [singleData]);
+
+  const handleDeepLink = url => {
+    try {
+      const route = url.replace(/.*?:\/\//g, '');
+      const route_value = route.match(/\/([^\/]+)\/?$/)[1];
+      const value = route_value.split('?id=');
+      const id = value[0];
+      const variant_id = value[1] ? value[1].split('&')[0] : null;
+      navigation.navigate(
+        'ProductDetails',
+        {
+          id,
+          variant_id,
+        },
+        {merge: true},
+      );
+    } catch (error) {
+      console.error('Error handling deep link:', error);
+    }
+  };
+
+  const handleInitialUrl = async () => {
+    try {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        console.log('initialUrl', initialUrl);
+        handleDeepLink(initialUrl);
+      }
+    } catch (error) {
+      console.error('Error handling initial URL:', error);
+    }
+  };
 
   const getCountryData = async () => {
     try {
@@ -184,6 +226,7 @@ const ProductDetails = ({route}) => {
 
   useEffect(() => {
     setLoading(true);
+    handleInitialUrl();
     getData().finally(() => {
       setLoading(false);
     });
@@ -197,6 +240,7 @@ const ProductDetails = ({route}) => {
         '',
         token,
       );
+
       setSingleData(productData?.data);
       // top picks
       const topPicksData = await fetchData.list_products(
@@ -1963,6 +2007,7 @@ const ProductDetails = ({route}) => {
                   </Text>
                   <View style={{width: scr_width}}>
                     <RenderHtml
+                      ref={htmlRef}
                       tagsStyles={styles.htmlStyles}
                       contentWidth={'100%'}
                       source={{html: singleData?.product?.description}}
