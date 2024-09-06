@@ -585,6 +585,13 @@ const ProductDetails = ({route}) => {
       value: singleData?.package_weight,
     },
   ];
+
+  const addDays = days => {
+    let date = new Date();
+    date?.setDate(date?.getDate() + days);
+    return date;
+  };
+  const deliveryDate = addDays(8);
   return (
     <View
       style={{
@@ -1076,6 +1083,16 @@ const ProductDetails = ({route}) => {
                       ( Only {singleData?.stock} pending )
                     </Text> */}
                   </View>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.SemiBold,
+                      marginVertical: 5,
+                    }}>
+                    Your order will be delivered by{' '}
+                    {moment(deliveryDate).format('ddd, MMM D')}
+                  </Text>
 
                   <View
                     style={{

@@ -61,6 +61,7 @@ import ForegroundHandler from './Components/pushNotify/ForegroundHandler';
 import {StripeProvider} from '@stripe/stripe-react-native';
 import {Stripe} from './Components/Stripe';
 import NotificationScreen from './Screens/Home/NotificationScreen';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -252,7 +253,19 @@ const MainApp = () => {
   return (
     <>
       <ForegroundHandler />
-      <StatusBar backgroundColor={Color.white} barStyle={'dark-content'} />
+      <LinearGradient
+        style={{
+          height: StatusBar.currentHeight,
+        }}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        colors={['#0D71BA', '#2994CB', '#0D71BA']}
+      />
+      <StatusBar
+        backgroundColor="transparent"
+        barStyle={'light-content'}
+        translucent
+      />
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
           name="Splash"

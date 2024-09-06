@@ -5,6 +5,7 @@ export default {
   // primary: '#0033A0',00339A
   black: '#000',
   white: '#fff',
+  transparentWhite: '#ffffff10',
   routeColor: '#655F5F',
   cloudyGrey: '#666666',
   Venus: '#888888',

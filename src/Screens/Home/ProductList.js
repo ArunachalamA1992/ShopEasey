@@ -3,6 +3,7 @@ import {
   BackHandler,
   Dimensions,
   FlatList,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -188,6 +189,7 @@ const ProductList = ({route}) => {
 
   return (
     <View style={{flex: 1}}>
+      <StatusBar backgroundColor={Color.primary} barStyle={'light-content'} />
       <View style={styles.header}>
         <TouchableOpacity
           style={{marginRight: 10}}
