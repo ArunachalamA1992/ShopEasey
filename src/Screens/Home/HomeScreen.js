@@ -1454,6 +1454,7 @@ const HomeScreen = () => {
                       style={{
                         marginTop: 5,
                         paddingStart: 10,
+                        backgroundColor: '#d5df3150',
                       }}>
                       <View
                         style={{
@@ -1910,6 +1911,7 @@ const HomeScreen = () => {
                       <View
                         style={{
                           paddingHorizontal: 10,
+                          backgroundColor: '#64e3a150',
                         }}>
                         <View
                           style={{
@@ -1961,6 +1963,12 @@ const HomeScreen = () => {
                           <TouchableOpacity
                             onPress={() => {
                               loadFeaturedMoreItems();
+                            }}
+                            style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderColor: Color.primary,
+                              borderRadius: 10,
                             }}>
                             <Text
                               style={{
@@ -1984,6 +1992,7 @@ const HomeScreen = () => {
                       <View
                         style={{
                           paddingStart: 10,
+                          backgroundColor: '#CBC3E350',
                         }}>
                         <View
                           style={{

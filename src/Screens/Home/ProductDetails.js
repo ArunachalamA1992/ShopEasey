@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -22,7 +22,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import ImageView from '../../Components/imageView';
 import {Media} from '../../Global/Media';
 import moment from 'moment';
-import {ItemCardHorizontal} from '../../Components/ItemCard';
+import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
 import {scr_width} from '../../Utils/Dimensions';
 import {Iconviewcomponent} from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
@@ -46,6 +46,9 @@ const ProductDetails = ({route}) => {
   var {wishlist, cart} = dataCount;
   const [topPicks, setTopPicks] = useState([]);
   const [Categories_data, setCategories_data] = useState([]);
+  const [loadMore, setLoadMore] = useState(false);
+  const [Page, setPage] = useState(1);
+  const [endReached, setEndReached] = useState(false);
   const [reviewsData, setReviewsData] = useState({});
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedAge, setSelectedAge] = useState(null);
@@ -54,6 +57,16 @@ const ProductDetails = ({route}) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [followStatus, setFollowStatus] = useState(false);
+  const [defaultRating, setDefaultRating] = useState(0);
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.UserReducer.userData);
+  var {token} = userData;
+  const [addressData, setAddressCount] = useState(0);
+
+  const maxRating = [1, 2, 3, 4, 5];
+
+  const currentDate = moment();
+  const yourDate = moment(singleData?.created_at);
 
   useEffect(() => {
     setSelectedColor(singleData?.color);
@@ -77,125 +90,61 @@ const ProductDetails = ({route}) => {
     }
   };
 
-  const handleColorPress = async item => {
+  const handlePropertyPress = async (type, value) => {
     setLoading(true);
-    setSelectedColor(item?.color);
-    // setSelectedVariantData(item);
-    // setSelectedSize(null);
-    // setSizeVisible(true);
-    // setWishlistVariantId(item?.id);
-    // setProductImages(item?.productImages);
+
+    switch (type) {
+      case 'color':
+        setSelectedColor(value);
+        break;
+      case 'age':
+        setSelectedAge(value);
+        break;
+      case 'gender':
+        setSelectedGender(value);
+        break;
+      case 'material':
+        setSelectedMaterial(value);
+        break;
+      case 'size':
+        setSelectedSize(value);
+        break;
+      default:
+        break;
+    }
+
     try {
-      var param = id;
-      var data = `color=${item?.color}`;
-      const color_data = await fetchData.single_property(param, data, token);
-      setSingleData(color_data?.data);
-      setLoading(false);
+      let param = id;
+      let data = `${type}=${value}`;
+
+      if (selectedSize && type !== 'size') data += `&size=${selectedSize}`;
+      if (selectedColor && type !== 'color') data += `&color=${selectedColor}`;
+      if (selectedAge && type !== 'age') data += `&age=${selectedAge}`;
+      if (selectedGender && type !== 'gender')
+        data += `&gender=${selectedGender}`;
+      if (selectedMaterial && type !== 'material')
+        data += `&material=${selectedMaterial}`;
+
+      const responseData = await fetchData.single_property(param, data, token);
+      setSingleData(responseData?.data);
     } catch (error) {
-      console.log('error', error);
+      console.log('Error fetching property data:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAgePress = async item => {
-    setLoading(true);
-    setSelectedAge(item?.age);
-    // setSelectedVariantData(item);
-    // setSelectedSize(null);
-    // setSizeVisible(true);
-    // setWishlistVariantId(item?.id);
-    // setProductImages(item?.productImages);
-    try {
-      var param = id;
-      var data = `age=${item?.age}`;
-      const age_data = await fetchData.single_property(param, data, token);
-      setSingleData(age_data?.data);
-      setLoading(false);
-    } catch (error) {
-      console.log('error', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGenderPress = async item => {
-    setLoading(true);
-    setSelectedGender(item?.gender);
-    // setSelectedVariantData(item);
-    // setSelectedSize(null);
-    // setSizeVisible(true);
-    // setWishlistVariantId(item?.id);
-    // setProductImages(item?.productImages);
-    try {
-      var param = id;
-      var data = `gender=${item?.gender}`;
-      const gender_data = await fetchData.single_property(param, data, token);
-      setSingleData(gender_data?.data);
-      setLoading(false);
-    } catch (error) {
-      console.log('error', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleMaterialPress = async item => {
-    setLoading(true);
-    setSelectedMaterial(item?.material);
-    // setSelectedVariantData(item);
-    // setSelectedSize(null);
-    // setSizeVisible(true);
-    // setWishlistVariantId(item?.id);
-    // setProductImages(item?.productImages);
-    try {
-      var param = id;
-      var data = `material=${item?.material}`;
-      const material_data = await fetchData.single_property(param, data, token);
-      setSingleData(material_data?.data);
-      setLoading(false);
-    } catch (error) {
-      console.log('error', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSizePress = async item => {
-    // setLoading(true);
-    setSelectedSize(item?.size);
-    try {
-      var param = id;
-      var data = `size=${item?.size}`;
-      if (selectedColor != null) {
-        data += `&color=${selectedColor}`;
-      }
-      const size_data = await fetchData.single_property(param, data, token);
-      setSingleData(size_data?.data);
-      // setLoading(false);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  const dispatch = useDispatch();
-  const filteredSizes = singleData?.variants_list?.color?.filter(
-    variant => !selectedColor || variant.color === selectedColor,
-  );
-
-  const [defaultRating, setDefaultRating] = useState(0);
+  const handleColorPress = item => handlePropertyPress('color', item?.color);
+  const handleAgePress = item => handlePropertyPress('age', item?.age);
+  const handleGenderPress = item => handlePropertyPress('gender', item?.gender);
+  const handleMaterialPress = item =>
+    handlePropertyPress('material', item?.material);
+  const handleSizePress = item => handlePropertyPress('size', item?.size);
 
   useEffect(() => {
     const rating = parseFloat(reviewsData?.rating || '0');
     setDefaultRating(rating);
   }, [reviewsData]);
-
-  const [tabIndex, setIndex] = useState(0);
-  const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
-  const [addressData, setAddressCount] = useState(0);
-
-  const maxRating = [1, 2, 3, 4, 5];
 
   const originalPrice = singleData?.org_price / countryCode?.price_margin;
   const offerPrice = singleData?.offer_price
@@ -205,9 +154,6 @@ const ProductDetails = ({route}) => {
   const discount = parseFloat(
     ((originalPrice - offerPrice) / originalPrice) * 100,
   ).toFixed(2);
-
-  const currentDate = moment();
-  const yourDate = moment(singleData?.created_at);
 
   useEffect(() => {
     const daysAgo = currentDate.diff(yourDate, 'days');
@@ -236,52 +182,6 @@ const ProductDetails = ({route}) => {
     }
   }, [currentDate, yourDate, singleData]);
 
-  const handleRatingPress = item => {
-    if (defaultRating === item) {
-      setDefaultRating(null);
-    } else {
-      setDefaultRating(item);
-    }
-  };
-
-  const [showMoreButton, setShowMoreButton] = useState(false);
-  const [discriptiontextShown, setDiscriptiontextShown] = useState(false);
-  const [numLines, setNumLines] = useState(undefined);
-
-  useEffect(() => {
-    setNumLines(discriptiontextShown ? undefined : 3);
-  }, [discriptiontextShown]);
-
-  const onDescriptionTextLayout = useCallback(
-    e => {
-      if (e.nativeEvent.lines.length > 3 && !discriptiontextShown) {
-        setShowMoreButton(true);
-        setNumLines(3);
-      }
-    },
-    [discriptiontextShown],
-  );
-
-  const toggleTextShown = () => {
-    setDiscriptiontextShown(!discriptiontextShown);
-    setNumLines();
-  };
-
-  const [review_tab] = useState([
-    {
-      id: 1,
-      name: 'All',
-    },
-    {
-      id: 2,
-      name: 'Top Reviews',
-    },
-    {
-      id: 3,
-      name: 'Most Recent',
-    },
-  ]);
-
   useEffect(() => {
     setLoading(true);
     getData().finally(() => {
@@ -292,28 +192,74 @@ const ProductDetails = ({route}) => {
 
   const getData = async () => {
     try {
-      var param = `${id}?id=${variant_id}`;
-      const product_data = await fetchData.single_property(param, ``, token);
-      setSingleData(product_data?.data);
-      //top picks
-      var top_picks_data = `project=top-picks`;
-      const top_picks = await fetchData.list_products(top_picks_data, token);
-      setTopPicks(top_picks?.data);
-      //review data
-      var review_data = `${id}`;
-      const reviewData = await fetchData.get_review(review_data, token);
+      const productData = await fetchData.single_property(
+        `${id}?id=${variant_id}`,
+        '',
+        token,
+      );
+      setSingleData(productData?.data);
+      // top picks
+      const topPicksData = await fetchData.list_products(
+        'project=top-picks',
+        token,
+      );
+      setTopPicks(topPicksData?.data);
+      // Reviews
+      const reviewData = await fetchData.get_review(id, token);
       setReviewsData(reviewData);
       setVisibleData(reviewData?.data?.slice(0, 4));
-      //seller Data
+      setShowLoadMore(reviewData?.data?.length > 4);
+      // Follow Status
+      const sellerData = await fetchData.seller_list(
+        `vendor_id=${singleData?.product?.vendor?.id}`,
+        token,
+      );
+      setFollowStatus(sellerData?.data?.[0]?.is_follow);
 
-      var data = `vendor_id=${singleData?.product?.vendor?.id}`;
-      const getdata = await fetchData.seller_list(data, token);
-      setFollowStatus(getdata?.data?.[0]?.is_follow);
+      getCategoriesData();
+
       setLoading(false);
     } catch (error) {
-      console.log('error', error);
+      console.error('Error fetching data', error);
     }
   };
+
+  const [SuggestionData, setSuggestionData] = useState(
+    Categories_data.slice(0, 4),
+  );
+  const [SuggestionLoadMore, setSuggestionLoadMore] = useState(
+    Categories_data.length > 4,
+  );
+
+  const loadSuggestionItems = () => {
+    const currentLength = SuggestionData.length;
+    const nextBatch = Categories_data.slice(currentLength, currentLength + 8);
+    setSuggestionData([...visibleData, ...nextBatch]);
+    setSuggestionLoadMore(currentLength + 8 < Categories_data.length);
+  };
+  const loadMoreData = async () => {
+    if (loadMore || endReached) {
+      return;
+    }
+    setLoadMore(true);
+    try {
+      const nextPage = Page + 1;
+      var data = `category_id=${singleData?.product?.category_id}&page=${nextPage}`;
+      const response = await fetchData.list_products(data, token);
+      if (response?.data.length > 0) {
+        setPage(nextPage);
+        const updatedData = [...Categories_data, ...response?.data];
+        setCategories_data(updatedData);
+      } else {
+        setEndReached(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadMore(false);
+    }
+  };
+
   const [visibleData, setVisibleData] = useState(
     reviewsData?.data?.slice(0, 4),
   );
@@ -356,6 +302,8 @@ const ProductDetails = ({route}) => {
         token,
       );
       setCategories_data(like_this_data?.data);
+      setSuggestionData(like_this_data?.data?.slice(0, 4));
+      setSuggestionLoadMore(Categories_data.length > 4);
     } catch (error) {
       console.log('error', error);
     }
@@ -575,7 +523,7 @@ const ProductDetails = ({route}) => {
     {
       id: 3,
       name: 'Country of Origin',
-      value: countryCode?.country,
+      value: singleData?.product?.vendor?.country,
     },
     {
       id: 4,
@@ -2399,18 +2347,41 @@ const ProductDetails = ({route}) => {
                       YOU MAY ALSO LIKE
                     </Text>
                     <FlatList
-                      data={Categories_data}
-                      horizontal
+                      data={SuggestionData}
+                      numColumns={2}
                       showsHorizontalScrollIndicator={false}
                       renderItem={({item, index}) => {
-                        return (
-                          <ItemCardHorizontal
-                            item={item}
-                            navigation={navigation}
-                          />
-                        );
+                        return <ItemCard item={item} navigation={navigation} />;
                       }}
+                      onEndReached={() => {
+                        loadMoreData();
+                      }}
+                      onEndReachedThreshold={3}
                     />
+                    {SuggestionLoadMore && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          loadSuggestionItems();
+                        }}
+                        style={{
+                          padding: 10,
+                          borderWidth: 1,
+                          borderColor: Color.primary,
+                          borderRadius: 10,
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontFamily: Manrope.Bold,
+                            color: Color.primary,
+                            marginHorizontal: 5,
+                            textDecorationLine: 'underline',
+                            textAlign: 'center',
+                          }}>
+                          See more
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 )}
               </View>
@@ -2551,7 +2522,7 @@ const ProductDetails = ({route}) => {
                 </Text>
               </TouchableOpacity>
             </View>
-          ) : singleData?.stock == 0 ? (
+          ) : singleData?.status == 1 && singleData?.stock == 0 ? (
             <View style={{padding: 10, alignItems: 'center'}}>
               <Text
                 style={{
@@ -2570,7 +2541,7 @@ const ProductDetails = ({route}) => {
                   fontSize: 16,
                   fontFamily: Manrope.SemiBold,
                 }}>
-                This product is not available for your region
+                This product is not available in your region.
               </Text>
             </View>
           )}
