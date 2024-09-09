@@ -601,9 +601,11 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        style={{
-          height: StatusBar.currentHeight,
-        }}
+        style={
+          {
+            // height: StatusBar.currentHeight,
+          }
+        }
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}
         colors={gradiantColors}
@@ -2141,11 +2143,13 @@ const HomeScreen = () => {
                   case 'Latest Product':
                     return (
                       latestProducts?.length > 0 && (
-                        <View
+                        <LinearGradient
                           style={{
                             paddingStart: 10,
-                            backgroundColor: '#CBC3E350',
-                          }}>
+                          }}
+                          start={{x: 0, y: 0}}
+                          end={{x: 1, y: 0}}
+                          colors={['#e73895', '#fff']}>
                           <View
                             style={{
                               flexDirection: 'row',
@@ -2203,7 +2207,7 @@ const HomeScreen = () => {
                               );
                             }}
                           />
-                        </View>
+                        </LinearGradient>
                       )
                     );
                 }
