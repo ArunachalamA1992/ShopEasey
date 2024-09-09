@@ -2,6 +2,7 @@ export const Media = {
   user: 'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514850.png',
   home_back: require('../assets/home_back.png'),
   popup: require('../assets/popup.webp'),
+  latest_banner: require('../assets/latest_banner.png'),
   status:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514851.png',
   logo: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/black_logo.png',

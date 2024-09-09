@@ -1071,6 +1071,7 @@ const HomeScreen = () => {
                     paddingHorizontal: 20,
                     borderWidth: 1,
                     borderColor: Color.lightgrey,
+                    opacity: 0.5,
                   }}
                   // onPress={() => {
                   //   navigation.navigate('Search', {searchProduct: ''});
@@ -1470,12 +1471,11 @@ const HomeScreen = () => {
                         }}
                         start={{x: 0, y: 0}}
                         end={{x: 1, y: 0}}
-                        colors={['#F5DE83', '#fff']}>
+                        colors={['#fff', '#fff']}>
                         <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            marginHorizontal: 0,
                             marginTop: 20,
                           }}>
                           <View
@@ -1592,7 +1592,7 @@ const HomeScreen = () => {
                         }}
                         start={{x: 0, y: 0}}
                         end={{x: 1, y: 0}}
-                        colors={['#F5DE83', '#fff']}>
+                        colors={['#fff', '#fff']}>
                         <View
                           style={{
                             flexDirection: 'row',
@@ -2143,14 +2143,8 @@ const HomeScreen = () => {
                   case 'Latest Product':
                     return (
                       latestProducts?.length > 0 && (
-                        <LinearGradient
-                          style={{
-                            paddingStart: 10,
-                          }}
-                          start={{x: 0, y: 0}}
-                          end={{x: 1, y: 0}}
-                          colors={['#e73895', '#fff']}>
-                          <View
+                        <View style={{marginTop: 5}}>
+                          {/* <View
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
@@ -2162,52 +2156,68 @@ const HomeScreen = () => {
                                 fontSize: 16,
                                 color: Color.black,
                                 fontFamily: Manrope.SemiBold,
+                                textAlign: 'center',
                               }}>
                               Latest Products
                             </Text>
-                          </View>
-                          <FlatList
-                            data={latestProducts}
-                            numColumns={2}
-                            renderItem={({item, index}) => {
-                              return (
-                                <ItemCard item={item} navigation={navigation} />
-                              );
-                            }}
-                            onEndReachedThreshold={3}
-                            onEndReached={() => {
-                              latestLoadMoreData();
-                            }}
-                            ListFooterComponent={() => {
-                              return (
-                                <View
-                                  style={{
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                  }}>
-                                  {latestloadMore && (
-                                    <View
-                                      style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                      }}>
-                                      <Text
-                                        style={{
-                                          fontSize: 12,
-                                          color: Color.black,
-                                          marginHorizontal: 10,
-                                          fontFamily: Manrope.Medium,
-                                        }}>
-                                        Loading...
-                                      </Text>
-                                      <ActivityIndicator />
-                                    </View>
-                                  )}
-                                </View>
-                              );
-                            }}
+                          </View> */}
+                          <Image
+                            source={Media.latest_banner}
+                            style={{width: '100%', height: 50}}
                           />
-                        </LinearGradient>
+                          <LinearGradient
+                            style={{
+                              paddingStart: 10,
+                            }}
+                            start={{x: 0, y: 0}}
+                            end={{x: 1, y: 0}}
+                            colors={['#6A0588', '#fff']}>
+                            <FlatList
+                              data={latestProducts}
+                              numColumns={2}
+                              renderItem={({item, index}) => {
+                                return (
+                                  <ItemCard
+                                    item={item}
+                                    navigation={navigation}
+                                  />
+                                );
+                              }}
+                              onEndReachedThreshold={3}
+                              onEndReached={() => {
+                                latestLoadMoreData();
+                              }}
+                              ListFooterComponent={() => {
+                                return (
+                                  <View
+                                    style={{
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}>
+                                    {latestloadMore && (
+                                      <View
+                                        style={{
+                                          flexDirection: 'row',
+                                          alignItems: 'center',
+                                        }}>
+                                        <Text
+                                          style={{
+                                            fontSize: 12,
+                                            color: Color.black,
+                                            marginHorizontal: 10,
+                                            fontFamily: Manrope.Medium,
+                                          }}>
+                                          Loading...
+                                        </Text>
+                                        <ActivityIndicator />
+                                      </View>
+                                    )}
+                                  </View>
+                                );
+                              }}
+                            />
+                          </LinearGradient>
+                        </View>
                       )
                     );
                 }

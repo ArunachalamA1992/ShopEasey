@@ -307,7 +307,13 @@ const Login = () => {
         </Text>
         <View style={{marginVertical: 10}}>
           <View style={styles.NumberBoxConatiner}>
-            {/* <Text style={styles.numberCountryCode}>+91</Text> */}
+            {number.match(/[a-z]/i) ? (
+              <View />
+            ) : (
+              <Text style={styles.numberCountryCode}>
+                {countryCode?.mobile_prefix}
+              </Text>
+            )}
             <TextInput
               placeholder={
                 countryCode?.id == 452 ? 'Mobile' : 'WhatsApp Number or Email'
@@ -574,14 +580,11 @@ const styles = StyleSheet.create({
   },
   numberCountryCode: {
     color: Color.black,
-    marginHorizontal: 10,
     fontSize: 16,
     fontFamily: Manrope.SemiBold,
     textAlign: 'center',
     alignItems: 'center',
-    padding: 5,
-    paddingTop: 5,
-    paddingHorizontal: 5,
+    padding: 10,
   },
   invalidLogin: {
     fontSize: 12,
