@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -459,32 +459,36 @@ const VerticalTabView = props => {
     getApiData();
   }, []);
 
+  const prevQueryObject = useRef();
+
   useEffect(() => {
+    // Initialize from queryObject (URL params or props)
     if (queryObject?.brand_id) {
-      const brandIds =
-        typeof queryObject.brand_id === 'string'
-          ? queryObject.brand_id.split(',')
-          : [];
+      const brandIds = Array.isArray(queryObject.brand_id)
+        ? queryObject.brand_id.map(Number) // Convert to integers
+        : queryObject.brand_id.split(',').map(Number); // Convert to integers
       brandIds.forEach(id => {
-        handlebrandPress(id);
+        handlebrandPress(id); // Initialize brand selection
       });
     }
 
     if (queryObject?.color_group) {
       const colorIds = Array.isArray(queryObject.color_group)
-        ? queryObject.color_group
-        : [queryObject.color_group];
-
+        ? queryObject.color_group.map(Number) // Convert to integers
+        : typeof queryObject.color_group === 'string'
+        ? queryObject.color_group.split(',').map(Number) // Convert to integers
+        : [];
       colorIds.forEach(colorId => {
-        handleColorPress(colorId);
+        handleColorPress(colorId); // Initialize color selection with integers
       });
     }
 
     if (queryObject?.size) {
-      const sizeIds =
-        typeof queryObject.size === 'string' ? queryObject.size.split(',') : [];
+      const sizeIds = Array.isArray(queryObject.size)
+        ? queryObject.size.map(Number) // Convert to integers
+        : queryObject.size.split(',').map(Number); // Convert to integers
       sizeIds.forEach(id => {
-        handlesizePress(id);
+        handlesizePress(id); // Initialize size selection
       });
     }
   }, [queryObject]);
@@ -617,7 +621,6 @@ const VerticalTabView = props => {
   };
 
   const [colorSelectedItem, setcolorSelectedItem] = useState([]);
-
   const handleColorPress = itemId => {
     if (colorSelectedItem.includes(itemId)) {
       setcolorSelectedItem(
@@ -722,7 +725,6 @@ const VerticalTabView = props => {
 
   const dataPayload = () => {
     let params = '';
-    console.log(`data---------------`, filterSelectedItem?.colors);
     const payload = {
       page: 1,
       size:
@@ -744,8 +746,6 @@ const VerticalTabView = props => {
       price: low > 0 && high ? `${low},${high}` : '',
     };
 
-    console.log('Payload:---------------', payload);
-
     for (const key in payload) {
       if (payload[key] != null && payload[key] !== '') {
         if (key === 'size' || key === 'color_group' || key === 'price') {
@@ -756,15 +756,12 @@ const VerticalTabView = props => {
       }
     }
 
-    console.log('Params before slicing:', params);
-
     return params.slice(0, -1);
   };
 
   const applyFilter = async () => {
     try {
       const data = dataPayload();
-      console.log('data', data);
       navigation.push('ProductList', {
         param: data,
         category_id: category_id,

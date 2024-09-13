@@ -186,7 +186,7 @@ const ProductList = ({route}) => {
       setLoadMore(false);
     }
   };
-
+  console.log('param', param);
   return (
     <View style={{flex: 1}}>
       <StatusBar backgroundColor={Color.primary} barStyle={'light-content'} />
