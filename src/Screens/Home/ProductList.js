@@ -27,7 +27,7 @@ const {height} = Dimensions.get('screen');
 const ProductList = ({route}) => {
   const navigation = useNavigation();
   const [category_id] = useState(route.params.category_id);
-  const [param] = useState(route.params.param, category_id);
+  const [param] = useState(route.params.param);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
@@ -151,7 +151,7 @@ const ProductList = ({route}) => {
       setCategoryData(categories_data?.data);
       loadInitialProducts(
         category_id,
-        param,
+        '',
         currentLevel ? sub_cat_id : item.id,
         currentLevel ? item.id : null,
       );
@@ -364,32 +364,32 @@ const ProductList = ({route}) => {
               alignItems: 'center',
               paddingVertical: 10,
             }}>
-            {products.length > 0 ? (
-              <TouchableOpacity
+            {/* {products.length > 0 ? ( */}
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: Color.primary,
+                padding: 10,
+                borderRadius: 5,
+                marginHorizontal: 10,
+              }}
+              onPress={() => {
+                setFilterVisible(true);
+              }}>
+              <Feather name="filter" size={16} color={Color.white} />
+              <Text
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: Color.primary,
-                  padding: 10,
-                  borderRadius: 5,
-                  marginHorizontal: 10,
-                }}
-                onPress={() => {
-                  setFilterVisible(true);
+                  fontSize: 14,
+                  color: Color.white,
+                  fontFamily: Manrope.Medium,
+                  paddingHorizontal: 10,
                 }}>
-                <Feather name="filter" size={16} color={Color.white} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: Color.white,
-                    fontFamily: Manrope.Medium,
-                    paddingHorizontal: 10,
-                  }}>
-                  Filter
-                </Text>
-              </TouchableOpacity>
-            ) : null}
+                Filter
+              </Text>
+            </TouchableOpacity>
+            {/* ) : null} */}
             <FlatList
               data={CategoryData}
               horizontal
@@ -493,6 +493,7 @@ const ProductList = ({route}) => {
           filterVisible={filterVisible}
           navigation={navigation}
           category_id={category_id}
+          param={param}
         />
       )}
     </View>

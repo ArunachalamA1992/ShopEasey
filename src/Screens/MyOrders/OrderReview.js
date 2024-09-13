@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   PermissionsAndroid,
@@ -21,6 +21,8 @@ import {Iconviewcomponent} from '../../Components/Icontag';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Button} from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
+import ImageResizer from 'react-native-image-resizer';
+import {baseUrl} from '../../Config/base_url';
 
 const OrderReview = ({navigation, route}) => {
   const [orderData] = useState(route.params.orderData);
@@ -40,6 +42,7 @@ const OrderReview = ({navigation, route}) => {
       width: 0,
     },
   ]);
+  const [photo, setPhoto] = useState([]);
 
   const [maxRating, setMaxRating] = useState([
     {
@@ -97,17 +100,56 @@ const OrderReview = ({navigation, route}) => {
       return false;
     }
   };
-
+  const data = photo?.filter(item => item.uri)?.map(item => item.uri);
+  console.log('data', data);
+  // const postReview = async () => {
+  //   try {
+  //     if (defaultRating > 0 && review != '') {
+  //       var data = {
+  //         product_id: orderData?.product_id,
+  //         rate: defaultRating,
+  //         review: review,
+  //         images: photo?.filter(item => item.uri)?.map(item => item.uri),
+  //       };
+  //       const post_review = await fetchData.post_review(data, token);
+  //       common_fn.showToast(post_review?.message);
+  //     } else {
+  //       common_fn.showToast('Please write the review and rating');
+  //     }
+  //   } catch (error) {
+  //     console.log('error', error);
+  //   }
+  // };
   const postReview = async () => {
     try {
       if (defaultRating > 0 && review != '') {
-        var data = {
-          product_id: orderData?.product_id,
-          rate: defaultRating,
-          review: review,
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+
+        const formdata = new FormData();
+        formdata.append('product_id', orderData?.product_id);
+        formdata.append('rate', defaultRating);
+        formdata.append('review', review);
+        photo.forEach((file, index) => {
+          formdata.append('images', {
+            uri: file?.uri,
+            type: 'image/jpeg',
+            name: file?.name,
+          });
+        });
+        const requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: formdata,
+          redirect: 'follow',
         };
-        const post_review = await fetchData.post_review(data, token);
-        common_fn.showToast(post_review?.message);
+
+        fetch(`${baseUrl}api/review`, requestOptions)
+          .then(response => response.json())
+          .then(result => {
+            common_fn.showToast(result?.message);
+          })
+          .catch(error => console.error(error));
       } else {
         common_fn.showToast('Please write the review and rating');
       }
@@ -115,6 +157,44 @@ const OrderReview = ({navigation, route}) => {
       console.log('error', error);
     }
   };
+
+  useEffect(() => {
+    const resizeImages = [];
+    Promise.all(
+      image?.map(async (image, index) => {
+        var path = image?.uri;
+        var maxWidth = 1000,
+          maxHeight = 1000,
+          compressFormat = 'JPEG',
+          quality = 100,
+          rotation = 0,
+          keepMeta = false,
+          options = {};
+        var outputPath;
+        if (path) {
+          try {
+            const resizedImage = await ImageResizer.createResizedImage(
+              path,
+              maxWidth,
+              maxHeight,
+              compressFormat,
+              quality,
+              rotation,
+              outputPath,
+              keepMeta,
+              options,
+            );
+            resizeImages?.push(resizedImage);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }),
+    ).then(() => {
+      setPhoto([...photo, ...resizeImages]);
+    });
+  }, [image]);
+  console.log('photo--------------', photo);
 
   const captureImage = async index => {
     const options = {

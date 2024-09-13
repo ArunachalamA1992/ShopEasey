@@ -66,8 +66,8 @@ const TabContent = ({
                   <RadioData
                     key={index}
                     label={option.sub_category_name}
-                    checked={categorySelectedItem.id == option.id}
-                    onPress={() => setcategorySelectedItem(option)}
+                    checked={categorySelectedItem == option.id}
+                    onPress={() => setcategorySelectedItem(option.id)}
                   />
                 );
               })}
@@ -269,7 +269,7 @@ const TabContent = ({
 };
 
 const VerticalTabView = props => {
-  var {navigation, category_id, setFilterVisible} = props;
+  var {navigation, category_id, setFilterVisible, param} = props;
   const [selectedTab, setSelectedTab] = useState(0);
   const countryCode = useSelector(state => state.UserReducer.country);
   const [priceData, setPriceData] = useState([
@@ -291,10 +291,33 @@ const VerticalTabView = props => {
     },
   ]);
 
-  const [low, setLow] = useState(0);
-  const [high, setHigh] = useState(100000);
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(100000);
+  const queryToObject = query => {
+    if (query != undefined) {
+      const pairs = query?.split('&');
+      const result = {};
+
+      pairs?.forEach(pair => {
+        const [key, value] = pair?.split('=');
+
+        if (key === 'price') {
+          const [minPrice, maxPrice] = value?.split(',');
+          result.minPrice = parseInt(minPrice);
+          result.maxPrice = parseInt(maxPrice);
+        } else {
+          result[key] = isNaN(value) ? value : parseInt(value);
+        }
+      });
+
+      return result;
+    }
+  };
+
+  const queryObject = queryToObject(param);
+
+  const [low, setLow] = useState(queryObject?.minPrice || 0);
+  const [high, setHigh] = useState(queryObject?.maxPrice || 100000);
+  const [min, setMin] = useState(queryObject?.minPrice || 0);
+  const [max, setMax] = useState(queryObject?.maxPrice || 100000);
 
   const handleValueChange = useCallback((low, high) => {
     setLow(low);
@@ -434,7 +457,37 @@ const VerticalTabView = props => {
 
   useEffect(() => {
     getApiData();
-  }, [categoriesData]);
+  }, []);
+
+  useEffect(() => {
+    if (queryObject?.brand_id) {
+      const brandIds =
+        typeof queryObject.brand_id === 'string'
+          ? queryObject.brand_id.split(',')
+          : [];
+      brandIds.forEach(id => {
+        handlebrandPress(id);
+      });
+    }
+
+    if (queryObject?.color_group) {
+      const colorIds = Array.isArray(queryObject.color_group)
+        ? queryObject.color_group
+        : [queryObject.color_group];
+
+      colorIds.forEach(colorId => {
+        handleColorPress(colorId);
+      });
+    }
+
+    if (queryObject?.size) {
+      const sizeIds =
+        typeof queryObject.size === 'string' ? queryObject.size.split(',') : [];
+      sizeIds.forEach(id => {
+        handlesizePress(id);
+      });
+    }
+  }, [queryObject]);
 
   const getApiData = async () => {
     try {
@@ -478,7 +531,9 @@ const VerticalTabView = props => {
     //   rating: maxRating,
     // },
   ];
-  const [categorySelectedItem, setcategorySelectedItem] = useState({});
+  const [categorySelectedItem, setcategorySelectedItem] = useState(
+    queryObject?.sub_category_id || 0,
+  );
   // const [subSubCategorySelectedItem, setSubSubCategorySelectedItem] = useState(
   //   [],
   // );
@@ -529,6 +584,7 @@ const VerticalTabView = props => {
   };
 
   const [brandSelectedItem, setbrandSelectedItem] = useState([]);
+
   const handlebrandPress = itemId => {
     if (brandSelectedItem.includes(itemId)) {
       setbrandSelectedItem(
@@ -538,7 +594,7 @@ const VerticalTabView = props => {
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand?.filter(
-          single => single.id !== itemId,
+          single => single?.id !== itemId,
         ),
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts,
@@ -547,7 +603,7 @@ const VerticalTabView = props => {
       });
     } else {
       setbrandSelectedItem([...brandSelectedItem, itemId]);
-      const selectedItem = brandData.find(single => single.id === itemId);
+      const selectedItem = brandData.find(single => single?.id === itemId);
       setFilterSelectedItem({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
@@ -561,6 +617,7 @@ const VerticalTabView = props => {
   };
 
   const [colorSelectedItem, setcolorSelectedItem] = useState([]);
+
   const handleColorPress = itemId => {
     if (colorSelectedItem.includes(itemId)) {
       setcolorSelectedItem(
@@ -571,7 +628,7 @@ const VerticalTabView = props => {
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand,
         colors: filterSelectedItem?.colors?.filter(
-          single => single.id !== itemId,
+          single => single?.id !== itemId,
         ),
         discounts: filterSelectedItem?.discounts,
         size: filterSelectedItem?.size,
@@ -579,7 +636,7 @@ const VerticalTabView = props => {
       });
     } else {
       setcolorSelectedItem([...colorSelectedItem, itemId]);
-      const selectedItem = colorData.find(single => single.id === itemId);
+      const selectedItem = colorData.find(single => single?.id === itemId);
       setFilterSelectedItem({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
@@ -604,12 +661,12 @@ const VerticalTabView = props => {
         brand: filterSelectedItem?.brand,
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts,
-        size: filterSelectedItem?.size?.filter(single => single.id !== itemId),
+        size: filterSelectedItem?.size?.filter(single => single?.id !== itemId),
         rating: filterSelectedItem?.rating,
       });
     } else {
       setsizeSelectedItem([...sizeSelectedItem, itemId]);
-      const selectedItem = sizeData.find(single => single.id === itemId);
+      const selectedItem = sizeData.find(single => single?.id === itemId);
       setFilterSelectedItem({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
@@ -634,7 +691,7 @@ const VerticalTabView = props => {
         brand: filterSelectedItem?.brand,
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts?.filter(
-          single => single.id !== itemId,
+          single => single?.id !== itemId,
         ),
         size: filterSelectedItem?.size,
         rating: filterSelectedItem?.rating,
@@ -665,28 +722,29 @@ const VerticalTabView = props => {
 
   const dataPayload = () => {
     let params = '';
+    console.log(`data---------------`, filterSelectedItem?.colors);
     const payload = {
       page: 1,
       size:
         filterSelectedItem?.size
-          ?.filter(item => item.size)
-          ?.map(item => item.size)
+          ?.filter(item => item?.size)
+          ?.map(item => item?.size)
           ?.join(',') || '',
       color_group:
         filterSelectedItem?.colors
-          ?.filter(item => item.id)
-          ?.map(item => item.id)
+          ?.filter(item => item?.id)
+          ?.map(item => item?.id)
           ?.join(',') || '',
       brand_id:
         filterSelectedItem?.brand
-          ?.filter(item => item.id)
-          ?.map(item => item.id)
+          ?.filter(item => item?.id)
+          ?.map(item => item?.id)
           ?.join(',') || '',
-      sub_category_id: categorySelectedItem?.id || '',
+      sub_category_id: categorySelectedItem || '',
       price: low > 0 && high ? `${low},${high}` : '',
     };
 
-    console.log('Payload:', payload);
+    console.log('Payload:---------------', payload);
 
     for (const key in payload) {
       if (payload[key] != null && payload[key] !== '') {
@@ -706,6 +764,7 @@ const VerticalTabView = props => {
   const applyFilter = async () => {
     try {
       const data = dataPayload();
+      console.log('data', data);
       navigation.push('ProductList', {
         param: data,
         category_id: category_id,
@@ -828,9 +887,7 @@ const VerticalTabView = props => {
               price: [],
               brand: [],
               colors: [],
-              discounts: '',
               size: [],
-              rating: [],
             });
             setcategorySelectedItem([]);
             setpriceSelectedItem([]);

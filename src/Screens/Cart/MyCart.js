@@ -33,7 +33,7 @@ const MyCart = ({}) => {
   const [CheckOut, setCheckOut] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [addressData, setAddressCount] = useState(0);
-  const [bottomData, setBottomData] = useState('');
+  const [bottomData, setBottomData] = useState({});
   const [loading, setLoading] = useState(false);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
@@ -310,27 +310,29 @@ const MyCart = ({}) => {
                   Remove
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  toggle_WishList();
-                }}
-                style={{
-                  flex: 1,
-                  height: 40,
-                  backgroundColor: Color.primary,
-                  borderRadius: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
+              {bottomData?.variant?.is_wishlisted == false && (
+                <TouchableOpacity
+                  onPress={() => {
+                    toggle_WishList();
+                  }}
                   style={{
-                    fontSize: 14,
-                    color: Color.white,
-                    fontFamily: Manrope.Bold,
+                    flex: 1,
+                    height: 40,
+                    backgroundColor: Color.primary,
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  Move to wishlist
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.white,
+                      fontFamily: Manrope.Bold,
+                    }}>
+                    Move to wishlist
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </BottomSheet>

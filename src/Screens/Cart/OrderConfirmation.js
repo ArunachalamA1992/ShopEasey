@@ -167,7 +167,7 @@ const OrderConfirmation = ({navigation, route}) => {
     if (selectedData?.length == 1) {
       setIsExpanded(true);
     }
-    if (address.length > 0) {
+    if (address.length > 0 && selectAddress?.city == undefined) {
       const defaultAddress = address.find(item => item?.is_default === 1);
       setSelectAddress(defaultAddress || address[0]);
     }

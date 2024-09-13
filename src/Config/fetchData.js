@@ -167,6 +167,10 @@ export default {
     let url = api_name + 'review';
     return api.postMethod(url, data, token);
   },
+  check_review: (data, token) => {
+    let url = api_name + 'review/check-review/' + data;
+    return api.getMethod(url, token);
+  },
   notification: (data, token) => {
     let url = api_name + 'notifications/user';
     return api.getMethod(url, token);

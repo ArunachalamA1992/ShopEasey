@@ -13,7 +13,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import VerticalTabView from './VerticalTabView';
 
 const FilterModal = props => {
-  const {setFilterVisible, filterVisible, navigation, category_id} = props;
+  const {setFilterVisible, filterVisible, navigation, category_id, param} =
+    props;
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -57,6 +58,7 @@ const FilterModal = props => {
             visible={filterVisible}
             category_id={category_id}
             setFilterVisible={setFilterVisible}
+            param={param}
           />
         </View>
       </View>

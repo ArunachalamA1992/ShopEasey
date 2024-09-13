@@ -76,48 +76,10 @@ const HomeScreen = () => {
   const [FeaturedPage, setFeaturedPage] = useState(1);
   const [FeaturedendReached, setFeaturedEndReached] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [FeaturedShowLoadMore, setFeaturedShowLoadMore] = useState(false);
+  const [showLoadMore, setShowLoadMore] = useState(false);
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
-
-  const [OfferBanner] = useState([
-    {
-      id: '0',
-      category_name: 'Men',
-      category_image: Media.hot_deal_one,
-    },
-    {
-      id: '1',
-      category_name: 'Women',
-      category_image: Media.hot_deal_two,
-    },
-  ]);
-
-  const [hotDealsData] = useState([
-    {
-      id: 1,
-      image: Media.hot_deal_ban_one,
-    },
-    {
-      id: 2,
-      image: Media.hot_deal_ban_two,
-    },
-    {
-      id: 3,
-      image: Media.hot_deal_ban_one,
-    },
-    {
-      id: 4,
-      image: Media.hot_deal_ban_two,
-    },
-    {
-      id: 5,
-      image: Media.hot_deal_ban_one,
-    },
-    {
-      id: 6,
-      image: Media.hot_deal_ban_two,
-    },
-  ]);
 
   const [bannerData, setBannerData] = useState([]);
   const splitByCategory = data => {
@@ -210,30 +172,6 @@ const HomeScreen = () => {
     {id: 9, title: 'Featured Product', data: ['Featured Product']},
     {id: 10, title: 'Latest Product', data: ['Latest Product']},
   ]);
-
-  const [FeaturedVisibleData, setFeaturedVisibleData] = useState(
-    FeaturedProducts.slice(0, 4),
-  );
-  const [FeaturedShowLoadMore, setFeaturedShowLoadMore] = useState(
-    FeaturedProducts.length > 4,
-  );
-
-  const loadFeaturedMoreItems = () => {
-    const currentLength = FeaturedVisibleData.length;
-    const nextBatch = FeaturedProducts.slice(currentLength, currentLength + 8);
-    setFeaturedVisibleData([...FeaturedVisibleData, ...nextBatch]);
-    setFeaturedShowLoadMore(currentLength + 8 < FeaturedProducts.length);
-  };
-
-  const [visibleData, setVisibleData] = useState(products.slice(0, 4));
-  const [showLoadMore, setShowLoadMore] = useState(products.length > 4);
-
-  const loadMoreItems = () => {
-    const currentLength = visibleData.length;
-    const nextBatch = products.slice(currentLength, currentLength + 8);
-    setVisibleData([...visibleData, ...nextBatch]);
-    setShowLoadMore(currentLength + 8 < products.length);
-  };
 
   useEffect(() => {
     currentGeolocation();
@@ -389,8 +327,7 @@ const HomeScreen = () => {
       var data = `project=offer`;
       const get_products = await fetchData.list_products(data, token);
       setProducts(get_products?.data);
-      setVisibleData(get_products?.data?.slice(0, 4));
-      setShowLoadMore(get_products?.data?.length > 4);
+      setShowLoadMore(true);
     } catch (error) {
       console.log('error', error);
     }
@@ -413,8 +350,7 @@ const HomeScreen = () => {
         token,
       );
       setFeaturedProducts(fetured_products?.data);
-      setFeaturedVisibleData(fetured_products?.data?.slice(0, 4));
-      setFeaturedShowLoadMore(fetured_products?.data?.length > 4);
+      setFeaturedShowLoadMore(true);
 
       //banner
       var banner_data = `seller=home_page`;
@@ -444,10 +380,9 @@ const HomeScreen = () => {
   };
 
   const loadMoreData = async () => {
-    if (loadMore || endReached) {
-      return;
-    }
+    if (loadMore || endReached) return;
     setLoadMore(true);
+
     try {
       const nextPage = Page + 1;
       var data = `project=offer&page=${nextPage}`;
@@ -456,10 +391,10 @@ const HomeScreen = () => {
         setPage(nextPage);
         const updatedData = [...products, ...response?.data];
         setProducts(updatedData);
-        // setVisibleData(updatedData?.slice(0, 4));
-        // setShowLoadMore(updatedData?.length > 4);
+        setShowLoadMore(true);
       } else {
         setEndReached(true);
+        setShowLoadMore(false);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -481,8 +416,10 @@ const HomeScreen = () => {
         setFeaturedPage(nextPage);
         const updatedData = [...FeaturedProducts, ...response?.data];
         setFeaturedProducts(updatedData);
+        setFeaturedShowLoadMore(true);
       } else {
         setFeaturedEndReached(true);
+        setFeaturedShowLoadMore(false);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -498,8 +435,13 @@ const HomeScreen = () => {
     setlatestloadMore(true);
     try {
       const nextPage = latestPage + 1;
+      console.log('nextPage-------------------', nextPage);
       var data = `page=${nextPage}`;
       const response = await fetchData.list_products(data, token);
+      console.log(
+        'response?.length--------------------',
+        response?.data?.length,
+      );
       if (response?.data.length > 0) {
         setlatestPage(nextPage);
         const updatedData = [...latestProducts, ...response?.data];
@@ -511,6 +453,7 @@ const HomeScreen = () => {
       console.error('Error fetching data:', error);
     } finally {
       setlatestloadMore(false);
+      console.log('error');
     }
   };
 
@@ -936,7 +879,7 @@ const HomeScreen = () => {
         </View>
       ) : (
         <>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
             <LinearGradient
               style={{
                 height: 480,
@@ -1012,7 +955,7 @@ const HomeScreen = () => {
                       icon_color={Color.white}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={{marginHorizontal: 10}}
                     onPress={() => navigation.navigate('MyCartTab')}>
                     {cart !== 0 && (
@@ -1035,18 +978,25 @@ const HomeScreen = () => {
                       size={24}
                       color={Color.white}
                     />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               </View>
               {/* </View> */}
 
               <View
                 style={{
-                  width: '100%',
-                  // position: 'absolute',
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  // top: 70,
+                  justifyContent: 'space-evenly',
                 }}>
+                <Image
+                  source={{uri: Media.main_white_logo}}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    resizeMode: 'cover',
+                  }}
+                />
                 <View
                   activeOpacity={0.5}
                   style={{
@@ -1066,12 +1016,11 @@ const HomeScreen = () => {
                       ProductSuggestions?.visible == true && searchProduct != ''
                         ? 0
                         : 50,
-                    width: '90%',
+                    width: '70%',
                     height: 50,
                     paddingHorizontal: 20,
                     borderWidth: 1,
                     borderColor: Color.lightgrey,
-                    opacity: 0.5,
                   }}
                   // onPress={() => {
                   //   navigation.navigate('Search', {searchProduct: ''});
@@ -1123,7 +1072,6 @@ const HomeScreen = () => {
                 </TouchableOpacity> */}
                 </View>
               </View>
-
               <View
                 style={{
                   flexDirection: 'row',
@@ -1222,88 +1170,6 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
             </LinearGradient>
-
-            {ProductSuggestions?.visible == true && searchProduct != '' && (
-              <View
-                style={{
-                  width: '100%',
-                  position: 'absolute',
-                  alignItems: 'center',
-                  top: 125,
-                  zIndex: 1,
-                }}>
-                <View
-                  style={{
-                    width: '90%',
-                    maxHeight: 200,
-                    backgroundColor: Color.white,
-                    padding: 10,
-                    marginTop: 5,
-                    borderWidth: 1,
-                    borderColor: Color.lightgrey,
-                    borderBottomLeftRadius: 20,
-                    borderBottomRightRadius: 20,
-                  }}>
-                  <FlatList
-                    data={ProductSuggestions?.data}
-                    keyExtractor={(item, index) => item + index}
-                    renderItem={({item, index}) => {
-                      return (
-                        <TouchableOpacity
-                          key={index}
-                          onPress={() => {
-                            getSearchData(item);
-                          }}
-                          style={{
-                            width: '90%',
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontFamily: Manrope.Medium,
-                              color: Color.black,
-                            }}>
-                            {item?.keyword}
-                          </Text>
-                          {index < ProductSuggestions?.data.length - 1 && (
-                            <Divider style={{height: 1, marginVertical: 5}} />
-                          )}
-                        </TouchableOpacity>
-                      );
-                    }}
-                    onEndReached={() => {
-                      loadSearchMoreData();
-                    }}
-                    ListEmptyComponent={() => {
-                      return (
-                        <View
-                          style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginVertical: 10,
-                            width: '100%',
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              padding: 5,
-                              paddingHorizontal: 20,
-                              marginStart: 5,
-                              borderRadius: 5,
-                              marginVertical: 10,
-                              color: Color.primary,
-                              fontFamily: Manrope.Bold,
-                            }}>
-                            No Data
-                          </Text>
-                        </View>
-                      );
-                    }}
-                    onEndReachedThreshold={3}
-                  />
-                </View>
-              </View>
-            )}
             <Animated.SectionList
               sections={shopSection}
               scrollEnabled={false}
@@ -2001,14 +1867,16 @@ const HomeScreen = () => {
                     );
                   case 'product':
                     return (
-                      <View
+                      <LinearGradient
                         style={{
-                          backgroundColor: Color.white,
                           marginBottom: 10,
                           padding: 10,
-                        }}>
+                        }}
+                        start={{x: 0, y: 0}}
+                        end={{x: 1, y: 0}}
+                        colors={['#FF0066', '#fff']}>
                         <FlatList
-                          data={visibleData}
+                          data={products}
                           numColumns={2}
                           showsVerticalScrollIndicator={false}
                           renderItem={({item, index}) => {
@@ -2016,15 +1884,11 @@ const HomeScreen = () => {
                               <ItemCard item={item} navigation={navigation} />
                             );
                           }}
-                          onEndReached={() => {
-                            loadMoreData();
-                          }}
-                          onEndReachedThreshold={3}
                         />
                         {showLoadMore && (
                           <TouchableOpacity
                             onPress={() => {
-                              loadMoreItems();
+                              loadMoreData();
                             }}
                             style={{
                               padding: 5,
@@ -2036,21 +1900,22 @@ const HomeScreen = () => {
                               style={{
                                 fontSize: 14,
                                 fontFamily: Manrope.Bold,
-                                color: Color.primary,
+                                color: Color.white,
                                 marginHorizontal: 5,
                                 textDecorationLine: 'underline',
                                 textAlign: 'center',
                               }}>
-                              more
+                              More
                             </Text>
                             <Icon
                               name="chevron-forward-circle"
                               size={15}
                               color={Color.white}
+                              style={{marginTop: 5}}
                             />
                           </TouchableOpacity>
                         )}
-                      </View>
+                      </LinearGradient>
                     );
                   case 'Featured Product':
                     return (
@@ -2061,7 +1926,7 @@ const HomeScreen = () => {
                           }}
                           start={{x: 0, y: 0}}
                           end={{x: 1, y: 0}}
-                          colors={['#F99245', '#fff']}>
+                          colors={['#0D71BA', '#2994CB', '#fff']}>
                           <View
                             style={{
                               flexDirection: 'row',
@@ -2072,7 +1937,7 @@ const HomeScreen = () => {
                               style={{
                                 flex: 1,
                                 fontSize: 16,
-                                color: Color.black,
+                                color: Color.white,
                                 fontFamily: Manrope.SemiBold,
                               }}>
                               Featured Products
@@ -2095,7 +1960,7 @@ const HomeScreen = () => {
                           </TouchableOpacity> */}
                           </View>
                           <FlatList
-                            data={FeaturedVisibleData}
+                            data={FeaturedProducts}
                             numColumns={2}
                             showsHorizontalScrollIndicator={false}
                             renderItem={({item, index}) => {
@@ -2103,15 +1968,11 @@ const HomeScreen = () => {
                                 <ItemCard item={item} navigation={navigation} />
                               );
                             }}
-                            onEndReached={() => {
-                              featuredLoadMoreData();
-                            }}
-                            onEndReachedThreshold={3}
                           />
                           {FeaturedShowLoadMore && (
                             <TouchableOpacity
                               onPress={() => {
-                                loadFeaturedMoreItems();
+                                featuredLoadMoreData();
                               }}
                               style={{
                                 padding: 5,
@@ -2123,7 +1984,7 @@ const HomeScreen = () => {
                                 style={{
                                   fontSize: 16,
                                   fontFamily: Manrope.Bold,
-                                  color: Color.primary,
+                                  color: Color.white,
                                   marginHorizontal: 5,
                                   textAlign: 'center',
                                 }}>
@@ -2132,7 +1993,7 @@ const HomeScreen = () => {
                               <Icon
                                 name="chevron-forward-circle"
                                 size={18}
-                                color={Color.primary}
+                                color={Color.white}
                                 style={{marginTop: 5}}
                               />
                             </TouchableOpacity>
@@ -2143,35 +2004,18 @@ const HomeScreen = () => {
                   case 'Latest Product':
                     return (
                       latestProducts?.length > 0 && (
-                        <View style={{marginTop: 5}}>
-                          {/* <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              marginVertical: 10,
-                            }}>
-                            <Text
-                              style={{
-                                flex: 1,
-                                fontSize: 16,
-                                color: Color.black,
-                                fontFamily: Manrope.SemiBold,
-                                textAlign: 'center',
-                              }}>
-                              Latest Products
-                            </Text>
-                          </View> */}
+                        <View style={{}}>
                           <Image
                             source={Media.latest_banner}
                             style={{width: '100%', height: 50}}
                           />
                           <LinearGradient
                             style={{
-                              paddingStart: 10,
+                              paddingBottom: 10,
                             }}
                             start={{x: 0, y: 0}}
                             end={{x: 1, y: 0}}
-                            colors={['#6A0588', '#fff']}>
+                            colors={['#840BB0', '#fff']}>
                             <FlatList
                               data={latestProducts}
                               numColumns={2}
@@ -2183,39 +2027,66 @@ const HomeScreen = () => {
                                   />
                                 );
                               }}
-                              onEndReachedThreshold={3}
-                              onEndReached={() => {
+                              // onEndReached={() => {
+                              //   latestLoadMoreData();
+                              // }}
+                              // onEndReachedThreshold={0.1}
+                              // ListFooterComponent={() => {
+                              //   return (
+                              //     <View
+                              //       style={{
+                              //         alignItems: 'center',
+                              //         justifyContent: 'center',
+                              //       }}>
+                              //       {latestloadMore && (
+                              //         <View
+                              //           style={{
+                              //             flexDirection: 'row',
+                              //             alignItems: 'center',
+                              //           }}>
+                              //           <Text
+                              //             style={{
+                              //               fontSize: 12,
+                              //               color: Color.black,
+                              //               marginHorizontal: 10,
+                              //               fontFamily: Manrope.Medium,
+                              //             }}>
+                              //             Loading...
+                              //           </Text>
+                              //           <ActivityIndicator />
+                              //         </View>
+                              //       )}
+                              //     </View>
+                              //   );
+                              // }}
+                            />
+                            <TouchableOpacity
+                              onPress={() => {
                                 latestLoadMoreData();
                               }}
-                              ListFooterComponent={() => {
-                                return (
-                                  <View
-                                    style={{
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                    }}>
-                                    {latestloadMore && (
-                                      <View
-                                        style={{
-                                          flexDirection: 'row',
-                                          alignItems: 'center',
-                                        }}>
-                                        <Text
-                                          style={{
-                                            fontSize: 12,
-                                            color: Color.black,
-                                            marginHorizontal: 10,
-                                            fontFamily: Manrope.Medium,
-                                          }}>
-                                          Loading...
-                                        </Text>
-                                        <ActivityIndicator />
-                                      </View>
-                                    )}
-                                  </View>
-                                );
-                              }}
-                            />
+                              style={{
+                                padding: 5,
+                                flexDirection: 'row',
+                                backgroundColor: Color.transparentWhite,
+                                justifyContent: 'center',
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 16,
+                                  fontFamily: Manrope.Bold,
+                                  color: Color.white,
+                                  marginHorizontal: 5,
+                                  textAlign: 'center',
+                                }}>
+                                More
+                              </Text>
+                              <Icon
+                                name="chevron-forward-circle"
+                                size={18}
+                                color={Color.white}
+                                style={{marginTop: 5}}
+                              />
+                            </TouchableOpacity>
                           </LinearGradient>
                         </View>
                       )
@@ -2224,6 +2095,90 @@ const HomeScreen = () => {
               }}
             />
           </ScrollView>
+          {ProductSuggestions?.visible == true && searchProduct != '' && (
+            <View
+              style={{
+                width: '100%',
+                position: 'absolute',
+                alignItems: 'center',
+                top: 115,
+                zIndex: 1,
+              }}>
+              <View
+                style={{
+                  width: '90%',
+                  maxHeight: 200,
+                  backgroundColor: Color.white,
+                  padding: 10,
+                  marginTop: 5,
+                  borderWidth: 1,
+                  borderColor: Color.lightgrey,
+                  borderBottomLeftRadius: 20,
+                  borderBottomRightRadius: 20,
+                }}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <FlatList
+                    data={ProductSuggestions?.data}
+                    scrollEnabled
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={({item, index}) => {
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          onPress={() => {
+                            getSearchData(item);
+                          }}
+                          style={{
+                            width: '90%',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontFamily: Manrope.Medium,
+                              color: Color.black,
+                            }}>
+                            {item?.keyword}
+                          </Text>
+                          {index < ProductSuggestions?.data.length - 1 && (
+                            <Divider style={{height: 1, marginVertical: 5}} />
+                          )}
+                        </TouchableOpacity>
+                      );
+                    }}
+                    onEndReached={() => {
+                      loadSearchMoreData();
+                    }}
+                    ListEmptyComponent={() => {
+                      return (
+                        <View
+                          style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginVertical: 10,
+                            width: '100%',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              padding: 5,
+                              paddingHorizontal: 20,
+                              marginStart: 5,
+                              borderRadius: 5,
+                              marginVertical: 10,
+                              color: Color.primary,
+                              fontFamily: Manrope.Bold,
+                            }}>
+                            No Data
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    onEndReachedThreshold={3}
+                  />
+                </ScrollView>
+              </View>
+            </View>
+          )}
           <Modal transparent={true} animationType="fade" visible={imageVisible}>
             <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
               <View

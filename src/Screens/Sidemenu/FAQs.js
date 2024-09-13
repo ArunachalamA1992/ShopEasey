@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,12 +19,12 @@ import {
   Linking,
 } from 'react-native';
 import Color from '../../Global/Color';
-import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { Media } from '../../Global/Media';
-import { scr_width } from '../../Utils/Dimensions';
-import { Manrope } from '../../Global/FontFamily';
-import { Iconviewcomponent } from '../../Components/Icontag';
+import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {Media} from '../../Global/Media';
+import {scr_width} from '../../Utils/Dimensions';
+import {Manrope} from '../../Global/FontFamily';
+import {Iconviewcomponent} from '../../Components/Icontag';
 
 const aboutData = [
   {
@@ -43,10 +43,10 @@ const FAQs = () => {
   function renderHeaderItem() {
     try {
       return (
-        <View style={{ width: '100%', alignItems: 'center' }}>
-          <View style={{ width: scr_width }}>
+        <View style={{width: '100%', alignItems: 'center'}}>
+          <View style={{width: scr_width}}>
             <Image
-              source={{ uri: Media.faq }}
+              source={{uri: Media.faq}}
               style={{
                 width: scr_width,
                 height: 220,
@@ -54,8 +54,9 @@ const FAQs = () => {
               }}
             />
           </View>
-          <View style={{ width: '100%', alignItems: 'center', paddingVertical: 10 }}>
-            <View style={{ width: '100%' }}>
+          <View
+            style={{width: '100%', alignItems: 'center', paddingVertical: 10}}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -84,7 +85,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -113,7 +114,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -143,7 +144,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -172,7 +173,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -202,7 +203,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -232,7 +233,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -263,7 +264,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -293,7 +294,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -325,7 +326,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -355,7 +356,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -385,7 +386,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -414,7 +415,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -444,7 +445,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -473,7 +474,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -503,7 +504,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -549,7 +550,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -580,7 +581,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -608,7 +609,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -638,7 +639,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   paddingHorizontal: 10,
@@ -667,7 +668,7 @@ const FAQs = () => {
               </Text>
             </View>
 
-            <View style={{ width: '95%', marginVertical: 10 }}>
+            <View style={{width: '95%', marginVertical: 10}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -679,7 +680,7 @@ const FAQs = () => {
                   iconname={'checkcircle'}
                   icon_size={20}
                   icon_color={Color.primary}
-                  iconstyle={{ marginTop: 0 }}
+                  iconstyle={{marginTop: 0}}
                 />
                 <Text
                   style={{
@@ -706,7 +707,7 @@ const FAQs = () => {
                   iconname={'checkcircle'}
                   icon_size={20}
                   icon_color={Color.primary}
-                  iconstyle={{ marginTop: 0 }}
+                  iconstyle={{marginTop: 0}}
                 />
                 <Text
                   style={{
@@ -733,7 +734,7 @@ const FAQs = () => {
                   iconname={'checkcircle'}
                   icon_size={20}
                   icon_color={Color.primary}
-                  iconstyle={{ marginTop: 0 }}
+                  iconstyle={{marginTop: 0}}
                 />
                 <Text
                   style={{
@@ -760,7 +761,7 @@ const FAQs = () => {
                   iconname={'checkcircle'}
                   icon_size={20}
                   icon_color={Color.primary}
-                  iconstyle={{ marginTop: 0 }}
+                  iconstyle={{marginTop: 0}}
                 />
                 <Text
                   style={{
@@ -787,7 +788,7 @@ const FAQs = () => {
                   iconname={'checkcircle'}
                   icon_size={20}
                   icon_color={Color.primary}
-                  iconstyle={{ marginTop: 0 }}
+                  iconstyle={{marginTop: 0}}
                 />
                 <Text
                   style={{
@@ -822,7 +823,7 @@ const FAQs = () => {
             alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <View style={{ width: '100%', alignItems: 'center', marginTop: 0 }}>
+          <View style={{width: '100%', alignItems: 'center', marginTop: 0}}>
             <Text
               style={{
                 width: '95%',
@@ -871,6 +872,9 @@ const FAQs = () => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginVertical: 20,
+              }}
+              onPress={() => {
+                Linking.openURL('tel:9629332301');
               }}>
               <View
                 style={{
@@ -886,7 +890,7 @@ const FAQs = () => {
                   Icontag={'Feather'}
                   iconname={'phone-call'}
                   icon_size={14}
-                  iconstyle={{ color: Color.primary }}
+                  iconstyle={{color: Color.primary}}
                 />
               </View>
               <Text
@@ -906,6 +910,9 @@ const FAQs = () => {
                 width: '95%',
                 flexDirection: 'row',
                 alignItems: 'center',
+              }}
+              onPress={() => {
+                Linking.openURL('mailto:info@shopeasey.com');
               }}>
               <View
                 style={{
@@ -921,7 +928,7 @@ const FAQs = () => {
                   Icontag={'Ionicons'}
                   iconname={'mail'}
                   icon_size={14}
-                  iconstyle={{ color: Color.primary }}
+                  iconstyle={{color: Color.primary}}
                 />
               </View>
               <Text
@@ -945,7 +952,7 @@ const FAQs = () => {
               marginVertical: 20,
             }}></View>
           <View
-            style={{ width: '95%', flexDirection: 'row', alignItems: 'center' }}>
+            style={{width: '95%', flexDirection: 'row', alignItems: 'center'}}>
             <View
               style={{
                 flex: 0,
@@ -981,7 +988,8 @@ const FAQs = () => {
                   textAlign: 'justify',
                   color: Color.primary,
                   letterSpacing: 0.5,
-                  fontFamily: Manrope.SemiBold, paddingVertical: 5
+                  fontFamily: Manrope.SemiBold,
+                  paddingVertical: 5,
                 }}>
                 Shop Easey
               </Text>
@@ -1173,7 +1181,7 @@ const FAQs = () => {
           ListHeaderComponent={() => renderHeaderItem()}
           // renderItem={({ item, index }) => renderFreeRentalItem(item, index)}
           ListFooterComponent={() => renderFooterItem()}
-          style={{ width: '95%' }}
+          style={{width: '95%'}}
           showsVerticalScrollIndicator={false}
         />
       </View>

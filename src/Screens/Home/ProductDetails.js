@@ -52,6 +52,9 @@ const ProductDetails = ({route}) => {
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
   const [reviewsData, setReviewsData] = useState({});
+  const [reviewsloadMore, setreviewsLoadMore] = useState(false);
+  const [reviewsPage, setreviewsPage] = useState(1);
+  const [reviewsendReached, setreviewsEndReached] = useState(false);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedAge, setSelectedAge] = useState(null);
   const [selectedGender, setSelectedGender] = useState(null);
@@ -248,39 +251,30 @@ const ProductDetails = ({route}) => {
         token,
       );
       setTopPicks(topPicksData?.data);
+      //you may also like this
+      var like_this_param = `category_id=${productData?.data?.product?.category_id}`;
+      const like_this_data = await fetchData.list_products(
+        like_this_param,
+        token,
+      );
+      setCategories_data(like_this_data?.data);
       // Reviews
       const reviewData = await fetchData.get_review(id, token);
+      console.log('reviewData', reviewData);
       setReviewsData(reviewData);
-      setVisibleData(reviewData?.data?.slice(0, 4));
-      setShowLoadMore(reviewData?.data?.length > 4);
+      setShowLoadMore(true);
       // Follow Status
       const sellerData = await fetchData.seller_list(
         `vendor_id=${singleData?.product?.vendor?.id}`,
         token,
       );
       setFollowStatus(sellerData?.data?.[0]?.is_follow);
-
-      getCategoriesData();
-
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data', error);
     }
   };
 
-  const [SuggestionData, setSuggestionData] = useState(
-    Categories_data.slice(0, 4),
-  );
-  const [SuggestionLoadMore, setSuggestionLoadMore] = useState(
-    Categories_data.length > 4,
-  );
-
-  const loadSuggestionItems = () => {
-    const currentLength = SuggestionData.length;
-    const nextBatch = Categories_data.slice(currentLength, currentLength + 8);
-    setSuggestionData([...visibleData, ...nextBatch]);
-    setSuggestionLoadMore(currentLength + 8 < Categories_data.length);
-  };
   const loadMoreData = async () => {
     if (loadMore || endReached) {
       return;
@@ -304,18 +298,32 @@ const ProductDetails = ({route}) => {
     }
   };
 
-  const [visibleData, setVisibleData] = useState(
-    reviewsData?.data?.slice(0, 4),
-  );
-  const [showLoadMore, setShowLoadMore] = useState(
-    reviewsData?.data?.length > 4,
-  );
-
-  const loadMoreItems = () => {
-    const newVisibleData = reviewsData?.data?.slice(0, visibleData?.length + 8);
-    setVisibleData(newVisibleData);
-    setShowLoadMore(newVisibleData.length < reviewsData?.data?.length);
+  const loadReviewData = async () => {
+    if (reviewsloadMore || reviewsendReached) {
+      return;
+    }
+    setreviewsLoadMore(true);
+    try {
+      const nextPage = reviewsPage + 1;
+      var data = `id?page=${nextPage}`;
+      const response = await fetchData.get_review(data, token);
+      if (response?.data.length > 0) {
+        setreviewsPage(nextPage);
+        const updatedData = [...reviewsData, ...response?.data];
+        setReviewsData(updatedData);
+        setShowLoadMore(true);
+      } else {
+        setreviewsEndReached(true);
+        setShowLoadMore(false);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setreviewsLoadMore(false);
+    }
   };
+
+  const [showLoadMore, setShowLoadMore] = useState(false);
 
   const setFollowProfile = async id => {
     try {
@@ -328,26 +336,6 @@ const ProductDetails = ({route}) => {
       }
       getData();
       common_fn.showToast(setFollow?.message);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  useEffect(() => {
-    getCategoriesData();
-  }, []);
-
-  const getCategoriesData = async () => {
-    try {
-      //you may also like this
-      var like_this_param = `category_id=${singleData?.product?.category_id}`;
-      const like_this_data = await fetchData.list_products(
-        like_this_param,
-        token,
-      );
-      setCategories_data(like_this_data?.data);
-      setSuggestionData(like_this_data?.data?.slice(0, 4));
-      setSuggestionLoadMore(Categories_data.length > 4);
     } catch (error) {
       console.log('error', error);
     }
@@ -2216,13 +2204,15 @@ const ProductDetails = ({route}) => {
                         alignItems: 'center',
                         marginVertical: 5,
                       }}>
-                      {visibleData?.map((item, index) => {
+                      {reviewsData?.data?.map((item, index) => {
                         return (
-                          <View style={{width: '100%', alignItems: 'center'}}>
+                          <View
+                            key={index}
+                            style={{width: '100%', alignItems: 'center'}}>
                             <View
                               style={{
                                 flexDirection: 'row',
-                                alignItems: 'center',
+                                alignItems: 'flex-start',
                               }}>
                               <View
                                 style={{
@@ -2303,6 +2293,27 @@ const ProductDetails = ({route}) => {
                                     {item?.review}
                                   </Text>
                                 </View>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    flexWrap: 'wrap',
+                                  }}>
+                                  {item?.images?.map((image, image_index) => (
+                                    <Image
+                                      key={image_index}
+                                      source={{uri: image}}
+                                      style={{
+                                        width: 100,
+                                        height: 100,
+                                        borderRadius: 10,
+                                        marginBottom: 10,
+                                        marginLeft: 5,
+                                      }}
+                                      resizeMode="cover"
+                                    />
+                                  ))}
+                                </View>
                               </View>
                             </View>
                             <View
@@ -2324,7 +2335,7 @@ const ProductDetails = ({route}) => {
                         }}>
                         <TouchableOpacity
                           onPress={() => {
-                            loadMoreItems();
+                            loadReviewData();
                           }}>
                           <Text
                             style={{
@@ -2373,7 +2384,7 @@ const ProductDetails = ({route}) => {
                             color: Color.cloudyGrey,
                             fontFamily: Manrope.Bold,
                           }}>
-                          See more
+                          More
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -2409,7 +2420,7 @@ const ProductDetails = ({route}) => {
                       YOU MAY ALSO LIKE
                     </Text>
                     <FlatList
-                      data={SuggestionData}
+                      data={Categories_data}
                       numColumns={2}
                       showsHorizontalScrollIndicator={false}
                       renderItem={({item, index}) => {
@@ -2420,7 +2431,7 @@ const ProductDetails = ({route}) => {
                       }}
                       onEndReachedThreshold={3}
                     />
-                    {SuggestionLoadMore && (
+                    {/* {SuggestionLoadMore && (
                       <TouchableOpacity
                         onPress={() => {
                           loadSuggestionItems();
@@ -2443,7 +2454,7 @@ const ProductDetails = ({route}) => {
                           See more
                         </Text>
                       </TouchableOpacity>
-                    )}
+                    )} */}
                   </View>
                 )}
               </View>
