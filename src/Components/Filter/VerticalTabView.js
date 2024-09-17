@@ -459,39 +459,39 @@ const VerticalTabView = props => {
     getApiData();
   }, []);
 
-  const prevQueryObject = useRef();
+  // const prevQueryObject = useRef();
 
-  useEffect(() => {
-    // Initialize from queryObject (URL params or props)
-    if (queryObject?.brand_id) {
-      const brandIds = Array.isArray(queryObject.brand_id)
-        ? queryObject.brand_id.map(Number) // Convert to integers
-        : queryObject.brand_id.split(',').map(Number); // Convert to integers
-      brandIds.forEach(id => {
-        handlebrandPress(id); // Initialize brand selection
-      });
-    }
+  // useEffect(() => {
+  //   // Initialize from queryObject (URL params or props)
+  //   if (queryObject?.brand_id) {
+  //     const brandIds = Array.isArray(queryObject.brand_id)
+  //       ? queryObject.brand_id.map(Number) // Convert to integers
+  //       : queryObject.brand_id.split(',').map(Number); // Convert to integers
+  //     brandIds.forEach(id => {
+  //       handlebrandPress(id); // Initialize brand selection
+  //     });
+  //   }
 
-    if (queryObject?.color_group) {
-      const colorIds = Array.isArray(queryObject.color_group)
-        ? queryObject.color_group.map(Number) // Convert to integers
-        : typeof queryObject.color_group === 'string'
-        ? queryObject.color_group.split(',').map(Number) // Convert to integers
-        : [];
-      colorIds.forEach(colorId => {
-        handleColorPress(colorId); // Initialize color selection with integers
-      });
-    }
+  //   if (queryObject?.color_group) {
+  //     const colorIds = Array.isArray(queryObject.color_group)
+  //       ? queryObject.color_group.map(Number) // Convert to integers
+  //       : typeof queryObject.color_group === 'string'
+  //       ? queryObject.color_group.split(',').map(Number) // Convert to integers
+  //       : [];
+  //     colorIds.forEach(colorId => {
+  //       handleColorPress(colorId); // Initialize color selection with integers
+  //     });
+  //   }
 
-    if (queryObject?.size) {
-      const sizeIds = Array.isArray(queryObject.size)
-        ? queryObject.size.map(Number) // Convert to integers
-        : queryObject.size.split(',').map(Number); // Convert to integers
-      sizeIds.forEach(id => {
-        handlesizePress(id); // Initialize size selection
-      });
-    }
-  }, [queryObject]);
+  //   if (queryObject?.size) {
+  //     const sizeIds = Array.isArray(queryObject.size)
+  //       ? queryObject.size.map(Number) // Convert to integers
+  //       : queryObject.size.split(',').map(Number); // Convert to integers
+  //     sizeIds.forEach(id => {
+  //       handlesizePress(id); // Initialize size selection
+  //     });
+  //   }
+  // }, [queryObject]);
 
   const getApiData = async () => {
     try {
