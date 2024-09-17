@@ -87,6 +87,10 @@ export default {
     let url = api_name + 'address/' + param;
     return api.putMethod(url, data, token);
   },
+  delete_address: (param, data, token) => {
+    let url = api_name + 'address/' + param;
+    return api.deleteMethod(url, token);
+  },
   get_state_data: (data, token) => {
     let url = api_name + 'address/state?' + data;
     return api.getMethod(url, token);

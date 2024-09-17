@@ -109,10 +109,6 @@ const Placed = ({token, index, navigation}) => {
           renderItem={({item, index}) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
-            console.log(
-              `data`,
-              item?.variants?.color != '' || item?.variants?.color != null,
-            );
             return (
               <View
                 key={index}

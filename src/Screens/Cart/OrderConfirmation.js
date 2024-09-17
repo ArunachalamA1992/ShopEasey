@@ -16,6 +16,7 @@ import {
   FlatList,
   TextInput,
   Dimensions,
+  Alert,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {Manrope} from '../../Global/FontFamily';
@@ -64,6 +65,44 @@ const OrderConfirmation = ({navigation, route}) => {
       setOrderData(getCart?.data);
       const getaddress = await fetchData.list_address(``, token);
       setAddress(getaddress?.data);
+    } catch (error) {
+      console.log('error------', error);
+    }
+  };
+  const deleteAddress = async id => {
+    try {
+      Alert.alert(
+        '',
+        'Do you want to remove your address?',
+        [
+          {
+            text: 'No',
+            onPress: async () => {},
+          },
+          {
+            text: 'Yes',
+            onPress: async () => {
+              try {
+                var param = `${id}`;
+                console.log('data', param);
+                const getAddress = await fetchData.delete_address(
+                  param,
+                  '',
+                  token,
+                );
+
+                common_fn.showToast(getAddress?.message);
+              } catch (error) {
+                console.log('Error deleting address:', error);
+                common_fn.showToast(
+                  'Failed to delete address. Please try again.',
+                );
+              }
+            },
+          },
+        ],
+        {cancelable: false},
+      );
     } catch (error) {
       console.log('error------', error);
     }
@@ -179,7 +218,12 @@ const OrderConfirmation = ({navigation, route}) => {
       const priceMargin = countryCode?.price_margin || 1;
       const quantity = item?.quantity || 0;
 
-      return accumulator + (price / priceMargin) * quantity;
+      return (
+        accumulator +
+        price *
+          // / priceMargin
+          quantity
+      );
     }, 0)
     .toFixed(2);
 
@@ -189,7 +233,12 @@ const OrderConfirmation = ({navigation, route}) => {
       const priceMargin = countryCode?.price_margin || 1;
       const quantity = item?.quantity || 0;
 
-      return accumulator + (price / priceMargin) * quantity;
+      return (
+        accumulator +
+        price *
+          // / priceMargin
+          quantity
+      );
     }, 0)
     .toFixed(2);
 
@@ -201,7 +250,11 @@ const OrderConfirmation = ({navigation, route}) => {
       const quantity = item?.quantity ?? 0;
 
       const discountedPrice =
-        (orgPrice / priceMargin - offerPrice / priceMargin) * quantity;
+        (orgPrice -
+          // / priceMargin
+          offerPrice) *
+        // / priceMargin
+        quantity;
 
       return accumulator + discountedPrice;
     }, 0)
@@ -331,11 +384,13 @@ const OrderConfirmation = ({navigation, route}) => {
                 address_id: selectAddress?.id,
                 total: item?.variant?.offer_price
                   ? item?.variant?.offer_price
-                  : item?.variant?.price / countryCode?.price_margin +
+                  : item?.variant?.price +
+                    // / countryCode?.price_margin
                     tax_item?.tax * item?.quantity,
                 sub_total: item?.variant?.offer_price
                   ? item?.variant?.offer_price
-                  : item?.variant?.price / countryCode?.price_margin,
+                  : item?.variant?.price,
+                // / countryCode?.price_margin
                 tax: tax_item?.tax * item?.quantity,
                 products: {
                   product_id: item?.product?.id,
@@ -343,7 +398,8 @@ const OrderConfirmation = ({navigation, route}) => {
                   quantity: item?.quantity,
                   price: item?.variant?.offer_price
                     ? item?.variant?.offer_price
-                    : item?.variant?.price / countryCode?.price_margin,
+                    : item?.variant?.price,
+                  //  / countryCode?.price_margin
                   tax: tax_item?.tax * item?.quantity,
                 },
               };
@@ -575,6 +631,20 @@ const OrderConfirmation = ({navigation, route}) => {
                     style={{marginHorizontal: 10}}>
                     <FIcon name="pencil" size={20} color={Color.primary} />
                   </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      console.log('item?.id', item?.id);
+                      deleteAddress(item?.id);
+                    }}
+                    style={{marginHorizontal: 15}}>
+                    <Iconviewcomponent
+                      Icontag={'MaterialCommunityIcons'}
+                      iconname={'delete'}
+                      icon_size={22}
+                      iconstyle={{color: Color.red}}
+                    />
+                  </TouchableOpacity>
                 </View>
               );
             })}
@@ -627,12 +697,14 @@ const OrderConfirmation = ({navigation, route}) => {
                 {selectedData?.map(item => {
                   var discount = parseFloat(
                     100 -
-                      ((item?.variant?.org_price / countryCode?.price_margin -
+                      ((item?.variant?.org_price -
+                      // / countryCode?.price_margin
                       item?.variant?.offer_price
                         ? item?.variant?.offer_price
-                        : item?.variant?.price / countryCode?.price_margin) /
-                        item?.variant?.org_price /
-                        countryCode?.price_margin) *
+                        : item?.variant?.price) /
+                        // / countryCode?.price_margin
+                        item?.variant?.org_price) *
+                        // / countryCode?.price_margin
                         100,
                   ).toFixed(2);
                   return (
@@ -705,14 +777,14 @@ const OrderConfirmation = ({navigation, route}) => {
                             {parseFloat(
                               item?.variant?.offer_price
                                 ? item?.variant?.offer_price
-                                : item?.variant?.price /
-                                    countryCode?.price_margin,
+                                : item?.variant?.price,
+                              //  / countryCode?.price_margin,
                             ).toFixed(2)}{' '}
                             <Text style={styles.productPrice}>
                               {countryCode?.symbol}
                               {parseFloat(
-                                item?.variant?.org_price /
-                                  countryCode?.price_margin,
+                                item?.variant?.org_price,
+                                // / countryCode?.price_margin,
                               ).toFixed(2)}
                             </Text>
                           </Text>
@@ -1082,7 +1154,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     color: Color.cloudyGrey,
                     fontFamily: Manrope.Medium,
                   }}>
-                  Price ( {selectedData?.length} Items )
+                  Total Price ( {selectedData?.length} Items )
                 </Text>
                 <Text
                   style={{

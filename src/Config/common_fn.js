@@ -170,30 +170,37 @@ const common_fn = {
   generatePDF: async (response, countryCode) => {
     var discount = parseFloat(
       100 -
-        ((response?.variants?.org_price / countryCode?.price_margin -
+        ((response?.variants?.org_price -
+        // / countryCode?.price_margin
         response?.variants?.offer_price
           ? response?.variants?.offer_price
-          : response?.variants?.price / countryCode?.price_margin) /
-          response?.variants?.org_price /
-          countryCode?.price_margin) *
+          : response?.variants?.price) /
+          // / countryCode?.price_margin
+          response?.variants?.org_price) *
+          // / countryCode?.price_margin
           100,
     ).toFixed(2);
     const discount_price = parseFloat(
-      (response.variants?.org_price / countryCode?.price_margin -
+      (response.variants?.org_price -
+      // / countryCode?.price_margin
       response?.variants?.offer_price
         ? response?.variants?.offer_price
-        : response.variants?.price / countryCode?.price_margin) *
+        : response.variants?.price) *
+        // / countryCode?.price_margin
         response?.quantity || 0,
     ).toFixed(2);
     var tax_percent = parseFloat(
       (response?.order?.tax / response?.variants?.offer_price
         ? response?.variants?.offer_price
-        : response?.variants?.price / countryCode?.price_margin) * 100,
+        : response?.variants?.price) *
+        // / countryCode?.price_margin
+        100,
     ).toFixed(2);
     const tax_amount = parseFloat(
       (response?.variants?.offer_price
         ? response?.variants?.offer_price
-        : response.variants?.price / countryCode?.price_margin -
+        : response.variants?.price -
+          // / countryCode?.price_margin
           response.order.tax) * response?.quantity || 0,
     ).toFixed(2);
     const htmlContent = `
@@ -380,7 +387,8 @@ const common_fn = {
                 } ${parseFloat(
                   response?.variants?.offer_price
                     ? response?.variants?.offer_price
-                    : response.price / countryCode?.price_margin,
+                    : response.price,
+                  // / countryCode?.price_margin,
                 ).toFixed(2)}`}</td>
                 <td style="text-align: center;">${response.quantity}</td>
                 <td style="text-align: right;">${`${

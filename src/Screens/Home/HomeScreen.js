@@ -879,23 +879,23 @@ const HomeScreen = () => {
         </View>
       ) : (
         <>
-          <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
-            <LinearGradient
-              style={{
-                height: 480,
-                // backgroundColor: Color.primary,
-                marginBottom: 10,
-              }}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              colors={['#0D71BA', '#2994CB', '#0D71BA']}>
-              {/* <View
+          {/* <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled> */}
+          <LinearGradient
+            style={
+              {
+                // height: 120,
+              }
+            }
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#0D71BA', '#2994CB', '#0D71BA']}>
+            {/* <View
               style={{
                 height: 120,
                 backgroundColor: Color.primary,
                 marginBottom: 30,
               }}> */}
-              {/* <ImageBackground
+            {/* <ImageBackground
                 source={Media.home_back}
                 style={{
                   width: '100%',
@@ -904,58 +904,58 @@ const HomeScreen = () => {
                   resizeMode: 'contain',
                 }}
               /> */}
+            <View
+              style={{
+                // position: 'absolute',
+                // top: -20,
+                // bottom: 0,
+                // left: 0,
+                // right: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
               <View
                 style={{
-                  // position: 'absolute',
-                  // top: -20,
-                  // bottom: 0,
-                  // left: 0,
-                  // right: 0,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: 10,
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}>
-                <View
+                <Iconviewcomponent
+                  Icontag={'Octicons'}
+                  iconname={'location'}
+                  icon_size={20}
+                  icon_color={Color.white}
+                />
+                <Text
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    fontSize: 16,
+                    color: Color.white,
+                    marginLeft: 5,
+                    textTransform: 'capitalize',
+                    fontFamily: Manrope.Bold,
                   }}>
+                  {currentCity}
+                </Text>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={{marginHorizontal: 10}}
+                  onPress={() => navigation.navigate('notification')}>
+                  <Feather name="bell" size={24} color={Color.white} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{marginHorizontal: 10}}
+                  onPress={() => navigation.navigate('MyRewards')}>
                   <Iconviewcomponent
-                    Icontag={'Octicons'}
-                    iconname={'location'}
-                    icon_size={20}
+                    Icontag={'FontAwesome5'}
+                    iconname={'award'}
+                    icon_size={24}
                     icon_color={Color.white}
                   />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: Color.white,
-                      marginLeft: 5,
-                      textTransform: 'capitalize',
-                      fontFamily: Manrope.Bold,
-                    }}>
-                    {currentCity}
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <TouchableOpacity
-                    style={{marginHorizontal: 10}}
-                    onPress={() => navigation.navigate('notification')}>
-                    <Feather name="bell" size={24} color={Color.white} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{marginHorizontal: 10}}
-                    onPress={() => navigation.navigate('MyRewards')}>
-                    <Iconviewcomponent
-                      Icontag={'FontAwesome5'}
-                      iconname={'award'}
-                      icon_size={24}
-                      icon_color={Color.white}
-                    />
-                  </TouchableOpacity>
-                  {/* <TouchableOpacity
+                </TouchableOpacity>
+                {/* <TouchableOpacity
                     style={{marginHorizontal: 10}}
                     onPress={() => navigation.navigate('MyCartTab')}>
                     {cart !== 0 && (
@@ -979,60 +979,60 @@ const HomeScreen = () => {
                       color={Color.white}
                     />
                   </TouchableOpacity> */}
-                </View>
               </View>
-              {/* </View> */}
+            </View>
+            {/* </View> */}
 
-              <View
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-evenly',
+              }}>
+              <Image
+                source={{uri: Media.main_white_logo}}
                 style={{
+                  width: 50,
+                  height: 50,
+                  resizeMode: 'cover',
+                }}
+              />
+              <View
+                activeOpacity={0.5}
+                style={{
+                  backgroundColor: Color.white,
                   flexDirection: 'row',
+                  marginVertical: 10,
                   alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                }}>
-                <Image
-                  source={{uri: Media.main_white_logo}}
-                  style={{
-                    width: 50,
-                    height: 50,
-                    resizeMode: 'cover',
-                  }}
+                  borderRadius:
+                    ProductSuggestions?.visible == true && searchProduct != ''
+                      ? 20
+                      : 50,
+                  borderBottomLeftRadius:
+                    ProductSuggestions?.visible == true && searchProduct != ''
+                      ? 0
+                      : 50,
+                  borderBottomRightRadius:
+                    ProductSuggestions?.visible == true && searchProduct != ''
+                      ? 0
+                      : 50,
+                  width: '70%',
+                  height: 50,
+                  paddingHorizontal: 20,
+                  borderWidth: 1,
+                  borderColor: Color.lightgrey,
+                }}
+                // onPress={() => {
+                //   navigation.navigate('Search', {searchProduct: ''});
+                // }}
+              >
+                <Iconviewcomponent
+                  Icontag={'AntDesign'}
+                  iconname={'search1'}
+                  icon_size={20}
+                  icon_color={Color.black}
                 />
-                <View
-                  activeOpacity={0.5}
-                  style={{
-                    backgroundColor: Color.white,
-                    flexDirection: 'row',
-                    marginVertical: 20,
-                    alignItems: 'center',
-                    borderRadius:
-                      ProductSuggestions?.visible == true && searchProduct != ''
-                        ? 20
-                        : 50,
-                    borderBottomLeftRadius:
-                      ProductSuggestions?.visible == true && searchProduct != ''
-                        ? 0
-                        : 50,
-                    borderBottomRightRadius:
-                      ProductSuggestions?.visible == true && searchProduct != ''
-                        ? 0
-                        : 50,
-                    width: '70%',
-                    height: 50,
-                    paddingHorizontal: 20,
-                    borderWidth: 1,
-                    borderColor: Color.lightgrey,
-                  }}
-                  // onPress={() => {
-                  //   navigation.navigate('Search', {searchProduct: ''});
-                  // }}
-                >
-                  <Iconviewcomponent
-                    Icontag={'AntDesign'}
-                    iconname={'search1'}
-                    icon_size={20}
-                    icon_color={Color.black}
-                  />
-                  {/* <Text
+                {/* <Text
                   style={{
                     flex: 1,
                     fontSize: 14,
@@ -1043,21 +1043,21 @@ const HomeScreen = () => {
                   numberOfLines={1}>
                   {`Search Products`}
                 </Text> */}
-                  <TextInput
-                    placeholder="Search Products"
-                    value={searchProduct}
-                    style={{
-                      flex: 1,
-                      marginLeft: 10,
-                      color: Color.cloudyGrey,
-                      fontSize: 14,
-                      fontFamily: Manrope.SemiBold,
-                    }}
-                    placeholderTextColor={Color.cloudyGrey}
-                    onChangeText={search => propertySearch(search)}
-                  />
-                  <VoiceSearch onSearch={handleVoiceSearch} />
-                  {/* <TouchableOpacity
+                <TextInput
+                  placeholder="Search Products"
+                  value={searchProduct}
+                  style={{
+                    flex: 1,
+                    marginLeft: 10,
+                    color: Color.cloudyGrey,
+                    fontSize: 14,
+                    fontFamily: Manrope.SemiBold,
+                  }}
+                  placeholderTextColor={Color.cloudyGrey}
+                  onChangeText={search => propertySearch(search)}
+                />
+                <VoiceSearch onSearch={handleVoiceSearch} />
+                {/* <TouchableOpacity
                   onPress={() => {
                     openCameraWithPermission();
                   }}>
@@ -1070,412 +1070,325 @@ const HomeScreen = () => {
                     }}
                   />
                 </TouchableOpacity> */}
-                </View>
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  marginTop: 10,
-                  padding: 10,
-                }}>
-                {categoryData?.slice(0, 14)?.map((item, index) => {
+            </View>
+          </LinearGradient>
+          <Animated.SectionList
+            sections={shopSection}
+            scrollEnabled={true}
+            keyExtractor={(item, index) => item + index}
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={1}
+            nestedScrollEnabled
+            initialNumToRender={5}
+            renderItem={({item}) => {
+              switch (item) {
+                case 'Category Menu':
                   return (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => {
-                        navigation.navigate('ProductList', {
-                          category_id: item?.id,
-                        });
+                    <LinearGradient
+                      style={{
+                        // height: 480,
+                        // backgroundColor: Color.primary,
+                        marginBottom: 10,
                       }}
-                      style={{
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        // marginHorizontal: 10,
-                        width: '20%',
-                        marginVertical: 10,
-                      }}>
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
+                      colors={['#0D71BA', '#2994CB', '#0D71BA']}>
                       <View
                         style={{
-                          backgroundColor: '#E6F5F8',
-                          borderRadius: 100,
-                          width: 50,
-                          height: 50,
-                        }}>
-                        <Image
-                          source={{uri: item?.file}}
-                          style={{
-                            width: 50,
-                            height: 50,
-                            resizeMode: 'contain',
-                            borderRadius: 100,
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: 12,
-                          color: Color.white,
-                          font: Manrope.SemiBold,
-                          paddingVertical: 5,
-                        }}
-                        numberOfLines={2}>
-                        {item?.category_name}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('category');
-                  }}
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    // marginHorizontal: 10,
-                    marginVertical: 10,
-                    width: '20%',
-                  }}>
-                  <View style={{alignItems: 'center'}}>
-                    <View
-                      style={{
-                        backgroundColor: '#fff',
-                        borderRadius: 100,
-                        width: 50,
-                        height: 50,
-                      }}>
-                      <Image
-                        source={require('../../assets/images/viewall.png')}
-                        style={{
-                          width: 50,
-                          height: 50,
-                          resizeMode: 'contain',
-                        }}
-                      />
-                    </View>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 12,
-                        color: Color.white,
-                        font: Manrope.SemiBold,
-                        paddingVertical: 5,
-                      }}>
-                      View All
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </LinearGradient>
-            <Animated.SectionList
-              sections={shopSection}
-              scrollEnabled={false}
-              keyExtractor={(item, index) => item + index}
-              showsVerticalScrollIndicator={false}
-              scrollEventThrottle={1}
-              nestedScrollEnabled
-              initialNumToRender={5}
-              renderItem={({item}) => {
-                switch (item) {
-                  // case 'Category Menu':
-                  //   return (
-                  //     <View
-                  //       style={{
-                  //         flexDirection: 'row',
-                  //         flexWrap: 'wrap',
-                  //         justifyContent: 'space-between',
-                  //         alignItems: 'flex-start',
-                  //         marginTop: 10,
-                  //         // padding: 10,
-                  //       }}>
-                  //       {categoryData?.slice(0, 14)?.map((item, index) => {
-                  //         return (
-                  //           <TouchableOpacity
-                  //             key={index}
-                  //             onPress={() => {
-                  //               navigation.navigate('ProductList', {
-                  //                 category_id: item?.id,
-                  //               });
-                  //             }}
-                  //             style={{
-                  //               justifyContent: 'flex-start',
-                  //               alignItems: 'center',
-                  //               // marginHorizontal: 10,
-                  //               width: '20%',
-                  //               marginVertical: 10,
-                  //             }}>
-                  //             <View
-                  //               style={{
-                  //                 backgroundColor: '#E6F5F8',
-                  //                 borderRadius: 100,
-                  //                 width: 50,
-                  //                 height: 50,
-                  //               }}>
-                  //               <Image
-                  //                 source={{uri: item?.file}}
-                  //                 style={{
-                  //                   width: 50,
-                  //                   height: 50,
-                  //                   resizeMode: 'contain',
-                  //                   borderRadius: 100,
-                  //                 }}
-                  //               />
-                  //             </View>
-                  //             <Text
-                  //               style={{
-                  //                 textAlign: 'center',
-                  //                 fontSize: 12,
-                  //                 color: Color.black,
-                  //                 font: Manrope.SemiBold,
-                  //                 paddingVertical: 5,
-                  //               }}
-                  //               numberOfLines={2}>
-                  //               {item?.category_name}
-                  //             </Text>
-                  //           </TouchableOpacity>
-                  //         );
-                  //       })}
-                  //       <TouchableOpacity
-                  //         onPress={() => {
-                  //           navigation.navigate('category');
-                  //         }}
-                  //         style={{
-                  //           justifyContent: 'center',
-                  //           alignItems: 'center',
-                  //           // marginHorizontal: 10,
-                  //           marginVertical: 10,
-                  //           width: '20%',
-                  //         }}>
-                  //         <View style={{alignItems: 'center'}}>
-                  //           <View
-                  //             style={{
-                  //               backgroundColor: '#fff',
-                  //               borderRadius: 100,
-                  //               width: 50,
-                  //               height: 50,
-                  //             }}>
-                  //             <Image
-                  //               source={require('../../assets/images/viewall.png')}
-                  //               style={{
-                  //                 width: 50,
-                  //                 height: 50,
-                  //                 resizeMode: 'contain',
-                  //               }}
-                  //             />
-                  //           </View>
-                  //           <Text
-                  //             style={{
-                  //               textAlign: 'center',
-                  //               fontSize: 12,
-                  //               color: Color.black,
-                  //               font: Manrope.SemiBold,
-                  //               paddingVertical: 5,
-                  //             }}>
-                  //             View All
-                  //           </Text>
-                  //         </View>
-                  //       </TouchableOpacity>
-                  //     </View>
-                  //   );
-                  case 'banners':
-                    return (
-                      <View
-                        style={{
-                          width: width,
                           flexDirection: 'row',
-                          marginTop: 5,
-                          justifyContent: 'center',
-                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                          justifyContent: 'space-between',
+                          alignItems: 'flex-start',
+                          marginTop: 10,
+                          padding: 10,
                         }}>
-                        <SwiperFlatList
-                          autoplay
-                          autoplayDelay={5}
-                          autoplayLoop
-                          index={1}
-                          showPagination
-                          data={categorizedData?.main_banner}
-                          paginationActiveColor={Color.primary}
-                          paginationStyleItem={{
-                            width: 15,
-                            height: 3,
-                            marginTop: 40,
-                            marginHorizontal: 2,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                          renderItem={({item}) => (
+                        {categoryData?.slice(0, 14)?.map((item, index) => {
+                          return (
                             <TouchableOpacity
+                              key={index}
                               onPress={() => {
                                 navigation.navigate('ProductList', {
-                                  category_id: 560,
+                                  category_id: item?.id,
                                 });
+                              }}
+                              style={{
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                // marginHorizontal: 10,
+                                width: '20%',
+                                marginVertical: 10,
+                              }}>
+                              <View
+                                style={{
+                                  backgroundColor: '#E6F5F8',
+                                  borderRadius: 100,
+                                  width: 50,
+                                  height: 50,
+                                }}>
+                                <Image
+                                  source={{uri: item?.file}}
+                                  style={{
+                                    width: 50,
+                                    height: 50,
+                                    resizeMode: 'contain',
+                                    borderRadius: 100,
+                                  }}
+                                />
+                              </View>
+                              <Text
+                                style={{
+                                  textAlign: 'center',
+                                  fontSize: 12,
+                                  color: Color.white,
+                                  font: Manrope.SemiBold,
+                                  paddingVertical: 5,
+                                }}
+                                numberOfLines={2}>
+                                {item?.category_name}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                        <TouchableOpacity
+                          onPress={() => {
+                            navigation.navigate('category');
+                          }}
+                          style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            // marginHorizontal: 10,
+                            marginVertical: 10,
+                            width: '20%',
+                          }}>
+                          <View style={{alignItems: 'center'}}>
+                            <View
+                              style={{
+                                backgroundColor: '#fff',
+                                borderRadius: 100,
+                                width: 50,
+                                height: 50,
                               }}>
                               <Image
-                                source={{uri: item.file_path}}
+                                source={require('../../assets/images/viewall.png')}
                                 style={{
-                                  width: width - 10,
-                                  height: 130,
-                                  borderRadius: 5,
-                                  resizeMode: 'cover',
-                                  marginHorizontal: 5,
+                                  width: 50,
+                                  height: 50,
+                                  resizeMode: 'contain',
                                 }}
                               />
-                            </TouchableOpacity>
-                          )}
-                        />
+                            </View>
+                            <Text
+                              style={{
+                                textAlign: 'center',
+                                fontSize: 12,
+                                color: Color.white,
+                                font: Manrope.SemiBold,
+                                paddingVertical: 5,
+                              }}>
+                              View All
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
                       </View>
-                    );
-                  case 'hot deals':
-                    return (
-                      <LinearGradient
-                        style={{
-                          marginTop: 20,
-                          paddingStart: 10,
+                    </LinearGradient>
+                  );
+                case 'banners':
+                  return (
+                    <View
+                      style={{
+                        width: width,
+                        flexDirection: 'row',
+                        marginTop: 5,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <SwiperFlatList
+                        autoplay
+                        autoplayDelay={5}
+                        autoplayLoop
+                        index={1}
+                        showPagination
+                        data={categorizedData?.main_banner}
+                        paginationActiveColor={Color.primary}
+                        paginationStyleItem={{
+                          width: 15,
+                          height: 3,
+                          marginTop: 40,
+                          marginHorizontal: 2,
+                          justifyContent: 'center',
+                          alignItems: 'center',
                         }}
-                        start={{x: 0, y: 0}}
-                        end={{x: 1, y: 0}}
-                        colors={['#fff', '#fff']}>
+                        renderItem={({item}) => (
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('ProductList', {
+                                category_id: 560,
+                              });
+                            }}>
+                            <Image
+                              source={{uri: item.file_path}}
+                              style={{
+                                width: width - 10,
+                                height: 130,
+                                borderRadius: 5,
+                                resizeMode: 'cover',
+                                marginHorizontal: 5,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      />
+                    </View>
+                  );
+                case 'hot deals':
+                  return (
+                    <LinearGradient
+                      style={{
+                        marginTop: 20,
+                        paddingStart: 10,
+                      }}
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
+                      colors={['#fff', '#fff']}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginTop: 20,
+                        }}>
                         <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            marginTop: 20,
                           }}>
                           <View
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
                             }}>
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <Text
-                                style={{
-                                  fontSize: 16,
-                                  color: Color.black,
-                                  fontFamily: Manrope.Bold,
-                                }}>
-                                H
-                              </Text>
-                              <Iconviewcomponent
-                                Icontag={'MaterialCommunityIcons'}
-                                iconname={'fire'}
-                                icon_size={20}
-                                icon_color={Color.red}
-                              />
-                              <Text
-                                style={{
-                                  fontSize: 16,
-                                  color: Color.black,
-                                  fontFamily: Manrope.Bold,
-                                }}>
-                                T
-                              </Text>
-                            </View>
                             <Text
                               style={{
                                 fontSize: 16,
                                 color: Color.black,
                                 fontFamily: Manrope.Bold,
-                                paddingHorizontal: 5,
                               }}>
-                              Deals
+                              H
                             </Text>
-                          </View>
-                          <View
-                            style={{
-                              padding: 5,
-                              paddingHorizontal: 10,
-                              marginHorizontal: 5,
-                              backgroundColor: Color.white,
-                              borderColor: '#0FAD45',
-                              borderWidth: 1,
-                              borderRadius: 5,
-                            }}>
+                            <Iconviewcomponent
+                              Icontag={'MaterialCommunityIcons'}
+                              iconname={'fire'}
+                              icon_size={20}
+                              icon_color={Color.red}
+                            />
                             <Text
                               style={{
-                                fontSize: 8,
-                                color: '#0FAD45',
+                                fontSize: 16,
+                                color: Color.black,
                                 fontFamily: Manrope.Bold,
-                                letterSpacing: 0.5,
                               }}>
-                              UPTO 30% OFF
+                              T
                             </Text>
                           </View>
-                        </View>
-                        <FlatList
-                          data={categorizedData?.hot_deals_banner}
-                          horizontal
-                          showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
-                            return (
-                              <TouchableOpacity
-                                key={index}
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                  marginRight: 10,
-                                  shadowColor: '#000',
-                                  shadowOffset: {
-                                    width: 0,
-                                    height: 2,
-                                  },
-                                  shadowOpacity: 0.25,
-                                  shadowRadius: 3.84,
-
-                                  elevation: 5,
-                                  padding: 10,
-                                }}
-                                onPress={() => {
-                                  navigation.navigate('ProductList', {
-                                    category_id: 560,
-                                  });
-                                }}>
-                                <Image
-                                  source={{uri: item?.file_path}}
-                                  style={{
-                                    width: 170,
-                                    height: 130,
-                                    resizeMode: 'contain',
-                                  }}
-                                />
-                              </TouchableOpacity>
-                            );
-                          }}
-                        />
-                      </LinearGradient>
-                    );
-                  case 'Trend Brands':
-                    return (
-                      <LinearGradient
-                        style={{
-                          paddingStart: 10,
-                        }}
-                        start={{x: 0, y: 0}}
-                        end={{x: 1, y: 0}}
-                        colors={['#fff', '#fff']}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}>
                           <Text
                             style={{
                               fontSize: 16,
                               color: Color.black,
-                              textAlign: 'justify',
-                              fontWeight: '600',
                               fontFamily: Manrope.Bold,
+                              paddingHorizontal: 5,
                             }}>
-                            Trending Brands
+                            Deals
                           </Text>
-                          {/* <TouchableOpacity>
+                        </View>
+                        <View
+                          style={{
+                            padding: 5,
+                            paddingHorizontal: 10,
+                            marginHorizontal: 5,
+                            backgroundColor: Color.white,
+                            borderColor: '#0FAD45',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 8,
+                              color: '#0FAD45',
+                              fontFamily: Manrope.Bold,
+                              letterSpacing: 0.5,
+                            }}>
+                            UPTO 30% OFF
+                          </Text>
+                        </View>
+                      </View>
+                      <FlatList
+                        data={categorizedData?.hot_deals_banner}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        renderItem={({item, index}) => {
+                          return (
+                            <TouchableOpacity
+                              key={index}
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginRight: 10,
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                  width: 0,
+                                  height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+
+                                elevation: 5,
+                                padding: 10,
+                              }}
+                              onPress={() => {
+                                navigation.navigate('ProductList', {
+                                  category_id: 560,
+                                });
+                              }}>
+                              <Image
+                                source={{uri: item?.file_path}}
+                                style={{
+                                  width: 170,
+                                  height: 130,
+                                  resizeMode: 'contain',
+                                }}
+                              />
+                            </TouchableOpacity>
+                          );
+                        }}
+                      />
+                    </LinearGradient>
+                  );
+                case 'Trend Brands':
+                  return (
+                    <LinearGradient
+                      style={{
+                        paddingStart: 10,
+                      }}
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
+                      colors={['#fff', '#fff']}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: Color.black,
+                            textAlign: 'justify',
+                            fontWeight: '600',
+                            fontFamily: Manrope.Bold,
+                          }}>
+                          Trending Brands
+                        </Text>
+                        {/* <TouchableOpacity>
                           <Text
                             style={{
                               fontSize: 14,
@@ -1486,99 +1399,97 @@ const HomeScreen = () => {
                             View All
                           </Text>
                         </TouchableOpacity> */}
-                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginVertical: 0,
+                        }}>
+                        <ScrollView
+                          horizontal
+                          showsHorizontalScrollIndicator={false}>
+                          {trendData.map((item, index) => {
+                            return (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  navigation.navigate('ProductList', {
+                                    category_id: 560,
+                                  });
+                                }}
+                                style={{
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  margin: 10,
+                                }}>
+                                <View
+                                  style={{
+                                    width: 150,
+                                    height: 200,
+                                    justifyContent: 'flex-end',
+                                  }}>
+                                  <ScrollView
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    contentContainerStyle={{
+                                      flexDirection: 'row',
+                                    }}>
+                                    {item.banners.map((single_item, index) => (
+                                      <Image
+                                        key={index}
+                                        source={single_item.image}
+                                        style={{
+                                          width: 150,
+                                          height: 170,
+                                          borderRadius: 10,
+                                          marginRight: 10,
+                                        }}
+                                      />
+                                    ))}
+                                  </ScrollView>
+                                  <ImageBackground
+                                    source={item.ban_image}
+                                    style={{
+                                      position: 'absolute',
+                                      bottom: 0,
+                                      width: 150,
+                                      left: 0,
+                                      right: 0,
+                                      height: 60,
+                                    }}
+                                  />
+                                </View>
+                              </TouchableOpacity>
+                            );
+                          })}
+                        </ScrollView>
+                      </View>
+                    </LinearGradient>
+                  );
+                case 'Trend Product':
+                  return (
+                    trendingProducts?.length > 0 && (
+                      <View
+                        style={{
+                          paddingStart: 10,
+                          marginTop: 10,
+                        }}>
                         <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            marginVertical: 0,
+                            marginVertical: 10,
                           }}>
-                          <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}>
-                            {trendData.map((item, index) => {
-                              return (
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    navigation.navigate('ProductList', {
-                                      category_id: 560,
-                                    });
-                                  }}
-                                  style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    margin: 10,
-                                  }}>
-                                  <View
-                                    style={{
-                                      width: 150,
-                                      height: 200,
-                                      justifyContent: 'flex-end',
-                                    }}>
-                                    <ScrollView
-                                      horizontal
-                                      showsHorizontalScrollIndicator={false}
-                                      contentContainerStyle={{
-                                        flexDirection: 'row',
-                                      }}>
-                                      {item.banners.map(
-                                        (single_item, index) => (
-                                          <Image
-                                            key={index}
-                                            source={single_item.image}
-                                            style={{
-                                              width: 150,
-                                              height: 170,
-                                              borderRadius: 10,
-                                              marginRight: 10,
-                                            }}
-                                          />
-                                        ),
-                                      )}
-                                    </ScrollView>
-                                    <ImageBackground
-                                      source={item.ban_image}
-                                      style={{
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        width: 150,
-                                        left: 0,
-                                        right: 0,
-                                        height: 60,
-                                      }}
-                                    />
-                                  </View>
-                                </TouchableOpacity>
-                              );
-                            })}
-                          </ScrollView>
-                        </View>
-                      </LinearGradient>
-                    );
-                  case 'Trend Product':
-                    return (
-                      trendingProducts?.length > 0 && (
-                        <View
-                          style={{
-                            paddingStart: 10,
-                            marginTop: 10,
-                          }}>
-                          <View
+                          <Text
                             style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              marginVertical: 10,
+                              flex: 1,
+                              fontSize: 16,
+                              color: Color.black,
+                              fontFamily: Manrope.SemiBold,
                             }}>
-                            <Text
-                              style={{
-                                flex: 1,
-                                fontSize: 16,
-                                color: Color.black,
-                                fontFamily: Manrope.SemiBold,
-                              }}>
-                              Trending Products
-                            </Text>
-                            {/* <Text
+                            Trending Products
+                          </Text>
+                          {/* <Text
                             style={{
                               fontSize: 14,
                               color: Color.cloudyGrey,
@@ -1586,190 +1497,188 @@ const HomeScreen = () => {
                             }}>
                             View All
                           </Text> */}
-                          </View>
-                          <FlatList
-                            data={trendingProducts}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            renderItem={({item, index}) => {
-                              return (
-                                <ItemCardHorizontal
-                                  item={item}
-                                  navigation={navigation}
-                                />
-                              );
-                            }}
-                          />
                         </View>
-                      )
-                    );
-                  case 'Offer Banner':
-                    return (
+                        <FlatList
+                          data={trendingProducts}
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          renderItem={({item, index}) => {
+                            return (
+                              <ItemCardHorizontal
+                                item={item}
+                                navigation={navigation}
+                              />
+                            );
+                          }}
+                        />
+                      </View>
+                    )
+                  );
+                case 'Offer Banner':
+                  return (
+                    <View
+                      style={{
+                        marginTop: 25,
+                        backgroundColor: Color.white,
+                      }}>
+                      <SwiperFlatList
+                        autoplay
+                        autoplayDelay={5}
+                        autoplayLoop
+                        index={1}
+                        // showPagination
+                        data={categorizedData?.carousel_banner}
+                        // paginationActiveColor={Color.primary}
+                        // paginationStyleItem={{
+                        //   width: 15,
+                        //   height: 3,
+                        //   marginTop: 35,
+                        //   marginHorizontal: 2,
+                        //   justifyContent: 'center',
+                        //   alignItems: 'center',
+                        // }}
+                        renderItem={({item}) => (
+                          <TouchableOpacity
+                            style={{
+                              width: scr_width,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => {
+                              navigation.navigate('ProductList', {
+                                category_id: 560,
+                              });
+                            }}>
+                            <Image
+                              source={{uri: item?.file_path}}
+                              style={{
+                                width: '100%',
+                                height: 470,
+                                resizeMode: 'cover',
+                              }}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      />
                       <View
                         style={{
-                          marginTop: 25,
-                          backgroundColor: Color.white,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-evenly',
+                          backgroundColor: '#F4466E',
+                          padding: 10,
+                          top: -3,
                         }}>
-                        <SwiperFlatList
-                          autoplay
-                          autoplayDelay={5}
-                          autoplayLoop
-                          index={1}
-                          // showPagination
-                          data={categorizedData?.carousel_banner}
-                          // paginationActiveColor={Color.primary}
-                          // paginationStyleItem={{
-                          //   width: 15,
-                          //   height: 3,
-                          //   marginTop: 35,
-                          //   marginHorizontal: 2,
-                          //   justifyContent: 'center',
-                          //   alignItems: 'center',
-                          // }}
-                          renderItem={({item}) => (
-                            <TouchableOpacity
-                              style={{
-                                width: scr_width,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}
-                              onPress={() => {
-                                navigation.navigate('ProductList', {
-                                  category_id: 560,
-                                });
-                              }}>
-                              <Image
-                                source={{uri: item?.file_path}}
-                                style={{
-                                  width: '100%',
-                                  height: 470,
-                                  resizeMode: 'cover',
-                                }}
-                              />
-                            </TouchableOpacity>
-                          )}
-                        />
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Iconviewcomponent
+                            Icontag={'MaterialCommunityIcons'}
+                            iconname={'brightness-percent'}
+                            icon_size={22}
+                            icon_color={Color.lightgrey}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: Color.white,
+                              fontFamily: Manrope.SemiBold,
+                              letterSpacing: 0.5,
+                              paddingHorizontal: 2,
+                            }}>
+                            COUPON
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Iconviewcomponent
+                            Icontag={'MaterialCommunityIcons'}
+                            iconname={'truck-delivery'}
+                            icon_size={22}
+                            icon_color={Color.lightgrey}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: Color.white,
+                              fontFamily: Manrope.SemiBold,
+                              letterSpacing: 0.5,
+                              paddingHorizontal: 2,
+                            }}>
+                            FREE SHIPPING
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Iconviewcomponent
+                            Icontag={'MaterialIcons'}
+                            iconname={'local-offer'}
+                            icon_size={20}
+                            icon_color={Color.lightgrey}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: Color.white,
+                              fontFamily: Manrope.SemiBold,
+                              letterSpacing: 0.5,
+                              paddingHorizontal: 2,
+                            }}>
+                            VOUCHER
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          marginTop: 10,
+                          backgroundColor: '#E6F5F860',
+                          // padding: 10,
+                        }}>
                         <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                            backgroundColor: '#F4466E',
-                            padding: 10,
-                            top: -3,
+                            justifyContent: 'space-between',
                           }}>
-                          <View
-                            style={{
-                              flex: 1,
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Iconviewcomponent
-                              Icontag={'MaterialCommunityIcons'}
-                              iconname={'brightness-percent'}
-                              icon_size={22}
-                              icon_color={Color.lightgrey}
-                            />
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                color: Color.white,
-                                fontFamily: Manrope.SemiBold,
-                                letterSpacing: 0.5,
-                                paddingHorizontal: 2,
-                              }}>
-                              COUPON
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flex: 1,
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Iconviewcomponent
-                              Icontag={'MaterialCommunityIcons'}
-                              iconname={'truck-delivery'}
-                              icon_size={22}
-                              icon_color={Color.lightgrey}
-                            />
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                color: Color.white,
-                                fontFamily: Manrope.SemiBold,
-                                letterSpacing: 0.5,
-                                paddingHorizontal: 2,
-                              }}>
-                              FREE SHIPPING
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flex: 1,
-                              flexDirection: 'row',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Iconviewcomponent
-                              Icontag={'MaterialIcons'}
-                              iconname={'local-offer'}
-                              icon_size={20}
-                              icon_color={Color.lightgrey}
-                            />
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                color: Color.white,
-                                fontFamily: Manrope.SemiBold,
-                                letterSpacing: 0.5,
-                                paddingHorizontal: 2,
-                              }}>
-                              VOUCHER
-                            </Text>
-                          </View>
+                          {categorizedData?.offer_banner?.map((item, index) => {
+                            return (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  navigation.navigate('ProductList', {
+                                    category_id: 560,
+                                  });
+                                }}
+                                style={{
+                                  borderRadius: 10,
+                                  width: '50%',
+                                }}>
+                                <Image
+                                  source={{uri: item?.file_path}}
+                                  style={{
+                                    height: 100,
+                                    resizeMode: 'contain',
+                                    marginHorizontal: 5,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                            );
+                          })}
                         </View>
-                        <View
-                          style={{
-                            marginTop: 10,
-                            backgroundColor: '#E6F5F860',
-                            // padding: 10,
-                          }}>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                            }}>
-                            {categorizedData?.offer_banner?.map(
-                              (item, index) => {
-                                return (
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      navigation.navigate('ProductList', {
-                                        category_id: 560,
-                                      });
-                                    }}
-                                    style={{
-                                      borderRadius: 10,
-                                      width: '50%',
-                                    }}>
-                                    <Image
-                                      source={{uri: item?.file_path}}
-                                      style={{
-                                        height: 100,
-                                        resizeMode: 'contain',
-                                        marginHorizontal: 5,
-                                      }}
-                                    />
-                                  </TouchableOpacity>
-                                );
-                              },
-                            )}
-                          </View>
-                          {/* <View
+                        {/* <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -1814,135 +1723,134 @@ const HomeScreen = () => {
                             </Text>
                           </View>
                         </View> */}
-                        </View>
                       </View>
-                    );
-                  case 'Flash Selling':
-                    return (
-                      FlashOffers?.length > 0 &&
-                      FlashOffers?.map((item, index) => {
-                        const expirationDate = new Date(item?.expired_at);
-                        const currentDate = new Date();
-                        const difference =
-                          expirationDate.getTime() - currentDate.getTime();
-                        const seconds = Math.floor(difference / 1000) % 60;
-                        const minutes =
-                          Math.floor(difference / (1000 * 60)) % 60;
-                        const hours =
-                          Math.floor(difference / (1000 * 60 * 60)) % 24;
-                        const days = Math.floor(
-                          difference / (1000 * 60 * 60 * 24),
-                        );
-                        return (
+                    </View>
+                  );
+                case 'Flash Selling':
+                  return (
+                    FlashOffers?.length > 0 &&
+                    FlashOffers?.map((item, index) => {
+                      const expirationDate = new Date(item?.expired_at);
+                      const currentDate = new Date();
+                      const difference =
+                        expirationDate.getTime() - currentDate.getTime();
+                      const seconds = Math.floor(difference / 1000) % 60;
+                      const minutes = Math.floor(difference / (1000 * 60)) % 60;
+                      const hours =
+                        Math.floor(difference / (1000 * 60 * 60)) % 24;
+                      const days = Math.floor(
+                        difference / (1000 * 60 * 60 * 24),
+                      );
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            backgroundColor: Color.white,
+                            marginHorizontal: 10,
+                            padding: 10,
+                          }}>
                           <View
-                            key={index}
                             style={{
-                              backgroundColor: Color.white,
-                              marginHorizontal: 10,
-                              padding: 10,
+                              flexDirection: 'row',
+                              alignItems: 'center',
                             }}>
-                            <View
+                            <Image
+                              source={{uri: item.logo}}
                               style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <Image
-                                source={{uri: item.logo}}
-                                style={{
-                                  width: 100,
-                                  height: 60,
-                                  resizeMode: 'contain',
-                                }}
-                              />
-                              <CountdownTimer
-                                days={days}
-                                hours={hours}
-                                minutes={minutes}
-                                seconds={seconds}
-                              />
-                            </View>
+                                width: 100,
+                                height: 60,
+                                resizeMode: 'contain',
+                              }}
+                            />
+                            <CountdownTimer
+                              days={days}
+                              hours={hours}
+                              minutes={minutes}
+                              seconds={seconds}
+                            />
                           </View>
-                        );
-                      })
-                    );
-                  case 'product':
-                    return (
+                        </View>
+                      );
+                    })
+                  );
+                case 'product':
+                  return (
+                    <LinearGradient
+                      style={{
+                        marginBottom: 10,
+                        padding: 10,
+                      }}
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
+                      colors={['#FF0066', '#fff']}>
+                      <FlatList
+                        data={products}
+                        numColumns={2}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({item, index}) => {
+                          return (
+                            <ItemCard item={item} navigation={navigation} />
+                          );
+                        }}
+                      />
+                      {showLoadMore && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            loadMoreData();
+                          }}
+                          style={{
+                            padding: 5,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontFamily: Manrope.Bold,
+                              color: Color.white,
+                              marginHorizontal: 5,
+                              textDecorationLine: 'underline',
+                              textAlign: 'center',
+                            }}>
+                            More
+                          </Text>
+                          <Icon
+                            name="chevron-forward-circle"
+                            size={15}
+                            color={Color.white}
+                            style={{marginTop: 5}}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </LinearGradient>
+                  );
+                case 'Featured Product':
+                  return (
+                    FeaturedProducts?.length > 0 && (
                       <LinearGradient
                         style={{
-                          marginBottom: 10,
-                          padding: 10,
+                          paddingHorizontal: 10,
                         }}
                         start={{x: 0, y: 0}}
                         end={{x: 1, y: 0}}
-                        colors={['#FF0066', '#fff']}>
-                        <FlatList
-                          data={products}
-                          numColumns={2}
-                          showsVerticalScrollIndicator={false}
-                          renderItem={({item, index}) => {
-                            return (
-                              <ItemCard item={item} navigation={navigation} />
-                            );
-                          }}
-                        />
-                        {showLoadMore && (
-                          <TouchableOpacity
-                            onPress={() => {
-                              loadMoreData();
-                            }}
-                            style={{
-                              padding: 5,
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                fontFamily: Manrope.Bold,
-                                color: Color.white,
-                                marginHorizontal: 5,
-                                textDecorationLine: 'underline',
-                                textAlign: 'center',
-                              }}>
-                              More
-                            </Text>
-                            <Icon
-                              name="chevron-forward-circle"
-                              size={15}
-                              color={Color.white}
-                              style={{marginTop: 5}}
-                            />
-                          </TouchableOpacity>
-                        )}
-                      </LinearGradient>
-                    );
-                  case 'Featured Product':
-                    return (
-                      FeaturedProducts?.length > 0 && (
-                        <LinearGradient
+                        colors={['#0D71BA', '#2994CB', '#fff']}>
+                        <View
                           style={{
-                            paddingHorizontal: 10,
-                          }}
-                          start={{x: 0, y: 0}}
-                          end={{x: 1, y: 0}}
-                          colors={['#0D71BA', '#2994CB', '#fff']}>
-                          <View
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginVertical: 10,
+                          }}>
+                          <Text
                             style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              marginVertical: 10,
+                              flex: 1,
+                              fontSize: 16,
+                              color: Color.white,
+                              fontFamily: Manrope.SemiBold,
                             }}>
-                            <Text
-                              style={{
-                                flex: 1,
-                                fontSize: 16,
-                                color: Color.white,
-                                fontFamily: Manrope.SemiBold,
-                              }}>
-                              Featured Products
-                            </Text>
-                            {/* <TouchableOpacity
+                            Featured Products
+                          </Text>
+                          {/* <TouchableOpacity
                             onPress={() => {
                               navigation.navigate('viewProducts', {
                                 key: 'featured',
@@ -1958,109 +1866,106 @@ const HomeScreen = () => {
                               View All
                             </Text>
                           </TouchableOpacity> */}
-                          </View>
+                        </View>
+                        <FlatList
+                          data={FeaturedProducts}
+                          numColumns={2}
+                          showsHorizontalScrollIndicator={false}
+                          renderItem={({item, index}) => {
+                            return (
+                              <ItemCard item={item} navigation={navigation} />
+                            );
+                          }}
+                        />
+                        {FeaturedShowLoadMore && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              featuredLoadMoreData();
+                            }}
+                            style={{
+                              padding: 5,
+                              flexDirection: 'row',
+                              backgroundColor: Color.transparentWhite,
+                              justifyContent: 'center',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                fontFamily: Manrope.Bold,
+                                color: Color.white,
+                                marginHorizontal: 5,
+                                textAlign: 'center',
+                              }}>
+                              More
+                            </Text>
+                            <Icon
+                              name="chevron-forward-circle"
+                              size={18}
+                              color={Color.white}
+                              style={{marginTop: 5}}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </LinearGradient>
+                    )
+                  );
+                case 'Latest Product':
+                  return (
+                    latestProducts?.length > 0 && (
+                      <View style={{}}>
+                        <Image
+                          source={Media.latest_banner}
+                          style={{width: '100%', height: 50}}
+                        />
+                        <LinearGradient
+                          style={{
+                            paddingBottom: 10,
+                          }}
+                          start={{x: 0, y: 0}}
+                          end={{x: 1, y: 0}}
+                          colors={['#840BB0', '#fff']}>
                           <FlatList
-                            data={FeaturedProducts}
+                            data={latestProducts}
                             numColumns={2}
-                            showsHorizontalScrollIndicator={false}
                             renderItem={({item, index}) => {
                               return (
                                 <ItemCard item={item} navigation={navigation} />
                               );
                             }}
-                          />
-                          {FeaturedShowLoadMore && (
-                            <TouchableOpacity
-                              onPress={() => {
-                                featuredLoadMoreData();
-                              }}
-                              style={{
-                                padding: 5,
-                                flexDirection: 'row',
-                                backgroundColor: Color.transparentWhite,
-                                justifyContent: 'center',
-                              }}>
-                              <Text
-                                style={{
-                                  fontSize: 16,
-                                  fontFamily: Manrope.Bold,
-                                  color: Color.white,
-                                  marginHorizontal: 5,
-                                  textAlign: 'center',
-                                }}>
-                                More
-                              </Text>
-                              <Icon
-                                name="chevron-forward-circle"
-                                size={18}
-                                color={Color.white}
-                                style={{marginTop: 5}}
-                              />
-                            </TouchableOpacity>
-                          )}
-                        </LinearGradient>
-                      )
-                    );
-                  case 'Latest Product':
-                    return (
-                      latestProducts?.length > 0 && (
-                        <View style={{}}>
-                          <Image
-                            source={Media.latest_banner}
-                            style={{width: '100%', height: 50}}
-                          />
-                          <LinearGradient
-                            style={{
-                              paddingBottom: 10,
+                            onEndReached={() => {
+                              latestLoadMoreData();
                             }}
-                            start={{x: 0, y: 0}}
-                            end={{x: 1, y: 0}}
-                            colors={['#840BB0', '#fff']}>
-                            <FlatList
-                              data={latestProducts}
-                              numColumns={2}
-                              renderItem={({item, index}) => {
-                                return (
-                                  <ItemCard
-                                    item={item}
-                                    navigation={navigation}
-                                  />
-                                );
-                              }}
-                              // onEndReached={() => {
-                              //   latestLoadMoreData();
-                              // }}
-                              // onEndReachedThreshold={0.1}
-                              // ListFooterComponent={() => {
-                              //   return (
-                              //     <View
-                              //       style={{
-                              //         alignItems: 'center',
-                              //         justifyContent: 'center',
-                              //       }}>
-                              //       {latestloadMore && (
-                              //         <View
-                              //           style={{
-                              //             flexDirection: 'row',
-                              //             alignItems: 'center',
-                              //           }}>
-                              //           <Text
-                              //             style={{
-                              //               fontSize: 12,
-                              //               color: Color.black,
-                              //               marginHorizontal: 10,
-                              //               fontFamily: Manrope.Medium,
-                              //             }}>
-                              //             Loading...
-                              //           </Text>
-                              //           <ActivityIndicator />
-                              //         </View>
-                              //       )}
-                              //     </View>
-                              //   );
-                              // }}
-                            />
-                            <TouchableOpacity
+                            onEndReachedThreshold={0.1}
+                            ListFooterComponent={() => {
+                              return (
+                                <View
+                                  style={{
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                  }}>
+                                  {latestloadMore && (
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                      }}>
+                                      <Text
+                                        style={{
+                                          fontSize: 12,
+                                          color: Color.black,
+                                          marginHorizontal: 10,
+                                          fontFamily: Manrope.Medium,
+                                        }}>
+                                        Loading...
+                                      </Text>
+                                      <ActivityIndicator />
+                                    </View>
+                                  )}
+                                </View>
+                              );
+                            }}
+                          />
+                          {/* <TouchableOpacity
                               onPress={() => {
                                 latestLoadMoreData();
                               }}
@@ -2086,15 +1991,15 @@ const HomeScreen = () => {
                                 color={Color.white}
                                 style={{marginTop: 5}}
                               />
-                            </TouchableOpacity>
-                          </LinearGradient>
-                        </View>
-                      )
-                    );
-                }
-              }}
-            />
-          </ScrollView>
+                            </TouchableOpacity> */}
+                        </LinearGradient>
+                      </View>
+                    )
+                  );
+              }
+            }}
+          />
+          {/* </ScrollView> */}
           {ProductSuggestions?.visible == true && searchProduct != '' && (
             <View
               style={{

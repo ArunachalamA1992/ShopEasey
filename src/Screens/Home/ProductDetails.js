@@ -191,10 +191,12 @@ const ProductDetails = ({route}) => {
     setDefaultRating(rating);
   }, [reviewsData]);
 
-  const originalPrice = singleData?.org_price / countryCode?.price_margin;
+  const originalPrice = singleData?.org_price;
+  // / countryCode?.price_margin;
   const offerPrice = singleData?.offer_price
     ? singleData?.offer_price
-    : singleData?.price / countryCode?.price_margin;
+    : singleData?.price;
+  // / countryCode?.price_margin;
 
   const discount = parseFloat(
     ((originalPrice - offerPrice) / originalPrice) * 100,
@@ -1041,12 +1043,14 @@ const ProductDetails = ({route}) => {
                         {parseFloat(
                           singleData?.offer_price
                             ? singleData?.offer_price
-                            : singleData?.price / countryCode?.price_margin,
+                            : singleData?.price,
+                          // / countryCode?.price_margin,
                         ).toFixed(2)}{' '}
                         <Text style={styles.productPrice}>
                           {countryCode?.symbol}
                           {parseFloat(
-                            singleData?.org_price / countryCode?.price_margin,
+                            singleData?.org_price,
+                            //  / countryCode?.price_margin,
                           ).toFixed(2)}
                         </Text>
                       </Text>

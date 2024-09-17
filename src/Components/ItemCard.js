@@ -34,11 +34,12 @@ const ItemCard = props => {
     setItem(initialItem);
   }, [initialItem]);
 
-  const originalPrice =
-    item?.variants?.[0]?.org_price / countryCode?.price_margin;
+  const originalPrice = item?.variants?.[0]?.org_price;
+  //  / countryCode?.price_margin;
   const offerPrice = item?.variants?.[0]?.offer_price
     ? item?.variants?.[0]?.offer_price
-    : item?.variants?.[0]?.price / countryCode?.price_margin;
+    : item?.variants?.[0]?.price;
+  // / countryCode?.price_margin;
 
   const discount = parseFloat(
     ((originalPrice - offerPrice) / originalPrice) * 100,
@@ -227,13 +228,15 @@ const ItemCard = props => {
               {parseFloat(
                 item?.variants?.[0]?.offer_price
                   ? item?.variants?.[0]?.offer_price
-                  : item?.variants?.[0]?.price / countryCode?.price_margin,
+                  : item?.variants?.[0]?.price,
+                // / countryCode?.price_margin,
               ).toFixed(2)}
             </Text>
             <Text style={styles.productPrice}>
               {countryCode?.symbol}
               {parseFloat(
-                item?.variants?.[0]?.org_price / countryCode?.price_margin,
+                item?.variants?.[0]?.org_price,
+                // / countryCode?.price_margin,
               ).toFixed(2)}
             </Text>
           </View>
@@ -284,11 +287,12 @@ export const ItemCardHorizontal = props => {
     setItem(initialItem);
   }, [initialItem]);
 
-  const originalPrice =
-    item?.variants?.[0]?.org_price / countryCode?.price_margin;
+  const originalPrice = item?.variants?.[0]?.org_price;
+  // / countryCode?.price_margin;
   const offerPrice = item?.variants?.[0]?.offer_price
     ? item?.variants?.[0]?.offer_price
-    : item?.variants?.[0]?.price / countryCode?.price_margin;
+    : item?.variants?.[0]?.price;
+  // / countryCode?.price_margin;
 
   const discount = parseFloat(
     ((originalPrice - offerPrice) / originalPrice) * 100,
@@ -436,13 +440,15 @@ export const ItemCardHorizontal = props => {
             {parseFloat(
               item?.variants?.[0]?.offer_price
                 ? item?.variants?.[0]?.offer_price
-                : item?.variants?.[0]?.price / countryCode?.price_margin,
+                : item?.variants?.[0]?.price,
+              // / countryCode?.price_margin,
             ).toFixed(2)}
           </Text>
           <Text style={styles.productPrice}>
             {countryCode?.symbol}
             {parseFloat(
-              item?.variants?.[0]?.org_price / countryCode?.price_margin,
+              item?.variants?.[0]?.org_price,
+              // / countryCode?.price_margin,
             ).toFixed(2)}
           </Text>
         </View>
