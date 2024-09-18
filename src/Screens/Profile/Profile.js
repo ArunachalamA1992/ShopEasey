@@ -534,9 +534,9 @@ const Profile = () => {
                 style={{
                   borderRadius: 100,
                 }}>
-                {profileData.profile?.length > 0 ? (
+                {profileData?.profile?.length > 0 ? (
                   <Image
-                    source={{uri: profileData.profile}}
+                    source={{uri: profileData?.profile}}
                     style={{
                       width: 80,
                       height: 80,
@@ -563,7 +563,7 @@ const Profile = () => {
                   alignItems: 'flex-start',
                   paddingHorizontal: 10,
                 }}>
-                {profileData.first_name && profileData.last_name ? (
+                {profileData?.first_name && profileData?.last_name ? (
                   <Text
                     style={{
                       fontSize: 16,

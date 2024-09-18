@@ -171,38 +171,29 @@ const common_fn = {
     var discount = parseFloat(
       100 -
         ((response?.variants?.org_price -
-        // / countryCode?.price_margin
-        response?.variants?.offer_price
-          ? response?.variants?.offer_price
-          : response?.variants?.price) /
-          // / countryCode?.price_margin
+          (response?.variants?.offer_price ?? response?.variants?.price)) /
           response?.variants?.org_price) *
-          // / countryCode?.price_margin
           100,
     ).toFixed(2);
+
     const discount_price = parseFloat(
       (response.variants?.org_price -
-      // / countryCode?.price_margin
-      response?.variants?.offer_price
-        ? response?.variants?.offer_price
-        : response.variants?.price) *
-        // / countryCode?.price_margin
+        (response?.variants?.offer_price ?? response.variants?.price)) *
         response?.quantity || 0,
     ).toFixed(2);
+
     var tax_percent = parseFloat(
-      (response?.order?.tax / response?.variants?.offer_price
-        ? response?.variants?.offer_price
-        : response?.variants?.price) *
-        // / countryCode?.price_margin
+      (response?.order?.tax /
+        (response?.variants?.offer_price ?? response?.variants?.price)) *
         100,
     ).toFixed(2);
+
     const tax_amount = parseFloat(
-      (response?.variants?.offer_price
-        ? response?.variants?.offer_price
-        : response.variants?.price -
-          // / countryCode?.price_margin
-          response.order.tax) * response?.quantity || 0,
+      ((response?.variants?.offer_price ?? response.variants?.price) -
+        response.order.tax) *
+        response?.quantity || 0,
     ).toFixed(2);
+
     const htmlContent = `
     <!DOCTYPE html>
 <html lang="en">
@@ -455,8 +446,6 @@ const common_fn = {
                             ? 'Razorpay'
                             : 'Paypal'
                         }<br>
-                        Account #: 123456789<br>
-                        Routing #: 987654321
                     </td>
                     <td>
                         <div class="footer-title">Terms & Conditions:</div>

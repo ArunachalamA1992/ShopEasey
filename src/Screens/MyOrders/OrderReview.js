@@ -101,7 +101,6 @@ const OrderReview = ({navigation, route}) => {
     }
   };
   const data = photo?.filter(item => item.uri)?.map(item => item.uri);
-  console.log('data', data);
   // const postReview = async () => {
   //   try {
   //     if (defaultRating > 0 && review != '') {
@@ -120,38 +119,53 @@ const OrderReview = ({navigation, route}) => {
   //     console.log('error', error);
   //   }
   // };
+  const checkReview = async id => {
+    try {
+      const review = await fetchData.check_review(id, token);
+      return review;
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   const postReview = async () => {
     try {
-      if (defaultRating > 0 && review != '') {
-        const myHeaders = new Headers();
-        myHeaders.append('Authorization', `Bearer ${token}`);
+      const reviewedData = await checkReview(orderData?.order?.id);
+      if (reviewedData?.status == true) {
+        if (defaultRating > 0 && review != '') {
+          const myHeaders = new Headers();
+          myHeaders.append('Authorization', `Bearer ${token}`);
 
-        const formdata = new FormData();
-        formdata.append('product_id', orderData?.product_id);
-        formdata.append('rate', defaultRating);
-        formdata.append('review', review);
-        photo.forEach((file, index) => {
-          formdata.append('images', {
-            uri: file?.uri,
-            type: 'image/jpeg',
-            name: file?.name,
+          const formdata = new FormData();
+          formdata.append('product_id', orderData?.product_id);
+          formdata.append('rate', defaultRating);
+          formdata.append('review', review);
+          photo.forEach((file, index) => {
+            formdata.append('images', {
+              uri: file?.uri,
+              type: 'image/jpeg',
+              name: file?.name,
+            });
           });
-        });
-        const requestOptions = {
-          method: 'POST',
-          headers: myHeaders,
-          body: formdata,
-          redirect: 'follow',
-        };
 
-        fetch(`${baseUrl}api/review`, requestOptions)
-          .then(response => response.json())
-          .then(result => {
-            common_fn.showToast(result?.message);
-          })
-          .catch(error => console.error(error));
+          const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow',
+          };
+
+          fetch(`${baseUrl}api/review`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+              common_fn.showToast(result?.message);
+            })
+            .catch(error => console.error(error));
+        } else {
+          common_fn.showToast('Please write the review and rating');
+        }
       } else {
-        common_fn.showToast('Please write the review and rating');
+        common_fn.showToast('Your order has been Reviewed already.');
       }
     } catch (error) {
       console.log('error', error);
@@ -194,7 +208,6 @@ const OrderReview = ({navigation, route}) => {
       setPhoto([...photo, ...resizeImages]);
     });
   }, [image]);
-  console.log('photo--------------', photo);
 
   const captureImage = async index => {
     const options = {

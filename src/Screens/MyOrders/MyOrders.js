@@ -341,7 +341,7 @@ const Placed = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('TrackingDetails', {orderData: item});
+                    navigation.navigate('DeliveredOrder', {orderData: item});
                   }}>
                   <Text
                     style={{

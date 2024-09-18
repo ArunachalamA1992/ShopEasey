@@ -36,6 +36,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Share from 'react-native-share';
 import {useNavigation} from '@react-navigation/native';
+import ImageZoom from '../../Components/imageView/imageZoom';
 
 const ProductDetails = ({route}) => {
   const navigation = useNavigation();
@@ -1404,6 +1405,23 @@ const ProductDetails = ({route}) => {
                       </>
                     ) : null}
 
+                    {singleData?.product?.sub_sub_category?.size_chart ? (
+                      <View>
+                        <Image
+                          source={{
+                            uri: singleData?.product?.sub_sub_category
+                              ?.size_chart,
+                          }}
+                          style={{
+                            width: '100%',
+                            height: 200,
+                            resizeMode: 'contain',
+                          }}
+                        />
+                        <View style={styles.separator}></View>
+                      </View>
+                    ) : null}
+
                     {singleData?.variants_list?.age?.length > 0 ? (
                       <>
                         <View style={styles.colorContainer}>
@@ -2722,7 +2740,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     width: '100%',
-    paddingVertical: 5,
+    paddingVertical: 2,
     backgroundColor: Color.softGrey,
   },
   sizeContainer: {
