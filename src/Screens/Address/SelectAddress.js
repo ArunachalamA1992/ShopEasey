@@ -9,6 +9,7 @@ import {
   View,
   TextInput,
   ToastAndroid,
+  Alert,
 } from 'react-native';
 import Color from '../../Global/Color';
 import {scr_height, scr_width} from '../../Utils/Dimensions';
@@ -66,6 +67,45 @@ const selectAddressess = () => {
       }
     } catch (error) {
       console.log('error', error);
+    }
+  };
+
+  const deleteAddress = async id => {
+    try {
+      Alert.alert(
+        '',
+        'Do you want to remove your address?',
+        [
+          {
+            text: 'No',
+            onPress: async () => {},
+          },
+          {
+            text: 'Yes',
+            onPress: async () => {
+              try {
+                var param = `${id}`;
+                console.log('data', param);
+                const getAddress = await fetchData.delete_address(
+                  param,
+                  '',
+                  token,
+                );
+
+                common_fn.showToast(getAddress?.message);
+              } catch (error) {
+                console.log('Error deleting address:', error);
+                common_fn.showToast(
+                  'Failed to delete address. Please try again.',
+                );
+              }
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    } catch (error) {
+      console.log('error------', error);
     }
   };
 
@@ -147,7 +187,9 @@ const selectAddressess = () => {
                   alignItems: 'center',
                   marginTop: 5,
                 }}>
-                <TouchableOpacity onPress={() => setSelectAddress(item)}>
+                <TouchableOpacity
+                  onPress={() => setSelectAddress(item)}
+                  style={{flex: 1}}>
                   <Iconviewcomponent
                     Icontag={'Fontisto'}
                     iconname={
@@ -157,6 +199,19 @@ const selectAddressess = () => {
                     }
                     icon_size={20}
                     iconstyle={{color: Color.primary}}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    deleteAddress(item?.id);
+                  }}
+                  style={{marginHorizontal: 15}}>
+                  <Iconviewcomponent
+                    Icontag={'MaterialCommunityIcons'}
+                    iconname={'delete'}
+                    icon_size={22}
+                    iconstyle={{color: Color.red}}
                   />
                 </TouchableOpacity>
               </View>

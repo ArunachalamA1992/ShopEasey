@@ -69,6 +69,7 @@ const OrderConfirmation = ({navigation, route}) => {
       console.log('error------', error);
     }
   };
+
   const deleteAddress = async id => {
     try {
       Alert.alert(
@@ -631,10 +632,8 @@ const OrderConfirmation = ({navigation, route}) => {
                     style={{marginHorizontal: 10}}>
                     <FIcon name="pencil" size={20} color={Color.primary} />
                   </TouchableOpacity>
-
                   <TouchableOpacity
                     onPress={() => {
-                      console.log('item?.id', item?.id);
                       deleteAddress(item?.id);
                     }}
                     style={{marginHorizontal: 15}}>
