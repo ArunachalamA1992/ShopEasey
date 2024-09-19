@@ -60,7 +60,7 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const getCartData = async () => {
     try {
-      var data = `id=${ids?.join(',')}`;
+      var data = `id=${ids?.join(',')}&region_id=${countryCode?.id}`;
       const getCart = await fetchData.list_cart(data, token);
       setOrderData(getCart?.data);
       const getaddress = await fetchData.list_address(``, token);
@@ -409,6 +409,7 @@ const OrderConfirmation = ({navigation, route}) => {
           }),
         ),
       };
+      console.log('data', JSON.stringify(data));
       const post_order = await fetchData.postOrder(data, token);
       console.log('post_order', post_order);
       if (selectPayment?.name === 'cash on delivery') {

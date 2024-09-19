@@ -160,7 +160,7 @@ const ProductDetails = ({route}) => {
     }
 
     try {
-      let param = id;
+      let param = `${id}?region_id=${countryCode?.id}`;
       let data = `${type}=${value}`;
 
       if (selectedSize && type !== 'size') data += `&size=${selectedSize}`;
@@ -242,7 +242,7 @@ const ProductDetails = ({route}) => {
   const getData = async () => {
     try {
       const productData = await fetchData.single_property(
-        `${id}?id=${variant_id}`,
+        `${id}?id=${variant_id}&region_id=${countryCode?.id}`,
         '',
         token,
       );

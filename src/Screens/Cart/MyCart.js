@@ -107,7 +107,10 @@ const MyCart = ({}) => {
 
   const getAPIData = async () => {
     try {
-      const getCart = await fetchData.list_cart(``, token);
+      const getCart = await fetchData.list_cart(
+        `region_id=${countryCode?.id}`,
+        token,
+      );
       setCartData(getCart?.data);
     } catch (error) {
       console.log('error', error);
@@ -130,7 +133,10 @@ const MyCart = ({}) => {
         setRefreshing(true);
       }
       try {
-        const getCart = await fetchData.list_cart(``, token);
+        const getCart = await fetchData.list_cart(
+          `region_id=${countryCode?.id}`,
+          token,
+        );
         setCartData(getCart?.data);
         const getaddress = await fetchData.list_address(``, token);
         setAddressCount(getaddress?.count);

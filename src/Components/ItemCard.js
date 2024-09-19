@@ -47,7 +47,7 @@ const ItemCard = props => {
 
   const getProduct = async () => {
     try {
-      const data = `id=${item?.id}`;
+      const data = `id=${item?.id}&region_id=${countryCode?.id}`;
       const product_data = await fetchData.list_products(data, token);
       setItem(product_data?.data[0]);
       var review_data = `${item?.id}`;
@@ -300,7 +300,7 @@ export const ItemCardHorizontal = props => {
 
   const getProduct = async () => {
     try {
-      const data = `id=${item?.id}`;
+      const data = `id=${item?.id}&region_id=${countryCode?.id}`;
       const product_data = await fetchData.list_products(data, token);
       setItem(product_data?.data[0]);
       var review_data = `${item?.id}`;

@@ -78,6 +78,7 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(false);
   const [FeaturedShowLoadMore, setFeaturedShowLoadMore] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(false);
+  const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
   var {wishlist, cart} = dataCount;
 
@@ -324,7 +325,7 @@ const HomeScreen = () => {
     try {
       const getFlashDeals = await fetchData.flash_Offers(``, token);
       setFlashOffers(getFlashDeals?.data);
-      var data = `project=offer`;
+      var data = `project=offer&region_id=${countryCode?.id}`;
       const get_products = await fetchData.list_products(data, token);
       setProducts(get_products?.data);
       setShowLoadMore(true);
@@ -338,15 +339,18 @@ const HomeScreen = () => {
       const categories_data = await fetchData.categories(`?limit=14`, token);
       setCategoryData(categories_data?.data);
       const trending_products = await fetchData.list_products(
-        `is_trending=1`,
+        `is_trending=1&region_id=${countryCode?.id}`,
         token,
       );
       setTrendingProducts(trending_products?.data);
-      const latest_products = await fetchData.list_products(``, token);
+      const latest_products = await fetchData.list_products(
+        `region_id=${countryCode?.id}`,
+        token,
+      );
       setLatestProduct(latest_products?.data);
 
       const fetured_products = await fetchData.list_products(
-        `is_featured=1`,
+        `is_featured=1&region_id=${countryCode?.id}`,
         token,
       );
       setFeaturedProducts(fetured_products?.data);
@@ -385,7 +389,7 @@ const HomeScreen = () => {
 
     try {
       const nextPage = Page + 1;
-      var data = `project=offer&page=${nextPage}`;
+      var data = `project=offer&page=${nextPage}&region_id=${countryCode?.id}`;
       const response = await fetchData.list_products(data, token);
       if (response?.data.length > 0) {
         setPage(nextPage);
@@ -410,7 +414,7 @@ const HomeScreen = () => {
     setFeaturedLoadMore(true);
     try {
       const nextPage = FeaturedPage + 1;
-      var data = `is_featured=1&page=${nextPage}`;
+      var data = `is_featured=1&page=${nextPage}&region_id=${countryCode?.id}`;
       const response = await fetchData.list_products(data, token);
       if (response?.data.length > 0) {
         setFeaturedPage(nextPage);
@@ -436,7 +440,7 @@ const HomeScreen = () => {
     try {
       const nextPage = latestPage + 1;
       console.log('nextPage-------------------', nextPage);
-      var data = `page=${nextPage}`;
+      var data = `page=${nextPage}&region_id=${countryCode?.id}`;
       const response = await fetchData.list_products(data, token);
       console.log(
         'response?.length--------------------',
