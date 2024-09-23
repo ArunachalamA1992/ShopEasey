@@ -550,6 +550,9 @@ const SellerProfile = ({route, navigation}) => {
                       horizontal
                       showsHorizontalScrollIndicator={false}
                       renderItem={({item, index}) => {
+                        if (item == null) {
+                          return null;
+                        }
                         return (
                           <TouchableOpacity
                             key={index}

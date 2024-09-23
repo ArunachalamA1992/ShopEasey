@@ -85,7 +85,6 @@ const OrderConfirmation = ({navigation, route}) => {
             onPress: async () => {
               try {
                 var param = `${id}`;
-                console.log('data', param);
                 const getAddress = await fetchData.delete_address(
                   param,
                   '',
@@ -373,36 +372,64 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const postOrder = async () => {
     try {
-      const total_price = parseInt(Sub_total) + overall_tax + 10;
+      const total_price =
+        parseInt(Sub_total) + overall_tax + (countryCode?.id == 452 ? 0 : 10);
+      // const data = {
+      //   total: total_price,
+      //   payment_method:
+      //     selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
+      //   order: selectedData?.flatMap(item =>
+      //     item.tax?.flatMap(tax_item => {
+      //       if (tax_item?.region_id == countryCode?.id) {
+      //         return {
+      //           address_id: selectAddress?.id,
+      //           total: item?.variant?.offer_price
+      //             ? item?.variant?.offer_price
+      //             : item?.variant?.price +
+      //               // / countryCode?.price_margin
+      //               tax_item?.tax * item?.quantity,
+      //           sub_total: item?.variant?.offer_price
+      //             ? item?.variant?.offer_price
+      //             : item?.variant?.price,
+      //           // / countryCode?.price_margin
+      //           tax: tax_item?.tax * item?.quantity,
+      //           products: {
+      //             product_id: item?.product?.id,
+      //             variant_id: item?.variant?.id,
+      //             quantity: item?.quantity,
+      //             price: item?.variant?.offer_price
+      //               ? item?.variant?.offer_price
+      //               : item?.variant?.price,
+      //             //  / countryCode?.price_margin
+      //             tax: tax_item?.tax * item?.quantity,
+      //           },
+      //         };
+      //       }
+      //       return [];
+      //     }),
+      //   ),
+      // };
       const data = {
-        total: total_price,
+        total: parseFloat(total_price),
+        sub_total: parseFloat(Sub_total),
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-        order: selectedData?.flatMap(item =>
+        shipping_charge: countryCode?.id == 452 ? 0 : 10,
+        address_id: selectAddress?.id,
+        tax: 0,
+        products: selectedData?.flatMap(item =>
           item.tax?.flatMap(tax_item => {
             if (tax_item?.region_id == countryCode?.id) {
               return {
-                address_id: selectAddress?.id,
-                total: item?.variant?.offer_price
-                  ? item?.variant?.offer_price
-                  : item?.variant?.price +
-                    // / countryCode?.price_margin
-                    tax_item?.tax * item?.quantity,
-                sub_total: item?.variant?.offer_price
-                  ? item?.variant?.offer_price
-                  : item?.variant?.price,
-                // / countryCode?.price_margin
-                tax: tax_item?.tax * item?.quantity,
-                products: {
-                  product_id: item?.product?.id,
-                  variant_id: item?.variant?.id,
-                  quantity: item?.quantity,
-                  price: item?.variant?.offer_price
-                    ? item?.variant?.offer_price
-                    : item?.variant?.price,
-                  //  / countryCode?.price_margin
-                  tax: tax_item?.tax * item?.quantity,
-                },
+                product_id: item?.product?.id,
+                variant_id: item?.variant?.id ?? item.id,
+                quantity: item?.quantity ?? 1,
+                price:
+                  (item?.offer_price || item?.variant?.offer_price
+                    ? item?.variant?.offer_price ?? item?.offer_price
+                    : item?.variant?.price ?? item?.price) *
+                  (item?.quantity ?? 1),
+                tax: 0,
               };
             }
             return [];
@@ -1293,7 +1320,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {10}
+                  {countryCode?.id == 452 ? 0 : 10}
                 </Text>
               </View>
               {/* <View
@@ -1359,7 +1386,9 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {parseInt(Sub_total) + overall_tax + 10}
+                  {parseInt(Sub_total) +
+                    overall_tax +
+                    (countryCode?.id == 452 ? 0 : 10)}
                 </Text>
               </View>
             </View>
@@ -1442,7 +1471,9 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {parseInt(Sub_total) + overall_tax + 10}
+            {parseInt(
+              Sub_total + overall_tax + (countryCode?.id == 452 ? 0 : 10),
+            )}
           </Text>
         </View>
         <View style={{flex: 1}}>
