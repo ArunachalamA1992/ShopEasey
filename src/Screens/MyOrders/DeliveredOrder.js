@@ -19,6 +19,7 @@ import FOIcon from 'react-native-vector-icons/Fontisto';
 import {Button} from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
 import {ItemCardHorizontal} from '../../Components/ItemCard';
+import moment from 'moment';
 
 const customStyles = {
   stepIndicatorSize: 25,
@@ -43,42 +44,6 @@ const customStyles = {
   stepIndicatorLabelUnFinishedColor: Color.white,
 };
 
-const steps = [
-  {label: 'Order Confirmation', date: '03 June 2024'},
-  {label: 'Order Delivered', date: '04 June 2024'},
-];
-
-const renderLabel = ({position, stepStatus, label, currentPosition}) => {
-  return (
-    <View style={styles.labelContainer}>
-      <Text
-        style={[
-          styles.label,
-          {
-            color:
-              position === currentPosition
-                ? customStyles.currentStepLabelColor
-                : customStyles.labelColor,
-          },
-        ]}>
-        {label}
-      </Text>
-      <Text
-        style={[
-          styles.date,
-          {
-            color:
-              position === currentPosition
-                ? customStyles.currentStepLabelColor
-                : customStyles.labelColor,
-          },
-        ]}>
-        {steps[position].date}
-      </Text>
-    </View>
-  );
-};
-
 const DeliveredOrder = ({navigation, route}) => {
   const [orderData] = useState(route.params.orderData);
   const [loading, setLoading] = useState(false);
@@ -88,6 +53,23 @@ const DeliveredOrder = ({navigation, route}) => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const [recommended, setRecommended] = useState([]);
+
+  const addDays = days => {
+    let date = new Date(orderData?.order?.created_at);
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  const orderConfirmation = addDays(4);
+  const deliveryDate = addDays(8);
+
+  const steps = [
+    {
+      label: 'Order Confirmation',
+      date: moment(orderConfirmation).format('ddd, MMM D'),
+    },
+    {label: 'Order Delivered', date: moment(deliveryDate).format('ddd, MMM D')},
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -334,7 +316,7 @@ const DeliveredOrder = ({navigation, route}) => {
                 paddingHorizontal: 10,
                 fontFamily: Manrope.Medium,
               }}>
-              Delivered on 04 JUNE 2024 ( Free Delivery )
+              Delivered on {moment(deliveryDate).format('ddd, MMM D')}
             </Text>
           </View>
         </View>
@@ -353,7 +335,7 @@ const DeliveredOrder = ({navigation, route}) => {
               customStyles={customStyles}
               currentPosition={2}
               stepCount={2}
-              labels={steps.map(step => step.label)}
+              labels={steps?.map(step => step.label)}
               direction="vertical"
               renderStepIndicator={({position, stepStatus}) => {
                 switch (stepStatus) {
@@ -367,7 +349,36 @@ const DeliveredOrder = ({navigation, route}) => {
                     );
                 }
               }}
-              renderLabel={renderLabel}
+              renderLabel={({position, stepStatus, label, currentPosition}) => {
+                return (
+                  <View style={styles.labelContainer}>
+                    <Text
+                      style={[
+                        styles.label,
+                        {
+                          color:
+                            position === currentPosition
+                              ? customStyles.currentStepLabelColor
+                              : customStyles.labelColor,
+                        },
+                      ]}>
+                      {label}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.date,
+                        {
+                          color:
+                            position === currentPosition
+                              ? customStyles.currentStepLabelColor
+                              : customStyles.labelColor,
+                        },
+                      ]}>
+                      {steps[position]?.date}
+                    </Text>
+                  </View>
+                );
+              }}
             />
             {/* <Divider style={{height: 1, marginVertical: 10}} /> */}
             {/* <TouchableOpacity

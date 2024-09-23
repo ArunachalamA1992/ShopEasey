@@ -314,9 +314,9 @@ const VerticalTabView = props => {
 
   const queryObject = queryToObject(param);
 
-  const [low, setLow] = useState(queryObject?.minPrice || 0);
+  const [low, setLow] = useState(queryObject?.minPrice || 1);
   const [high, setHigh] = useState(queryObject?.maxPrice || 100000);
-  const [min, setMin] = useState(queryObject?.minPrice || 0);
+  const [min, setMin] = useState(queryObject?.minPrice || 1);
   const [max, setMax] = useState(queryObject?.maxPrice || 100000);
 
   const handleValueChange = useCallback((low, high) => {
@@ -458,40 +458,61 @@ const VerticalTabView = props => {
   useEffect(() => {
     getApiData();
   }, []);
+  console.log('queryObject', queryObject);
 
-  // const prevQueryObject = useRef();
+  const prevQueryObject = useRef();
 
-  // useEffect(() => {
-  //   // Initialize from queryObject (URL params or props)
-  //   if (queryObject?.brand_id) {
-  //     const brandIds = Array.isArray(queryObject.brand_id)
-  //       ? queryObject.brand_id.map(Number) // Convert to integers
-  //       : queryObject.brand_id.split(',').map(Number); // Convert to integers
-  //     brandIds.forEach(id => {
-  //       handlebrandPress(id); // Initialize brand selection
-  //     });
-  //   }
+  useEffect(() => {
+    if (
+      JSON.stringify(prevQueryObject.current) !== JSON.stringify(queryObject)
+    ) {
+      prevQueryObject.current = queryObject;
 
-  //   if (queryObject?.color_group) {
-  //     const colorIds = Array.isArray(queryObject.color_group)
-  //       ? queryObject.color_group.map(Number) // Convert to integers
-  //       : typeof queryObject.color_group === 'string'
-  //       ? queryObject.color_group.split(',').map(Number) // Convert to integers
-  //       : [];
-  //     colorIds.forEach(colorId => {
-  //       handleColorPress(colorId); // Initialize color selection with integers
-  //     });
-  //   }
+      if (queryObject?.brand_id) {
+        let brandIds = [];
 
-  //   if (queryObject?.size) {
-  //     const sizeIds = Array.isArray(queryObject.size)
-  //       ? queryObject.size.map(Number) // Convert to integers
-  //       : queryObject.size.split(',').map(Number); // Convert to integers
-  //     sizeIds.forEach(id => {
-  //       handlesizePress(id); // Initialize size selection
-  //     });
-  //   }
-  // }, [queryObject]);
+        if (Array.isArray(queryObject.brand_id)) {
+          brandIds = queryObject.brand_id.map(Number);
+        } else if (typeof queryObject.brand_id === 'number') {
+          brandIds = [queryObject.brand_id];
+        } else if (typeof queryObject.brand_id === 'string') {
+          brandIds = queryObject.brand_id.split(',').map(Number);
+        }
+        brandIds.forEach(id => {
+          handlebrandPress(id);
+        });
+      }
+
+      if (queryObject?.color_group !== undefined) {
+        let colorIds = [];
+
+        if (Array.isArray(queryObject.color_group)) {
+          colorIds = queryObject.color_group.map(Number);
+        } else if (typeof queryObject.color_group === 'number') {
+          colorIds = [queryObject.color_group];
+        } else if (typeof queryObject.color_group === 'string') {
+          colorIds = queryObject.color_group.split(',').map(Number);
+        }
+        colorIds.forEach(colorId => {
+          handleColorPress(colorId);
+        });
+      }
+
+      if (queryObject?.size) {
+        let sizeIds = [];
+
+        if (Array.isArray(queryObject.size)) {
+          sizeIds = queryObject.size.map(size => size.toLowerCase());
+        } else if (typeof queryObject.size === 'string') {
+          sizeIds = queryObject.size.split(',').map(size => size.toLowerCase());
+        }
+
+        sizeIds.forEach(size => {
+          handlesizePress(size);
+        });
+      }
+    }
+  }, [queryObject]);
 
   const getApiData = async () => {
     try {
@@ -591,64 +612,57 @@ const VerticalTabView = props => {
 
   const handlebrandPress = itemId => {
     if (brandSelectedItem.includes(itemId)) {
-      setbrandSelectedItem(
-        brandSelectedItem?.filter(single => single !== itemId),
-      );
-      setFilterSelectedItem({
+      setbrandSelectedItem(prev => prev?.filter(single => single !== itemId));
+      setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
-        brand: filterSelectedItem?.brand?.filter(
-          single => single?.id !== itemId,
-        ),
+        brand: prev?.brand?.filter(single => single?.id !== itemId),
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts,
         size: filterSelectedItem?.size,
         rating: filterSelectedItem?.rating,
-      });
+      }));
     } else {
-      setbrandSelectedItem([...brandSelectedItem, itemId]);
-      const selectedItem = brandData.find(single => single?.id === itemId);
-      setFilterSelectedItem({
+      setbrandSelectedItem(prev => [...prev, itemId]);
+      const selectedItem = brandData?.find(single => single?.id === itemId);
+      setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
-        brand: [...filterSelectedItem?.brand, selectedItem],
+        brand: [...(prev?.brand || []), selectedItem],
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts,
         size: filterSelectedItem?.size,
         rating: filterSelectedItem?.rating,
-      });
+      }));
     }
   };
 
   const [colorSelectedItem, setcolorSelectedItem] = useState([]);
+
   const handleColorPress = itemId => {
     if (colorSelectedItem.includes(itemId)) {
-      setcolorSelectedItem(
-        colorSelectedItem?.filter(single => single !== itemId),
-      );
-      setFilterSelectedItem({
+      setcolorSelectedItem(prev => prev.filter(single => single !== itemId));
+      setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand,
-        colors: filterSelectedItem?.colors?.filter(
-          single => single?.id !== itemId,
-        ),
+        colors: prev?.colors?.filter(single => single?.id !== itemId),
         discounts: filterSelectedItem?.discounts,
         size: filterSelectedItem?.size,
         rating: filterSelectedItem?.rating,
-      });
+      }));
     } else {
-      setcolorSelectedItem([...colorSelectedItem, itemId]);
-      const selectedItem = colorData.find(single => single?.id === itemId);
-      setFilterSelectedItem({
+      setcolorSelectedItem(prev => [...prev, itemId]);
+      const selectedItem = colorData?.find(single => single?.id === itemId);
+      setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand,
-        colors: [...filterSelectedItem?.colors, selectedItem],
+        colors: [...(prev?.colors || []), selectedItem],
         discounts: filterSelectedItem?.discounts,
         size: filterSelectedItem?.size,
         rating: filterSelectedItem?.rating,
-      });
+      }));
     }
   };
 
@@ -656,27 +670,29 @@ const VerticalTabView = props => {
   const handlesizePress = itemId => {
     if (sizeSelectedItem.includes(itemId)) {
       setsizeSelectedItem(
-        sizeSelectedItem?.filter(single => single !== itemId),
+        sizeSelectedItem?.filter(prev =>
+          prev.filter(single => single !== itemId),
+        ),
       );
-      setFilterSelectedItem({
+      setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand,
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts,
-        size: filterSelectedItem?.size?.filter(single => single?.id !== itemId),
+        size: prev?.size?.filter(single => single?.id !== itemId),
         rating: filterSelectedItem?.rating,
-      });
+      }));
     } else {
-      setsizeSelectedItem([...sizeSelectedItem, itemId]);
-      const selectedItem = sizeData.find(single => single?.id === itemId);
+      setsizeSelectedItem(prev => [...prev, itemId]);
+      const selectedItem = sizeData?.find(single => single?.id === itemId);
       setFilterSelectedItem({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand,
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts,
-        size: [...filterSelectedItem?.size, selectedItem],
+        size: [...(prev?.size || []), selectedItem],
         rating: filterSelectedItem?.rating,
       });
     }
@@ -701,7 +717,7 @@ const VerticalTabView = props => {
       });
     } else {
       setdiscountSelectedItem([...discountSelectedItem, itemId]);
-      const selectedItem = discountsData.find(single => single.id === itemId);
+      const selectedItem = discountsData.find(single => single?.id === itemId);
       setFilterSelectedItem({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
@@ -737,22 +753,18 @@ const VerticalTabView = props => {
           ?.filter(item => item?.id)
           ?.map(item => item?.id)
           ?.join(',') || '',
-      brand_id:
-        filterSelectedItem?.brand
-          ?.filter(item => item?.id)
-          ?.map(item => item?.id)
-          ?.join(',') || '',
+      brand_id: brandSelectedItem?.join(','),
       sub_category_id: categorySelectedItem || '',
       price: low > 0 && high ? `${low},${high}` : '',
     };
 
     for (const key in payload) {
       if (payload[key] != null && payload[key] !== '') {
-        if (key === 'size' || key === 'color_group' || key === 'price') {
-          params += `${key}=${payload[key]}&`;
-        } else {
-          params += `${key}=${encodeURIComponent(payload[key])}&`;
-        }
+        // if (key === 'size' || key === 'color_group' || key === 'price') {
+        params += `${key}=${payload[key]}&`;
+        // } else {
+        //   params += `${key}=${encodeURIComponent(payload[key])}&`;
+        // }
       }
     }
 
@@ -893,7 +905,7 @@ const VerticalTabView = props => {
             setsizeSelectedItem([]);
             setdiscountSelectedItem([]);
             setDefaultRating(0);
-            setLow(100);
+            setLow(1);
             setHigh(100000);
           }}
           style={{

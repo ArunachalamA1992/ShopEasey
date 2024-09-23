@@ -18,6 +18,7 @@ import {Button, Divider} from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
 import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import moment from 'moment';
 
 const customStyles = {
   stepIndicatorSize: 25,
@@ -115,6 +116,13 @@ const TrackOrder = ({navigation, route}) => {
       console.log('error', error);
     }
   };
+  const addDays = days => {
+    let date = new Date(orderData?.order?.created_at);
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  const deliveryDate = addDays(8);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
@@ -451,7 +459,7 @@ const TrackOrder = ({navigation, route}) => {
                   fontSize: 14,
                   fontFamily: Manrope.Medium,
                 }}>
-                05 June 2024
+                {moment(deliveryDate).format('ddd, MMM D')}
               </Text>
             </View>
           )}

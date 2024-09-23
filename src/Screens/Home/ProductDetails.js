@@ -36,7 +36,6 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Share from 'react-native-share';
 import {useNavigation} from '@react-navigation/native';
-import ImageZoom from '../../Components/imageView/imageZoom';
 
 const ProductDetails = ({route}) => {
   const navigation = useNavigation();

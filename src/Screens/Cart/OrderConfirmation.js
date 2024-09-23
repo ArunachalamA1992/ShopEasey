@@ -214,10 +214,10 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const original_total = selectedData
     ?.reduce((accumulator, item) => {
-      const price = item?.variant?.offer_price ?? item.variant?.org_price;
+      const price = item.variant?.org_price;
       const priceMargin = countryCode?.price_margin || 1;
       const quantity = item?.quantity || 0;
-
+      console.log('price', price);
       return (
         accumulator +
         price *
@@ -834,36 +834,37 @@ const OrderConfirmation = ({navigation, route}) => {
                             flexWrap: 'wrap',
                             paddingVertical: 3,
                           }}>
-                          {item?.variant?.color != '' && (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center',
-                                borderRightWidth: 1,
-                                borderRightColor: Color.lightgrey,
-                                paddingHorizontal: 5,
-                              }}>
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  color: Color.cloudyGrey,
-                                  fontFamily: Manrope.Medium,
-                                  marginRight: 5,
-                                }}>
-                                Color
-                              </Text>
+                          {item?.variant?.color != '' &&
+                            item?.variant?.color != null && (
                               <View
                                 style={{
-                                  width: 15,
-                                  height: 15,
-                                  backgroundColor: item?.variant?.color_code,
-                                  borderRadius: 30,
-                                  borderWidth: 1,
-                                  borderColor: Color.primary,
-                                }}></View>
-                            </View>
-                          )}
+                                  flexDirection: 'row',
+                                  justifyContent: 'flex-start',
+                                  alignItems: 'center',
+                                  borderRightWidth: 1,
+                                  borderRightColor: Color.lightgrey,
+                                  paddingHorizontal: 5,
+                                }}>
+                                <Text
+                                  style={{
+                                    fontSize: 12,
+                                    color: Color.cloudyGrey,
+                                    fontFamily: Manrope.Medium,
+                                    marginRight: 5,
+                                  }}>
+                                  Color
+                                </Text>
+                                <View
+                                  style={{
+                                    width: 15,
+                                    height: 15,
+                                    backgroundColor: item?.variant?.color_code,
+                                    borderRadius: 30,
+                                    borderWidth: 1,
+                                    borderColor: Color.primary,
+                                  }}></View>
+                              </View>
+                            )}
                           {item?.variant?.size != '' ||
                             (item?.variant?.size != null && (
                               <View
