@@ -24,15 +24,18 @@ const CustomRange = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const [textInputLow, setTextInputLow] = useState(low.toString());
   const [textInputHigh, setTextInputHigh] = useState(high.toString());
+  const [error, setError] = useState('');
 
   const handleTextInputLowChange = value => {
     const newLow = parseInt(value) || 0;
     if (newLow <= high) {
       setLow(newLow);
       setTextInputLow(value);
+      setError('');
     } else {
-      setLow(high);
-      setTextInputLow(high.toString());
+      setLow(newLow);
+      setTextInputLow(value);
+      setError('Low price cannot be higher than the high price');
     }
   };
 
@@ -41,9 +44,11 @@ const CustomRange = props => {
     if (newHigh >= low) {
       setHigh(newHigh);
       setTextInputHigh(value);
+      setError('');
     } else {
-      setHigh(low);
-      setTextInputHigh(low.toString());
+      setHigh(newHigh);
+      setTextInputHigh(value);
+      setError('High price cannot be lower than the low price');
     }
   };
 
@@ -154,7 +159,16 @@ const CustomRange = props => {
           </View>
         </View>
       </View>
-
+      {error ? (
+        <Text
+          style={{
+            color: Color.red,
+            fontSize: 14,
+            fontFamily: Manrope.SemiBold,
+          }}>
+          {error}
+        </Text>
+      ) : null}
       {/* Range slider */}
       {/* <RangeSlider
         style={{marginTop: 15}}

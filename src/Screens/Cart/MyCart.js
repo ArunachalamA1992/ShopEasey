@@ -23,6 +23,7 @@ import common_fn from '../../Config/common_fn';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {setDataCount} from '../../Redux';
 import {RefreshControl} from 'react-native-gesture-handler';
+import {ItemCardHorizontal} from '../../Components/ItemCard';
 
 const {height} = Dimensions.get('screen');
 
@@ -33,6 +34,7 @@ const MyCart = ({}) => {
   const [CheckOut, setCheckOut] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [addressData, setAddressCount] = useState(0);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [bottomData, setBottomData] = useState({});
   const [loading, setLoading] = useState(false);
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
@@ -107,6 +109,13 @@ const MyCart = ({}) => {
 
   const getAPIData = async () => {
     try {
+      //recommended Products
+      const top_picks = await fetchData.list_products(
+        `project=top-picks`,
+        token,
+      );
+      setRecommendedProducts(top_picks?.data);
+      //cart Data
       const getCart = await fetchData.list_cart(
         `region_id=${countryCode?.id}`,
         token,
@@ -835,7 +844,7 @@ const MyCart = ({}) => {
                 <View
                   style={{
                     flex: 1,
-                    height: height / 1.5,
+                    height: height / 2.5,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
@@ -854,6 +863,55 @@ const MyCart = ({}) => {
             showsVerticalScrollIndicator={false}
           />
 
+          {cartData.length == 0 && recommendedProducts?.length > 0 && (
+            <View
+              style={{
+                paddingLeft: 10,
+                marginVertical: 10,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: 10,
+                }}>
+                <Text
+                  style={{
+                    flex: 1,
+                    fontSize: 16,
+                    color: Color.black,
+                    fontFamily: Manrope.SemiBold,
+                  }}>
+                  Recommended
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('viewProducts', {
+                      key: 'topPicks',
+                    });
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.cloudyGrey,
+                      fontFamily: Manrope.Bold,
+                    }}>
+                    More
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={recommendedProducts}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({item, index}) => {
+                  return (
+                    <ItemCardHorizontal item={item} navigation={navigation} />
+                  );
+                }}
+              />
+            </View>
+          )}
           {cartData.length > 0 ? (
             <View
               style={{
