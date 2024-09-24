@@ -341,7 +341,7 @@ const Placed = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('DeliveredOrder', {orderData: item});
+                    navigation.navigate('TrackingDetails', {orderData: item});
                   }}>
                   <Text
                     style={{
@@ -2820,7 +2820,7 @@ const MyOrders = ({navigation}) => {
             renderScene={renderScene}
             swipeEnabled={false}
             onIndexChange={setIndex}
-            style={{flex: 1}}
+            // style={{flex: 1}}
             initialLayout={{width: layout.width}}
             renderTabBar={props => (
               <TabBar

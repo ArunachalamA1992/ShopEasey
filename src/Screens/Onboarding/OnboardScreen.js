@@ -32,6 +32,7 @@ const OnboardScreen = () => {
   const [countryData, setCountryData] = useState([]);
   const dispatch = useDispatch();
   const [pendingDeepLink, setPendingDeepLink] = useState(null);
+  const [bannerData, setBannerData] = useState([]);
 
   const imageScale = useRef(new Animated.Value(0.5)).current;
 
@@ -102,10 +103,17 @@ const OnboardScreen = () => {
     handleInitialUrl();
   }, []);
 
+  const splitByCategory = data => {
+    return data.filter(item => item.category === 'welcome_banner');
+  };
+
+  const welcome_banner = splitByCategory(bannerData);
   const getData = async () => {
     try {
       const onboard_data = await fetchData.list_countries({}, null);
       setCountryData(onboard_data?.data);
+      const getBannerData = await fetchData.get_banner(``, null);
+      setBannerData(getBannerData?.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -216,7 +224,7 @@ const OnboardScreen = () => {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('../../assets/images/onboard_shop.png')}
+        source={{uri: welcome_banner?.[0]?.file_path}}
         style={styles.image}
       />
 

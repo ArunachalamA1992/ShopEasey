@@ -1,32 +1,47 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Color from './Global/Color';
 import {setAsync, setCountryCode, setDataCount, setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import fetchData from './Config/fetchData';
+import {NetworkState} from './Utils/utils';
+import NetInfo from '@react-native-community/netinfo';
 
 const SplashScreen = ({navigation}) => {
   const imageScale = new Animated.Value(0.1);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+
+  const setNetInfo = () => {
+    NetInfo.fetch().then(state => {
+      setLoading(state.isConnected);
+    });
+  };
+
+  useEffect(() => {
+    setNetInfo();
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (loading) {
+        const SplashLoad = setTimeout(() => {
+          getloginData();
+          getUserData();
+        }, 3000);
+        return () => clearInterval(SplashLoad);
+      }
+    } catch (error) {
+      console.log('catch in splash_Screen ', error);
+    }
+  }, [loading]);
 
   Animated.timing(imageScale, {
     toValue: 1,
     duration: 1000,
     useNativeDriver: true,
   }).start();
-
-  useEffect(() => {
-    try {
-      const SplashLoad = setTimeout(() => {
-        getloginData();
-        getUserData();
-      }, 3000);
-      return () => clearInterval(SplashLoad);
-    } catch (error) {
-      console.log('catch in splash_Screen ', error);
-    }
-  }, []);
 
   const getUserData = async () => {
     try {
@@ -85,6 +100,7 @@ const SplashScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      {!loading && <NetworkState setNetInfo={setNetInfo} />}
       <Animated.Image
         source={{
           uri: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/main.png',

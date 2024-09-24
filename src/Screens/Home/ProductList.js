@@ -240,7 +240,7 @@ const ProductList = ({route}) => {
         <TouchableOpacity
           style={{marginRight: 10, padding: 5}}
           onPress={() => {
-            navigation.navigate('MyCart');
+            navigation.navigate('MyCartTab');
           }}>
           {cart != 0 ? (
             <Badge

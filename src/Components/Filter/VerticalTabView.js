@@ -197,14 +197,14 @@ const TabContent = ({
               key={index}
               style={{
                 borderWidth: 1,
-                borderColor: sizeSelectedItem.includes(item.id)
+                borderColor: sizeSelectedItem.includes(item.size)
                   ? Color.primary
                   : Color.lightgrey,
                 borderRadius: 10,
                 marginTop: 10,
                 alignItems: 'center',
               }}
-              onPress={() => handlesizePress(item.id)}>
+              onPress={() => handlesizePress(item.size)}>
               <Text
                 style={{
                   fontSize: 14,
@@ -458,7 +458,6 @@ const VerticalTabView = props => {
   useEffect(() => {
     getApiData();
   }, []);
-  console.log('queryObject', queryObject);
 
   const prevQueryObject = useRef();
 
@@ -641,7 +640,7 @@ const VerticalTabView = props => {
 
   const handleColorPress = itemId => {
     if (colorSelectedItem.includes(itemId)) {
-      setcolorSelectedItem(prev => prev.filter(single => single !== itemId));
+      setcolorSelectedItem(prev => prev?.filter(single => single !== itemId));
       setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
@@ -667,26 +666,23 @@ const VerticalTabView = props => {
   };
 
   const [sizeSelectedItem, setsizeSelectedItem] = useState([]);
-  const handlesizePress = itemId => {
-    if (sizeSelectedItem.includes(itemId)) {
-      setsizeSelectedItem(
-        sizeSelectedItem?.filter(prev =>
-          prev.filter(single => single !== itemId),
-        ),
-      );
+  const handlesizePress = size => {
+    if (sizeSelectedItem.includes(size)) {
+      setsizeSelectedItem(prev => prev?.filter(single => single !== size));
+
       setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand,
         colors: filterSelectedItem?.colors,
         discounts: filterSelectedItem?.discounts,
-        size: prev?.size?.filter(single => single?.id !== itemId),
+        size: prev?.size?.filter(single => single?.size !== size),
         rating: filterSelectedItem?.rating,
       }));
     } else {
-      setsizeSelectedItem(prev => [...prev, itemId]);
-      const selectedItem = sizeData?.find(single => single?.id === itemId);
-      setFilterSelectedItem({
+      setsizeSelectedItem(prev => [...prev, size]);
+      const selectedItem = sizeData?.find(single => single?.size === size);
+      setFilterSelectedItem(prev => ({
         category: filterSelectedItem?.category,
         price: filterSelectedItem?.price,
         brand: filterSelectedItem?.brand,
@@ -694,7 +690,7 @@ const VerticalTabView = props => {
         discounts: filterSelectedItem?.discounts,
         size: [...(prev?.size || []), selectedItem],
         rating: filterSelectedItem?.rating,
-      });
+      }));
     }
   };
 
