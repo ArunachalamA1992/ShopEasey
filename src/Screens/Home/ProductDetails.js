@@ -134,56 +134,102 @@ const ProductDetails = ({route}) => {
     }
   };
 
-  const handlePropertyPress = async (type, value) => {
-    setLoading(true);
-    console.log('type, value', type, value);
-    switch (type) {
-      case 'color':
-        setSelectedColor(value);
-        break;
-      case 'age':
-        setSelectedAge(value);
-        break;
-      case 'gender':
-        setSelectedGender(value);
-        break;
-      case 'material':
-        setSelectedMaterial(value);
-        break;
-      case 'size':
-        setSelectedSize(value);
-        break;
-      default:
-        break;
-    }
-
+  const handlePropertyPress = async (type, value, has) => {
     try {
-      let param = `${id}`;
-      let data = `region_id=${countryCode?.id}&${type}=${value}`;
+      setLoading(true);
+      let data = '';
 
-      if (selectedSize && type !== 'size') data += `&size=${selectedSize}`;
-      if (selectedColor && type !== 'color') data += `&color=${selectedColor}`;
-      if (selectedAge && type !== 'age') data += `&age=${selectedAge}`;
-      if (selectedGender && type !== 'gender')
-        data += `&gender=${selectedGender}`;
-      if (selectedMaterial && type !== 'material')
-        data += `&material=${selectedMaterial}`;
-      console.log('data-------------------', data);
-      const responseData = await fetchData.single_property(param, data, token);
-      setSingleData(responseData?.data);
+      if (!has) {
+        switch (type) {
+          case 'color':
+            setSelectedColor(null);
+            data = `color=${value}`;
+            break;
+          case 'age':
+            setSelectedAge(null);
+            data = `age=${value}`;
+            break;
+          case 'gender':
+            setSelectedGender(null);
+            data = `gender=${value}`;
+            break;
+          case 'material':
+            setSelectedMaterial(null);
+            data = `material=${value}`;
+            break;
+          case 'size':
+            setSelectedSize(null);
+            data = `size=${value}`;
+            break;
+          default:
+            break;
+        }
+
+        try {
+          let param = `${id}`;
+          console.log('Sending only current param:', data);
+          const responseData = await fetchData.single_property(
+            param,
+            data,
+            token,
+          );
+          setSingleData(responseData?.data);
+        } catch (error) {
+          console.log('Error fetching property data:', error);
+        } finally {
+          setLoading(false);
+        }
+        return;
+      }
+
+      switch (type) {
+        case 'color':
+          setSelectedColor(value);
+          break;
+        case 'age':
+          setSelectedAge(value);
+          break;
+        case 'gender':
+          setSelectedGender(value);
+          break;
+        case 'material':
+          setSelectedMaterial(value);
+          break;
+        case 'size':
+          setSelectedSize(value);
+          break;
+        default:
+          break;
+      }
+      try {
+        let param = `${id}`;
+        data = `region_id=${countryCode?.id}&${type}=${value}`;
+
+        if (selectedSize && type !== 'size') data += `&size=${selectedSize}`;
+        if (selectedColor && type !== 'color')
+          data += `&color=${selectedColor}`;
+        if (selectedAge && type !== 'age') data += `&age=${selectedAge}`;
+        if (selectedGender && type !== 'gender')
+          data += `&gender=${selectedGender}`;
+        if (selectedMaterial && type !== 'material')
+          data += `&material=${selectedMaterial}`;
+
+        console.log('data-------------------', data);
+        const responseData = await fetchData.single_property(
+          param,
+          data,
+          token,
+        );
+        setSingleData(responseData?.data);
+      } catch (error) {
+        console.log('Error fetching property data:', error);
+      } finally {
+        setLoading(false);
+      }
     } catch (error) {
-      console.log('Error fetching property data:', error);
-    } finally {
-      setLoading(false);
+      console.log('error', error);
     }
   };
-
-  const handleColorPress = item => handlePropertyPress('color', item?.color);
-  const handleAgePress = item => handlePropertyPress('age', item?.age);
-  const handleGenderPress = item => handlePropertyPress('gender', item?.gender);
-  const handleMaterialPress = item =>
-    handlePropertyPress('material', item?.material);
-  const handleSizePress = item => handlePropertyPress('size', item?.size);
 
   useEffect(() => {
     const rating = parseFloat(reviewsData?.rating || '0');
@@ -880,7 +926,13 @@ const ProductDetails = ({route}) => {
                               alignItems: 'center',
                               justifyContent: 'center',
                             }}
-                            onPress={() => handleColorPress(item)}>
+                            onPress={() => {
+                              handlePropertyPress(
+                                'color',
+                                item?.color,
+                                item?.has,
+                              );
+                            }}>
                             <View
                               key={index}
                               style={{
@@ -1325,8 +1377,13 @@ const ProductDetails = ({route}) => {
                                             : Color.white,
                                       },
                                     ]}
-                                    onPress={() => handleColorPress(item)}
-                                    disabled={item?.stock == 0 || !item?.has}>
+                                    onPress={() => {
+                                      handlePropertyPress(
+                                        'color',
+                                        item?.color,
+                                        item?.has,
+                                      );
+                                    }}>
                                     <View
                                       style={[
                                         styles.colorView,
@@ -1366,18 +1423,22 @@ const ProductDetails = ({route}) => {
                                 <TouchableOpacity
                                   key={index}
                                   style={styles.sizeOption}
-                                  onPress={() => handleSizePress(item)}
-                                  disabled={item?.stock == 0 || !item?.has}>
+                                  onPress={() => {
+                                    handlePropertyPress(
+                                      'size',
+                                      item?.size,
+                                      item?.has,
+                                    );
+                                  }}>
                                   <View
                                     style={[
                                       styles.sizeView,
                                       {
-                                        backgroundColor:
-                                          item?.stock == 0 || !item?.has
-                                            ? '#EEEEEE80'
-                                            : selectedSize === item?.size
-                                            ? '#0D71BA50'
-                                            : '#EEEEEE',
+                                        backgroundColor: !item?.has
+                                          ? '#EEEEEE80'
+                                          : selectedSize === item?.size
+                                          ? '#0D71BA50'
+                                          : '#EEEEEE',
                                       },
                                     ]}>
                                     <Text
@@ -1390,10 +1451,9 @@ const ProductDetails = ({route}) => {
                                       {item?.size}
                                     </Text>
                                   </View>
-                                  {item?.stock == 0 ||
-                                    (!item?.has && (
-                                      <Text style={styles.soldText}>sold</Text>
-                                    ))}
+                                  {!item?.has && (
+                                    <Text style={styles.soldText}>sold</Text>
+                                  )}
                                 </TouchableOpacity>
                               ),
                             )}
@@ -1444,8 +1504,13 @@ const ProductDetails = ({route}) => {
                                             : Color.white,
                                       },
                                     ]}
-                                    onPress={() => handleAgePress(item)}
-                                    disabled={item?.stock == 0 || !item?.has}>
+                                    onPress={() => {
+                                      handlePropertyPress(
+                                        'age',
+                                        item?.age,
+                                        item?.has,
+                                      );
+                                    }}>
                                     <Text
                                       style={[
                                         styles.colorNameText,
@@ -1491,8 +1556,13 @@ const ProductDetails = ({route}) => {
                                             : Color.white,
                                       },
                                     ]}
-                                    onPress={() => handleGenderPress(item)}
-                                    disabled={item?.stock == 0 || !item?.has}>
+                                    onPress={() => {
+                                      handlePropertyPress(
+                                        'gender',
+                                        item?.gender,
+                                        item?.has,
+                                      );
+                                    }}>
                                     <Text
                                       style={[
                                         styles.colorNameText,
@@ -1538,8 +1608,13 @@ const ProductDetails = ({route}) => {
                                             : Color.white,
                                       },
                                     ]}
-                                    onPress={() => handleMaterialPress(item)}
-                                    disabled={item?.stock == 0 || !item?.has}>
+                                    onPress={() => {
+                                      handlePropertyPress(
+                                        'material',
+                                        item?.material,
+                                        item?.has,
+                                      );
+                                    }}>
                                     <Text
                                       style={[
                                         styles.colorNameText,
@@ -1601,8 +1676,13 @@ const ProductDetails = ({route}) => {
                                               : Color.white,
                                         },
                                       ]}
-                                      onPress={() => handleColorPress(item)}
-                                      disabled={item?.stock == 0 || !item?.has}>
+                                      onPress={() => {
+                                        handlePropertyPress(
+                                          'color',
+                                          item?.color,
+                                          item?.has,
+                                        );
+                                      }}>
                                       <View
                                         style={[
                                           styles.colorView,
@@ -1642,18 +1722,22 @@ const ProductDetails = ({route}) => {
                                   <TouchableOpacity
                                     key={index}
                                     style={styles.sizeOption}
-                                    onPress={() => handleSizePress(item)}
-                                    disabled={item?.stock == 0 || !item?.has}>
+                                    onPress={() => {
+                                      handlePropertyPress(
+                                        'size',
+                                        item?.size,
+                                        item?.has,
+                                      );
+                                    }}>
                                     <View
                                       style={[
                                         styles.sizeView,
                                         {
-                                          backgroundColor:
-                                            item?.stock == 0 || !item?.has
-                                              ? '#EEEEEE80'
-                                              : selectedSize === item?.size
-                                              ? '#0D71BA50'
-                                              : '#EEEEEE',
+                                          backgroundColor: !item?.has
+                                            ? '#EEEEEE80'
+                                            : selectedSize === item?.size
+                                            ? '#0D71BA50'
+                                            : '#EEEEEE',
                                         },
                                       ]}>
                                       <Text
@@ -1666,12 +1750,9 @@ const ProductDetails = ({route}) => {
                                         {item?.size}
                                       </Text>
                                     </View>
-                                    {item?.stock == 0 ||
-                                      (!item?.has && (
-                                        <Text style={styles.soldText}>
-                                          sold
-                                        </Text>
-                                      ))}
+                                    {!item?.has && (
+                                      <Text style={styles.soldText}>sold</Text>
+                                    )}
                                   </TouchableOpacity>
                                 ),
                               )}
