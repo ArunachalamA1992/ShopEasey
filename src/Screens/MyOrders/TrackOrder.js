@@ -100,7 +100,7 @@ const TrackOrder = ({navigation, route}) => {
                 status: 6,
               };
               const order_status = await fetchData.update_order(
-                `${orderData?.order?.id}`,
+                `${orderData?.id}`,
                 data,
                 token,
               );

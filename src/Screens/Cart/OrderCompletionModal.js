@@ -30,13 +30,7 @@ const PostCompletedModal = ({}) => {
       transparent={true}
       visible={orderSuccessModal ? orderSuccessModal : orderCancelVisible}
       animationType={'fade'}>
-      <Pressable
-        onPress={() =>
-          orderSuccessModal
-            ? dispatch(setOrderSuccessVisible(false))
-            : dispatch(setOrderCancelVisible(false))
-        }
-        style={styles.OrderModalContainer}>
+      <View style={styles.OrderModalContainer}>
         <View style={styles.orderView}>
           <TouchableOpacity
             style={styles.closeModal}
@@ -60,16 +54,7 @@ const PostCompletedModal = ({}) => {
               ? 'Your order has been placed successfully! Thank you for your purchase'
               : 'Your Order has been cancelled, You want to try again'}
           </Text>
-          <Button
-            mode="contained"
-            onPress={() => {
-              if (orderSuccessModal) {
-                navigation.navigate('MyOrders');
-                dispatch(setOrderSuccessVisible(false));
-              } else {
-                dispatch(setOrderCancelVisible(false));
-              }
-            }}
+          <TouchableOpacity
             style={{
               marginHorizontal: 10,
               borderRadius: 5,
@@ -77,12 +62,30 @@ const PostCompletedModal = ({}) => {
               borderColor: Color.lightgrey,
               borderWidth: 1,
               width: '100%',
+              height: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-            textColor={Color.white}>
-            View Order
-          </Button>
+            onPress={() => {
+              if (orderSuccessModal) {
+                navigation.navigate('MyOrders');
+                dispatch(setOrderSuccessVisible(false));
+              } else {
+                dispatch(setOrderCancelVisible(false));
+              }
+            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: Manrope.Bold,
+                textAlign: 'center',
+                color: Color.white,
+              }}>
+              View Order
+            </Text>
+          </TouchableOpacity>
         </View>
-      </Pressable>
+      </View>
     </Modal>
   );
 };
