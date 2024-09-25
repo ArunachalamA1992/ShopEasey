@@ -179,6 +179,8 @@ const SearchDataList = ({navigation, route}) => {
               elevation: 3,
               borderRadius: 5,
               marginTop: 5,
+              borderWidth: 1,
+              borderColor: Color.lightgrey,
             }}>
             <FlatList
               data={ProductSuggestions?.data}

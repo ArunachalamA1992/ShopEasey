@@ -410,8 +410,8 @@ const OrderConfirmation = ({navigation, route}) => {
       //   ),
       // };
       const data = {
-        total: parseFloat(total_price),
-        sub_total: parseFloat(Sub_total),
+        total: total_price,
+        sub_total: parseInt(Sub_total),
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
         shipping_charge: countryCode?.id == 452 ? 0 : 10,
@@ -436,7 +436,10 @@ const OrderConfirmation = ({navigation, route}) => {
           }),
         ),
       };
-      console.log('data', JSON.stringify(data));
+      console.log(
+        'data----------------------------------',
+        JSON.stringify(data),
+      );
       const post_order = await fetchData.postOrder(data, token);
       console.log('post_order', post_order);
       if (selectPayment?.name === 'cash on delivery') {
