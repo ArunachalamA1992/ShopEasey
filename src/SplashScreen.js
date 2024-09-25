@@ -5,8 +5,8 @@ import Color from './Global/Color';
 import {setAsync, setCountryCode, setDataCount, setUserData} from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import fetchData from './Config/fetchData';
-import {NetworkState} from './Utils/utils';
 import NetInfo from '@react-native-community/netinfo';
+import {NetworkState} from './Utils/utils';
 
 const SplashScreen = ({navigation}) => {
   const imageScale = new Animated.Value(0.1);
