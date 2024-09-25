@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Animated} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Animated,
+  StatusBar,
+  SafeAreaView,
+} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Color from './Global/Color';
 import {setAsync, setCountryCode, setDataCount, setUserData} from './Redux';
@@ -99,7 +105,8 @@ const SplashScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar translucent />
       {!loading && <NetworkState setNetInfo={setNetInfo} />}
       <Animated.Image
         source={{
@@ -107,7 +114,7 @@ const SplashScreen = ({navigation}) => {
         }}
         style={[styles.image, {transform: [{scale: imageScale}]}]}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

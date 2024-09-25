@@ -80,7 +80,7 @@ const CustomDrawerContent = props => {
           paddingTop: 20,
         }}>
         <Image
-          source={Media.main_logo}
+          source={{uri: Media.main_logo}}
           style={{
             width: 80,
             height: 80,

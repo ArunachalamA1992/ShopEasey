@@ -42,6 +42,7 @@ const SearchDataList = ({navigation, route}) => {
   const [page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
   const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
+  const [searchLoader, setSearchLoader] = useState(false);
   const [ProductSuggestions, setProductSuggestions] = useState({
     data: [],
     visible: false,
@@ -93,15 +94,25 @@ const SearchDataList = ({navigation, route}) => {
 
   const propertySearch = async input => {
     setSearchProduct(input);
+    setSearchLoader(true);
     try {
-      const data = `filter=${searchProduct}&page=1&limit=10`;
+      const data = `filter=${input}&page=1&limit=10`;
       const getData = await fetchData.search(data, token);
-      setProductSuggestions({
-        data: getData?.data?.keyword?.rows,
-        visible: true,
-      });
+      if (getData?.status === true) {
+        setProductSuggestions({
+          data: getData?.data?.keyword?.rows || [],
+          visible: true,
+        });
+      } else {
+        setProductSuggestions({
+          data: [],
+          visible: true,
+        });
+      }
+      setSearchLoader(false);
     } catch (error) {
       console.log('error', error);
+      setSearchLoader(false);
     }
   };
 
@@ -170,7 +181,7 @@ const SearchDataList = ({navigation, route}) => {
           }}
         />
 
-        {ProductSuggestions?.visible == true && (
+        {ProductSuggestions?.visible == true && searchProduct != '' && (
           <View
             style={{
               maxHeight: 200,
@@ -182,37 +193,72 @@ const SearchDataList = ({navigation, route}) => {
               borderWidth: 1,
               borderColor: Color.lightgrey,
             }}>
-            <FlatList
-              data={ProductSuggestions?.data}
-              keyExtractor={(item, index) => item + index}
-              renderItem={({item, index}) => {
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => {
-                      setSearchProduct(item?.keyword);
-                      setSelectData(item);
-                      handleSearch(item);
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontFamily: Manrope.Medium,
-                        color: Color.black,
+            {searchLoader ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <ActivityIndicator />
+              </View>
+            ) : (
+              <FlatList
+                data={ProductSuggestions?.data}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({item, index}) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        setSearchProduct(item?.keyword);
+                        setSelectData(item);
+                        handleSearch(item);
                       }}>
-                      {item?.keyword}
-                    </Text>
-                    {index < ProductSuggestions?.data.length - 1 && (
-                      <Divider style={{height: 1, marginVertical: 5}} />
-                    )}
-                  </TouchableOpacity>
-                );
-              }}
-              onEndReached={() => {
-                loadSearchMoreData();
-              }}
-              onEndReachedThreshold={3}
-            />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontFamily: Manrope.Medium,
+                          color: Color.black,
+                        }}>
+                        {item?.keyword}
+                      </Text>
+                      {index < ProductSuggestions?.data.length - 1 && (
+                        <Divider style={{height: 1, marginVertical: 5}} />
+                      )}
+                    </TouchableOpacity>
+                  );
+                }}
+                onEndReached={() => {
+                  loadSearchMoreData();
+                }}
+                onEndReachedThreshold={3}
+                ListEmptyComponent={() => {
+                  return (
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginVertical: 10,
+                        width: '100%',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          padding: 5,
+                          paddingHorizontal: 20,
+                          marginStart: 5,
+                          borderRadius: 5,
+                          marginVertical: 10,
+                          color: Color.primary,
+                          fontFamily: Manrope.Bold,
+                        }}>
+                        No Data
+                      </Text>
+                    </View>
+                  );
+                }}
+              />
+            )}
           </View>
         )}
       </View>

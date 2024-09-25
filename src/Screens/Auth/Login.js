@@ -62,21 +62,24 @@ const Login = () => {
   const getFCMToken = async () => {
     try {
       let fcmToken = await AsyncStorage.getItem('fcmToken');
-      console.log('fcmToken', fcmToken);
       if (!fcmToken) {
         try {
-          const token = await messaging().getToken();
-          if (token) {
-            await AsyncStorage.setItem('fcmToken', token);
-            setToken(token);
+          const newToken = await messaging().getToken();
+          if (newToken) {
+            await AsyncStorage.setItem('fcmToken', newToken);
+            setToken(newToken);
           } else {
+            console.log('No token returned from FCM');
           }
         } catch (error) {
-          console.log('Error fetching token :', error);
+          console.log('Error while fetching new FCM token:', error);
         }
+      } else {
+        console.log('FCM Token already exists, no need to fetch a new one.');
+        setToken(fcmToken); // Use the existing token
       }
     } catch (error) {
-      console.log('Catch in getFcmToken  : ', error);
+      console.log('Error in getFCMToken function:', error);
     }
   };
 
@@ -97,7 +100,7 @@ const Login = () => {
         if (updateProfiledata.message) {
           const UserLogin = {
             ...updateProfiledata?.data,
-            token: updateProfiledata?.token,
+            token: token,
           };
           await AsyncStorage.setItem('user_data', JSON.stringify(UserLogin));
           navigation.replace('TabNavigator');
@@ -154,7 +157,7 @@ const Login = () => {
             navigation.dispatch(
               StackActions.replace('OTPScreen', {
                 number,
-                token: login_data?.token,
+                token,
                 loginType,
               }),
             );
@@ -218,7 +221,7 @@ const Login = () => {
             common_fn.showToast(Register_data?.message);
             navigation.navigate('OTPScreen', {
               number,
-              token: Register_data?.token,
+              token: token,
               loginType,
             });
             setLoading(false);

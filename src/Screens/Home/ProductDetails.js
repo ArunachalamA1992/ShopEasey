@@ -1116,14 +1116,16 @@ const ProductDetails = ({route}) => {
                         {discount}% OFF
                       </Text>
                     </View>
-                    {/* <Text
-                      style={{
-                        fontFamily: Manrope.SemiBold,
-                        fontSize: 12,
-                        color: Color.red,
-                      }}>
-                      ( Only {singleData?.stock} pending )
-                    </Text> */}
+                    {singleData?.stock == 0 && (
+                      <Text
+                        style={{
+                          fontFamily: Manrope.SemiBold,
+                          fontSize: 14,
+                          color: Color.red,
+                        }}>
+                        Sold Out
+                      </Text>
+                    )}
                   </View>
                   <Text
                     style={{

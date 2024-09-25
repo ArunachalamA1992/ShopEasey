@@ -47,6 +47,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import PostCompletedModal from '../Cart/OrderCompletionModal';
 import VoiceSearch from '../../Components/VoiceSearch';
 import LinearGradient from 'react-native-linear-gradient';
+import ProfileModal from '../../Components/ProfileModal';
 
 LogBox.ignoreAllLogs();
 const {width} = Dimensions.get('window');
@@ -68,6 +69,7 @@ const HomeScreen = () => {
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
   const [imageVisible, setImageVisible] = useState(false);
+  const [profileVisible, setProfileVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
   const [latestProducts, setLatestProduct] = useState([]);
@@ -360,6 +362,9 @@ const HomeScreen = () => {
       var banner_data = `seller=home_page`;
       const getBannerData = await fetchData.get_banner(banner_data, null);
       setBannerData(getBannerData?.data);
+      //profile
+      const profile = await fetchData.profile_data(``, token);
+      // setProfileData(profile.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -439,13 +444,8 @@ const HomeScreen = () => {
     setlatestloadMore(true);
     try {
       const nextPage = latestPage + 1;
-      console.log('nextPage-------------------', nextPage);
       var data = `page=${nextPage}&region_id=${countryCode?.id}`;
       const response = await fetchData.list_products(data, token);
-      console.log(
-        'response?.length--------------------',
-        response?.data?.length,
-      );
       if (response?.data.length > 0) {
         setlatestPage(nextPage);
         const updatedData = [...latestProducts, ...response?.data];
@@ -466,6 +466,7 @@ const HomeScreen = () => {
   const [searchloadMore, setSearchLoadMore] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
   const [searchendReached, setSearchEndReached] = useState(false);
+  const [searchLoader, setSearchLoader] = useState(false);
   const [ProductSuggestions, setProductSuggestions] = useState({
     data: [],
     visible: false,
@@ -473,15 +474,25 @@ const HomeScreen = () => {
 
   const propertySearch = async input => {
     setSearchProduct(input);
+    setSearchLoader(true);
     try {
       const data = `filter=${input}&page=1&limit=10`;
       const getData = await fetchData.search(data, token);
-      setProductSuggestions({
-        data: getData?.data?.keyword?.rows,
-        visible: true,
-      });
+      if (getData?.status === true) {
+        setProductSuggestions({
+          data: getData?.data?.keyword?.rows || [],
+          visible: true,
+        });
+      } else {
+        setProductSuggestions({
+          data: [],
+          visible: true,
+        });
+      }
+      setSearchLoader(false);
     } catch (error) {
       console.log('error', error);
+      setSearchLoader(false);
     }
   };
 
@@ -529,25 +540,39 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    const checkModalShown = async () => {
-      const modalShown = await AsyncStorage.getItem('modalShown');
-      if (!modalShown && token !== undefined) {
-        setImageVisible(true);
-        await AsyncStorage.setItem('modalShown', 'true');
+    const checkAsyncStorage = async (key, condition, setter) => {
+      const item = await AsyncStorage.getItem(key);
+      if (!item && condition) {
+        setter(true);
+        await AsyncStorage.setItem(key, 'true');
       }
     };
 
-    checkModalShown();
-    // if (token !== undefined) {
-    //   setImageVisible(true);
-    // }
-  }, [token]);
+    const modalCondition = token !== undefined;
+    const profileCondition =
+      token !== undefined &&
+      (!userData.first_name ||
+        !userData.last_name ||
+        !userData.email ||
+        !userData.mobile);
+
+    const checkConditions = async () => {
+      await checkAsyncStorage('modalShown', modalCondition, setImageVisible);
+      await checkAsyncStorage(
+        'profileShown',
+        profileCondition,
+        setProfileVisible,
+      );
+    };
+
+    checkConditions();
+  }, [token, userData]);
 
   const gradiantColors = ['#0D71BA', '#2994CB', '#0D71BA'];
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
+      {/* <LinearGradient
         style={
           {
             // height: StatusBar.currentHeight,
@@ -561,7 +586,7 @@ const HomeScreen = () => {
         backgroundColor="transparent"
         barStyle={'light-content'}
         translucent
-      />
+      /> */}
       {netInfo_State ? null : (
         <Animated.View
           animation="fadeInRight"
@@ -2025,66 +2050,76 @@ const HomeScreen = () => {
                   borderBottomLeftRadius: 20,
                   borderBottomRightRadius: 20,
                 }}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <FlatList
-                    data={ProductSuggestions?.data}
-                    scrollEnabled
-                    keyExtractor={(item, index) => item + index}
-                    renderItem={({item, index}) => {
-                      return (
-                        <TouchableOpacity
-                          key={index}
-                          onPress={() => {
-                            getSearchData(item);
-                          }}
-                          style={{
-                            width: '90%',
-                          }}>
-                          <Text
+                {searchLoader ? (
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <ActivityIndicator />
+                  </View>
+                ) : (
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <FlatList
+                      data={ProductSuggestions?.data}
+                      scrollEnabled
+                      keyExtractor={(item, index) => item + index}
+                      renderItem={({item, index}) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            onPress={() => {
+                              getSearchData(item);
+                            }}
                             style={{
-                              fontSize: 16,
-                              fontFamily: Manrope.Medium,
-                              color: Color.black,
+                              width: '90%',
                             }}>
-                            {item?.keyword}
-                          </Text>
-                          {index < ProductSuggestions?.data.length - 1 && (
-                            <Divider style={{height: 1, marginVertical: 5}} />
-                          )}
-                        </TouchableOpacity>
-                      );
-                    }}
-                    onEndReached={() => {
-                      loadSearchMoreData();
-                    }}
-                    ListEmptyComponent={() => {
-                      return (
-                        <View
-                          style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginVertical: 10,
-                            width: '100%',
-                          }}>
-                          <Text
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                fontFamily: Manrope.Medium,
+                                color: Color.black,
+                              }}>
+                              {item?.keyword}
+                            </Text>
+                            {index < ProductSuggestions?.data.length - 1 && (
+                              <Divider style={{height: 1, marginVertical: 5}} />
+                            )}
+                          </TouchableOpacity>
+                        );
+                      }}
+                      onEndReached={() => {
+                        loadSearchMoreData();
+                      }}
+                      ListEmptyComponent={() => {
+                        return (
+                          <View
                             style={{
-                              fontSize: 14,
-                              padding: 5,
-                              paddingHorizontal: 20,
-                              marginStart: 5,
-                              borderRadius: 5,
+                              alignItems: 'center',
+                              justifyContent: 'center',
                               marginVertical: 10,
-                              color: Color.primary,
-                              fontFamily: Manrope.Bold,
+                              width: '100%',
                             }}>
-                            No Data
-                          </Text>
-                        </View>
-                      );
-                    }}
-                    onEndReachedThreshold={3}
-                  />
-                </ScrollView>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                padding: 5,
+                                paddingHorizontal: 20,
+                                marginStart: 5,
+                                borderRadius: 5,
+                                marginVertical: 10,
+                                color: Color.primary,
+                                fontFamily: Manrope.Bold,
+                              }}>
+                              No Data
+                            </Text>
+                          </View>
+                        );
+                      }}
+                      onEndReachedThreshold={3}
+                    />
+                  </ScrollView>
+                )}
               </View>
             </View>
           )}
@@ -2140,6 +2175,10 @@ const HomeScreen = () => {
               </View>
             </View>
           </Modal>
+          <ProfileModal
+            profileVisible={profileVisible}
+            setProfileVisible={setProfileVisible}
+          />
           <PostCompletedModal navigation={navigation} />
         </>
       )}

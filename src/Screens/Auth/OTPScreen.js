@@ -95,7 +95,7 @@ const OTPScreen = ({route, AppState}) => {
         ? await fetchData.login_with_otp(data, null)
         : await fetchData.Register_request_otp(data, null);
     if (ResendOtpVerify?.status == true) {
-      setToken(ResendOtpVerify?.token);
+      setToken(token);
       if (Platform.OS === 'android') {
         common_fn.showToast(ResendOtpVerify?.message);
       } else {
@@ -133,6 +133,7 @@ const OTPScreen = ({route, AppState}) => {
       } else if (isMobile(number)) {
         data.mobile = number;
       }
+      console.log('data', data);
       const VerifyOTP =
         loginType == ''
           ? await fetchData.login_verify_otp(data, token)
@@ -157,7 +158,7 @@ const OTPScreen = ({route, AppState}) => {
           'Invalid OTP Code Please Enter Your 4 Digit OTP Code',
         );
       } else {
-        alert('Invalid OTP Code Please Enter Your 4 Digit OTP Code');
+        Alert.alert('Invalid OTP Code Please Enter Your 4 Digit OTP Code');
         setLoading(false);
         setVisible(false);
       }

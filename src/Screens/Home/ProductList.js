@@ -3,6 +3,7 @@ import {
   BackHandler,
   Dimensions,
   FlatList,
+  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
@@ -106,7 +107,6 @@ const ProductList = ({route}) => {
       if (param && param.trim() !== '') {
         query += `&${param}`;
       }
-      console.log('query', query);
       const product_data = await fetchData.list_products(query, token);
       setProducts(product_data?.data);
     } catch (error) {
@@ -186,9 +186,9 @@ const ProductList = ({route}) => {
       setLoadMore(false);
     }
   };
-  console.log('param', param);
+
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar backgroundColor={Color.primary} barStyle={'light-content'} />
       <View style={styles.header}>
         <TouchableOpacity
@@ -443,7 +443,7 @@ const ProductList = ({route}) => {
             onEndReached={() => {
               loadMoreData();
             }}
-            onEndReachedThreshold={3}
+            onEndReachedThreshold={10}
             ListFooterComponent={() => {
               return (
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -496,7 +496,7 @@ const ProductList = ({route}) => {
           param={param}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

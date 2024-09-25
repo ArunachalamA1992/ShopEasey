@@ -4,6 +4,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -363,7 +364,7 @@ const MyCart = ({}) => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
       {loading ? (
         <View style={{marginHorizontal: 5}}>
           <SkeletonPlaceholder>
@@ -1005,7 +1006,7 @@ const MyCart = ({}) => {
         </>
       )}
       {sale_BottomSheetmenu()}
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -4,6 +4,7 @@ import {
   FlatList,
   Image,
   Linking,
+  SafeAreaView,
   ScrollView,
   Share,
   StyleSheet,
@@ -95,7 +96,7 @@ const Profile = () => {
     }
   };
   return (
-    <View style={{flex: 1, backgroundColor: Color.white}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {loading ? (
           <View style={{padding: 10}}>
@@ -1521,7 +1522,7 @@ const Profile = () => {
           </View>
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
