@@ -64,32 +64,45 @@ const AddAddress = ({route}) => {
 
   async function addAddressClick() {
     try {
+      const isPincodeValid = () => {
+        const pincodeLength = pincode?.trim().length;
+        if (countryCode?.id === 452 || countryCode?.id === 454) {
+          return pincodeLength === 6;
+        } else if (countryCode?.id === 453) {
+          return pincodeLength === 5;
+        } else {
+          return false;
+        }
+      };
+
       if (
-        username != '' &&
-        phone != '' &&
-        houseAddr != '' &&
-        landAddr != '' &&
-        pincode != '' &&
-        selectedAddItem != '' &&
-        selectState?.state_id != 0 &&
-        selectCity?.city_id != 0 &&
-        pincode != ''
+        username?.trim() &&
+        phone?.trim() &&
+        houseAddr?.trim() &&
+        landAddr?.trim() &&
+        pincode?.trim() &&
+        selectedAddItem?.trim() &&
+        selectState?.state_id > 0 &&
+        selectCity?.city_id > 0 &&
+        isPincodeValid()
       ) {
         var data = {
-          name: username,
-          phone: phone,
-          address_line1: houseAddr,
-          address_line2: landAddr,
-          city_id: selectCity?.city_id,
-          state_id: selectState?.state_id,
-          country: countryCode?.country,
-          pincode: pincode,
-          landmark: landmark,
-          address_type: selectAddressType?.name,
-          is_default: defaultAddress == true ? 1 : 0,
+          name: username.trim(),
+          phone: phone.trim(),
+          address_line1: houseAddr.trim(),
+          address_line2: landAddr.trim(),
+          city_id: selectCity.city_id,
+          state_id: selectState.state_id,
+          country: countryCode?.country || '',
+          pincode: pincode.trim(),
+          landmark: landmark?.trim() || '',
+          address_type: selectAddressType?.name || '',
+          is_default: defaultAddress === true ? 1 : 0,
         };
+
         const add_address = await fetchData.add_address(data, token);
-        if (add_address?.status == true) {
+
+        if (add_address?.status === true) {
           navigation.dispatch(
             StackActions.replace('OrderConfirmation', {CheckOut, ids}),
           );
@@ -98,10 +111,12 @@ const AddAddress = ({route}) => {
           common_fn.showToast(add_address?.message);
         }
       } else {
-        common_fn.showToast('Please enter mandatory fields');
+        common_fn.showToast(
+          'Please enter all mandatory fields correctly, including a valid pincode.',
+        );
       }
     } catch (error) {
-      console.log('catch in addAddress_Click ', error);
+      console.log('Error in addAddressClick:', error);
     }
   }
 
@@ -249,7 +264,7 @@ const AddAddress = ({route}) => {
       setStateLoadMore(false);
     }
   };
-  console.log('selectState?.state_id', selectState?.state_id);
+
   const loadMoreCityData = async () => {
     if (cityloadMore || cityendReached) {
       return;

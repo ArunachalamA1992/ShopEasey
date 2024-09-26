@@ -217,7 +217,6 @@ const OrderConfirmation = ({navigation, route}) => {
       const price = item.variant?.org_price;
       const priceMargin = countryCode?.price_margin || 1;
       const quantity = item?.quantity || 0;
-      console.log('price', price);
       return (
         accumulator +
         price *
@@ -227,20 +226,18 @@ const OrderConfirmation = ({navigation, route}) => {
     }, 0)
     .toFixed(2);
 
-  const Sub_total = selectedData
-    ?.reduce((accumulator, item) => {
-      const price = item?.variant?.offer_price ?? item.variant?.price;
-      const priceMargin = countryCode?.price_margin || 1;
-      const quantity = item?.quantity || 0;
+  const Sub_total = selectedData?.reduce((accumulator, item) => {
+    const price = item?.variant?.offer_price ?? item.variant?.price;
+    const priceMargin = countryCode?.price_margin || 1;
+    const quantity = item?.quantity || 0;
 
-      return (
-        accumulator +
-        price *
-          // / priceMargin
-          quantity
-      );
-    }, 0)
-    .toFixed(2);
+    return (
+      accumulator +
+      price *
+        // / priceMargin
+        quantity
+    );
+  }, 0);
 
   const discount_price = selectedData
     ?.reduce((accumulator, item) => {
@@ -272,108 +269,11 @@ const OrderConfirmation = ({navigation, route}) => {
   });
   const overall_tax = product_tax?.reduce((acc, curr) => acc + curr, 0);
 
-  // const postOrder = async () => {
-  //   try {
-  //     const total_price = parseFloat(Sub_total) + overall_tax;
-  //     const data = {
-  //       address_id: selectAddress?.id,
-  //       region_id: countryCode?.id,
-  //       total: total_price,
-  //       sub_total: Sub_total,
-  //       tax: overall_tax,
-  //       payment_method:
-  //         selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-  //       products: CheckOut?.flatMap(item =>
-  //         item.tax?.flatMap(tax_item => {
-  //           if (tax_item?.region_id == countryCode?.id) {
-  //             return {
-  //               product_id: item?.product?.id,
-  //               variant_id: item?.variant?.id,
-  //               quantity: item?.quantity,
-  //               price: parseFloat(
-  //                 item?.variant?.price / countryCode?.price_margin,
-  //               ).toFixed(2),
-  //               tax: tax_item?.tax * item?.quantity,
-  //             };
-  //           }
-  //           return [];
-  //         }),
-  //       ),
-  //     };
-  //     const post_order = await fetchData.postOrder(data, token);
-  //     if (selectPayment?.name === 'cash on delivery') {
-  //       handleCODOrder(post_order);
-  //     } else {
-  //       if (countryCode?.id == 452) {
-  //         handleOnlineOrder(post_order);
-  //       } else {
-  //         navigation.navigate('Paypal', {
-  //           approval_url: post_order?.approval_url,
-  //           data: post_order?.data,
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error in postOrder:', error);
-  //     common_fn.showToast(
-  //       'An error occurred while placing the order. Please try again.',
-  //     );
-  //   }
-  // };
-
-  const {initPaymentSheet, presentPaymentSheet} = useStripe();
-
-  useEffect(() => {
-    async function initializePaymentSheet() {
-      const {error} = await initPaymentSheet({
-        paymentIntentClientSecret: 'your-payment-intent-client-secret',
-        merchantDisplayName: 'Your App Name',
-        appearance: {
-          colors: {
-            primary: '#000000',
-            background: '#ffffff',
-            componentBackground: '#f3f3f3',
-            componentBorder: '#d1d1d1',
-            componentDivider: '#e1e1e1',
-            primaryText: '#000000',
-            secondaryText: '#757575',
-          },
-          shapes: {
-            borderRadius: 12,
-            borderWidth: 1,
-          },
-          primaryButton: {
-            colors: {
-              background: '#1f77b4',
-              text: '#ffffff',
-            },
-            borderRadius: 12,
-          },
-        },
-      });
-
-      if (!error) {
-        console.log('error');
-      }
-    }
-
-    initializePaymentSheet();
-  }, []);
-
-  const openPaymentSheet = async () => {
-    const {error} = await presentPaymentSheet();
-
-    if (error) {
-      console.log('Payment failed', error.message);
-    } else {
-      console.log('Payment successful');
-    }
-  };
-
   const postOrder = async () => {
     try {
-      const total_price =
-        parseInt(Sub_total) + overall_tax + (countryCode?.id == 452 ? 0 : 10);
+      const total_price = parseFloat(
+        Sub_total + overall_tax + (countryCode?.id == 452 ? 0 : 10),
+      );
       // const data = {
       //   total: total_price,
       //   payment_method:
@@ -411,7 +311,7 @@ const OrderConfirmation = ({navigation, route}) => {
       // };
       const data = {
         total: total_price,
-        sub_total: parseInt(Sub_total),
+        sub_total: parseFloat(Sub_total),
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
         shipping_charge: countryCode?.id == 452 ? 0 : 10,
@@ -504,6 +404,29 @@ const OrderConfirmation = ({navigation, route}) => {
         common_fn.showToast('Payment failed. Please try again.');
         navigation?.replace('TabNavigator');
       });
+  };
+
+  const updateCartData = async (id, status, quantity) => {
+    try {
+      var param = `${id}`;
+      var data = {
+        quantity: 0,
+      };
+      if (status == 'plus') {
+        data.quantity += quantity + 1;
+      } else {
+        data.quantity += quantity - 1;
+      }
+      const update_cart = await fetchData.update_cart(param, data, token);
+      if (update_cart?.status == true) {
+        // common_fn.showToast(update_cart?.message);
+        getCartData();
+      } else {
+        common_fn.showToast(update_cart?.message);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   return (
@@ -899,7 +822,7 @@ const OrderConfirmation = ({navigation, route}) => {
                                 </Text>
                               </View>
                             ))}
-                          <View
+                          {/* <View
                             style={{
                               flexDirection: 'row',
                               justifyContent: 'flex-start',
@@ -922,6 +845,126 @@ const OrderConfirmation = ({navigation, route}) => {
                               }}>
                               {item?.quantity}
                             </Text>
+                          </View> */}
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            // justifyContent: 'center',
+                            // alignItems: 'center',
+                          }}>
+                          <View
+                            style={{
+                              // flex: 1,
+                              // height: 40,
+                              marginTop: 10,
+                              borderColor: Color.Venus,
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              // backgroundColor: Color.white,
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}>
+                            {item?.quantity > 1 ? (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  updateCartData(
+                                    item?.id,
+                                    'minus',
+                                    item?.quantity,
+                                  );
+                                }}
+                                style={{
+                                  // flex: 1,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  padding: 5,
+                                  paddingHorizontal: 10,
+                                  borderRightWidth: 1,
+                                  borderRightColor: Color.cloudyGrey,
+                                }}>
+                                <Iconviewcomponent
+                                  Icontag={'AntDesign'}
+                                  iconname={'minus'}
+                                  icon_size={18}
+                                  icon_color={Color.black}
+                                />
+                              </TouchableOpacity>
+                            ) : (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  setBottomData(item);
+                                  setSaleBottomSheetVisible(
+                                    !salebottomSheetVisible,
+                                  );
+                                }}
+                                style={{
+                                  // flex: 1,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  padding: 5,
+                                  paddingHorizontal: 10,
+                                  backgroundColor: Color.white,
+                                  borderRightWidth: 1,
+                                  borderRightColor: Color.cloudyGrey,
+                                }}>
+                                <Iconviewcomponent
+                                  Icontag={'AntDesign'}
+                                  iconname={'delete'}
+                                  icon_size={18}
+                                  icon_color={Color.black}
+                                />
+                              </TouchableOpacity>
+                            )}
+                            <View
+                              style={{
+                                // flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                paddingHorizontal: 15,
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 16,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.SemiBold,
+                                }}>
+                                {item.quantity}
+                              </Text>
+                            </View>
+                            <TouchableOpacity
+                              onPress={() => {
+                                updateCartData(
+                                  item?.id,
+                                  'plus',
+                                  item?.quantity,
+                                );
+                              }}
+                              disabled={item?.quantity === item?.variant?.stock}
+                              style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                padding: 5,
+                                paddingHorizontal: 10,
+                                backgroundColor:
+                                  item?.quantity === item?.variant?.stock
+                                    ? Color.lightgrey
+                                    : Color.white,
+                                borderLeftWidth: 1,
+                                borderLeftColor: Color.cloudyGrey,
+                                opacity:
+                                  item?.quantity === item?.variant?.stock
+                                    ? 0.5
+                                    : 1,
+                              }}>
+                              <Iconviewcomponent
+                                Icontag={'AntDesign'}
+                                iconname={'plus'}
+                                icon_size={18}
+                                icon_color={Color.black}
+                              />
+                            </TouchableOpacity>
                           </View>
                         </View>
                       </View>
@@ -1262,7 +1305,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {Sub_total}
+                  {parseFloat(Sub_total).toFixed(2)}
                 </Text>
               </View>
               {/* <View
@@ -1390,9 +1433,9 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {parseInt(Sub_total) +
-                    overall_tax +
-                    (countryCode?.id == 452 ? 0 : 10)}
+                  {parseFloat(
+                    Sub_total + overall_tax + (countryCode?.id == 452 ? 0 : 10),
+                  ).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -1475,9 +1518,9 @@ const OrderConfirmation = ({navigation, route}) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {parseInt(
+            {parseFloat(
               Sub_total + overall_tax + (countryCode?.id == 452 ? 0 : 10),
-            )}
+            ).toFixed(2)}
           </Text>
         </View>
         <View style={{flex: 1}}>

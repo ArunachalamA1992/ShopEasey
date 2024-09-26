@@ -51,18 +51,16 @@ const TermsandConditions = () => {
     try {
       return (
         <View style={{width: '100%', alignItems: 'center'}}>
-          <View style={{width: scr_width}}>
-            <Image
-              source={{uri: Media.terms}}
-              style={{
-                width: scr_width,
-                height: 220,
-                resizeMode: 'contain',
-              }}
-            />
-          </View>
+          <Image
+            source={{uri: Media.terms}}
+            style={{
+              width: scr_width,
+              height: 220,
+              resizeMode: 'contain',
+            }}
+          />
 
-          <View style={{width: '95%', paddingTop: 20}}>
+          <View style={{width: '100%', paddingTop: 20}}>
             <Text
               style={{
                 width: '100%',
@@ -2974,7 +2972,7 @@ const TermsandConditions = () => {
 
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingVertical: 10,
@@ -3004,7 +3002,7 @@ const TermsandConditions = () => {
             </View>
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingVertical: 10,
@@ -3032,7 +3030,7 @@ const TermsandConditions = () => {
             </View>
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingVertical: 10,
@@ -3060,7 +3058,7 @@ const TermsandConditions = () => {
             </View>
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingVertical: 10,
@@ -3089,7 +3087,7 @@ const TermsandConditions = () => {
             </View>
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
@@ -3120,7 +3118,7 @@ const TermsandConditions = () => {
             </View>
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
@@ -4703,7 +4701,7 @@ const TermsandConditions = () => {
           <View style={{width: '100%', alignItems: 'center', marginTop: 0}}>
             <Text
               style={{
-                width: '95%',
+                width: '100%',
                 fontSize: 16,
                 letterSpacing: 0.5,
                 color: 'black',
@@ -4745,7 +4743,7 @@ const TermsandConditions = () => {
 
             <TouchableOpacity
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginVertical: 20,
@@ -4784,7 +4782,7 @@ const TermsandConditions = () => {
 
             <TouchableOpacity
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
               }}
@@ -4810,7 +4808,7 @@ const TermsandConditions = () => {
               </View>
               <Text
                 style={{
-                  width: '95%',
+                  width: '100%',
                   fontSize: 16,
                   letterSpacing: 0.5,
                   color: Color.black,
@@ -4829,7 +4827,7 @@ const TermsandConditions = () => {
               marginVertical: 20,
             }}></View>
           <View
-            style={{width: '95%', flexDirection: 'row', alignItems: 'center'}}>
+            style={{width: '100%', flexDirection: 'row', alignItems: 'center'}}>
             <View
               style={{
                 flex: 0,
@@ -4860,7 +4858,7 @@ const TermsandConditions = () => {
               }}>
               <Text
                 style={{
-                  width: '95%',
+                  width: '100%',
                   fontSize: 18,
                   textAlign: 'justify',
                   color: Color.primary,
@@ -4872,7 +4870,7 @@ const TermsandConditions = () => {
               </Text>
               <Text
                 style={{
-                  width: '95%',
+                  width: '100%',
                   textAlign: 'justify',
                   letterSpacing: 0.5,
                   fontSize: 14,
@@ -4901,7 +4899,7 @@ const TermsandConditions = () => {
             }}>
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -4961,7 +4959,7 @@ const TermsandConditions = () => {
             </View>
             <View
               style={{
-                width: '95%',
+                width: '100%',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -5030,52 +5028,26 @@ const TermsandConditions = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        hidden={false}
-        backgroundColor={Color.primary}
-        translucent={false}
-        barStyle="dark-content"
-        networkActivityIndicatorVisible={true}
+      <FlatList
+        data={aboutData}
+        keyExtractor={(item, index) => item + index}
+        ListHeaderComponent={() => renderHeaderItem()}
+        // renderItem={({ item, index }) => renderFreeRentalItem(item, index)}
+        ListFooterComponent={() => renderFooterItem()}
+        style={{width: '100%'}}
+        showsVerticalScrollIndicator={false}
       />
-
-      {/* {netInfo_State ? null :
-                <Animated.View animation="fadeInRight" style={{ position: 'absolute', zIndex: 9999, width: '100%', alignItems: 'center', backgroundColor: '#626262', opacity: 0.5, padding: 10, marginTop: Platform.OS == "ios" ? 80 : 45 }}>
-                    <Text style={{ color: 'white' }}>No Internet Connection</Text>
-                </Animated.View>
-            } */}
-
-      <View
-        style={{
-          width: '100%',
-          height: height,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: Color.white,
-        }}>
-        <FlatList
-          data={aboutData}
-          keyExtractor={(item, index) => item + index}
-          ListHeaderComponent={() => renderHeaderItem()}
-          // renderItem={({ item, index }) => renderFreeRentalItem(item, index)}
-          ListFooterComponent={() => renderFooterItem()}
-          style={{width: '95%'}}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
     </View>
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
-    // width: scr_width,
-    // height: scr_height,
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'white',
+    padding: 10,
   },
 });
 
-//make this component available to the app
 export default TermsandConditions;

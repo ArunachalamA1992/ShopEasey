@@ -233,7 +233,7 @@ const EditProfile = ({navigation, route}) => {
           setUpdateLoader(false);
         } else {
           console.error('Profile update failed:', result);
-          common_fn.showToast('Profile update failed. Please try again.');
+          common_fn.showToast(result?.message);
           setUpdateLoader(false);
         }
       } else {

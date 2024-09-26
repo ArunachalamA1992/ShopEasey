@@ -37,6 +37,7 @@ const SellerProfile = ({route, navigation}) => {
   const [products, setProducts] = useState([]);
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
+  const countryCode = useSelector(state => state.UserReducer.country);
   const [endReached, setEndReached] = useState(false);
   const [seller_follow, setSeller_follow] = useState('Follow');
   const userData = useSelector(state => state.UserReducer.userData);
@@ -136,10 +137,10 @@ const SellerProfile = ({route, navigation}) => {
       var data = `vendor_id=${vendor_id}`;
       const getdata = await fetchData.seller_list(data, token);
       setSellerData(getdata?.data?.[0]);
-      var product_data = `project=top-picks&vendor_id=${vendor_id}`;
+      var product_data = `project=top-picks&region_id=${countryCode?.id}&vendor_id=${vendor_id}`;
       const get_products = await fetchData.list_products(product_data, token);
       setTopPicks(get_products?.data);
-      var arrival_data = `vendor_id=${vendor_id}`;
+      var arrival_data = `vendor_id=${vendor_id}&region_id=${countryCode?.id}`;
       const get_Arrival = await fetchData.list_products(arrival_data, token);
       setNewArrivals(get_Arrival?.data);
     } catch (error) {
@@ -168,7 +169,7 @@ const SellerProfile = ({route, navigation}) => {
     try {
       const getFlashDeals = await fetchData.flash_Offers(``, token);
       setFlashOffers(getFlashDeals?.data);
-      var data = `project=offer`;
+      var data = `project=offer&region_id=${countryCode?.id}`;
       const get_products = await fetchData.list_products(data, token);
       setProducts(get_products?.data);
     } catch (error) {
@@ -183,7 +184,7 @@ const SellerProfile = ({route, navigation}) => {
     setLoadMore(true);
     try {
       const nextPage = Page + 1;
-      var data = `project=offer&page=${nextPage}`;
+      var data = `project=offer&region_id=${countryCode?.id}&page=${nextPage}`;
       const response = await fetchData.list_products(data, token);
       if (response?.data.length > 0) {
         setPage(nextPage);

@@ -13,6 +13,7 @@ const ViewAllProducts = ({navigation, route}) => {
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
+  const countryCode = useSelector(state => state.UserReducer.country);
 
   const userData = useSelector(state => state.UserReducer.userData);
   var {token} = userData;
@@ -30,10 +31,16 @@ const ViewAllProducts = ({navigation, route}) => {
     try {
       const latest_products =
         key == 'latest'
-          ? await fetchData.list_products(``, token)
+          ? await fetchData.list_products(`region_id=${countryCode?.id}`, token)
           : key == 'topPicks'
-          ? await fetchData.list_products(`project=top-picks`, token)
-          : await fetchData.list_products(`is_featured=1`, token);
+          ? await fetchData.list_products(
+              `project=top-picks&region_id=${countryCode?.id}`,
+              token,
+            )
+          : await fetchData.list_products(
+              `is_featured=1&region_id=${countryCode?.id}`,
+              token,
+            );
       setProduct(latest_products?.data);
     } catch (error) {
       console.log('error', error);
@@ -47,7 +54,7 @@ const ViewAllProducts = ({navigation, route}) => {
     setLoadMore(true);
     try {
       const nextPage = Page + 1;
-      var data = `page=${nextPage}`;
+      var data = `region_id=${countryCode?.id}&page=${nextPage}`;
       const response = await fetchData.list_products(data, token);
       if (response?.data.length > 0) {
         setPage(nextPage);

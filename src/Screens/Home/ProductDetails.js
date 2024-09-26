@@ -294,12 +294,12 @@ const ProductDetails = ({route}) => {
       setSingleData(productData?.data);
       // top picks
       const topPicksData = await fetchData.list_products(
-        'project=top-picks',
+        `project=top-picks&region_id=${countryCode?.id}`,
         token,
       );
       setTopPicks(topPicksData?.data);
       //you may also like this
-      var like_this_param = `category_id=${productData?.data?.product?.category_id}`;
+      var like_this_param = `category_id=${productData?.data?.product?.category_id}&region_id=${countryCode?.id}`;
       const like_this_data = await fetchData.list_products(
         like_this_param,
         token,
@@ -328,7 +328,7 @@ const ProductDetails = ({route}) => {
     setLoadMore(true);
     try {
       const nextPage = Page + 1;
-      var data = `category_id=${singleData?.product?.category_id}&page=${nextPage}`;
+      var data = `category_id=${singleData?.product?.category_id}&region_id=${countryCode?.id}&page=${nextPage}`;
       const response = await fetchData.list_products(data, token);
       if (response?.data.length > 0) {
         setPage(nextPage);
@@ -1453,9 +1453,9 @@ const ProductDetails = ({route}) => {
                                       {item?.size}
                                     </Text>
                                   </View>
-                                  {!item?.has && (
+                                  {/* {!item?.has && (
                                     <Text style={styles.soldText}>sold</Text>
-                                  )}
+                                  )} */}
                                 </TouchableOpacity>
                               ),
                             )}
@@ -1752,9 +1752,9 @@ const ProductDetails = ({route}) => {
                                         {item?.size}
                                       </Text>
                                     </View>
-                                    {!item?.has && (
+                                    {/* {!item?.has && (
                                       <Text style={styles.soldText}>sold</Text>
-                                    )}
+                                    )} */}
                                   </TouchableOpacity>
                                 ),
                               )}
@@ -2768,6 +2768,7 @@ const styles = StyleSheet.create({
     p: {
       fontSize: 16,
       textAlign: 'justify',
+      margin: 2,
     },
     strong: {
       fontWeight: '500',

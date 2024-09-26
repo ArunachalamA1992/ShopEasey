@@ -47,6 +47,7 @@ const SearchDataList = ({navigation, route}) => {
     data: [],
     visible: false,
   });
+  const countryCode = useSelector(state => state.UserReducer.country);
 
   const [LocationSuggestion, setLocationSuggestion] = useState({
     data: [],
@@ -62,7 +63,7 @@ const SearchDataList = ({navigation, route}) => {
 
   const getData = useCallback(async () => {
     try {
-      var data = `${selectData?.type}=${selectData?.value}`;
+      var data = `${selectData?.type}=${selectData?.value}&region_id=${countryCode?.id}`;
       const Product_list = await fetchData.list_products(data, token);
       setProductData(Product_list?.data);
     } catch (error) {
@@ -149,7 +150,7 @@ const SearchDataList = ({navigation, route}) => {
     setLoadMore(true);
     try {
       const nextPage = page + 1;
-      var data = `${selectData?.type}=${selectData?.value}&page=${nextPage}`;
+      var data = `${selectData?.type}=${selectData?.value}&region_id=${countryCode?.id}&page=${nextPage}`;
       const filterData = await fetchData.list_products(data, token);
       if (filterData?.data?.length > 0) {
         setPage(nextPage);

@@ -42,6 +42,7 @@ const ProductList = ({route}) => {
   const dataCount = useSelector(state => state.UserReducer.count);
   const {wishlist, cart} = dataCount;
   const [loadMore, setLoadMore] = useState(false);
+  const countryCode = useSelector(state => state.UserReducer.country);
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
 
@@ -100,7 +101,7 @@ const ProductList = ({route}) => {
       setPage(1);
       setEndReached(false);
 
-      let query = `category_id=${catId}`;
+      let query = `category_id=${catId}&region_id=${countryCode?.id}`;
       if (subCatId) query += `&sub_category_id=${subCatId}`;
       if (subSubCatId) query += `&sub_sub_category_id=${subSubCatId}`;
 
@@ -167,7 +168,7 @@ const ProductList = ({route}) => {
     setLoadMore(true);
     try {
       const nextPage = Page + 1;
-      let query = `category_id=${category_id}&page=${nextPage}`;
+      let query = `category_id=${category_id}&region_id=${countryCode?.id}&page=${nextPage}`;
       if (currentLevel) query += `&sub_category_id=${sub_cat_id}`;
       if (selectedCategory?.id)
         query += `&sub_sub_category_id=${selectedCategory?.id}`;

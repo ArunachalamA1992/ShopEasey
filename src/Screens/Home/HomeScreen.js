@@ -1130,7 +1130,8 @@ const HomeScreen = () => {
                           justifyContent: 'space-between',
                           alignItems: 'flex-start',
                           marginTop: 10,
-                          padding: 10,
+                          paddingVertical: 10,
+                          paddingHorizontal: 5,
                         }}>
                         {categoryData?.slice(0, 14)?.map((item, index) => {
                           return (
@@ -1209,7 +1210,6 @@ const HomeScreen = () => {
                             </View>
                             <Text
                               style={{
-                                textAlign: 'center',
                                 fontSize: 12,
                                 color: Color.white,
                                 font: Manrope.SemiBold,

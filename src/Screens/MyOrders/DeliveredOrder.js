@@ -80,7 +80,7 @@ const DeliveredOrder = ({navigation, route}) => {
 
   const getData = async () => {
     try {
-      var top_picks_data = `project=top-picks`;
+      var top_picks_data = `project=top-picks&region_id=${countryCode?.id}`;
       const top_picks = await fetchData.list_products(top_picks_data, token);
       setRecommended(top_picks?.data);
       setLoading(false);
