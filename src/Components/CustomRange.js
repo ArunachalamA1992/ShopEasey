@@ -101,7 +101,16 @@ const CustomRange = props => {
               placeholder="Min"
               placeholderTextColor={Color.cloudyGrey}
               value={textInputLow}
-              onChangeText={handleTextInputLowChange}
+              keyboardType="numeric"
+              onChangeText={value => {
+                if (value !== '' && value[0] === '0') {
+                  return;
+                }
+                if (value !== '' && value[0] === '-') {
+                  return;
+                }
+                handleTextInputLowChange(value);
+              }}
               style={{
                 flex: 1,
                 color: Color.black,
@@ -148,7 +157,16 @@ const CustomRange = props => {
               placeholder="Max"
               placeholderTextColor={Color.cloudyGrey}
               value={textInputHigh}
-              onChangeText={handleTextInputHighChange}
+              keyboardType="numeric"
+              onChangeText={value => {
+                if (value !== '' && value[0] === '0') {
+                  return;
+                }
+                if (value !== '' && value[0] === '-') {
+                  return;
+                }
+                handleTextInputHighChange(value);
+              }}
               style={{
                 flex: 1,
                 color: Color.black,
