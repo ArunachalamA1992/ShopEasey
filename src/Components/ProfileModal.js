@@ -63,6 +63,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
       if (firstName && lastName && email && phoneNumber) {
         setUpdateLoader(true);
         const myHeaders = new Headers();
+
         myHeaders.append('Authorization', `Bearer ${token}`);
 
         const formdata = new FormData();
@@ -79,21 +80,22 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
           redirect: 'follow',
         };
 
-        const response = await fetch(
-          `${baseUrl}api/auth/user/update_profile`,
-          requestOptions,
-        );
-        const result = await response.json();
-
-        if (result?.status) {
-          common_fn.showToast(result?.message);
-          setProfileVisible(false);
-          setUpdateLoader(false);
-        } else {
-          console.error('Profile update failed:', result);
-          common_fn.showToast(result?.message);
-          setUpdateLoader(false);
-        }
+        fetch(`${baseUrl}api/auth/user/update_profile`, requestOptions)
+          .then(response => response?.json())
+          .then(result => {
+            if (result?.status) {
+              common_fn.showToast(result?.message);
+              setProfileVisible(false);
+              setUpdateLoader(false);
+            } else {
+              console.error('Profile update failed:', result);
+              common_fn.showToast(result?.message);
+              setUpdateLoader(false);
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
       } else {
         common_fn.showToast('Please select all the mandatory fields');
         setUpdateLoader(false);

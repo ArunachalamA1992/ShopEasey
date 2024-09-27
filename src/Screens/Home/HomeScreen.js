@@ -362,9 +362,6 @@ const HomeScreen = () => {
       var banner_data = `seller=home_page`;
       const getBannerData = await fetchData.get_banner(banner_data, null);
       setBannerData(getBannerData?.data);
-      //profile
-      const profile = await fetchData.profile_data(``, token);
-      // setProfileData(profile.data);
     } catch (error) {
       console.log('error', error);
     }

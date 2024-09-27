@@ -220,7 +220,7 @@ const ItemCard = props => {
           </View>
 
           <Text style={styles.productName} numberOfLines={2}>
-            {item?.product_name}
+            {item?.product_name?.trim()}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={styles.productDiscountPrice}>
