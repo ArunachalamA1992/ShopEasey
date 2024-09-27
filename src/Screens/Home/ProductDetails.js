@@ -42,6 +42,11 @@ const ProductDetails = ({route}) => {
   const {id, variant_id} = route.params;
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
+  console.log(
+    'singleData?.product?.sub_sub_category',
+    singleData?.product?.sub_sub_category?.size_chart,
+  );
+  const [sizeChartVisible, setSizeChartVisible] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
@@ -1464,23 +1469,86 @@ const ProductDetails = ({route}) => {
                         <View style={styles.separator}></View>
                       </>
                     ) : null}
-
-                    {singleData?.product?.sub_sub_category?.size_chart ? (
-                      <View>
-                        <Image
-                          source={{
-                            uri: singleData?.product?.sub_sub_category
-                              ?.size_chart,
-                          }}
+                    {singleData?.product?.sub_sub_category?.size_chart && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setSizeChartVisible(true);
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: Manrope.Bold,
+                            fontSize: 18,
+                            color: Color.blue,
+                            textAlign: 'center',
+                            marginBottom: 10,
+                          }}>
+                          Size Chart
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                    <Modal
+                      transparent={true}
+                      visible={sizeChartVisible}
+                      animationType="slide">
+                      <View
+                        style={{
+                          backgroundColor: Color.transparantBlack,
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: 10,
+                        }}>
+                        <TouchableOpacity
+                          style={{position: 'absolute', right: 10, top: 10}}
+                          onPress={() => {
+                            setSizeChartVisible(false);
+                          }}>
+                          <Text
+                            style={{
+                              opacity: 1,
+                              color: Color.red,
+                              fontWeight: 'bold',
+                              fontSize: 20,
+                              paddingHorizontal: 5,
+                            }}>
+                            Close
+                          </Text>
+                          <Icon
+                            name={'close-circle'}
+                            size={40}
+                            color={Color.red}
+                          />
+                        </TouchableOpacity>
+                        <View
                           style={{
                             width: '100%',
-                            height: 200,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                        <View style={styles.separator}></View>
+                            backgroundColor: '#fff', // Adding background color for modal content
+                            paddingVertical: 20,
+                            borderRadius: 10,
+                            alignItems: 'center',
+                            paddingHorizontal: 30,
+                          }}>
+                          {singleData?.product?.sub_sub_category?.size_chart ? (
+                            <>
+                              <Image
+                                source={{
+                                  uri: singleData?.product?.sub_sub_category
+                                    ?.size_chart,
+                                }}
+                                style={{
+                                  width: '100%',
+                                  height: 200,
+                                  resizeMode: 'contain',
+                                }}
+                              />
+                              <View style={styles.separator}></View>
+                            </>
+                          ) : (
+                            <Text>No size chart available</Text> // Handle when no size chart is available
+                          )}
+                        </View>
                       </View>
-                    ) : null}
+                    </Modal>
 
                     {singleData?.variants_list?.age?.length > 0 ? (
                       <>

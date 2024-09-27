@@ -19,7 +19,6 @@ import {Iconviewcomponent} from './Icontag';
 import {baseUrl} from '../Config/base_url';
 import {useNavigation} from '@react-navigation/native';
 import {Media} from '../Global/Media';
-import {setUserData} from '../Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileModal = ({profileVisible, setProfileVisible}) => {
@@ -64,24 +63,24 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
       const profile = await fetchData.profile_data(``, token);
       setfirstName(profile.data?.first_name);
       setLastName(profile.data?.last_name);
-      setPhoneNumber(profile.data?.mobile);
+      setPhoneNumber(profile.data?.mobile?.toString());
       setEmail(profile.data?.email);
     } catch (error) {
       console.log('error', error);
     }
   };
-
   const profileUpdate = async () => {
     try {
       const isNumberValid =
-        countryCode?.id === 454
-          ? phoneNumber?.length === 8
-          : phoneNumber?.length === 10;
-      console.log(
-        'firstName && lastName && email && isNumberValid',
-        firstName && lastName && email && isNumberValid,
-      );
-      if (firstName && lastName && email && isNumberValid) {
+        countryCode?.id === 452
+          ? phoneNumber?.length === 10
+          : phoneNumber?.length === 8;
+      if (
+        firstName?.trim() !== '' &&
+        lastName?.trim() !== '' &&
+        email?.trim() !== '' &&
+        isNumberValid
+      ) {
         setUpdateLoader(true);
 
         const myHeaders = new Headers();
@@ -100,7 +99,6 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
           redirect: 'follow',
         };
 
-        // Make the API call
         const response = await fetch(
           `${baseUrl}api/auth/user/update_profile`,
           requestOptions,
@@ -108,7 +106,6 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
         const result = await response.json();
 
         if (result?.status) {
-          // Update AsyncStorage with the new user data
           const UserLogin = {
             ...result?.data,
             token: token,
@@ -116,25 +113,17 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
 
           await AsyncStorage.setItem('user_data', JSON.stringify(UserLogin));
           common_fn.showToast(result?.message);
-
-          // Close the profile modal after success
-          console.log('Closing profile modal');
           setProfileVisible(false);
         } else {
-          // Handle API response failure
-          console.error('Profile update failed:', result);
           common_fn.showToast(result?.message || 'Profile update failed');
         }
       } else {
-        // Handle missing required fields
         common_fn.showToast('Please select all the mandatory fields');
       }
     } catch (error) {
-      // Log and display any unexpected errors
       console.error('Error in profileUpdate:', error);
       common_fn.showToast('An error occurred. Please try again later.');
     } finally {
-      // Ensure loader is turned off in all cases
       setUpdateLoader(false);
     }
   };

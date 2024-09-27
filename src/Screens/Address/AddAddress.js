@@ -104,9 +104,10 @@ const AddAddress = ({route}) => {
         const add_address = await fetchData.add_address(data, token);
 
         if (add_address?.status === true) {
-          navigation.dispatch(
-            StackActions.replace('OrderConfirmation', {CheckOut, ids}),
-          );
+          // navigation.dispatch(
+          //   StackActions.replace('OrderConfirmation', {CheckOut, ids}),
+          // );
+          navigation.goBack();
           common_fn.showToast(add_address?.message);
         } else {
           common_fn.showToast(add_address?.message);
