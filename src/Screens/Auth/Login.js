@@ -152,13 +152,15 @@ const Login = () => {
             data.mobile = number;
           }
           const login_data = await fetchData.login_with_otp(data, null);
+          console.log('login_data', login_data);
           if (login_data?.status) {
             common_fn.showToast(login_data?.message);
             navigation.dispatch(
               StackActions.replace('OTPScreen', {
                 number,
-                token,
+                token: null,
                 loginType,
+                fcmToken: token,
               }),
             );
             setLoading(false);
@@ -221,8 +223,9 @@ const Login = () => {
             common_fn.showToast(Register_data?.message);
             navigation.navigate('OTPScreen', {
               number,
-              token: token,
+              token: Register_data?.token,
               loginType,
+              fcmToken: token,
             });
             setLoading(false);
           } else {

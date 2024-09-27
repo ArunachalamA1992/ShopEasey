@@ -37,6 +37,7 @@ const OTPScreen = ({route, AppState}) => {
   const [number] = useState(route.params.number);
   const [token, setToken] = useState(route.params.token);
   const [loginType] = useState(route.params.loginType);
+  const [fcmToken] = useState(route.params.fcmToken);
   const [visible, setVisible] = useState(false);
   const inputRef = useRef();
   const [otpCode, setOTPCode] = useState('');
@@ -126,7 +127,7 @@ const OTPScreen = ({route, AppState}) => {
       var data = {
         otp: otpCode,
         region_id: countryCode?.id,
-        fcm_token: token,
+        fcm_token: fcmToken,
       };
       if (isEmail(number)) {
         data.email = number;
