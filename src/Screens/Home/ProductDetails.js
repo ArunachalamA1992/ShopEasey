@@ -42,10 +42,6 @@ const ProductDetails = ({route}) => {
   const {id, variant_id} = route.params;
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
-  console.log(
-    'singleData?.product?.sub_sub_category',
-    singleData?.product?.sub_sub_category?.size_chart,
-  );
   const [sizeChartVisible, setSizeChartVisible] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
