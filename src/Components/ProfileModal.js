@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   Image,
+  Keyboard,
   Modal,
   StyleSheet,
   Text,
@@ -33,6 +34,16 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
   const [updateLoader, setUpdateLoader] = useState(false);
   const [emailValidError, setEmailValidError] = useState('');
 
+  const chkNumber = number => {
+    setPhoneNumber(number);
+    const isValidLength =
+      countryCode?.id === 454 ? number?.length === 8 : number?.length === 10;
+    const mobileRegex = countryCode?.id === 454 ? /^[0-9]{8}$/ : /^[0-9]{10}$/;
+    if (mobileRegex.test(number) && isValidLength) {
+      Keyboard.dismiss();
+    }
+  };
+
   const handleValidEmail = val => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (val.length === 0) {
@@ -62,8 +73,15 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
 
   const profileUpdate = async () => {
     try {
-      // Ensure all required fields are provided
-      if (firstName && lastName && email && phoneNumber) {
+      const isNumberValid =
+        countryCode?.id === 454
+          ? phoneNumber?.length === 8
+          : phoneNumber?.length === 10;
+      console.log(
+        'firstName && lastName && email && isNumberValid',
+        firstName && lastName && email && isNumberValid,
+      );
+      if (firstName && lastName && email && isNumberValid) {
         setUpdateLoader(true);
 
         const myHeaders = new Headers();
@@ -241,12 +259,10 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
               placeholderTextColor={Color.cloudyGrey}
               value={phoneNumber?.toString()}
               onChangeText={value => {
-                setPhoneNumber(value);
+                chkNumber(value);
               }}
               keyboardType="number-pad"
-              maxLength={
-                countryCode?.id == 452 || countryCode?.id == 453 ? 10 : 8
-              }
+              maxLength={countryCode?.id === 454 ? 8 : 10}
             />
           </View>
           <TouchableOpacity
