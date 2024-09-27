@@ -26,6 +26,7 @@ import ImageResizer from 'react-native-image-resizer';
 import {Media} from '../../Global/Media';
 import common_fn from '../../Config/common_fn';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const genderData = [
   {
@@ -222,8 +223,17 @@ const EditProfile = ({navigation, route}) => {
 
         fetch(`${baseUrl}api/auth/user/update_profile`, requestOptions)
           .then(response => response?.json())
-          .then(result => {
+          .then(async result => {
             if (result?.status) {
+              const UserLogin = {
+                ...result?.data,
+                token: token,
+              };
+
+              await AsyncStorage.setItem(
+                'user_data',
+                JSON.stringify(UserLogin),
+              );
               common_fn.showToast(result?.message);
               navigation.navigate('Profile');
               setUpdateLoader(false);

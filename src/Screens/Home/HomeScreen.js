@@ -85,6 +85,7 @@ const HomeScreen = () => {
   var {wishlist, cart} = dataCount;
 
   const [bannerData, setBannerData] = useState([]);
+  const [profileData, setProfileData] = useState({});
   const splitByCategory = data => {
     return data.reduce((result, item) => {
       const category = item.category;
@@ -362,6 +363,10 @@ const HomeScreen = () => {
       var banner_data = `seller=home_page`;
       const getBannerData = await fetchData.get_banner(banner_data, null);
       setBannerData(getBannerData?.data);
+      //profile
+
+      const profile = await fetchData.profile_data(``, token);
+      setProfileData(profile.data);
     } catch (error) {
       console.log('error', error);
     }
@@ -548,10 +553,10 @@ const HomeScreen = () => {
     const modalCondition = token !== undefined;
     const profileCondition =
       token !== undefined &&
-      (!userData.first_name ||
-        !userData.last_name ||
-        !userData.email ||
-        !userData.mobile);
+      (!profileData.first_name ||
+        !profileData.last_name ||
+        !profileData.email ||
+        !profileData.mobile);
 
     const checkConditions = async () => {
       await checkAsyncStorage('modalShown', modalCondition, setImageVisible);
@@ -563,7 +568,7 @@ const HomeScreen = () => {
     };
 
     checkConditions();
-  }, [token, userData]);
+  }, [token, profileData]);
 
   const gradiantColors = ['#0D71BA', '#2994CB', '#0D71BA'];
 

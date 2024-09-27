@@ -84,6 +84,7 @@ const AddAddress = ({route}) => {
         selectedAddItem?.trim() &&
         selectState?.state_id > 0 &&
         selectCity?.city_id > 0 &&
+        selectAddressType?.id &&
         isPincodeValid()
       ) {
         var data = {

@@ -866,57 +866,31 @@ const OrderConfirmation = ({navigation, route}) => {
                               justifyContent: 'space-between',
                               alignItems: 'center',
                             }}>
-                            {item?.quantity > 1 ? (
-                              <TouchableOpacity
-                                onPress={() => {
-                                  updateCartData(
-                                    item?.id,
-                                    'minus',
-                                    item?.quantity,
-                                  );
-                                }}
-                                style={{
-                                  // flex: 1,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  padding: 5,
-                                  paddingHorizontal: 10,
-                                  borderRightWidth: 1,
-                                  borderRightColor: Color.cloudyGrey,
-                                }}>
-                                <Iconviewcomponent
-                                  Icontag={'AntDesign'}
-                                  iconname={'minus'}
-                                  icon_size={18}
-                                  icon_color={Color.black}
-                                />
-                              </TouchableOpacity>
-                            ) : (
-                              <TouchableOpacity
-                                onPress={() => {
-                                  setBottomData(item);
-                                  setSaleBottomSheetVisible(
-                                    !salebottomSheetVisible,
-                                  );
-                                }}
-                                style={{
-                                  // flex: 1,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  padding: 5,
-                                  paddingHorizontal: 10,
-                                  backgroundColor: Color.white,
-                                  borderRightWidth: 1,
-                                  borderRightColor: Color.cloudyGrey,
-                                }}>
-                                <Iconviewcomponent
-                                  Icontag={'AntDesign'}
-                                  iconname={'delete'}
-                                  icon_size={18}
-                                  icon_color={Color.black}
-                                />
-                              </TouchableOpacity>
-                            )}
+                            <TouchableOpacity
+                              onPress={() => {
+                                updateCartData(
+                                  item?.id,
+                                  'minus',
+                                  item?.quantity,
+                                );
+                              }}
+                              disabled={item?.quantity == 1}
+                              style={{
+                                // flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                padding: 5,
+                                paddingHorizontal: 10,
+                                borderRightWidth: 1,
+                                borderRightColor: Color.cloudyGrey,
+                              }}>
+                              <Iconviewcomponent
+                                Icontag={'AntDesign'}
+                                iconname={'minus'}
+                                icon_size={18}
+                                icon_color={Color.black}
+                              />
+                            </TouchableOpacity>
                             <View
                               style={{
                                 // flex: 1,

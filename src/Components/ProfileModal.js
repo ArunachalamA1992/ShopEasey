@@ -18,6 +18,8 @@ import {Iconviewcomponent} from './Icontag';
 import {baseUrl} from '../Config/base_url';
 import {useNavigation} from '@react-navigation/native';
 import {Media} from '../Global/Media';
+import {setUserData} from '../Redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileModal = ({profileVisible, setProfileVisible}) => {
   const navigation = useNavigation();
@@ -60,14 +62,14 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
 
   const profileUpdate = async () => {
     try {
+      // Ensure all required fields are provided
       if (firstName && lastName && email && phoneNumber) {
         setUpdateLoader(true);
-        const myHeaders = new Headers();
 
+        const myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${token}`);
 
         const formdata = new FormData();
-
         formdata.append('first_name', firstName);
         formdata.append('last_name', lastName);
         formdata.append('email', email);
@@ -80,29 +82,42 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
           redirect: 'follow',
         };
 
-        fetch(`${baseUrl}api/auth/user/update_profile`, requestOptions)
-          .then(response => response?.json())
-          .then(result => {
-            if (result?.status) {
-              common_fn.showToast(result?.message);
-              setProfileVisible(false);
-              setUpdateLoader(false);
-            } else {
-              console.error('Profile update failed:', result);
-              common_fn.showToast(result?.message);
-              setUpdateLoader(false);
-            }
-          })
-          .catch(error => {
-            console.error(error);
-          });
+        // Make the API call
+        const response = await fetch(
+          `${baseUrl}api/auth/user/update_profile`,
+          requestOptions,
+        );
+        const result = await response.json();
+
+        if (result?.status) {
+          // Update AsyncStorage with the new user data
+          const UserLogin = {
+            ...result?.data,
+            token: token,
+          };
+
+          await AsyncStorage.setItem('user_data', JSON.stringify(UserLogin));
+          common_fn.showToast(result?.message);
+
+          // Close the profile modal after success
+          console.log('Closing profile modal');
+          setProfileVisible(false);
+        } else {
+          // Handle API response failure
+          console.error('Profile update failed:', result);
+          common_fn.showToast(result?.message || 'Profile update failed');
+        }
       } else {
+        // Handle missing required fields
         common_fn.showToast('Please select all the mandatory fields');
-        setUpdateLoader(false);
       }
     } catch (error) {
+      // Log and display any unexpected errors
       console.error('Error in profileUpdate:', error);
       common_fn.showToast('An error occurred. Please try again later.');
+    } finally {
+      // Ensure loader is turned off in all cases
+      setUpdateLoader(false);
     }
   };
 
@@ -235,7 +250,9 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
             />
           </View>
           <TouchableOpacity
-            onPress={() => profileUpdate()}
+            onPress={() => {
+              profileUpdate();
+            }}
             style={{
               height: 45,
               justifyContent: 'center',
