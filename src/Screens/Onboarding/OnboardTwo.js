@@ -78,9 +78,15 @@ const OnboardTwo = () => {
                 padding: 10,
                 marginHorizontal: 5,
               }}>
-              <Image
+              {/* <Image
                 source={{uri: Media.coupon_icon}}
                 style={{width: 25, height: 25, resizeMode: 'contain'}}
+              /> */}
+              <Iconviewcomponent
+                Icontag={'MaterialCommunityIcons'}
+                iconname={'truck-fast'}
+                icon_size={22}
+                iconstyle={{color: Color.primary}}
               />
               <Text
                 style={{
@@ -90,7 +96,7 @@ const OnboardTwo = () => {
                   lineHeight: 22,
                   paddingHorizontal: 10,
                 }}>
-                Free Coupon
+                Secure Delivery
               </Text>
             </View>
             <View
@@ -139,9 +145,16 @@ const OnboardTwo = () => {
                 padding: 10,
                 marginHorizontal: 5,
               }}>
-              <Image
+              {/* <Image
                 source={{uri: Media.van_icon}}
                 style={{width: 25, height: 25, resizeMode: 'contain'}}
+              /> */}
+
+              <Iconviewcomponent
+                Icontag={'AntDesign'}
+                iconname={'customerservice'}
+                icon_size={22}
+                iconstyle={{color: Color.primary}}
               />
               <Text
                 style={{
@@ -152,7 +165,7 @@ const OnboardTwo = () => {
                   lineHeight: 22,
                   paddingHorizontal: 10,
                 }}>
-                Free Shipping
+                Support 24/7
               </Text>
             </View>
           </View>

@@ -100,7 +100,7 @@ const Login = () => {
         if (updateProfiledata.message) {
           const UserLogin = {
             ...updateProfiledata?.data,
-            token: token,
+            token: updateProfiledata?.token,
           };
           await AsyncStorage.setItem('user_data', JSON.stringify(UserLogin));
           navigation.replace('TabNavigator');

@@ -697,10 +697,10 @@ const OrderConfirmation = ({navigation, route}) => {
                         )}
                         <Text
                           style={{
-                            fontSize: 14,
+                            fontSize: 10,
                             color: Color.red,
                             fontFamily: Manrope.SemiBold,
-                            marginTop: 5,
+                            marginTop: 10,
                             textAlign: 'center',
                           }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
                       </View>
@@ -1038,14 +1038,14 @@ const OrderConfirmation = ({navigation, route}) => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingVertical: 10,
+                paddingVertical: 5,
               }}
               onPress={() => {
                 setCouponModal(true);
               }}>
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 12,
                   color: Color.cloudyGrey,
                   paddingHorizontal: 5,
                   fontFamily: Manrope.SemiBold,
@@ -1056,7 +1056,7 @@ const OrderConfirmation = ({navigation, route}) => {
               <Iconviewcomponent
                 Icontag={'Ionicons'}
                 iconname={'chevron-forward'}
-                icon_size={20}
+                icon_size={14}
                 icon_color={Color.cloudyGrey}
                 iconstyle={{marginTop: 5}}
               />
@@ -1064,11 +1064,11 @@ const OrderConfirmation = ({navigation, route}) => {
 
             <Text
               style={{
-                fontSize: 14,
+                fontSize: 10,
                 color: Color.cloudyGrey,
                 fontFamily: Manrope.Medium,
                 textAlign: 'center',
-                marginVertical: 10,
+                // marginVertical: 5,
               }}>
               OR
             </Text>
@@ -1086,6 +1086,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 paddingHorizontal: 10,
                 borderRadius: 5,
                 width: '100%',
+                height: 40,
                 color: Color.black,
               }}
             />
@@ -1094,12 +1095,12 @@ const OrderConfirmation = ({navigation, route}) => {
             style={{
               marginTop: 5,
               padding: 10,
-              paddingBottom: 20,
+              paddingBottom: 15,
               backgroundColor: Color.white,
             }}>
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 14,
                 color: Color.black,
                 paddingHorizontal: 10,
                 fontFamily: Manrope.SemiBold,
@@ -1107,16 +1108,18 @@ const OrderConfirmation = ({navigation, route}) => {
               Payment Method
             </Text>
             <View
-              style={{
-                paddingVertical: 10,
-              }}>
+              style={
+                {
+                  // paddingVertical: 10,
+                }
+              }>
               {paymentMethod?.map(item => {
                 return (
                   <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
-                      marginTop: 20,
+                      marginTop: 10,
                       marginHorizontal: 10,
                     }}>
                     {/* <Iconviewcomponent
@@ -1132,7 +1135,6 @@ const OrderConfirmation = ({navigation, route}) => {
                         color: Color.black,
                         paddingHorizontal: 10,
                         fontFamily: Manrope.Medium,
-                        letterSpacing: 0.5,
                         textTransform: 'capitalize',
                       }}>
                       {item?.name}

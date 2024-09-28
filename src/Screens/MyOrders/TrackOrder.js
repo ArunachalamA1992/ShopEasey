@@ -121,8 +121,15 @@ const TrackOrder = ({navigation, route}) => {
     date.setDate(date.getDate() + days);
     return date;
   };
+  const addextractDays = (days, date) => {
+    let till_date = new Date(date);
+    till_date.setDate(till_date.getDate() + days);
+    return till_date;
+  };
 
   const deliveryDate = addDays(8);
+  const tilldate = addextractDays(4, deliveryDate);
+  console.log('deliveryDate', deliveryDate, tilldate);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
@@ -460,6 +467,8 @@ const TrackOrder = ({navigation, route}) => {
                   fontFamily: Manrope.Medium,
                 }}>
                 {moment(deliveryDate).format('ddd, MMM D')}
+                {'  '} To{'  '}
+                {moment(tilldate).format('ddd, MMM D')}
               </Text>
             </View>
           )}

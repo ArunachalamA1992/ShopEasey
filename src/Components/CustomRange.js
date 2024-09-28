@@ -112,6 +112,7 @@ const CustomRange = props => {
               placeholderTextColor={Color.cloudyGrey}
               value={textInputLow}
               keyboardType="numeric"
+              selection={{start: textInputLow.length, end: textInputLow.length}}
               onChangeText={value => {
                 if (value !== '' && !/^\d+$/.test(value)) {
                   return;
@@ -187,6 +188,10 @@ const CustomRange = props => {
                   return;
                 }
                 handleTextInputHighChange(value);
+              }}
+              selection={{
+                start: textInputHigh.length,
+                end: textInputHigh.length,
               }}
               style={{
                 flex: 1,

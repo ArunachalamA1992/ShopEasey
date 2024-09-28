@@ -499,8 +499,8 @@ const MyCart = ({}) => {
                       <Image
                         source={{uri: item?.variant?.productImages?.[0]?.image}}
                         style={{
-                          width: 120,
-                          height: 140,
+                          width: 125,
+                          height: 145,
                           resizeMode: 'cover',
                           borderRadius: 10,
                         }}
@@ -509,8 +509,8 @@ const MyCart = ({}) => {
                       <Image
                         source={{uri: Media.no_image}}
                         style={{
-                          width: 120,
-                          height: 120,
+                          width: 125,
+                          height: 125,
                           resizeMode: 'contain',
                           borderRadius: 10,
                         }}
@@ -518,13 +518,13 @@ const MyCart = ({}) => {
                     )}
                     <Text
                       style={{
-                        fontSize: 14,
+                        fontSize: 10,
                         color: Color.red,
                         fontFamily: Manrope.SemiBold,
                         // position: 'absolute',
                         // bottom: 10,
                         // right: 30,
-                        marginTop: 5,
+                        marginTop: 10,
                         textAlign: 'center',
                       }}>{`(Only ${item?.variant?.stock} Stocks)`}</Text>
                   </TouchableOpacity>
