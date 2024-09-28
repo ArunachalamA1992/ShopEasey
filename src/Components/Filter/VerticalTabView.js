@@ -612,56 +612,17 @@ const VerticalTabView = props => {
   const handlebrandPress = itemId => {
     if (brandSelectedItem.includes(itemId)) {
       setbrandSelectedItem(prev => prev?.filter(single => single !== itemId));
-      setFilterSelectedItem(prev => ({
-        category: filterSelectedItem?.category,
-        price: filterSelectedItem?.price,
-        brand: prev?.brand?.filter(single => single?.id !== itemId),
-        colors: filterSelectedItem?.colors,
-        discounts: filterSelectedItem?.discounts,
-        size: filterSelectedItem?.size,
-        rating: filterSelectedItem?.rating,
-      }));
     } else {
       setbrandSelectedItem(prev => [...prev, itemId]);
-      const selectedItem = brandData?.find(single => single?.id === itemId);
-      setFilterSelectedItem(prev => ({
-        category: filterSelectedItem?.category,
-        price: filterSelectedItem?.price,
-        brand: [...(prev?.brand || []), selectedItem],
-        colors: filterSelectedItem?.colors,
-        discounts: filterSelectedItem?.discounts,
-        size: filterSelectedItem?.size,
-        rating: filterSelectedItem?.rating,
-      }));
     }
   };
 
   const [colorSelectedItem, setcolorSelectedItem] = useState([]);
-
   const handleColorPress = itemId => {
     if (colorSelectedItem.includes(itemId)) {
       setcolorSelectedItem(prev => prev?.filter(single => single !== itemId));
-      setFilterSelectedItem(prev => ({
-        category: filterSelectedItem?.category,
-        price: filterSelectedItem?.price,
-        brand: filterSelectedItem?.brand,
-        colors: prev?.colors?.filter(single => single?.id !== itemId),
-        discounts: filterSelectedItem?.discounts,
-        size: filterSelectedItem?.size,
-        rating: filterSelectedItem?.rating,
-      }));
     } else {
       setcolorSelectedItem(prev => [...prev, itemId]);
-      const selectedItem = colorData?.find(single => single?.id === itemId);
-      setFilterSelectedItem(prev => ({
-        category: filterSelectedItem?.category,
-        price: filterSelectedItem?.price,
-        brand: filterSelectedItem?.brand,
-        colors: [...(prev?.colors || []), selectedItem],
-        discounts: filterSelectedItem?.discounts,
-        size: filterSelectedItem?.size,
-        rating: filterSelectedItem?.rating,
-      }));
     }
   };
 
@@ -669,28 +630,8 @@ const VerticalTabView = props => {
   const handlesizePress = size => {
     if (sizeSelectedItem.includes(size)) {
       setsizeSelectedItem(prev => prev?.filter(single => single !== size));
-
-      setFilterSelectedItem(prev => ({
-        category: filterSelectedItem?.category,
-        price: filterSelectedItem?.price,
-        brand: filterSelectedItem?.brand,
-        colors: filterSelectedItem?.colors,
-        discounts: filterSelectedItem?.discounts,
-        size: prev?.size?.filter(single => single?.size !== size),
-        rating: filterSelectedItem?.rating,
-      }));
     } else {
       setsizeSelectedItem(prev => [...prev, size]);
-      const selectedItem = sizeData?.find(single => single?.size === size);
-      setFilterSelectedItem(prev => ({
-        category: filterSelectedItem?.category,
-        price: filterSelectedItem?.price,
-        brand: filterSelectedItem?.brand,
-        colors: filterSelectedItem?.colors,
-        discounts: filterSelectedItem?.discounts,
-        size: [...(prev?.size || []), selectedItem],
-        rating: filterSelectedItem?.rating,
-      }));
     }
   };
 
@@ -739,16 +680,18 @@ const VerticalTabView = props => {
     let params = '';
     const payload = {
       page: 1,
-      size:
-        filterSelectedItem?.size
-          ?.filter(item => item?.size)
-          ?.map(item => item?.size)
-          ?.join(',') || '',
-      color_group:
-        filterSelectedItem?.colors
-          ?.filter(item => item?.id)
-          ?.map(item => item?.id)
-          ?.join(',') || '',
+      // size:
+      //   filterSelectedItem?.size
+      //     ?.filter(item => item?.size)
+      //     ?.map(item => item?.size)
+      //     ?.join(',') || '',
+      // color_group:
+      //   filterSelectedItem?.colors
+      //     ?.filter(item => item?.id)
+      //     ?.map(item => item?.id)
+      //     ?.join(',') || '',
+      size: sizeSelectedItem?.join(','),
+      color_group: colorSelectedItem?.join(','),
       brand_id: brandSelectedItem?.join(','),
       sub_category_id: categorySelectedItem || '',
       price: low > 0 && high ? `${low},${high}` : '',
