@@ -27,7 +27,12 @@ const CustomRange = props => {
   const [error, setError] = useState('');
 
   const handleTextInputLowChange = value => {
-    const newLow = parseInt(value) || 0;
+    const newLow = parseInt(value, 10) || 0;
+    if (value === '') {
+      setLow(0);
+      setTextInputLow(value);
+      setError('Please enter atleast minimum value to filter');
+    }
     if (newLow <= high) {
       setLow(newLow);
       setTextInputLow(value);
@@ -41,6 +46,11 @@ const CustomRange = props => {
 
   const handleTextInputHighChange = value => {
     const newHigh = parseInt(value) || 0;
+    if (value === '') {
+      setHigh(newHigh);
+      setTextInputHigh(value);
+      setError('Please enter atleast minimum value to filter');
+    }
     if (newHigh >= low) {
       setHigh(newHigh);
       setTextInputHigh(value);
@@ -103,12 +113,17 @@ const CustomRange = props => {
               value={textInputLow}
               keyboardType="numeric"
               onChangeText={value => {
-                if (value !== '' && value[0] === '0') {
+                if (value !== '' && !/^\d+$/.test(value)) {
                   return;
                 }
-                if (value !== '' && value[0] === '-') {
+
+                if (value.startsWith('0') && value.length > 1) {
                   return;
                 }
+
+                if (value.startsWith('-')) {
+                }
+
                 handleTextInputLowChange(value);
               }}
               style={{
@@ -159,12 +174,17 @@ const CustomRange = props => {
               value={textInputHigh}
               keyboardType="numeric"
               onChangeText={value => {
-                if (value !== '' && value[0] === '0') {
+                if (value !== '' && !/^\d+$/.test(value)) {
                   return;
                 }
-                if (value !== '' && value[0] === '-') {
+
+                if (value.startsWith('0') && value.length > 1) {
                   return;
                 }
+
+                if (value.startsWith('-')) {
+                }
+
                 handleTextInputHighChange(value);
               }}
               style={{

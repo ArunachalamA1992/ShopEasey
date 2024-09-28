@@ -915,13 +915,16 @@ const VerticalTabView = props => {
         </Button>
         <Button
           mode="contained"
-          disabled={low > high}
+          disabled={low > high || low == 0 || high == 0}
           onPress={() => {
             applyFilter();
           }}
           style={{
             marginVertical: 10,
-            backgroundColor: low > high ? Color.lightgrey : Color.primary,
+            backgroundColor:
+              low > high || low == 0 || high == 0
+                ? Color.lightgrey
+                : Color.primary,
             borderRadius: 50,
             width: '50%',
           }}
