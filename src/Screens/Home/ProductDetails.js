@@ -1473,7 +1473,7 @@ const ProductDetails = ({route}) => {
                         <Text
                           style={{
                             fontFamily: Manrope.Bold,
-                            fontSize: 18,
+                            fontSize: 16,
                             color: Color.blue,
                             textAlign: 'center',
                             marginBottom: 10,

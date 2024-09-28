@@ -117,11 +117,12 @@ const CustomRange = props => {
                   return;
                 }
 
-                if (value.startsWith('0') && value.length > 1) {
+                if (value !== '' && value[0] === '0') {
                   return;
                 }
 
-                if (value.startsWith('-')) {
+                if (value !== '' && value[0] === '-') {
+                  return;
                 }
 
                 handleTextInputLowChange(value);
@@ -178,13 +179,13 @@ const CustomRange = props => {
                   return;
                 }
 
-                if (value.startsWith('0') && value.length > 1) {
+                if (value !== '' && value[0] === '0') {
                   return;
                 }
 
-                if (value.startsWith('-')) {
+                if (value !== '' && value[0] === '-') {
+                  return;
                 }
-
                 handleTextInputHighChange(value);
               }}
               style={{
