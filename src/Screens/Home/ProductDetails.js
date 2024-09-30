@@ -416,7 +416,7 @@ const ProductDetails = ({route}) => {
           setModalVisible(false);
           getCountData();
           getData();
-          navigation.navigate('MyCartTab');
+          // navigation.navigate('MyCartTab');
         } else {
           common_fn.showToast(add_to_cart?.message);
           setModalVisible(false);
