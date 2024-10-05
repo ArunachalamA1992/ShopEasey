@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -11,24 +11,24 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {BottomSheet} from 'react-native-btr';
-import {useDispatch, useSelector} from 'react-redux';
+import { Manrope } from '../../Global/FontFamily';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { BottomSheet } from 'react-native-btr';
+import { useDispatch, useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import common_fn from '../../Config/common_fn';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {setDataCount} from '../../Redux';
-import {RefreshControl} from 'react-native-gesture-handler';
-import {ItemCardHorizontal} from '../../Components/ItemCard';
+import { setDataCount } from '../../Redux';
+import { RefreshControl } from 'react-native-gesture-handler';
+import { ItemCardHorizontal } from '../../Components/ItemCard';
 
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-const MyCart = ({}) => {
+const MyCart = ({ }) => {
   const navigation = useNavigation();
   const [defaultRating, setDefaultRating] = useState(0);
   const [selectedData, setSelectedData] = useState([]);
@@ -41,7 +41,7 @@ const MyCart = ({}) => {
   const [salebottomSheetVisible, setSaleBottomSheetVisible] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -246,8 +246,8 @@ const MyCart = ({}) => {
       return (
         accumulator +
         price *
-          // / priceMargin
-          quantity
+        // / priceMargin
+        quantity
       );
     }, 0)
     .toFixed(2);
@@ -300,7 +300,7 @@ const MyCart = ({}) => {
                 color: Color.cloudyGrey,
                 fontFamily: Manrope.Medium,
               }}>
-              Are you sure want to move this product from cart?
+              Are you sure want to remove this product from cart?
             </Text>
 
             <View
@@ -312,7 +312,7 @@ const MyCart = ({}) => {
               }}>
               <TouchableOpacity
                 onPress={async () => {
-                  deleteCartData();
+                  setSaleBottomSheetVisible(false);
                 }}
                 style={{
                   flex: 1,
@@ -328,10 +328,31 @@ const MyCart = ({}) => {
                     color: Color.black,
                     fontFamily: Manrope.Bold,
                   }}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={async () => {
+                  deleteCartData();
+                }}
+                style={{
+                  flex: 1,
+                  height: 40,
+                  backgroundColor: Color.primary,
+                  borderRadius: 5,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: Color.white,
+                    fontFamily: Manrope.Bold,
+                  }}>
                   Remove
                 </Text>
               </TouchableOpacity>
-              {bottomData?.variant?.is_wishlisted == false && (
+              {/* {bottomData?.variant?.is_wishlisted == false && (
                 <TouchableOpacity
                   onPress={() => {
                     toggle_WishList();
@@ -353,7 +374,7 @@ const MyCart = ({}) => {
                     Move to wishlist
                   </Text>
                 </TouchableOpacity>
-              )}
+              )} */}
             </View>
           </View>
         </BottomSheet>
@@ -364,9 +385,9 @@ const MyCart = ({}) => {
   }
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
       {loading ? (
-        <View style={{marginHorizontal: 5}}>
+        <View style={{ marginHorizontal: 5 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -439,7 +460,7 @@ const MyCart = ({}) => {
           <FlatList
             data={cartData}
             keyExtractor={(item, index) => String(index)}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               const originalPrice = item?.variant?.org_price;
               // / countryCode?.price_margin;
               const offerPrice = item?.variant?.offer_price
@@ -497,7 +518,7 @@ const MyCart = ({}) => {
                     </TouchableOpacity>
                     {item?.variant?.productImages?.length > 0 ? (
                       <Image
-                        source={{uri: item?.variant?.productImages?.[0]?.image}}
+                        source={{ uri: item?.variant?.productImages?.[0]?.image }}
                         style={{
                           width: 125,
                           height: 145,
@@ -507,7 +528,7 @@ const MyCart = ({}) => {
                       />
                     ) : (
                       <Image
-                        source={{uri: Media.no_image}}
+                        source={{ uri: Media.no_image }}
                         style={{
                           width: 125,
                           height: 125,
@@ -850,7 +871,7 @@ const MyCart = ({}) => {
                     justifyContent: 'center',
                   }}>
                   <Image
-                    source={{uri: Media.empty_cart}}
+                    source={{ uri: Media.empty_cart }}
                     style={{
                       width: 250,
                       height: 250,
@@ -905,7 +926,7 @@ const MyCart = ({}) => {
                 data={recommendedProducts}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={({item, index}) => {
+                renderItem={({ item, index }) => {
                   return (
                     <ItemCardHorizontal item={item} navigation={navigation} />
                   );

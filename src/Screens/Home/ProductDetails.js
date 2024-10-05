@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -13,40 +13,40 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Badge} from 'react-native-paper';
+import { Badge } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import ImageView from '../../Components/imageView';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import moment from 'moment';
-import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
-import {scr_width} from '../../Utils/Dimensions';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import ItemCard, { ItemCardHorizontal } from '../../Components/ItemCard';
+import { scr_width } from '../../Utils/Dimensions';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
 import RenderHtml from 'react-native-render-html';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import common_fn from '../../Config/common_fn';
-import {setCountryCode, setDataCount} from '../../Redux/user/UserAction';
+import { setCountryCode, setDataCount } from '../../Redux/user/UserAction';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Share from 'react-native-share';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-const ProductDetails = ({route}) => {
+const ProductDetails = ({ route }) => {
   const navigation = useNavigation();
-  const {id, variant_id} = route.params;
+  const { id, variant_id } = route.params;
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
   const [sizeChartVisible, setSizeChartVisible] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
-  var {wishlist, cart} = dataCount;
+  var { wishlist, cart } = dataCount;
   const [topPicks, setTopPicks] = useState([]);
   const [Categories_data, setCategories_data] = useState([]);
   const [loadMore, setLoadMore] = useState(false);
@@ -66,7 +66,7 @@ const ProductDetails = ({route}) => {
   const [defaultRating, setDefaultRating] = useState(0);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const [addressData, setAddressCount] = useState(0);
 
   const maxRating = [1, 2, 3, 4, 5];
@@ -78,7 +78,7 @@ const ProductDetails = ({route}) => {
 
   useEffect(() => {
     if (htmlRef?.current) {
-      htmlRef?.current?.setNativeProps({contentWidth: windowDimensions?.width});
+      htmlRef?.current?.setNativeProps({ contentWidth: windowDimensions?.width });
     }
   }, [windowDimensions?.width]);
 
@@ -104,7 +104,7 @@ const ProductDetails = ({route}) => {
           id,
           variant_id,
         },
-        {merge: true},
+        { merge: true },
       );
     } catch (error) {
       console.error('Error handling deep link:', error);
@@ -259,17 +259,14 @@ const ProductDetails = ({route}) => {
       let result;
 
       if (Math.abs(daysAgo) > 0) {
-        result = `${Math.abs(daysAgo)} day${
-          Math.abs(daysAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(daysAgo)} day${Math.abs(daysAgo) !== 1 ? 's' : ''
+          } ago`;
       } else if (Math.abs(hoursAgo) > 0) {
-        result = `${Math.abs(hoursAgo)} hour${
-          Math.abs(hoursAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(hoursAgo)} hour${Math.abs(hoursAgo) !== 1 ? 's' : ''
+          } ago`;
       } else {
-        result = `${Math.abs(minutesAgo)} minute${
-          Math.abs(minutesAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(minutesAgo)} minute${Math.abs(minutesAgo) !== 1 ? 's' : ''
+          } ago`;
       }
       setResultDate(result);
     }
@@ -424,19 +421,16 @@ const ProductDetails = ({route}) => {
       } else {
         common_fn.showToast(`Please Select the 
                         Please select a{' '}
-                          ${
-                            singleData?.variants_list?.color?.length > 0 &&
-                            'color'
-                          }
-                          ${
-                            singleData?.variants_list?.color?.length > 0 &&
-                            singleData?.variants_list?.size?.length > 0 &&
-                            ' or '
-                          }
-                          ${
-                            singleData?.variants_list?.size?.length > 0 &&
-                            'size'
-                          }
+                          ${singleData?.variants_list?.color?.length > 0 &&
+          'color'
+          }
+                          ${singleData?.variants_list?.color?.length > 0 &&
+          singleData?.variants_list?.size?.length > 0 &&
+          ' or '
+          }
+                          ${singleData?.variants_list?.size?.length > 0 &&
+          'size'
+          }
                           `);
         setModalVisible(true);
       }
@@ -490,23 +484,20 @@ const ProductDetails = ({route}) => {
             tax: singleData?.tax,
           },
         ];
-        navigation.navigate('OrderConfirmation', {CheckOut, ids: []});
+        navigation.navigate('OrderConfirmation', { CheckOut, ids: [] });
         setModalVisible(false);
       } else {
         common_fn.showToast(`Please Select the
-                              ${
-                                singleData?.variants_list?.color?.length > 0 &&
-                                'color'
-                              }
-                              ${
-                                singleData?.variants_list?.color?.length > 0 &&
-                                singleData?.variants_list?.size?.length > 0 &&
-                                ' or '
-                              }
-                              ${
-                                singleData?.variants_list?.size?.length > 0 &&
-                                'size'
-                              }`);
+                              ${singleData?.variants_list?.color?.length > 0 &&
+          'color'
+          }
+                              ${singleData?.variants_list?.color?.length > 0 &&
+          singleData?.variants_list?.size?.length > 0 &&
+          ' or '
+          }
+                              ${singleData?.variants_list?.size?.length > 0 &&
+          'size'
+          }`);
         setModalVisible(true);
       }
     } catch (error) {
@@ -642,10 +633,10 @@ const ProductDetails = ({route}) => {
         }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={{padding: 5}}>
+          style={{ padding: 5 }}>
           <Icon name="arrow-back" size={30} color={Color.black} />
         </TouchableOpacity>
-        <View style={{marginHorizontal: 10, flex: 1}}>
+        <View style={{ marginHorizontal: 10, flex: 1 }}>
           <Text
             style={{
               color: Color.black,
@@ -665,14 +656,14 @@ const ProductDetails = ({route}) => {
           </Text>
         </View>
         <TouchableOpacity
-          style={{marginHorizontal: 10}}
+          style={{ marginHorizontal: 10 }}
           onPress={() => {
             share_product(singleData?.product_id);
           }}>
           <Icon name="share-social" size={25} color={Color.black} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginHorizontal: 10}}
+          style={{ marginHorizontal: 10 }}
           onPress={() => {
             navigation.navigate('WishListTab');
           }}>
@@ -694,7 +685,7 @@ const ProductDetails = ({route}) => {
           <AntDesign name="hearto" size={25} color={Color.black} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginHorizontal: 10}}
+          style={{ marginHorizontal: 10 }}
           onPress={() => {
             navigation.navigate('MyCartTab');
           }}>
@@ -717,7 +708,7 @@ const ProductDetails = ({route}) => {
         </TouchableOpacity>
       </View>
       {loading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
               width={'100%'}
@@ -860,7 +851,7 @@ const ProductDetails = ({route}) => {
         </View>
       ) : (
         <>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <View
                 style={{
@@ -898,7 +889,7 @@ const ProductDetails = ({route}) => {
                   <ImageView images={singleData?.productImages} />
                 ) : (
                   <Image
-                    source={{uri: Media.no_image}}
+                    source={{ uri: Media.no_image }}
                     style={{
                       width: '100%',
                       height: 250,
@@ -917,7 +908,7 @@ const ProductDetails = ({route}) => {
                       data={singleData?.variants_list?.color}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return (
                           <TouchableOpacity
                             key={index}
@@ -946,7 +937,7 @@ const ProductDetails = ({route}) => {
                                 padding: 10,
                               }}>
                               <Image
-                                source={{uri: item?.image}}
+                                source={{ uri: item?.image }}
                                 style={{
                                   width: 50,
                                   height: 50,
@@ -1018,7 +1009,7 @@ const ProductDetails = ({route}) => {
                       </Text>
                     </View>
                   </View>
-                  <View style={{marginVertical: 10}}>
+                  <View style={{ marginVertical: 10 }}>
                     <Text
                       style={{
                         color: Color.lightBlack,
@@ -1031,7 +1022,7 @@ const ProductDetails = ({route}) => {
                       <View
                         style={[
                           styles.customRatingBarStyle,
-                          {alignItems: 'center', marginTop: 5},
+                          { alignItems: 'center', marginTop: 5 },
                         ]}>
                         {maxRating.map((item, index) => {
                           let iconName;
@@ -1212,8 +1203,8 @@ const ProductDetails = ({route}) => {
                       flexWrap: 'wrap',
                     }}>
                     <Image
-                      source={{uri: Media.return}}
-                      style={{width: 20, height: 20}}
+                      source={{ uri: Media.return }}
+                      style={{ width: 20, height: 20 }}
                     />
                     <Text
                       style={{
@@ -1266,7 +1257,7 @@ const ProductDetails = ({route}) => {
                     </TouchableOpacity>
                   </View>
                   {highlightData?.length > 0 && (
-                    <View style={{marginTop: 10}}>
+                    <View style={{ marginTop: 10 }}>
                       <Text
                         style={{
                           fontSize: 14,
@@ -1327,7 +1318,7 @@ const ProductDetails = ({route}) => {
                     </View>
                   )}
                   {singleData?.gender != null && (
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Text
                         style={{
                           fontSize: 16,
@@ -1363,7 +1354,7 @@ const ProductDetails = ({route}) => {
                           <View
                             style={[
                               styles.colorOptions,
-                              {paddingHorizontal: 10, paddingVertical: 5},
+                              { paddingHorizontal: 10, paddingVertical: 5 },
                             ]}>
                             {singleData?.variants_list?.color?.map(
                               (item, index) => {
@@ -1390,7 +1381,7 @@ const ProductDetails = ({route}) => {
                                     <View
                                       style={[
                                         styles.colorView,
-                                        {backgroundColor: item?.color_code},
+                                        { backgroundColor: item?.color_code },
                                       ]}
                                     />
                                     <Text
@@ -1440,8 +1431,8 @@ const ProductDetails = ({route}) => {
                                         backgroundColor: !item?.has
                                           ? '#EEEEEE80'
                                           : selectedSize === item?.size
-                                          ? '#0D71BA50'
-                                          : '#EEEEEE',
+                                            ? '#0D71BA50'
+                                            : '#EEEEEE',
                                       },
                                     ]}>
                                     <Text
@@ -1495,7 +1486,7 @@ const ProductDetails = ({route}) => {
                           padding: 10,
                         }}>
                         <TouchableOpacity
-                          style={{position: 'absolute', right: 10, top: 10}}
+                          style={{ position: 'absolute', right: 10, top: 10 }}
                           onPress={() => {
                             setSizeChartVisible(false);
                           }}>
@@ -1553,7 +1544,7 @@ const ProductDetails = ({route}) => {
                           <View
                             style={[
                               styles.colorOptions,
-                              {paddingHorizontal: 10, paddingVertical: 5},
+                              { paddingHorizontal: 10, paddingVertical: 5 },
                             ]}>
                             {singleData?.variants_list?.age?.map(
                               (item, index) => {
@@ -1605,7 +1596,7 @@ const ProductDetails = ({route}) => {
                           <View
                             style={[
                               styles.colorOptions,
-                              {paddingHorizontal: 10, paddingVertical: 5},
+                              { paddingHorizontal: 10, paddingVertical: 5 },
                             ]}>
                             {singleData?.variants_list?.gender?.map(
                               (item, index) => {
@@ -1657,7 +1648,7 @@ const ProductDetails = ({route}) => {
                           <View
                             style={[
                               styles.colorOptions,
-                              {paddingHorizontal: 10, paddingVertical: 5},
+                              { paddingHorizontal: 10, paddingVertical: 5 },
                             ]}>
                             {singleData?.variants_list?.material?.map(
                               (item, index) => {
@@ -1752,7 +1743,7 @@ const ProductDetails = ({route}) => {
                                       <View
                                         style={[
                                           styles.colorView,
-                                          {backgroundColor: item?.color_code},
+                                          { backgroundColor: item?.color_code },
                                         ]}
                                       />
                                       <Text
@@ -1802,8 +1793,8 @@ const ProductDetails = ({route}) => {
                                           backgroundColor: !item?.has
                                             ? '#EEEEEE80'
                                             : selectedSize === item?.size
-                                            ? '#0D71BA50'
-                                            : '#EEEEEE',
+                                              ? '#0D71BA50'
+                                              : '#EEEEEE',
                                         },
                                       ]}>
                                       <Text
@@ -1883,8 +1874,8 @@ const ProductDetails = ({route}) => {
                             {singleData?.stock == 0
                               ? 'Notify Me'
                               : singleData?.in_cart
-                              ? `Go to Cart`
-                              : `Add to Cart`}
+                                ? `Go to Cart`
+                                : `Add to Cart`}
                           </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -1995,7 +1986,7 @@ const ProductDetails = ({route}) => {
                         alignItems: 'center',
                       }}>
                       <Image
-                        source={{uri: Media.user}}
+                        source={{ uri: Media.user }}
                         style={{
                           width: 70,
                           height: 70,
@@ -2180,12 +2171,12 @@ const ProductDetails = ({route}) => {
                     }}>
                     Product Description
                   </Text>
-                  <View style={{width: scr_width}}>
+                  <View style={{ width: scr_width }}>
                     <RenderHtml
                       ref={htmlRef}
                       tagsStyles={styles.htmlStyles}
                       contentWidth={'100%'}
-                      source={{html: singleData?.product?.description}}
+                      source={{ html: singleData?.product?.description }}
                     />
                   </View>
                 </View>
@@ -2378,7 +2369,7 @@ const ProductDetails = ({route}) => {
                         return (
                           <View
                             key={index}
-                            style={{width: '100%', alignItems: 'center'}}>
+                            style={{ width: '100%', alignItems: 'center' }}>
                             <View
                               style={{
                                 flexDirection: 'row',
@@ -2391,7 +2382,7 @@ const ProductDetails = ({route}) => {
                                   alignItems: 'center',
                                 }}>
                                 <Image
-                                  source={{uri: Media?.user}}
+                                  source={{ uri: Media?.user }}
                                   style={{
                                     width: 70,
                                     height: 70,
@@ -2450,7 +2441,7 @@ const ProductDetails = ({route}) => {
                                     </Text>
                                   </View>
                                 </View>
-                                <View style={{width: '100%'}}>
+                                <View style={{ width: '100%' }}>
                                   <Text
                                     style={{
                                       textAlign: 'justify',
@@ -2472,7 +2463,7 @@ const ProductDetails = ({route}) => {
                                   {item?.images?.map((image, image_index) => (
                                     <Image
                                       key={image_index}
-                                      source={{uri: image}}
+                                      source={{ uri: image }}
                                       style={{
                                         width: 100,
                                         height: 100,
@@ -2562,7 +2553,7 @@ const ProductDetails = ({route}) => {
                       data={topPicks}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return (
                           <ItemCardHorizontal
                             item={item}
@@ -2593,7 +2584,7 @@ const ProductDetails = ({route}) => {
                       data={Categories_data}
                       numColumns={2}
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return <ItemCard item={item} navigation={navigation} />;
                       }}
                       onEndReached={() => {
@@ -2684,8 +2675,8 @@ const ProductDetails = ({route}) => {
                   {singleData?.stock == 0
                     ? 'Notify Me'
                     : singleData?.in_cart
-                    ? `Go to Cart`
-                    : `Add to Cart`}
+                      ? `Go to Cart`
+                      : `Add to Cart`}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -2766,7 +2757,7 @@ const ProductDetails = ({route}) => {
               </TouchableOpacity>
             </View>
           ) : singleData?.status == 1 && singleData?.stock == 0 ? (
-            <View style={{padding: 10, alignItems: 'center'}}>
+            <View style={{ padding: 10, alignItems: 'center' }}>
               <Text
                 style={{
                   color: Color.black,
@@ -2777,7 +2768,7 @@ const ProductDetails = ({route}) => {
               </Text>
             </View>
           ) : (
-            <View style={{padding: 10, alignItems: 'center'}}>
+            <View style={{ padding: 10, alignItems: 'center' }}>
               <Text
                 style={{
                   color: Color.black,
@@ -2823,7 +2814,7 @@ const styles = StyleSheet.create({
       fontFamily: Manrope.SemiBold,
       color: Color.cloudyGrey,
       fontSize: 12,
-      lineHeight: 20,
+      lineHeight: 20, padding: 0
     },
     h1: {
       fontSize: 20,
@@ -2832,7 +2823,7 @@ const styles = StyleSheet.create({
     p: {
       fontSize: 16,
       textAlign: 'justify',
-      margin: 2,
+      margin: 2, padding: 0
     },
     strong: {
       fontWeight: '500',

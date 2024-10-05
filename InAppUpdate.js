@@ -1,7 +1,7 @@
-import {NativeModules} from 'react-native';
+// import {NativeModules} from 'react-native';
 
-const {InAppUpdate} = NativeModules;
+// const {InAppUpdate} = NativeModules;
 
-export const checkUpdate = () => {
-  InAppUpdate.checkUpdate();
-};
+// export const checkUpdate = () => {
+//   InAppUpdate.checkUpdate();
+// };

@@ -3,6 +3,9 @@ export const Media = {
   home_back: require('../assets/home_back.png'),
   popup: require('../assets/popup.webp'),
   latest_banner: require('../assets/latest_banner.png'),
+  latest_ban: "https://shopeasey.s3.ap-south-1.amazonaws.com/assets/ban_one.png",
+  featured_ban: "https://shopeasey.s3.ap-south-1.amazonaws.com/assets/ban_two.png",
+  flash_ban: "https://shopeasey.s3.ap-south-1.amazonaws.com/assets/ban_three.png",
   status:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/1718713514851.png',
   logo: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/black_logo.png',
@@ -26,8 +29,7 @@ export const Media = {
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_2.png',
   onboard_main:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_shop.png',
-  welcome:
-    'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/onboard_welcom.jpeg',
+  welcome: 'https://shopeasey.s3.ap-south-1.amazonaws.com/assets/onboard_welcome.jpg',
   // welcome:'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/images/welcome.png',
   main_logo:
     'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/main_logo.png',

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -22,24 +22,24 @@ import {
 } from 'react-native';
 import Color from '../../Global/Color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {Manrope} from '../../Global/FontFamily';
-import {useNavigation} from '@react-navigation/native';
-import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import {ActivityIndicator, Badge, Button, Divider} from 'react-native-paper';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { useNavigation } from '@react-navigation/native';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
+import { ActivityIndicator, Badge, Button, Divider } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {scr_width} from '../../Utils/Dimensions';
+import { scr_width } from '../../Utils/Dimensions';
 import CountdownTimer from '../../Components/CountdownTimer';
-import ItemCard, {ItemCardHorizontal} from '../../Components/ItemCard';
+import ItemCard, { ItemCardHorizontal } from '../../Components/ItemCard';
 import * as ImagePicker from 'react-native-image-picker';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {setDataCount, setUserData} from '../../Redux';
-import {useDispatch, useSelector} from 'react-redux';
+import { setDataCount, setUserData } from '../../Redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Geolocation from 'react-native-geolocation-service';
 import common_fn from '../../Config/common_fn';
 import axios from 'axios';
@@ -50,7 +50,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ProfileModal from '../../Components/ProfileModal';
 
 LogBox.ignoreAllLogs();
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -67,7 +67,7 @@ const HomeScreen = () => {
   const [latestendReached, setlatestendReached] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const [imageVisible, setImageVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
@@ -82,7 +82,7 @@ const HomeScreen = () => {
   const [showLoadMore, setShowLoadMore] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
-  var {wishlist, cart} = dataCount;
+  var { wishlist, cart } = dataCount;
 
   const [bannerData, setBannerData] = useState([]);
   const [profileData, setProfileData] = useState({});
@@ -165,16 +165,16 @@ const HomeScreen = () => {
   ]);
 
   const [shopSection] = useState([
-    {id: 1, title: 'Category Menu', data: ['Category Menu']},
-    {id: 2, title: 'banners', data: ['banners']},
-    {id: 3, title: 'hot deals', data: ['hot deals']},
-    {id: 4, title: 'Trend Brands', data: ['Trend Brands']},
-    {id: 5, title: 'Trend Product', data: ['Trend Product']},
-    {id: 6, title: 'Offer Banner', data: ['Offer Banner']},
-    {id: 7, title: 'Flash Selling', data: ['Flash Selling']},
-    {id: 8, title: 'product', data: ['product']},
-    {id: 9, title: 'Featured Product', data: ['Featured Product']},
-    {id: 10, title: 'Latest Product', data: ['Latest Product']},
+    { id: 1, title: 'Category Menu', data: ['Category Menu'] },
+    { id: 2, title: 'banners', data: ['banners'] },
+    { id: 3, title: 'hot deals', data: ['hot deals'] },
+    { id: 4, title: 'Trend Brands', data: ['Trend Brands'] },
+    { id: 5, title: 'Trend Product', data: ['Trend Product'] },
+    { id: 6, title: 'Offer Banner', data: ['Offer Banner'] },
+    { id: 7, title: 'Flash Selling', data: ['Flash Selling'] },
+    { id: 8, title: 'product', data: ['product'] },
+    { id: 9, title: 'Featured Product', data: ['Featured Product'] },
+    { id: 10, title: 'Latest Product', data: ['Latest Product'] },
   ]);
 
   useEffect(() => {
@@ -188,9 +188,9 @@ const HomeScreen = () => {
     const subscription = eventEmitter.addListener(
       'OPEN_PRODUCT_DETAILS',
       event => {
-        const {product_id} = event;
+        const { product_id } = event;
         if (product_id) {
-          navigation.navigate('ProductDetails', {id: product_id});
+          navigation.navigate('ProductDetails', { id: product_id });
         }
       },
     );
@@ -210,7 +210,7 @@ const HomeScreen = () => {
       Geolocation.getCurrentPosition(
         async position => {
           clearTimeout(timeoutId);
-          const {latitude, longitude} = position.coords;
+          const { latitude, longitude } = position.coords;
 
           try {
             const response = await axios.get(
@@ -218,9 +218,8 @@ const HomeScreen = () => {
             );
             const address = response?.data?.address;
             if (address) {
-              const city = `${address?.city ?? address?.suburb},${
-                address?.country_code
-              }`;
+              const city = `${address?.city ?? address?.suburb},${address?.country_code
+                }`;
               setCurrentCity(city);
             }
           } catch (error) {
@@ -605,15 +604,15 @@ const HomeScreen = () => {
             padding: 10,
             marginTop: Platform.OS == 'ios' ? 80 : 0,
           }}>
-          <Text style={{color: 'white'}}>No Internet Connection</Text>
+          <Text style={{ color: 'white' }}>No Internet Connection</Text>
         </Animated.View>
       )}
       {loading ? (
         <View
-          style={{marginHorizontal: 10, backgroundColor: Color.white, flex: 1}}>
+          style={{ marginHorizontal: 10, backgroundColor: Color.white, flex: 1 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               {/* <View style={{flex: 1}}> */}
               <SkeletonPlaceholder.Item
                 width={180}
@@ -666,7 +665,7 @@ const HomeScreen = () => {
                 marginTop: 20,
               }}>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -682,7 +681,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -698,7 +697,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -714,7 +713,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -730,7 +729,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -746,7 +745,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -762,7 +761,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -778,7 +777,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -794,7 +793,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -810,7 +809,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -826,7 +825,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -842,7 +841,7 @@ const HomeScreen = () => {
                 />
               </SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
-                style={{alignItems: 'center', mediaType: 10}}>
+                style={{ alignItems: 'center', mediaType: 10 }}>
                 <SkeletonPlaceholder.Item
                   width={60}
                   height={60}
@@ -917,8 +916,8 @@ const HomeScreen = () => {
                 // height: 120,
               }
             }
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             colors={['#0D71BA', '#2994CB', '#0D71BA']}>
             {/* <View
               style={{
@@ -970,14 +969,14 @@ const HomeScreen = () => {
                   {currentCity}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity
-                  style={{marginHorizontal: 10}}
+                  style={{ marginHorizontal: 10 }}
                   onPress={() => navigation.navigate('notification')}>
                   <Feather name="bell" size={24} color={Color.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{marginHorizontal: 10}}
+                  style={{ marginHorizontal: 10 }}
                   onPress={() => navigation.navigate('MyRewards')}>
                   <Iconviewcomponent
                     Icontag={'FontAwesome5'}
@@ -1021,7 +1020,7 @@ const HomeScreen = () => {
                 justifyContent: 'space-evenly',
               }}>
               <Image
-                source={{uri: Media.main_white_logo}}
+                source={{ uri: Media.main_white_logo }}
                 style={{
                   width: 50,
                   height: 50,
@@ -1053,9 +1052,9 @@ const HomeScreen = () => {
                   borderWidth: 1,
                   borderColor: Color.lightgrey,
                 }}
-                // onPress={() => {
-                //   navigation.navigate('Search', {searchProduct: ''});
-                // }}
+              // onPress={() => {
+              //   navigation.navigate('Search', {searchProduct: ''});
+              // }}
               >
                 <Iconviewcomponent
                   Icontag={'AntDesign'}
@@ -1112,7 +1111,7 @@ const HomeScreen = () => {
             scrollEventThrottle={1}
             nestedScrollEnabled
             initialNumToRender={5}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               switch (item) {
                 case 'Category Menu':
                   return (
@@ -1122,8 +1121,8 @@ const HomeScreen = () => {
                         // backgroundColor: Color.primary,
                         marginBottom: 10,
                       }}
-                      start={{x: 0, y: 0}}
-                      end={{x: 1, y: 0}}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
                       colors={['#0D71BA', '#2994CB', '#0D71BA']}>
                       <View
                         style={{
@@ -1159,7 +1158,7 @@ const HomeScreen = () => {
                                   height: 50,
                                 }}>
                                 <Image
-                                  source={{uri: item?.file}}
+                                  source={{ uri: item?.file }}
                                   style={{
                                     width: 50,
                                     height: 50,
@@ -1193,7 +1192,7 @@ const HomeScreen = () => {
                             marginVertical: 10,
                             width: '20%',
                           }}>
-                          <View style={{alignItems: 'center'}}>
+                          <View style={{ alignItems: 'center' }}>
                             <View
                               style={{
                                 backgroundColor: '#fff',
@@ -1250,7 +1249,7 @@ const HomeScreen = () => {
                           justifyContent: 'center',
                           alignItems: 'center',
                         }}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                           <TouchableOpacity
                             onPress={() => {
                               navigation.navigate('ProductList', {
@@ -1258,7 +1257,7 @@ const HomeScreen = () => {
                               });
                             }}>
                             <Image
-                              source={{uri: item.file_path}}
+                              source={{ uri: item.file_path }}
                               style={{
                                 width: width - 10,
                                 height: 130,
@@ -1279,8 +1278,8 @@ const HomeScreen = () => {
                         marginTop: 20,
                         paddingStart: 10,
                       }}
-                      start={{x: 0, y: 0}}
-                      end={{x: 1, y: 0}}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
                       colors={['#fff', '#fff']}>
                       <View
                         style={{
@@ -1356,7 +1355,7 @@ const HomeScreen = () => {
                         data={categorizedData?.hot_deals_banner}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({item, index}) => {
+                        renderItem={({ item, index }) => {
                           return (
                             <TouchableOpacity
                               key={index}
@@ -1381,7 +1380,7 @@ const HomeScreen = () => {
                                 });
                               }}>
                               <Image
-                                source={{uri: item?.file_path}}
+                                source={{ uri: item?.file_path }}
                                 style={{
                                   width: 170,
                                   height: 130,
@@ -1400,8 +1399,8 @@ const HomeScreen = () => {
                       style={{
                         paddingStart: 10,
                       }}
-                      start={{x: 0, y: 0}}
-                      end={{x: 1, y: 0}}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
                       colors={['#fff', '#fff']}>
                       <View
                         style={{
@@ -1533,7 +1532,7 @@ const HomeScreen = () => {
                           data={trendingProducts}
                           horizontal
                           showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             return (
                               <ItemCardHorizontal
                                 item={item}
@@ -1568,7 +1567,7 @@ const HomeScreen = () => {
                         //   justifyContent: 'center',
                         //   alignItems: 'center',
                         // }}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                           <TouchableOpacity
                             style={{
                               width: scr_width,
@@ -1581,7 +1580,7 @@ const HomeScreen = () => {
                               });
                             }}>
                             <Image
-                              source={{uri: item?.file_path}}
+                              source={{ uri: item?.file_path }}
                               style={{
                                 width: '100%',
                                 height: 470,
@@ -1698,7 +1697,7 @@ const HomeScreen = () => {
                                   width: '50%',
                                 }}>
                                 <Image
-                                  source={{uri: item?.file_path}}
+                                  source={{ uri: item?.file_path }}
                                   style={{
                                     height: 100,
                                     resizeMode: 'contain',
@@ -1786,7 +1785,7 @@ const HomeScreen = () => {
                               alignItems: 'center',
                             }}>
                             <Image
-                              source={{uri: item.logo}}
+                              source={{ uri: item.logo }}
                               style={{
                                 width: 100,
                                 height: 60,
@@ -1806,82 +1805,93 @@ const HomeScreen = () => {
                   );
                 case 'product':
                   return (
-                    <LinearGradient
-                      style={{
-                        marginBottom: 10,
-                        padding: 10,
-                      }}
-                      start={{x: 0, y: 0}}
-                      end={{x: 1, y: 0}}
-                      colors={['#FF0066', '#fff']}>
-                      <FlatList
-                        data={products}
-                        numColumns={2}
-                        showsVerticalScrollIndicator={false}
-                        renderItem={({item, index}) => {
-                          return (
-                            <ItemCard item={item} navigation={navigation} />
-                          );
-                        }}
+                    <View>
+                      <Image
+                        source={{ uri: Media.flash_ban }}
+                        style={{ width: Dimensions.get('window').width, height: 70 }}
                       />
-                      {showLoadMore && (
-                        <TouchableOpacity
-                          onPress={() => {
-                            loadMoreData();
+                      <LinearGradient
+                        style={{
+                          marginBottom: 10,
+                          padding: 10,
+                        }}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        colors={['#FF0066', '#fff']}>
+                        <FlatList
+                          data={products}
+                          numColumns={2}
+                          showsVerticalScrollIndicator={false}
+                          renderItem={({ item, index }) => {
+                            return (
+                              <ItemCard item={item} navigation={navigation} />
+                            );
                           }}
-                          style={{
-                            padding: 5,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <Text
+                        />
+                        {showLoadMore && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              loadMoreData();
+                            }}
                             style={{
-                              fontSize: 14,
-                              fontFamily: Manrope.Bold,
-                              color: Color.white,
-                              marginHorizontal: 5,
-                              textDecorationLine: 'underline',
-                              textAlign: 'center',
+                              padding: 5,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'center',
                             }}>
-                            More
-                          </Text>
-                          <Icon
-                            name="chevron-forward-circle"
-                            size={15}
-                            color={Color.white}
-                            style={{marginTop: 5}}
-                          />
-                        </TouchableOpacity>
-                      )}
-                    </LinearGradient>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                fontFamily: Manrope.Bold,
+                                color: Color.white,
+                                marginHorizontal: 5,
+                                textDecorationLine: 'underline',
+                                textAlign: 'center',
+                              }}>
+                              More
+                            </Text>
+                            <Icon
+                              name="chevron-forward-circle"
+                              size={15}
+                              color={Color.white}
+                              style={{ marginTop: 5 }}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </LinearGradient>
+                    </View>
                   );
                 case 'Featured Product':
                   return (
-                    FeaturedProducts?.length > 0 && (
-                      <LinearGradient
-                        style={{
-                          paddingHorizontal: 10,
-                        }}
-                        start={{x: 0, y: 0}}
-                        end={{x: 1, y: 0}}
-                        colors={['#0D71BA', '#2994CB', '#fff']}>
-                        <View
+                    <View>
+                      <Image
+                        source={{ uri: Media.featured_ban }}
+                        style={{ width: Dimensions.get('window').width, height: 70 }}
+                      />
+                      {FeaturedProducts?.length > 0 && (
+                        <LinearGradient
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginVertical: 10,
-                          }}>
-                          <Text
+                            paddingHorizontal: 10,
+                          }}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          colors={['#0D71BA', '#2994CB', '#fff']}>
+                          {/* <View
                             style={{
-                              flex: 1,
-                              fontSize: 16,
-                              color: Color.white,
-                              fontFamily: Manrope.SemiBold,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              marginVertical: 10,
                             }}>
-                            Featured Products
-                          </Text>
-                          {/* <TouchableOpacity
+                            <Text
+                              style={{
+                                flex: 1,
+                                fontSize: 16,
+                                color: Color.white,
+                                fontFamily: Manrope.SemiBold,
+                              }}>
+                              Featured Products
+                            </Text>
+                            <TouchableOpacity
                             onPress={() => {
                               navigation.navigate('viewProducts', {
                                 key: 'featured',
@@ -1896,69 +1906,71 @@ const HomeScreen = () => {
                               }}>
                               View All
                             </Text>
-                          </TouchableOpacity> */}
-                        </View>
-                        <FlatList
-                          data={FeaturedProducts}
-                          numColumns={2}
-                          showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
-                            return (
-                              <ItemCard item={item} navigation={navigation} />
-                            );
-                          }}
-                        />
-                        {FeaturedShowLoadMore && (
-                          <TouchableOpacity
-                            onPress={() => {
-                              featuredLoadMoreData();
-                            }}
-                            style={{
-                              padding: 5,
-                              flexDirection: 'row',
-                              backgroundColor: Color.transparentWhite,
-                              justifyContent: 'center',
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 16,
-                                fontFamily: Manrope.Bold,
-                                color: Color.white,
-                                marginHorizontal: 5,
-                                textAlign: 'center',
-                              }}>
-                              More
-                            </Text>
-                            <Icon
-                              name="chevron-forward-circle"
-                              size={18}
-                              color={Color.white}
-                              style={{marginTop: 5}}
-                            />
                           </TouchableOpacity>
-                        )}
-                      </LinearGradient>
-                    )
+                          </View> */}
+                          <FlatList
+                            data={FeaturedProducts}
+                            numColumns={2}
+                            showsHorizontalScrollIndicator={false}
+                            renderItem={({ item, index }) => {
+                              return (
+                                <ItemCard item={item} navigation={navigation} />
+                              );
+                            }}
+                          />
+                          {FeaturedShowLoadMore && (
+                            <TouchableOpacity
+                              onPress={() => {
+                                featuredLoadMoreData();
+                              }}
+                              style={{
+                                padding: 5,
+                                flexDirection: 'row',
+                                backgroundColor: Color.transparentWhite,
+                                justifyContent: 'center',
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 16,
+                                  fontFamily: Manrope.Bold,
+                                  color: Color.white,
+                                  marginHorizontal: 5,
+                                  textAlign: 'center',
+                                }}>
+                                More
+                              </Text>
+                              <Icon
+                                name="chevron-forward-circle"
+                                size={18}
+                                color={Color.white}
+                                style={{ marginTop: 5 }}
+                              />
+                            </TouchableOpacity>
+                          )}
+                        </LinearGradient>
+                      )}
+                    </View>
                   );
                 case 'Latest Product':
                   return (
                     latestProducts?.length > 0 && (
-                      <View style={{}}>
+                      <View style={{ marginTop: 1 }}>
                         <Image
-                          source={Media.latest_banner}
-                          style={{width: '100%', height: 50}}
+                          source={{ uri: Media.latest_ban }}
+                          style={{ width: Dimensions.get('window').width, height: 70 }}
                         />
                         <LinearGradient
                           style={{
                             paddingBottom: 10,
+                            paddingHorizontal: 10
                           }}
-                          start={{x: 0, y: 0}}
-                          end={{x: 1, y: 0}}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
                           colors={['#840BB0', '#fff']}>
                           <FlatList
                             data={latestProducts}
                             numColumns={2}
-                            renderItem={({item, index}) => {
+                            renderItem={({ item, index }) => {
                               return (
                                 <ItemCard item={item} navigation={navigation} />
                               );
@@ -2066,7 +2078,7 @@ const HomeScreen = () => {
                       data={ProductSuggestions?.data}
                       scrollEnabled
                       keyExtractor={(item, index) => item + index}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return (
                           <TouchableOpacity
                             key={index}
@@ -2085,7 +2097,7 @@ const HomeScreen = () => {
                               {item?.keyword}
                             </Text>
                             {index < ProductSuggestions?.data.length - 1 && (
-                              <Divider style={{height: 1, marginVertical: 5}} />
+                              <Divider style={{ height: 1, marginVertical: 5 }} />
                             )}
                           </TouchableOpacity>
                         );
@@ -2126,7 +2138,7 @@ const HomeScreen = () => {
             </View>
           )}
           <Modal transparent={true} animationType="fade" visible={imageVisible}>
-            <View style={{backgroundColor: Color.transparantBlack, flex: 1}}>
+            <View style={{ backgroundColor: Color.transparantBlack, flex: 1 }}>
               <View
                 style={{
                   flex: 1,
@@ -2193,8 +2205,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.white,
   },
-  child: {width: Dimensions.get('window').width, justifyContent: 'center'},
-  text: {fontSize: 14, textAlign: 'center'},
+  child: { width: Dimensions.get('window').width, justifyContent: 'center' },
+  text: { fontSize: 14, textAlign: 'center' },
   categoryImage: {
     width: 80,
     height: 80,

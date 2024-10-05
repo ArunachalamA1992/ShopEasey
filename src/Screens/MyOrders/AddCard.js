@@ -65,11 +65,11 @@ const AddCard = () => {
                     </View>
                 </KeyboardAvoidingView>
                 {/* {formState.isValid && ( */}
-                <Button
+                {/* <Button
                     style={styles.button}
                     title={'CONFIRM PAYMENT'}
                     onPress={handleSubmit(onSubmit)}
-                />
+                /> */}
                 {/* )} */}
             </SafeAreaView>
         </FormProvider>
