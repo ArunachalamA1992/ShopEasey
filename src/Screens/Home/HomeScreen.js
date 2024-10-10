@@ -232,6 +232,9 @@ const HomeScreen = () => {
         },
       );
     }
+    else {
+      console.error('Location Permission Neede');
+    }
   };
 
   const calculateTotalDiscountPercentage = type => {
@@ -366,6 +369,10 @@ const HomeScreen = () => {
 
       const profile = await fetchData.profile_data(``, token);
       setProfileData(profile.data);
+
+      console.log("profile ------------- ", profile);
+
+
     } catch (error) {
       console.log('error', error);
     }
@@ -2189,10 +2196,12 @@ const HomeScreen = () => {
               </View>
             </View>
           </Modal>
-          <ProfileModal
-            profileVisible={profileVisible}
-            setProfileVisible={setProfileVisible}
-          />
+          {profileData.first_name === null && (
+            <ProfileModal
+              profileVisible={profileVisible}
+              setProfileVisible={setProfileVisible}
+            />
+          )}
           <PostCompletedModal navigation={navigation} />
         </>
       )}

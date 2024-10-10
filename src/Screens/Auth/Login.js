@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {StackActions, useNavigation} from '@react-navigation/native';
-import {Media} from '../../Global/Media';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { StackActions, useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
 import messaging from '@react-native-firebase/messaging';
 
 import {
@@ -22,7 +22,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import common_fn from '../../Config/common_fn';
 import fetchData from '../../Config/fetchData';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
@@ -87,6 +87,8 @@ const Login = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
+      // console.log("userInfo ------------- : ", userInfo);
+
       if (userInfo) {
         var data = {
           first_name: userInfo?.user?.givenName,
@@ -97,7 +99,9 @@ const Login = () => {
           fcm_token: token,
         };
         const updateProfiledata = await fetchData.login_with_gmail(data, null);
-        if (updateProfiledata.message) {
+        // console.log("updateProfiledata =========== : ", updateProfiledata);
+
+        if (updateProfiledata.message === "Login successful") {
           const UserLogin = {
             ...updateProfiledata?.data,
             token: updateProfiledata?.token,
@@ -106,6 +110,12 @@ const Login = () => {
           navigation.replace('TabNavigator');
           common_fn.showToast(`Welcome to ShopEasey`);
         }
+        else {
+          common_fn.showToast(updateProfiledata.message);
+        }
+      }
+      else {
+        alert("User not found, please check credentials and try again!")
       }
     } catch (error) {
       console.log('catch in google_Signing', error);
@@ -176,8 +186,7 @@ const Login = () => {
             common_fn.showToast(`Invalid Email ID`);
           } else {
             common_fn.showToast(
-              `Invalid ${
-                countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+              `Invalid ${countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
               }  Number`,
             );
           }
@@ -185,8 +194,7 @@ const Login = () => {
         }
       } else {
         common_fn.showToast(
-          `Enter your ${
-            countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+          `Enter your ${countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
           } or email id`,
         );
       }
@@ -240,8 +248,7 @@ const Login = () => {
             common_fn.showToast(`Invalid Email ID`);
           } else {
             common_fn.showToast(
-              `Invalid ${
-                countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+              `Invalid ${countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
               }  Number`,
             );
           }
@@ -249,8 +256,7 @@ const Login = () => {
         }
       } else {
         common_fn.showToast(
-          `Enter your ${
-            countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
+          `Enter your ${countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
           } or email id`,
         );
       }
@@ -279,7 +285,7 @@ const Login = () => {
           }}>
           {loginType == '' ? 'Login to' : 'Register to'}
         </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text
             style={{
               textAlign: 'left',
@@ -293,7 +299,7 @@ const Login = () => {
             Icontag={'MaterialIcons'}
             iconname={'shopping-bag'}
             icon_size={42}
-            iconstyle={{color: Color.primary, marginHorizontal: 5}}
+            iconstyle={{ color: Color.primary, marginHorizontal: 5 }}
           />
         </View>
       </View>
@@ -311,7 +317,7 @@ const Login = () => {
           }}>
           {countryCode?.id == 452 ? 'Mobile' : 'WhatsApp'} Number/Email
         </Text>
-        <View style={{marginVertical: 10}}>
+        <View style={{ marginVertical: 10 }}>
           <View style={styles.NumberBoxConatiner}>
             {number.match(/[a-z]/i) ? (
               <View />
@@ -331,15 +337,15 @@ const Login = () => {
                   ? countryCode?.id == 454
                     ? 8
                     : 10
-                  : undefined
+                  : 10
               }
               autoFocus={
                 countryCode?.id == 454 && number?.length == 8
                   ? false
-                  : (countryCode?.id == 454 && number?.length == 10) ||
+                  : (countryCode?.id == 454 && number?.length == 8) ||
                     (countryCode?.id == 453 && number?.length == 10)
-                  ? false
-                  : true
+                    ? false
+                    : true
               }
               onChangeText={input => {
                 chkNumber(input);
@@ -399,8 +405,8 @@ const Login = () => {
             googleSignIn();
           }}>
           <Image
-            source={{uri: Media.google_icon}}
-            style={{width: 30, height: 30, resizeMode: 'contain'}}
+            source={{ uri: Media.google_icon }}
+            style={{ width: 30, height: 30, resizeMode: 'contain' }}
           />
           <Text
             style={{
@@ -499,7 +505,7 @@ const Login = () => {
           paddingHorizontal: 10,
           justifyContent: 'flex-end',
         }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text
             style={{
               textAlign: 'justify',
@@ -521,7 +527,7 @@ const Login = () => {
             ShopEasey
           </Text>
         </View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity
             onPress={() => navigation.navigate('TermsandConditions')}>
             <Text

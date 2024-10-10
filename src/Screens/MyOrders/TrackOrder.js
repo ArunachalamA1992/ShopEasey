@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
@@ -9,15 +9,15 @@ import {
 } from 'react-native';
 import Color from '../../Global/Color';
 import common_fn from '../../Config/common_fn';
-import {Media} from '../../Global/Media';
-import {Manrope} from '../../Global/FontFamily';
+import { Media } from '../../Global/Media';
+import { Manrope } from '../../Global/FontFamily';
 import StepIndicator from 'react-native-step-indicator';
 import FOIcon from 'react-native-vector-icons/Fontisto';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Button, Divider} from 'react-native-paper';
+import { Button, Divider } from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import moment from 'moment';
 
 const customStyles = {
@@ -44,16 +44,16 @@ const customStyles = {
   stepIndicatorLabelUnFinishedColor: Color.white,
 };
 
-const TrackOrder = ({navigation, route}) => {
+const TrackOrder = ({ navigation, route }) => {
   const [orderData] = useState(route.params.orderData);
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   const filteredOrderData = orderStatus?.filter(
-    order => !['missing', 'pending', 'cancelled']?.includes(order.status),
+    order => !['abandoned', 'pending', 'cancelled']?.includes(order.status),
   );
 
   const labels = filteredOrderData?.map(order => order.status);
@@ -61,6 +61,9 @@ const TrackOrder = ({navigation, route}) => {
   const currentPosition = filteredOrderData.findIndex(
     order => order.status === orderData?.status,
   );
+
+  console.log("orderData ============= : ", orderData);
+
 
   useEffect(() => {
     setOrderLoading(true);
@@ -82,40 +85,41 @@ const TrackOrder = ({navigation, route}) => {
     }
   };
 
-  const cancelOrder = async () => {
-    try {
-      Alert.alert(
-        '',
-        'Do you want cancel this product',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'OK',
-            onPress: async () => {
-              var data = {
-                status: 6,
-              };
-              const order_status = await fetchData.update_order(
-                `${orderData?.id}`,
-                data,
-                token,
-              );
-              common_fn.showToast(order_status?.message);
-              myorderData();
-              setOrderLoading(false);
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
+  // const cancelOrder = async () => {
+  //   try {
+  //     Alert.alert(
+  //       '',
+  //       'Do you want cancel this product',
+  //       [
+  //         {
+  //           text: 'Cancel',
+  //           onPress: () => console.log('Cancel Pressed'),
+  //           style: 'cancel',
+  //         },
+  //         {
+  //           text: 'OK',
+  //           onPress: async () => {
+  //             var data = {
+  //               status: 6,
+  //             };
+  //             const order_status = await fetchData.update_order(
+  //               `${orderData?.id}`,
+  //               data,
+  //               token,
+  //             );
+  //             common_fn.showToast(order_status?.message);
+  //             myorderData();
+  //             setOrderLoading(false);
+  //           },
+  //         },
+  //       ],
+  //       { cancelable: false },
+  //     );
+  //   } catch (error) {
+  //     console.log('error', error);
+  //   }
+  // };
+
   const addDays = days => {
     let date = new Date(orderData?.order?.created_at);
     date.setDate(date.getDate() + days);
@@ -132,9 +136,9 @@ const TrackOrder = ({navigation, route}) => {
   console.log('deliveryDate', deliveryDate, tilldate);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F6FA' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{padding: 10, backgroundColor: Color.white}}>
+        <View style={{ padding: 10, backgroundColor: Color.white }}>
           <View
             style={{
               flexDirection: 'row',
@@ -144,7 +148,7 @@ const TrackOrder = ({navigation, route}) => {
             }}>
             {orderData?.variants?.productImages?.length > 0 ? (
               <Image
-                source={{uri: orderData?.variants?.productImages?.[0]?.image}}
+                source={{ uri: orderData?.variants?.productImages?.[0]?.image }}
                 style={{
                   width: 120,
                   height: 120,
@@ -154,7 +158,7 @@ const TrackOrder = ({navigation, route}) => {
               />
             ) : (
               <Image
-                source={{uri: Media.no_image}}
+                source={{ uri: Media.no_image }}
                 style={{
                   width: 120,
                   height: 120,
@@ -163,7 +167,7 @@ const TrackOrder = ({navigation, route}) => {
                 }}
               />
             )}
-            <View style={{flex: 1, marginLeft: 10}}>
+            <View style={{ flex: 1, marginLeft: 10 }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -228,7 +232,7 @@ const TrackOrder = ({navigation, route}) => {
                           fontFamily: Manrope.Medium,
                           marginRight: 5,
                         }}>
-                        Color
+                        Color :
                       </Text>
                       <View
                         style={{
@@ -249,41 +253,41 @@ const TrackOrder = ({navigation, route}) => {
                     />
                   </>
                 )}
-                {orderData?.variants?.size != '' && (
-                  <>
-                    <View
+                {/* {orderData?.variants?.size != ''( */}
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                    }}>
+                    <Text
                       style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
+                        fontSize: 12,
+                        color: Color.cloudyGrey,
+                        fontFamily: Manrope.Medium,
+                        marginRight: 5,
                       }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          marginRight: 5,
-                        }}>
-                        Size -
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                        }}>
-                        {orderData?.variants?.size}
-                      </Text>
-                    </View>
-                    <View
+                      Size :
+                    </Text>
+                    <Text
                       style={{
-                        width: 1,
-                        height: 20,
-                        backgroundColor: Color.lightgrey,
-                      }}
-                    />
-                  </>
-                )}
+                        fontSize: 12,
+                        color: Color.cloudyGrey,
+                        fontFamily: Manrope.Medium,
+                      }}>
+                      {orderData?.variants?.size != null ? orderData?.variants?.size : "--"}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: 1,
+                      height: 20,
+                      backgroundColor: Color.lightgrey,
+                    }}
+                  />
+                </>
+                {/* )} */}
                 <View
                   style={{
                     flexDirection: 'row',
@@ -297,7 +301,7 @@ const TrackOrder = ({navigation, route}) => {
                       fontFamily: Manrope.Medium,
                       letterSpacing: 0.5,
                     }}>
-                    Quantity -{' '}
+                    Quantity :{' '}
                   </Text>
                   <Text
                     style={{
@@ -325,8 +329,8 @@ const TrackOrder = ({navigation, route}) => {
                   {orderData?.order?.region_id == 454
                     ? '$'
                     : orderData?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'}
+                      ? 'RM'
+                      : '₹'}
                   {orderData?.price}
                 </Text>
               </View>
@@ -334,7 +338,7 @@ const TrackOrder = ({navigation, route}) => {
           </View>
         </View>
         <View
-          style={{marginTop: 10, backgroundColor: Color.white, padding: 10}}>
+          style={{ marginTop: 10, backgroundColor: Color.white, padding: 10 }}>
           <Text
             style={{
               fontSize: 16,
@@ -344,7 +348,7 @@ const TrackOrder = ({navigation, route}) => {
             }}>
             Order Details
           </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -361,10 +365,10 @@ const TrackOrder = ({navigation, route}) => {
                 fontSize: 14,
                 fontFamily: Manrope.Medium,
               }}>
-              # {orderData?.order?.id}
+              # {orderData?.order?.unique_order_id}
             </Text>
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -384,7 +388,7 @@ const TrackOrder = ({navigation, route}) => {
               {orderData?.order?.user_address?.name}
             </Text>
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -405,7 +409,7 @@ const TrackOrder = ({navigation, route}) => {
             </Text>
           </View>
           {orderData?.status_id != 0 && (
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text
                 style={{
                   flex: 1,
@@ -426,8 +430,8 @@ const TrackOrder = ({navigation, route}) => {
               </Text>
             </View>
           )}
-          {orderData?.status_id != 0 && (
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {/* {orderData?.status_id != 0 && (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text
                 style={{
                   flex: 1,
@@ -447,9 +451,9 @@ const TrackOrder = ({navigation, route}) => {
                 AMKRTSUWYSGW
               </Text>
             </View>
-          )}
+          )} */}
           {orderData?.status_id != 0 && (
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text
                 style={{
                   flex: 1,
@@ -504,7 +508,7 @@ const TrackOrder = ({navigation, route}) => {
                   stepCount={filteredOrderData.length}
                   labels={labels}
                   direction="vertical"
-                  renderStepIndicator={({position, stepStatus}) => {
+                  renderStepIndicator={({ position, stepStatus }) => {
                     switch (stepStatus) {
                       case 'current':
                         return (
@@ -535,8 +539,8 @@ const TrackOrder = ({navigation, route}) => {
                     }
                   }}
                 />
-                <Divider style={{height: 1, marginVertical: 10}} />
-                <TouchableOpacity
+                <Divider style={{ height: 1, marginVertical: 10 }} />
+                {/* <TouchableOpacity
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -557,10 +561,10 @@ const TrackOrder = ({navigation, route}) => {
                     size={18}
                     color={Color.primary}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
-            <Button
+            {/* <Button
               mode="contained"
               onPress={() => {
                 cancelOrder();
@@ -574,7 +578,7 @@ const TrackOrder = ({navigation, route}) => {
               }}
               textColor={Color.primary}>
               Cancel Order
-            </Button>
+            </Button> */}
           </>
         )}
       </ScrollView>

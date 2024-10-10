@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   Keyboard,
@@ -10,21 +10,21 @@ import {
   View,
 } from 'react-native';
 import common_fn from '../Config/common_fn';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import fetchData from '../Config/fetchData';
-import {ActivityIndicator} from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import Color from '../Global/Color';
-import {Manrope} from '../Global/FontFamily';
-import {Iconviewcomponent} from './Icontag';
-import {baseUrl} from '../Config/base_url';
-import {useNavigation} from '@react-navigation/native';
-import {Media} from '../Global/Media';
+import { Manrope } from '../Global/FontFamily';
+import { Iconviewcomponent } from './Icontag';
+import { baseUrl } from '../Config/base_url';
+import { useNavigation } from '@react-navigation/native';
+import { Media } from '../Global/Media';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ProfileModal = ({profileVisible, setProfileVisible}) => {
+const ProfileModal = ({ profileVisible, setProfileVisible }) => {
   const navigation = useNavigation();
   const rootuserData = useSelector(state => state.UserReducer.userData);
-  var {token} = rootuserData;
+  var { token } = rootuserData;
   const [firstName, setfirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -36,8 +36,8 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
   const chkNumber = number => {
     setPhoneNumber(number);
     const isValidLength =
-      countryCode?.id === 454 ? number?.length === 8 : number?.length === 10;
-    const mobileRegex = countryCode?.id === 454 ? /^[0-9]{8}$/ : /^[0-9]{10}$/;
+      countryCode?.id === 454 ? number?.length === 8 : 453 ? number?.length === 11 : number?.length === 10;
+    const mobileRegex = countryCode?.id === 454 ? /^[0-9]{8}$/ : 453 ? /^[0-9]{11}$/ : /^[0-9]{10}$/;
     if (mobileRegex.test(number) && isValidLength) {
       Keyboard.dismiss();
     }
@@ -130,13 +130,16 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
 
   return (
     <Modal transparent={true} animationType="fade" visible={profileVisible}>
-      <View
+
+
+      {/* <View
         style={{
           backgroundColor: Color.transparantBlack,
           flex: 1,
           justifyContent: 'center',
           padding: 10,
         }}>
+
         <View
           style={{
             justifyContent: 'center',
@@ -146,7 +149,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
             borderRadius: 10,
           }}>
           <Image
-            source={{uri: Media.logo}}
+            source={{ uri: Media.logo }}
             style={{
               width: 90,
               height: 100,
@@ -169,7 +172,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
               Icontag={'Feather'}
               iconname={'user'}
               icon_size={22}
-              iconstyle={{color: Color.cloudyGrey}}
+              iconstyle={{ color: Color.cloudyGrey }}
             />
             <TextInput
               style={styles.numberTextBox}
@@ -187,7 +190,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
               Icontag={'Feather'}
               iconname={'user'}
               icon_size={22}
-              iconstyle={{color: Color.cloudyGrey}}
+              iconstyle={{ color: Color.cloudyGrey }}
             />
             <TextInput
               style={styles.numberTextBox}
@@ -205,7 +208,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
               Icontag={'Feather'}
               iconname={'mail'}
               icon_size={22}
-              iconstyle={{color: Color.cloudyGrey}}
+              iconstyle={{ color: Color.cloudyGrey }}
             />
             <TextInput
               style={styles.numberTextBox}
@@ -237,7 +240,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
               Icontag={'Feather'}
               iconname={'phone'}
               icon_size={22}
-              iconstyle={{color: Color.cloudyGrey}}
+              iconstyle={{ color: Color.cloudyGrey }}
             />
             <Text style={styles.numberCountryCode}>
               {countryCode?.mobile_prefix}
@@ -251,7 +254,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
                 chkNumber(value);
               }}
               keyboardType="number-pad"
-              maxLength={countryCode?.id === 454 ? 8 : 10}
+              maxLength={10}
             />
           </View>
           <TouchableOpacity
@@ -282,7 +285,7 @@ const ProfileModal = ({profileVisible, setProfileVisible}) => {
             )}
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
     </Modal>
   );
 };
