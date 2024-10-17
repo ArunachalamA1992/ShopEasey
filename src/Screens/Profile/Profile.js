@@ -50,6 +50,8 @@ const Profile = () => {
   const getApiData = async () => {
     try {
       const profile = await fetchData.profile_data(``, token);
+      // console.log("profile ============== : ", profile);
+      
       setProfileData(profile.data);
     } catch (error) {
       console.log('error', error);
@@ -470,7 +472,18 @@ const Profile = () => {
                       : ''}
                   </Text>
                 ) : (
-                  ''
+                  
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: Color.black,
+                        fontFamily: Manrope.Bold,
+                        letterSpacing: 0.5,
+                      }}>
+                     {profileData?.mobile}
+                    </Text>
+                  </View>
                 )}
                 {profileData.email ? (
                   <Text

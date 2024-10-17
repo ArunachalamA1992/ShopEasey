@@ -46,6 +46,7 @@ const Login = () => {
   };
 
   useEffect(() => {
+
     try {
       GoogleSignin.configure({
         scopes: ['email', 'profile'],
@@ -326,18 +327,25 @@ const Login = () => {
                 {countryCode?.mobile_prefix}
               </Text>
             )}
+            {console.log(countryCode?.id ,"CCCCCCCCCCCCC")
+            }
             <TextInput
               placeholder={
                 countryCode?.id == 452 ? 'Mobile' : 'WhatsApp Number or Email'
               }
               placeholderTextColor={Color.cloudyGrey}
               value={number}
-              maxLength={
-                isMobile(number) && [452, 453, 454].includes(countryCode?.id)
-                  ? countryCode?.id == 454
+              // maxLength={
+              //   isMobile(number) && [452, 453, 454].includes(countryCode?.id)
+              //     ? countryCode?.id == 454
+              //       ? 8
+              //       : countryCode?.id == 453 ? 11 : 10
+              //     : 10
+              // }
+               maxLength={
+                isMobile(number) &&  countryCode?.id == 454
                     ? 8
-                    : 10
-                  : 10
+                    : countryCode?.id == 453 ? 11 : 10
               }
               autoFocus={
                 countryCode?.id == 454 && number?.length == 8

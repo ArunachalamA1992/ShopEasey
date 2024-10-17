@@ -174,14 +174,14 @@ const TrackOrder = ({ navigation, route }) => {
                   justifyContent: 'flex-start',
                   alignItems: 'center',
                 }}>
-                <Text
+                {/* <Text
                   style={{
                     fontSize: 12,
                     color: Color.cloudyGrey,
                     fontFamily: Manrope.Medium,
                   }}>
                   Order ID #{orderData?.order?.id}
-                </Text>
+                </Text> */}
                 <Text
                   style={{
                     fontSize: 10,
@@ -192,7 +192,7 @@ const TrackOrder = ({ navigation, route }) => {
                     backgroundColor: Color.green,
                     fontFamily: Manrope.SemiBold,
                     textTransform: 'capitalize',
-                    marginHorizontal: 10,
+                    marginHorizontal: 0,
                   }}>
                   {orderData?.status}
                 </Text>

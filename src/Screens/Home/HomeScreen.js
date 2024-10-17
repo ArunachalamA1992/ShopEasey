@@ -31,7 +31,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { scr_width } from '../../Utils/Dimensions';
+import { scr_height, scr_width } from '../../Utils/Dimensions';
 import CountdownTimer from '../../Components/CountdownTimer';
 import ItemCard, { ItemCardHorizontal } from '../../Components/ItemCard';
 import * as ImagePicker from 'react-native-image-picker';
@@ -68,7 +68,7 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
   var { token } = userData;
-  const [imageVisible, setImageVisible] = useState(false);
+  const [imageVisible, setImageVisible] = useState(true);
   const [profileVisible, setProfileVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
@@ -1834,6 +1834,34 @@ const HomeScreen = () => {
                               <ItemCard item={item} navigation={navigation} />
                             );
                           }}
+                          ListFooterComponent={() => {
+                            return (
+                              <View
+                                style={{
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}>
+                                {latestloadMore && (
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 12,
+                                        color: Color.black,
+                                        marginHorizontal: 10,
+                                        fontFamily: Manrope.Medium,
+                                      }}>
+                                      Loading...
+                                    </Text>
+                                    <ActivityIndicator />
+                                  </View>
+                                )}
+                              </View>
+                            );
+                          }}
                         />
                         {showLoadMore && (
                           <TouchableOpacity
@@ -1920,6 +1948,8 @@ const HomeScreen = () => {
                             numColumns={2}
                             showsHorizontalScrollIndicator={false}
                             renderItem={({ item, index }) => {
+                              // console.log("item ==============", item);
+
                               return (
                                 <ItemCard item={item} navigation={navigation} />
                               );
@@ -2144,7 +2174,8 @@ const HomeScreen = () => {
               </View>
             </View>
           )}
-          <Modal transparent={true} animationType="fade" visible={imageVisible}>
+
+          {/* <Modal transparent={true} animationType="fade" visible={imageVisible}>
             <View style={{ backgroundColor: Color.transparantBlack, flex: 1 }}>
               <View
                 style={{
@@ -2152,21 +2183,21 @@ const HomeScreen = () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 130,
-                    right: 20,
-                    zIndex: 1,
-                    padding: 10,
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    alignItems: 'center',
-                  }}>
+                <View  style={{
+                      position: 'absolute',
+                      top: scr_height * 0.35,
+                      right: 40,
+                      zIndex: 1,
+                      padding: 10,
+                      flexDirection: 'row',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                    }}>
                   <TouchableOpacity
                     onPress={() => {
                       setImageVisible(false);
-                    }}>
+                    }}
+                   >
                     <Iconviewcomponent
                       Icontag={'AntDesign'}
                       iconname={'closecircleo'}
@@ -2195,13 +2226,15 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
             </View>
-          </Modal>
-          {profileData.first_name === null && (
+          </Modal> */}
+
+          {(profileData.first_name != null || profileData.mobile != null)
+            ? null :
             <ProfileModal
               profileVisible={profileVisible}
               setProfileVisible={setProfileVisible}
             />
-          )}
+          }
           <PostCompletedModal navigation={navigation} />
         </>
       )}

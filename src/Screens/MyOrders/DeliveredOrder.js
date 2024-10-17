@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -7,18 +7,18 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import common_fn from '../../Config/common_fn';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Color from '../../Global/Color';
-import {Media} from '../../Global/Media';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { Media } from '../../Global/Media';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import StepIndicator from 'react-native-step-indicator';
 import FOIcon from 'react-native-vector-icons/Fontisto';
-import {Button} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
-import {ItemCardHorizontal} from '../../Components/ItemCard';
+import { ItemCardHorizontal } from '../../Components/ItemCard';
 import moment from 'moment';
 
 const customStyles = {
@@ -44,14 +44,14 @@ const customStyles = {
   stepIndicatorLabelUnFinishedColor: Color.white,
 };
 
-const DeliveredOrder = ({navigation, route}) => {
+const DeliveredOrder = ({ navigation, route }) => {
   const [orderData] = useState(route.params.orderData);
   const [loading, setLoading] = useState(false);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const [pdfPath, setPdfPath] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const [recommended, setRecommended] = useState([]);
 
   const addDays = days => {
@@ -66,9 +66,9 @@ const DeliveredOrder = ({navigation, route}) => {
   const steps = [
     {
       label: 'Order Confirmation',
-      date: moment(orderConfirmation).format('ddd, MMM D'),
+      date: moment(orderData?.order?.created_at).format('ddd, MMM D'),
     },
-    {label: 'Order Delivered', date: moment(deliveryDate).format('ddd, MMM D')},
+    { label: 'Order Delivered', date: moment(deliveryDate).format('ddd, MMM D') },
   ];
 
   useEffect(() => {
@@ -89,10 +89,13 @@ const DeliveredOrder = ({navigation, route}) => {
     }
   };
 
+  console.log("size ---------------- : ", orderData?.variants?.size);
+
+
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F6FA' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{padding: 10, backgroundColor: Color.white}}>
+        <View style={{ padding: 10, backgroundColor: Color.white }}>
           <View
             style={{
               flexDirection: 'row',
@@ -102,7 +105,7 @@ const DeliveredOrder = ({navigation, route}) => {
             }}>
             {orderData?.variants?.productImages?.length > 0 ? (
               <Image
-                source={{uri: orderData?.variants?.productImages?.[0]?.image}}
+                source={{ uri: orderData?.variants?.productImages?.[0]?.image }}
                 style={{
                   width: 120,
                   height: 120,
@@ -112,7 +115,7 @@ const DeliveredOrder = ({navigation, route}) => {
               />
             ) : (
               <Image
-                source={{uri: Media.no_image}}
+                source={{ uri: Media.no_image }}
                 style={{
                   width: 120,
                   height: 120,
@@ -121,21 +124,21 @@ const DeliveredOrder = ({navigation, route}) => {
                 }}
               />
             )}
-            <View style={{flex: 1, marginLeft: 10}}>
+            <View style={{ flex: 1, marginLeft: 10 }}>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'flex-start',
                   alignItems: 'center',
                 }}>
-                <Text
+                {/* <Text
                   style={{
                     fontSize: 12,
                     color: Color.cloudyGrey,
                     fontFamily: Manrope.Medium,
                   }}>
                   Order ID #{orderData?.order?.id}
-                </Text>
+                </Text> */}
                 <Text
                   style={{
                     fontSize: 10,
@@ -146,7 +149,7 @@ const DeliveredOrder = ({navigation, route}) => {
                     backgroundColor: Color.green,
                     fontFamily: Manrope.SemiBold,
                     textTransform: 'capitalize',
-                    marginHorizontal: 10,
+                    marginHorizontal: 0,
                   }}>
                   {orderData?.status}
                 </Text>
@@ -175,8 +178,8 @@ const DeliveredOrder = ({navigation, route}) => {
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
-                        borderRightWidth: 1,
-                        borderRightColor: Color.lightgrey,
+                        // borderRightWidth: 1,
+                        // borderRightColor: Color.lightgrey,
                         paddingHorizontal: 5,
                       }}>
                       <Text
@@ -186,7 +189,7 @@ const DeliveredOrder = ({navigation, route}) => {
                           fontFamily: Manrope.Medium,
                           marginRight: 5,
                         }}>
-                        Color
+                        Color :
                       </Text>
                       <View
                         style={{
@@ -207,41 +210,43 @@ const DeliveredOrder = ({navigation, route}) => {
                     />
                   </>
                 )}
-                {orderData?.variants?.size != '' && (
-                  <>
-                    <View
+                {/* {orderData?.variants?.size != null ? */}
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                    }}>
+                    <Text
                       style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
+                        fontSize: 12,
+                        color: Color.cloudyGrey,
+                        fontFamily: Manrope.Medium,
+                        marginRight: 5,
                       }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                          marginRight: 5,
-                        }}>
-                        Size -
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: Color.cloudyGrey,
-                          fontFamily: Manrope.Medium,
-                        }}>
-                        {orderData?.variants?.size}
-                      </Text>
-                    </View>
-                    <View
+                      Size :
+                    </Text>
+                    <Text
                       style={{
-                        width: 1,
-                        height: 20,
-                        backgroundColor: Color.lightgrey,
-                      }}
-                    />
-                  </>
-                )}
+                        fontSize: 12,
+                        color: Color.cloudyGrey,
+                        fontFamily: Manrope.Medium,
+                      }}>
+                      {/* {orderData?.variants?.size} */}
+                      {orderData?.variants?.size != null ? orderData?.variants?.size : "--"}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: 1,
+                      height: 20,
+                      backgroundColor: Color.lightgrey,
+                    }}
+                  />
+                </>
+                {/* : null} */}
+
                 <View
                   style={{
                     flexDirection: 'row',
@@ -255,7 +260,7 @@ const DeliveredOrder = ({navigation, route}) => {
                       fontFamily: Manrope.Medium,
                       letterSpacing: 0.5,
                     }}>
-                    Quantity -{' '}
+                    Quantity :{' '}
                   </Text>
                   <Text
                     style={{
@@ -283,8 +288,8 @@ const DeliveredOrder = ({navigation, route}) => {
                   {orderData?.order?.region_id == 454
                     ? '$'
                     : orderData?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'}
+                      ? 'RM'
+                      : '₹'}
                   {orderData?.price}
                 </Text>
               </View>
@@ -321,7 +326,7 @@ const DeliveredOrder = ({navigation, route}) => {
           </View>
         </View>
         <View
-          style={{marginTop: 10, padding: 10, backgroundColor: Color.white}}>
+          style={{ marginTop: 10, padding: 10, backgroundColor: Color.white }}>
           <View
             style={{
               marginTop: 10,
@@ -337,7 +342,7 @@ const DeliveredOrder = ({navigation, route}) => {
               stepCount={2}
               labels={steps?.map(step => step.label)}
               direction="vertical"
-              renderStepIndicator={({position, stepStatus}) => {
+              renderStepIndicator={({ position, stepStatus }) => {
                 switch (stepStatus) {
                   case 'finished':
                     return (
@@ -349,7 +354,7 @@ const DeliveredOrder = ({navigation, route}) => {
                     );
                 }
               }}
-              renderLabel={({position, stepStatus, label, currentPosition}) => {
+              renderLabel={({ position, stepStatus, label, currentPosition }) => {
                 return (
                   <View style={styles.labelContainer}>
                     <Text
@@ -404,7 +409,7 @@ const DeliveredOrder = ({navigation, route}) => {
         <Button
           mode="contained"
           onPress={() => {
-            navigation.navigate('OrderReview', {orderData});
+            navigation.navigate('OrderReview', { orderData });
           }}
           style={{
             backgroundColor: Color.white,
@@ -475,7 +480,7 @@ const DeliveredOrder = ({navigation, route}) => {
               data={recommended}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return (
                   <ItemCardHorizontal item={item} navigation={navigation} />
                 );

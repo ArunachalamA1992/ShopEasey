@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -11,18 +11,18 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import common_fn from '../../Config/common_fn';
-import {TabView, TabBar} from 'react-native-tab-view';
-import {Media} from '../../Global/Media';
+import { TabView, TabBar } from 'react-native-tab-view';
+import { Media } from '../../Global/Media';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-const Placed = ({token, index, navigation}) => {
+const Placed = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -39,6 +39,8 @@ const Placed = ({token, index, navigation}) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=1`, token);
+      console.log("orderssss ---------------- : ", order_data);
+
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -46,9 +48,9 @@ const Placed = ({token, index, navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -106,7 +108,7 @@ const Placed = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -130,7 +132,7 @@ const Placed = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -140,7 +142,7 @@ const Placed = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -160,14 +162,14 @@ const Placed = ({token, index, navigation}) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
                         Order ID #{item?.order?.id}
-                      </Text>
+                      </Text> */}
                       <Text
                         style={{
                           fontSize: 10,
@@ -178,7 +180,7 @@ const Placed = ({token, index, navigation}) => {
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
-                          marginHorizontal: 10,
+                          marginHorizontal: 0,
                         }}>
                         {item?.status}
                       </Text>
@@ -202,7 +204,7 @@ const Placed = ({token, index, navigation}) => {
                         paddingVertical: 3,
                       }}>
                       {item?.variants?.color != '' ||
-                      item?.variants?.color != null ? (
+                        item?.variants?.color != null ? (
                         <View />
                       ) : (
                         <>
@@ -244,7 +246,7 @@ const Placed = ({token, index, navigation}) => {
                         </>
                       )}
                       {item?.variants?.size == '' ||
-                      item?.variants?.size == null ? (
+                        item?.variants?.size == null ? (
                         <View />
                       ) : (
                         <>
@@ -323,8 +325,8 @@ const Placed = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -341,7 +343,7 @@ const Placed = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('TrackingDetails', {orderData: item});
+                    navigation.navigate('TrackingDetails', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -388,7 +390,7 @@ const Placed = ({token, index, navigation}) => {
   );
 };
 
-const Missing = ({token, index, navigation}) => {
+const Missing = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -405,6 +407,8 @@ const Missing = ({token, index, navigation}) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=0`, token);
+      console.log("Missing ------------------ : ", order_data);
+
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -413,9 +417,9 @@ const Missing = ({token, index, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -473,7 +477,7 @@ const Missing = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -497,7 +501,7 @@ const Missing = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -507,7 +511,7 @@ const Missing = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -527,14 +531,14 @@ const Missing = ({token, index, navigation}) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
                         Order ID #{item?.order?.id}
-                      </Text>
+                      </Text> */}
                       <Text
                         style={{
                           fontSize: 10,
@@ -545,7 +549,7 @@ const Missing = ({token, index, navigation}) => {
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
-                          marginHorizontal: 10,
+                          marginHorizontal: 0,
                         }}>
                         {item?.status}
                       </Text>
@@ -569,7 +573,7 @@ const Missing = ({token, index, navigation}) => {
                         paddingVertical: 3,
                       }}>
                       {item?.variants?.color != '' ||
-                      item?.variants?.color != null ? (
+                        item?.variants?.color != null ? (
                         <View />
                       ) : (
                         <>
@@ -611,7 +615,7 @@ const Missing = ({token, index, navigation}) => {
                         </>
                       )}
                       {item?.variants?.size != '' ||
-                      item?.variants?.size != null ? (
+                        item?.variants?.size != null ? (
                         <View />
                       ) : (
                         <>
@@ -690,8 +694,8 @@ const Missing = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -755,7 +759,7 @@ const Missing = ({token, index, navigation}) => {
   );
 };
 
-const Pending = ({token, index, navigation}) => {
+const Pending = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -772,6 +776,8 @@ const Pending = ({token, index, navigation}) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=2`, token);
+      console.log("Pending --------------- : ", order_data);
+
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -780,9 +786,9 @@ const Pending = ({token, index, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -840,7 +846,7 @@ const Pending = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -864,7 +870,7 @@ const Pending = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -874,7 +880,7 @@ const Pending = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -894,14 +900,14 @@ const Pending = ({token, index, navigation}) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
                         Order ID #{item?.order?.id}
-                      </Text>
+                      </Text> */}
                       <Text
                         style={{
                           fontSize: 10,
@@ -912,7 +918,7 @@ const Pending = ({token, index, navigation}) => {
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
-                          marginHorizontal: 10,
+                          marginHorizontal: 0,
                         }}>
                         {item?.status}
                       </Text>
@@ -936,7 +942,7 @@ const Pending = ({token, index, navigation}) => {
                         paddingVertical: 3,
                       }}>
                       {item?.variants?.color != '' ||
-                      item?.variants?.color != null ? (
+                        item?.variants?.color != null ? (
                         <View />
                       ) : (
                         <>
@@ -978,7 +984,7 @@ const Pending = ({token, index, navigation}) => {
                         </>
                       )}
                       {item?.variants?.size != '' ||
-                      item?.variants?.size != null ? (
+                        item?.variants?.size != null ? (
                         <View />
                       ) : (
                         <>
@@ -1057,8 +1063,8 @@ const Pending = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -1075,7 +1081,7 @@ const Pending = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('TrackingDetails', {orderData: item});
+                    navigation.navigate('TrackingDetails', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -1122,7 +1128,7 @@ const Pending = ({token, index, navigation}) => {
   );
 };
 
-const Proccesed = ({token, index, navigation}) => {
+const Proccesed = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1139,6 +1145,8 @@ const Proccesed = ({token, index, navigation}) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=3`, token);
+      console.log("Processed --------------- : ", order_data);
+
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -1147,9 +1155,9 @@ const Proccesed = ({token, index, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -1207,7 +1215,7 @@ const Proccesed = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -1231,7 +1239,7 @@ const Proccesed = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -1241,7 +1249,7 @@ const Proccesed = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -1261,14 +1269,14 @@ const Proccesed = ({token, index, navigation}) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
                         Order ID #{item?.order?.id}
-                      </Text>
+                      </Text> */}
                       <Text
                         style={{
                           fontSize: 10,
@@ -1279,7 +1287,7 @@ const Proccesed = ({token, index, navigation}) => {
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
-                          marginHorizontal: 10,
+                          marginHorizontal: 0,
                         }}>
                         {item?.status}
                       </Text>
@@ -1303,7 +1311,7 @@ const Proccesed = ({token, index, navigation}) => {
                         paddingVertical: 3,
                       }}>
                       {item?.variants?.color != '' ||
-                      item?.variants?.color != null ? (
+                        item?.variants?.color != null ? (
                         <View />
                       ) : (
                         <>
@@ -1345,7 +1353,7 @@ const Proccesed = ({token, index, navigation}) => {
                         </>
                       )}
                       {item?.variants?.size != '' ||
-                      item?.variants?.size != null ? (
+                        item?.variants?.size != null ? (
                         <View />
                       ) : (
                         <>
@@ -1424,8 +1432,8 @@ const Proccesed = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -1442,7 +1450,7 @@ const Proccesed = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('TrackingDetails', {orderData: item});
+                    navigation.navigate('TrackingDetails', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -1489,7 +1497,7 @@ const Proccesed = ({token, index, navigation}) => {
   );
 };
 
-const OnShipping = ({token, index, navigation}) => {
+const OnShipping = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
   useEffect(() => {
@@ -1505,6 +1513,8 @@ const OnShipping = ({token, index, navigation}) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=4`, token);
+      console.log("OnShipping --------------- : ", order_data);
+
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -1512,9 +1522,9 @@ const OnShipping = ({token, index, navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -1572,7 +1582,7 @@ const OnShipping = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -1596,7 +1606,7 @@ const OnShipping = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -1606,7 +1616,7 @@ const OnShipping = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -1626,14 +1636,14 @@ const OnShipping = ({token, index, navigation}) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
                         Order ID #{item?.order?.id}
-                      </Text>
+                      </Text> */}
                       <Text
                         style={{
                           fontSize: 10,
@@ -1644,7 +1654,7 @@ const OnShipping = ({token, index, navigation}) => {
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
-                          marginHorizontal: 10,
+                          marginHorizontal: 0,
                         }}>
                         {item?.status}
                       </Text>
@@ -1668,7 +1678,7 @@ const OnShipping = ({token, index, navigation}) => {
                         paddingVertical: 3,
                       }}>
                       {item?.variants?.color != '' ||
-                      item?.variants?.color != null ? (
+                        item?.variants?.color != null ? (
                         <View />
                       ) : (
                         <>
@@ -1710,7 +1720,7 @@ const OnShipping = ({token, index, navigation}) => {
                         </>
                       )}
                       {item?.variants?.size != '' ||
-                      item?.variants?.size != null ? (
+                        item?.variants?.size != null ? (
                         <View />
                       ) : (
                         <>
@@ -1789,8 +1799,8 @@ const OnShipping = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -1813,7 +1823,7 @@ const OnShipping = ({token, index, navigation}) => {
                       fontFamily: Manrope.Bold,
                     }}
                     onPress={() => {
-                      navigation.navigate('TrackingDetails', {orderData: item});
+                      navigation.navigate('TrackingDetails', { orderData: item });
                     }}>
                     Track order
                   </Text>
@@ -1854,7 +1864,7 @@ const OnShipping = ({token, index, navigation}) => {
   );
 };
 
-const ArrivedOrders = ({token, index, navigation}) => {
+const ArrivedOrders = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -1871,6 +1881,8 @@ const ArrivedOrders = ({token, index, navigation}) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=5`, token);
+      console.log("ArrivedOrders --------------- : ", order_data);
+
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -1878,9 +1890,9 @@ const ArrivedOrders = ({token, index, navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -1938,7 +1950,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -1962,7 +1974,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -1972,7 +1984,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 120,
                         height: 120,
@@ -1992,14 +2004,14 @@ const ArrivedOrders = ({token, index, navigation}) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
                         Order ID #{item?.order?.id}
-                      </Text>
+                      </Text> */}
                       <Text
                         style={{
                           fontSize: 10,
@@ -2010,7 +2022,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
-                          marginHorizontal: 10,
+                          marginHorizontal: 0,
                         }}>
                         {item?.status}
                       </Text>
@@ -2034,7 +2046,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                         paddingVertical: 3,
                       }}>
                       {item?.variants?.color != '' ||
-                      item?.variants?.color != null ? (
+                        item?.variants?.color != null ? (
                         <View />
                       ) : (
                         <>
@@ -2076,7 +2088,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                         </>
                       )}
                       {item?.variants?.size != '' ||
-                      item?.variants?.size != null ? (
+                        item?.variants?.size != null ? (
                         <View />
                       ) : (
                         <>
@@ -2154,8 +2166,8 @@ const ArrivedOrders = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$'
                           : item?.order?.region_id == 453
-                          ? 'RM'
-                          : '₹'}
+                            ? 'RM'
+                            : '₹'}
                         {item?.price}
                       </Text>
                     </View>
@@ -2172,7 +2184,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
                     borderStyle: 'dashed',
                   }}
                   onPress={() => {
-                    navigation.navigate('DeliveredOrder', {orderData: item});
+                    navigation.navigate('DeliveredOrder', { orderData: item });
                   }}>
                   <Text
                     style={{
@@ -2219,7 +2231,7 @@ const ArrivedOrders = ({token, index, navigation}) => {
   );
 };
 
-const CancelledOrders = ({token, index, navigation}) => {
+const CancelledOrders = ({ token, index, navigation }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -2236,6 +2248,8 @@ const CancelledOrders = ({token, index, navigation}) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=6`, token);
+      console.log("CancelledOrders --------------- : ", order_data);
+
       setOrderData(order_data?.data);
       setOrderLoading(false);
     } catch (error) {
@@ -2244,9 +2258,9 @@ const CancelledOrders = ({token, index, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {OrderLoading ? (
-        <View style={{padding: 5}}>
+        <View style={{ padding: 5 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -2304,7 +2318,7 @@ const CancelledOrders = ({token, index, navigation}) => {
         <FlatList
           data={orderData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
             return (
@@ -2328,7 +2342,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                   }}>
                   {item?.variants?.productImages?.length > 0 ? (
                     <Image
-                      source={{uri: item?.variants?.productImages?.[0]?.image}}
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -2338,7 +2352,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                     />
                   ) : (
                     <Image
-                      source={{uri: Media.no_image}}
+                      source={{ uri: Media.no_image }}
                       style={{
                         width: 100,
                         height: 130,
@@ -2358,14 +2372,14 @@ const CancelledOrders = ({token, index, navigation}) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
                         Order ID #{item?.order?.id}
-                      </Text>
+                      </Text> */}
                       <Text
                         style={{
                           fontSize: 12,
@@ -2376,7 +2390,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                           backgroundColor: Color.red,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
-                          marginHorizontal: 10,
+                          marginHorizontal: 0,
                         }}>
                         {item?.status}
                       </Text>
@@ -2400,7 +2414,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                         paddingVertical: 3,
                       }}>
                       {item?.variants?.color != '' ||
-                      item?.variants?.color != null ? (
+                        item?.variants?.color != null ? (
                         <View />
                       ) : (
                         <View
@@ -2433,7 +2447,7 @@ const CancelledOrders = ({token, index, navigation}) => {
                         </View>
                       )}
                       {item?.variants?.size != '' ||
-                      item?.variants?.size != null ? (
+                        item?.variants?.size != null ? (
                         <View />
                       ) : (
                         <View
@@ -2506,8 +2520,8 @@ const CancelledOrders = ({token, index, navigation}) => {
                         {item?.order?.region_id == 454
                           ? '$ '
                           : item?.order?.region_id == 453
-                          ? 'RM '
-                          : '₹ '}
+                            ? 'RM '
+                            : '₹ '}
                         {item?.price}
                       </Text>
                     </View>
@@ -2574,18 +2588,20 @@ const CancelledOrders = ({token, index, navigation}) => {
   );
 };
 
-const MyOrders = ({navigation}) => {
+const MyOrders = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState([]);
   const countryCode = useSelector(state => state.UserReducer.country);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
 
   const getStatus = async () => {
     try {
       const status_data = await fetchData.list_status(``, token);
+      console.log("MyOrders_getStatus --------------- : ", status_data);
+
       setStatus(status_data?.data);
     } catch (error) {
       console.log('error', error);
@@ -2614,7 +2630,7 @@ const MyOrders = ({navigation}) => {
       ?.replace(/orders|shipping/i, match => ` ${match}`),
   }));
 
-  const renderScene = ({route}) => {
+  const renderScene = ({ route }) => {
     switch (route.key) {
       case 'placed':
         return (
@@ -2685,7 +2701,7 @@ const MyOrders = ({navigation}) => {
   return (
     <View style={styles.container}>
       {loading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -2816,12 +2832,12 @@ const MyOrders = ({navigation}) => {
             </TouchableOpacity>
           </View> */}
           <TabView
-            navigationState={{index, routes}}
+            navigationState={{ index, routes }}
             renderScene={renderScene}
             swipeEnabled={false}
             onIndexChange={setIndex}
             // style={{flex: 1}}
-            initialLayout={{width: layout.width}}
+            initialLayout={{ width: layout.width }}
             renderTabBar={props => (
               <TabBar
                 {...props}
@@ -2847,7 +2863,7 @@ const MyOrders = ({navigation}) => {
                 }}
                 activeColor={Color.white}
                 inactiveColor={Color.cloudyGrey}
-                renderLabel={({route, focused, color}) => (
+                renderLabel={({ route, focused, color }) => (
                   <View
                     style={{
                       backgroundColor: focused ? Color.primary : Color.white,
@@ -2858,7 +2874,7 @@ const MyOrders = ({navigation}) => {
                       borderColor: Color.lightgrey,
                     }}>
                     <Text
-                      style={{color, fontSize: 14, fontFamily: Manrope.Bold}}>
+                      style={{ color, fontSize: 14, fontFamily: Manrope.Bold }}>
                       {route.title}
                     </Text>
                   </View>

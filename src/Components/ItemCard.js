@@ -19,6 +19,7 @@ import common_fn from '../Config/common_fn';
 import fetchData from '../Config/fetchData';
 import {setDataCount} from '../Redux';
 import {ActivityIndicator} from 'react-native-paper';
+import FastImage from 'react-native-fast-image'
 
 const ItemCard = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
@@ -104,7 +105,7 @@ const ItemCard = props => {
             variant_id: item?.variants[0]?.id,
           });
         }}>
-        <ImageBackground
+        <FastImage
           style={styles.Productimage}
           source={{
             uri:
@@ -196,7 +197,7 @@ const ItemCard = props => {
             {item?.variants?.length} Variants
           </Text> */}
           </LinearGradient>
-        </ImageBackground>
+        </FastImage>
         <View style={styles.contentView}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text

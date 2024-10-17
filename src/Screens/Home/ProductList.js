@@ -109,6 +109,8 @@ const ProductList = ({route}) => {
         query += `&${param}`;
       }
       const product_data = await fetchData.list_products(query, token);
+      console.log("product_data --------------- : ",product_data);
+      
       setProducts(product_data?.data);
     } catch (error) {
       console.log('Error loading products:', error);

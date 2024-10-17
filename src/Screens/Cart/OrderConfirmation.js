@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,23 +19,23 @@ import {
   Alert,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import common_fn from '../../Config/common_fn';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import FIcon from 'react-native-vector-icons/FontAwesome';
-import {Media} from '../../Global/Media';
-import {setOrderCancelVisible, setOrderSuccessVisible} from '../../Redux';
+import { Media } from '../../Global/Media';
+import { setOrderCancelVisible, setOrderSuccessVisible } from '../../Redux';
 import RazorpayCheckout from 'react-native-razorpay';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useStripe} from '@stripe/stripe-react-native';
+import { useStripe } from '@stripe/stripe-react-native';
 
 LogBox.ignoreAllLogs();
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-const OrderConfirmation = ({navigation, route}) => {
-  const {CheckOut, ids} = route.params;
+const OrderConfirmation = ({ navigation, route }) => {
+  const { CheckOut, ids } = route.params;
   const [OrderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
@@ -46,7 +46,7 @@ const OrderConfirmation = ({navigation, route}) => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const [address, setAddress] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const OrderConfirmation = ({navigation, route}) => {
         [
           {
             text: 'No',
-            onPress: async () => {},
+            onPress: async () => { },
           },
           {
             text: 'Yes',
@@ -101,7 +101,7 @@ const OrderConfirmation = ({navigation, route}) => {
             },
           },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
     } catch (error) {
       console.log('error------', error);
@@ -220,8 +220,8 @@ const OrderConfirmation = ({navigation, route}) => {
       return (
         accumulator +
         price *
-          // / priceMargin
-          quantity
+        // / priceMargin
+        quantity
       );
     }, 0)
     .toFixed(2);
@@ -234,8 +234,8 @@ const OrderConfirmation = ({navigation, route}) => {
     return (
       accumulator +
       price *
-        // / priceMargin
-        quantity
+      // / priceMargin
+      quantity
     );
   }, 0);
 
@@ -336,12 +336,10 @@ const OrderConfirmation = ({navigation, route}) => {
           }),
         ),
       };
-      console.log(
-        'data----------------------------------',
-        JSON.stringify(data),
-      );
+      // console.log('data----------------------------------', JSON.stringify(data)
+      // );
       const post_order = await fetchData.postOrder(data, token);
-      console.log('post_order', post_order);
+      // console.log('post_order', post_order);
       if (selectPayment?.name === 'cash on delivery') {
         handleCODOrder(post_order);
       } else {
@@ -382,18 +380,22 @@ const OrderConfirmation = ({navigation, route}) => {
 
   const handleOnlineOrder = post_order => {
     RazorpayCheckout.open(post_order?.data)
-      .then(async ({razorpay_signature, razorpay_payment_id}) => {
+      .then(async ({ razorpay_signature, razorpay_payment_id }) => {
         const data = {
           order_id: post_order?.data?.order_id,
           payment_id: razorpay_payment_id,
           orders: post_order?.orders,
         };
 
+        // console.log("sign data ====================== : ",JSON.stringify(data)+"razorpay_signature =-========= :"+razorpay_signature);
+        
         const placeOrder = await fetchData.verify_pay(
           data,
           token,
           razorpay_signature,
         );
+        // console.log("placeOrder ---------------:", placeOrder);
+        
         dispatch(setOrderSuccessVisible(true));
         navigation?.replace('TabNavigator');
         common_fn.showToast(post_order?.message);
@@ -448,10 +450,10 @@ const OrderConfirmation = ({navigation, route}) => {
             padding: 10,
             marginTop: Platform.OS == 'ios' ? 80 : 0,
           }}>
-          <Text style={{color: 'white'}}>No Internet Connection</Text>
+          <Text style={{ color: 'white' }}>No Internet Connection</Text>
         </Animated.View>
       )}
-      <View style={{flex: 1, backgroundColor: Color.softGrey}}>
+      <View style={{ flex: 1, backgroundColor: Color.softGrey }}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -495,7 +497,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   Icontag={'FontAwesome'}
                   iconname={'plus'}
                   icon_size={14}
-                  iconstyle={{color: Color.primary}}
+                  iconstyle={{ color: Color.primary }}
                 />
                 <Text
                   style={{
@@ -520,7 +522,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}>
                   <TouchableOpacity
                     onPress={() => setSelectAddress(item)}
-                    style={{marginRight: 10, marginTop: 10}}>
+                    style={{ marginRight: 10, marginTop: 10 }}>
                     <Iconviewcomponent
                       Icontag={'Ionicons'}
                       iconname={
@@ -529,10 +531,10 @@ const OrderConfirmation = ({navigation, route}) => {
                           : 'radio-button-off-sharp'
                       }
                       icon_size={22}
-                      iconstyle={{color: Color.lightBlack}}
+                      iconstyle={{ color: Color.lightBlack }}
                     />
                   </TouchableOpacity>
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -583,19 +585,19 @@ const OrderConfirmation = ({navigation, route}) => {
                         status: 'UPDATE',
                       });
                     }}
-                    style={{marginHorizontal: 10}}>
+                    style={{ marginHorizontal: 10 }}>
                     <FIcon name="pencil" size={20} color={Color.primary} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       deleteAddress(item?.id);
                     }}
-                    style={{marginHorizontal: 15}}>
+                    style={{ marginHorizontal: 15 }}>
                     <Iconviewcomponent
                       Icontag={'MaterialCommunityIcons'}
                       iconname={'delete'}
                       icon_size={22}
-                      iconstyle={{color: Color.red}}
+                      iconstyle={{ color: Color.red }}
                     />
                   </TouchableOpacity>
                 </View>
@@ -646,19 +648,19 @@ const OrderConfirmation = ({navigation, route}) => {
               />
             </TouchableOpacity>
             {isExpanded ? (
-              <View style={{width: '100%'}}>
+              <View style={{ width: '100%' }}>
                 {selectedData?.map(item => {
                   var discount = parseFloat(
                     100 -
-                      ((item?.variant?.org_price -
+                    ((item?.variant?.org_price -
                       // / countryCode?.price_margin
                       item?.variant?.offer_price
-                        ? item?.variant?.offer_price
-                        : item?.variant?.price) /
-                        // / countryCode?.price_margin
-                        item?.variant?.org_price) *
-                        // / countryCode?.price_margin
-                        100,
+                      ? item?.variant?.offer_price
+                      : item?.variant?.price) /
+                      // / countryCode?.price_margin
+                      item?.variant?.org_price) *
+                    // / countryCode?.price_margin
+                    100,
                   ).toFixed(2);
                   return (
                     <View
@@ -686,7 +688,7 @@ const OrderConfirmation = ({navigation, route}) => {
                           />
                         ) : (
                           <Image
-                            source={{uri: Media.no_image}}
+                            source={{ uri: Media.no_image }}
                             style={{
                               width: 120,
                               height: 120,
@@ -994,7 +996,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 borderRadius: 5,
                 backgroundColor: '#ECEFFE',
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Iconviewcomponent
                   Icontag={'MaterialCommunityIcons'}
                   iconname={'brightness-percent'}
@@ -1058,7 +1060,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 iconname={'chevron-forward'}
                 icon_size={14}
                 icon_color={Color.cloudyGrey}
-                iconstyle={{marginTop: 5}}
+                iconstyle={{ marginTop: 5 }}
               />
             </TouchableOpacity>
 
@@ -1141,7 +1143,7 @@ const OrderConfirmation = ({navigation, route}) => {
                     </Text>
                     <TouchableOpacity
                       onPress={() => setSelectPayment(item)}
-                      style={{marginEnd: 20}}>
+                      style={{ marginEnd: 20 }}>
                       <Iconviewcomponent
                         Icontag={'Ionicons'}
                         iconname={
@@ -1150,7 +1152,7 @@ const OrderConfirmation = ({navigation, route}) => {
                             : 'radio-button-off-sharp'
                         }
                         icon_size={22}
-                        iconstyle={{color: Color.lightBlack}}
+                        iconstyle={{ color: Color.lightBlack }}
                       />
                     </TouchableOpacity>
                   </View>
@@ -1333,6 +1335,8 @@ const OrderConfirmation = ({navigation, route}) => {
                   }}>
                   Shipping
                 </Text>
+                {/* {console.log(countryCode, '??????????????')
+                } */}
                 <Text
                   style={{
                     fontSize: 14,
@@ -1344,6 +1348,7 @@ const OrderConfirmation = ({navigation, route}) => {
                   numberOfLines={2}>
                   {countryCode?.symbol}
                   {countryCode?.id == 452 ? 0 : 10}
+                  {/* {countryCode?.shipping_charge == 0 ? 99 : 10} */}
                 </Text>
               </View>
               {/* <View
@@ -1424,7 +1429,7 @@ const OrderConfirmation = ({navigation, route}) => {
                 paddingHorizontal: 10,
                 marginVertical: 10,
               }}>
-              <View style={{paddingHorizontal: 10, elevation: 1}}>
+              <View style={{ paddingHorizontal: 10, elevation: 1 }}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -1499,7 +1504,7 @@ const OrderConfirmation = ({navigation, route}) => {
             ).toFixed(2)}
           </Text>
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <TouchableOpacity
             onPress={() => {
               if (selectPayment && selectPayment.name) {
@@ -1535,7 +1540,7 @@ const OrderConfirmation = ({navigation, route}) => {
           onPress={() => {
             setCouponModal(false);
           }}
-          style={{flex: 1, backgroundColor: Color.transparantBlack}}
+          style={{ flex: 1, backgroundColor: Color.transparantBlack }}
         />
         <View
           style={{
@@ -1546,7 +1551,7 @@ const OrderConfirmation = ({navigation, route}) => {
             borderTopRightRadius: 10,
           }}>
           <TouchableOpacity
-            style={{alignItems: 'flex-end'}}
+            style={{ alignItems: 'flex-end' }}
             onPress={() => {
               setCouponModal(false);
             }}>
@@ -1554,7 +1559,7 @@ const OrderConfirmation = ({navigation, route}) => {
               Icontag={'AntDesign'}
               iconname={'closecircleo'}
               icon_size={25}
-              iconstyle={{color: Color.primary, marginRight: 10}}
+              iconstyle={{ color: Color.primary, marginRight: 10 }}
             />
           </TouchableOpacity>
           <Text
@@ -1575,7 +1580,7 @@ const OrderConfirmation = ({navigation, route}) => {
             ]}
             keyExtractor={(item, index) => item.category}
             showsVerticalScrollIndicator={false}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return (
                 <View key={index}>
                   {item?.data?.length > 0 ? (

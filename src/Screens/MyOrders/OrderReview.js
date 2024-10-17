@@ -295,7 +295,8 @@ const OrderReview = ({navigation, route}) => {
                     color: Color.cloudyGrey,
                     fontFamily: Manrope.Medium,
                   }}>
-                  Order ID #{orderData?.order?.id}
+                  Order ID #{orderData?.order?.unique_order_id}
+                  
                 </Text>
                 <Text
                   style={{
