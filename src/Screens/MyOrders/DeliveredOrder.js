@@ -89,7 +89,7 @@ const DeliveredOrder = ({ navigation, route }) => {
     }
   };
 
-  console.log("size ---------------- : ", orderData?.variants?.size);
+  console.log("size ---------------- : ", orderData);
 
 
   return (
@@ -131,20 +131,22 @@ const DeliveredOrder = ({ navigation, route }) => {
                   justifyContent: 'flex-start',
                   alignItems: 'center',
                 }}>
-                {/* <Text
+                <Text
                   style={{
                     fontSize: 12,
                     color: Color.cloudyGrey,
                     fontFamily: Manrope.Medium,
                   }}>
-                  Order ID #{orderData?.order?.id}
-                </Text> */}
+                  Order ID #{orderData?.order?.unique_order_id}
+                </Text>
+              </View>
+              <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                 <Text
                   style={{
                     fontSize: 10,
                     color: Color.white,
                     padding: 5,
-                    paddingHorizontal: 10,
+                    paddingHorizontal: 20,
                     borderRadius: 50,
                     backgroundColor: Color.green,
                     fontFamily: Manrope.SemiBold,
@@ -154,6 +156,7 @@ const DeliveredOrder = ({ navigation, route }) => {
                   {orderData?.status}
                 </Text>
               </View>
+
               <Text
                 style={{
                   fontSize: 14,

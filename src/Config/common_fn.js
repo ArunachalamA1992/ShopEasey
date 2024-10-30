@@ -7,12 +7,12 @@ import {
   Alert,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {colors} from './hexColor';
+import { colors } from './hexColor';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import RNFS from 'react-native-fs';
-import {Media} from '../Global/Media';
+import { Media } from '../Global/Media';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const common_fn = {
   showToast: msg => {
@@ -29,34 +29,61 @@ const common_fn = {
   AccordionAnimation: () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   },
-  locationPermission: () =>
-    new Promise(async (resolve, reject) => {
-      if (Platform.OS === 'ios') {
-        try {
-          const permissionStatus = await Geolocation.requestAuthorization(
-            'whenInUse',
-          );
-          if (permissionStatus === 'granted') {
-            return resolve('granted');
-          }
-          reject('Permission not granted');
-        } catch (error) {
-          return reject(error);
+  // locationPermission: () =>
+  //   new Promise(async (resolve, reject) => {
+  //     if (Platform.OS === 'ios') {
+  //       try {
+  //         const permissionStatus = await Geolocation.requestAuthorization(
+  //           'whenInUse',
+  //         );
+  //         if (permissionStatus === 'granted') {
+  //           return resolve('granted');
+  //         }
+  //         reject('Permission not granted');
+  //       } catch (error) {
+  //         return reject(error);
+  //       }
+  //     }
+  //     return PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //     )
+  //       .then(granted => {
+  //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //           resolve('granted');
+  //         }
+  //         return reject('Location Permission denied');
+  //       })
+  //       .catch(error => {
+  //         return reject(error);
+  //       });
+  //   }),
+
+  locationPermission: async () => {
+    if (Platform.OS === 'ios') {
+      try {
+        const permissionStatus = await Geolocation.requestAuthorization('whenInUse');
+        if (permissionStatus === 'granted') {
+          return 'granted';
         }
+        return 'denied';
+      } catch (error) {
+        throw new Error(error);
       }
-      return PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      )
-        .then(granted => {
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            resolve('granted');
-          }
-          return reject('Location Permission denied');
-        })
-        .catch(error => {
-          return reject(error);
-        });
-    }),
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          return 'granted';
+        }
+        return 'denied';
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
+  },
+
   calculateProfileCompletion: (
     resume,
     skills,
@@ -112,14 +139,14 @@ const common_fn = {
   profileupdate: async (id, navigation) => {
     try {
       if (id == 1) {
-        const [{name, uri}] = await pick();
-        return {name, uri};
+        const [{ name, uri }] = await pick();
+        return { name, uri };
       } else if (id == 2) {
         return navigation.navigate('Skill');
       } else if (id == 3) {
         return navigation.navigate('basicdetails');
       }
-    } catch (err) {}
+    } catch (err) { }
   },
   formatNumberWithSuffix: amount => {
     if (amount >= 10000000) {
@@ -149,8 +176,8 @@ const common_fn = {
   colorDistance: (color1, color2) => {
     return Math.sqrt(
       Math.pow(color1.r - color2.r, 2) +
-        Math.pow(color1.g - color2.g, 2) +
-        Math.pow(color1.b - color2.b, 2),
+      Math.pow(color1.g - color2.g, 2) +
+      Math.pow(color1.b - color2.b, 2),
     );
   },
   getColorName: hexCode => {
@@ -170,28 +197,28 @@ const common_fn = {
   generatePDF: async (response, countryCode) => {
     var discount = parseFloat(
       100 -
-        ((response?.variants?.org_price -
-          (response?.variants?.offer_price ?? response?.variants?.price)) /
-          response?.variants?.org_price) *
-          100,
+      ((response?.variants?.org_price -
+        (response?.variants?.offer_price ?? response?.variants?.price)) /
+        response?.variants?.org_price) *
+      100,
     ).toFixed(2);
 
     const discount_price = parseFloat(
       (response.variants?.org_price -
         (response?.variants?.offer_price ?? response.variants?.price)) *
-        response?.quantity || 0,
+      response?.quantity || 0,
     ).toFixed(2);
 
     var tax_percent = parseFloat(
       (response?.order?.tax /
         (response?.variants?.offer_price ?? response?.variants?.price)) *
-        100,
+      100,
     ).toFixed(2);
 
     const tax_amount = parseFloat(
       ((response?.variants?.offer_price ?? response.variants?.price) -
         response.order.tax) *
-        response?.quantity || 0,
+      response?.quantity || 0,
     ).toFixed(2);
 
     const htmlContent = `
@@ -327,15 +354,14 @@ const common_fn = {
                     <table>
                         <tr>
                             <td class="title">
-                                <img src="${
-                                  Media.logo
-                                }" alt="Brand Logo" style="width: 100px; max-width: 300px;">
+                                <img src="${Media.logo
+      }" alt="Brand Logo" style="width: 100px; max-width: 300px;">
                             </td>
                             <td style="text-align: right;">
                                 <div class="section-title highlight">INVOICE</div>
                                 <div>${moment(new Date()).format(
-                                  'MMM DD,YYYY',
-                                )}</div>
+        'MMM DD,YYYY',
+      )}</div>
                             </td>
                         </tr>
                     </table>
@@ -369,66 +395,60 @@ const common_fn = {
             </tr>
             <tr class="item">
                 <td>${response.products.product_name}</td>
-                <td style="text-align: center;">${`${
-                  response?.order?.region_id == 454
-                    ? '$'
-                    : response?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'
-                } ${parseFloat(
-                  response?.variants?.offer_price
-                    ? response?.variants?.offer_price
-                    : response.price,
-                  // / countryCode?.price_margin,
-                ).toFixed(2)}`}</td>
+                <td style="text-align: center;">${`${response?.order?.region_id == 454
+        ? '$'
+        : response?.order?.region_id == 453
+          ? 'RM'
+          : '₹'
+      } ${parseFloat(
+        response?.variants?.offer_price
+          ? response?.variants?.offer_price
+          : response.price,
+        // / countryCode?.price_margin,
+      ).toFixed(2)}`}</td>
                 <td style="text-align: center;">${response.quantity}</td>
-                <td style="text-align: right;">${`${
-                  response?.order?.region_id == 454
-                    ? '$'
-                    : response?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'
-                } ${response.order.total}`}</td>
+                <td style="text-align: right;">${`${response?.order?.region_id == 454
+        ? '$'
+        : response?.order?.region_id == 453
+          ? 'RM'
+          : '₹'
+      } ${response.order.total}`}</td>
             </tr>
             <tr class="total">
                 <td colspan="3" style="text-align: right;color:#0D71BA;font-weight:600">SUBTOTAL:</td>
-                <td style="text-align: right;color:#0D71BA;font-weight:600">${`${
-                  response?.order?.region_id == 454
-                    ? '$'
-                    : response?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'
-                } ${response.order.sub_total}`}</td>
+                <td style="text-align: right;color:#0D71BA;font-weight:600">${`${response?.order?.region_id == 454
+        ? '$'
+        : response?.order?.region_id == 453
+          ? 'RM'
+          : '₹'
+      } ${response.order.sub_total}`}</td>
             </tr>
             <tr class="total">
                 <td colspan="3" style="text-align: right;font-weight:600">Tax ${tax_percent}%:</td>
-                <td style="text-align: right;font-weight:600">${`${
-                  response?.order?.region_id == 454
-                    ? '$'
-                    : response?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'
-                } ${response.order.tax}`}</td>
+                <td style="text-align: right;font-weight:600">${`${response?.order?.region_id == 454
+        ? '$'
+        : response?.order?.region_id == 453
+          ? 'RM'
+          : '₹'
+      } ${response.order.tax}`}</td>
             </tr>
             <tr class="total">
                 <td colspan="3" style="text-align: right;font-weight:600">Discount ${discount}%:</td>
-                <td style="text-align: right;font-weight:600">${`${
-                  response?.order?.region_id == 454
-                    ? '$'
-                    : response?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'
-                } ${discount_price}`}</td>
+                <td style="text-align: right;font-weight:600">${`${response?.order?.region_id == 454
+        ? '$'
+        : response?.order?.region_id == 453
+          ? 'RM'
+          : '₹'
+      } ${discount_price}`}</td>
             </tr>
             <tr class="total">
                 <td colspan="3" style="text-align: right;font-weight:600">Total Amount:</td>
-                <td class="total-due">${`${
-                  response?.order?.region_id == 454
-                    ? '$'
-                    : response?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'
-                } ${response.order.total}`}</td>
+                <td class="total-due">${`${response?.order?.region_id == 454
+        ? '$'
+        : response?.order?.region_id == 453
+          ? 'RM'
+          : '₹'
+      } ${response.order.total}`}</td>
             </tr>
         </table>
         <div class="footer">
@@ -441,11 +461,10 @@ const common_fn = {
                     </td>
                     <td>
                         <div class="footer-title">Payment Info:</div>
-                        Payment Gateway: ${
-                          response.order.region_id == 452
-                            ? 'Razorpay'
-                            : 'Paypal'
-                        }<br>
+                        Payment Gateway: ${response.order.region_id == 452
+        ? 'Razorpay'
+        : 'Paypal'
+      }<br>
                     </td>
                     <td>
                         <div class="footer-title">Terms & Conditions:</div>

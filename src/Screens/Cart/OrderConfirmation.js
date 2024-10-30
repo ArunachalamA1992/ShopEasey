@@ -40,7 +40,7 @@ const OrderConfirmation = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
   const [selectPayment, setSelectPayment] = useState(null);
-  const [selectAddress, setSelectAddress] = useState({});
+  const [selectAddress, setSelectAddress] = useState(null);
   const [couponModal, setCouponModal] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const countryCode = useSelector(state => state.UserReducer.country);
@@ -90,7 +90,8 @@ const OrderConfirmation = ({ navigation, route }) => {
                   '',
                   token,
                 );
-
+                console.log("getAddress",getAddress);
+                
                 common_fn.showToast(getAddress?.message);
               } catch (error) {
                 console.log('Error deleting address:', error);
@@ -1507,7 +1508,7 @@ const OrderConfirmation = ({ navigation, route }) => {
         <View style={{ flex: 1 }}>
           <TouchableOpacity
             onPress={() => {
-              if (selectPayment && selectPayment.name) {
+              if (selectPayment && selectPayment.name && selectAddress?.id) {
                 postOrder();
               } else {
                 common_fn.showToast('Please select the payment method');

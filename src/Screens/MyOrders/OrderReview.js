@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   PermissionsAndroid,
@@ -10,27 +10,27 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Color from '../../Global/Color';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import common_fn from '../../Config/common_fn';
-import {useSelector} from 'react-redux';
-import {Manrope} from '../../Global/FontFamily';
+import { useSelector } from 'react-redux';
+import { Manrope } from '../../Global/FontFamily';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {Button} from 'react-native-paper';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { Button } from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
 import ImageResizer from 'react-native-image-resizer';
-import {baseUrl} from '../../Config/base_url';
+import { baseUrl } from '../../Config/base_url';
 
-const OrderReview = ({navigation, route}) => {
+const OrderReview = ({ navigation, route }) => {
   const [orderData] = useState(route.params.orderData);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const [defaultRating, setDefaultRating] = useState(0);
   const userData = useSelector(state => state.UserReducer.userData);
   const [review, setReview] = useState('');
-  var {token} = userData;
+  var { token } = userData;
   const [image, setImage] = useState([
     {
       fileName: '',
@@ -131,6 +131,7 @@ const OrderReview = ({navigation, route}) => {
   const postReview = async () => {
     try {
       const reviewedData = await checkReview(orderData?.order?.id);
+      // console.log("reviewedData ----------------- : ", reviewedData);
       if (reviewedData?.status == true) {
         if (defaultRating > 0 && review != '') {
           const myHeaders = new Headers();
@@ -147,18 +148,21 @@ const OrderReview = ({navigation, route}) => {
               name: file?.name,
             });
           });
-
+          // console.log("formdata----------------- : ", formdata);
           const requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: formdata,
             redirect: 'follow',
           };
+          // console.log("Review comments ----------------- : ", requestOptions);
 
           fetch(`${baseUrl}api/review`, requestOptions)
             .then(response => response.json())
             .then(result => {
+              // console.log("Review result ----------------- : ", result);
               common_fn.showToast(result?.message);
+              navigation.replace("MyOrders");
             })
             .catch(error => console.error(error));
         } else {
@@ -251,9 +255,9 @@ const OrderReview = ({navigation, route}) => {
     ]);
   };
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F6FA' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{padding: 10, backgroundColor: Color.white}}>
+        <View style={{ padding: 10, backgroundColor: Color.white }}>
           <View
             style={{
               flexDirection: 'row',
@@ -263,7 +267,7 @@ const OrderReview = ({navigation, route}) => {
             }}>
             {orderData?.variants?.productImages?.length > 0 ? (
               <Image
-                source={{uri: orderData?.variants?.productImages?.[0]?.image}}
+                source={{ uri: orderData?.variants?.productImages?.[0]?.image }}
                 style={{
                   width: 100,
                   height: 110,
@@ -273,7 +277,7 @@ const OrderReview = ({navigation, route}) => {
               />
             ) : (
               <Image
-                source={{uri: Media.no_image}}
+                source={{ uri: Media.no_image }}
                 style={{
                   width: 100,
                   height: 110,
@@ -282,7 +286,7 @@ const OrderReview = ({navigation, route}) => {
                 }}
               />
             )}
-            <View style={{flex: 1, marginHorizontal: 10}}>
+            <View style={{ flex: 1, marginHorizontal: 10 }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -296,7 +300,7 @@ const OrderReview = ({navigation, route}) => {
                     fontFamily: Manrope.Medium,
                   }}>
                   Order ID #{orderData?.order?.unique_order_id}
-                  
+
                 </Text>
                 <Text
                   style={{
@@ -432,8 +436,8 @@ const OrderReview = ({navigation, route}) => {
                   {orderData?.order?.region_id == 454
                     ? '$'
                     : orderData?.order?.region_id == 453
-                    ? 'RM'
-                    : '₹'}
+                      ? 'RM'
+                      : '₹'}
                   {orderData?.price}
                 </Text>
               </View>
@@ -470,7 +474,7 @@ const OrderReview = ({navigation, route}) => {
                   activeOpacity={0.7}
                   key={index}
                   onPress={() => handleRatingPress(item.rating)}
-                  style={{marginRight: 10}}>
+                  style={{ marginRight: 10 }}>
                   <AntDesign
                     name={item.rating <= defaultRating ? 'star' : 'staro'}
                     size={35}
@@ -480,7 +484,7 @@ const OrderReview = ({navigation, route}) => {
               );
             })}
           </View>
-          <View style={{marginTop: 10}}>
+          <View style={{ marginTop: 10 }}>
             <Text
               style={{
                 fontSize: 16,
@@ -511,7 +515,7 @@ const OrderReview = ({navigation, route}) => {
               }}
             />
           </View>
-          <View style={{marginTop: 10}}>
+          <View style={{ marginTop: 10 }}>
             <Text
               style={{
                 fontSize: 16,
@@ -534,10 +538,10 @@ const OrderReview = ({navigation, route}) => {
                     onPress={() => {
                       captureImage(index);
                     }}
-                    style={{marginRight: 10}}>
+                    style={{ marginRight: 10 }}>
                     {item?.uri != '' ? (
                       <Image
-                        source={{uri: item?.uri}}
+                        source={{ uri: item?.uri }}
                         style={{
                           width: 100,
                           height: 100,
@@ -608,10 +612,10 @@ const OrderReview = ({navigation, route}) => {
             </View>
           </View>
         </View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Button
             mode="contained"
-            onPress={() => {}}
+            onPress={() => { }}
             style={{
               backgroundColor: Color.white,
               borderRadius: 5,

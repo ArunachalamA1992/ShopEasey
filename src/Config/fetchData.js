@@ -1,4 +1,4 @@
-import {api} from './api';
+import { api } from './api';
 
 const api_name = 'api/';
 
@@ -111,6 +111,10 @@ export default {
     let url = api_name + 'orders/status';
     return api.getMethod(url, token);
   },
+  cancel_reasons: (data, token) => {
+    let url = api_name + 'order-cancel/reasons';
+    return api.getMethod(url, token);
+  },
   profile_data: (data, token) => {
     let url = api_name + 'users/user/get';
     return api.getMethod(url, token);
@@ -182,5 +186,13 @@ export default {
   read_notification: (data, token) => {
     let url = api_name + 'notifications/user';
     return api.postMethod(url, data, token);
+  },
+  cancel_Order: (data, token) => {
+    let url = api_name + 'order-cancel';
+    return api.postMethod(url, data, token);
+  },
+  advance_Search: (data, token) => {
+    let url = api_name + 'products/search' + data;
+    return api.getMethod(url, token);
   },
 };

@@ -48,6 +48,7 @@ import PostCompletedModal from '../Cart/OrderCompletionModal';
 import VoiceSearch from '../../Components/VoiceSearch';
 import LinearGradient from 'react-native-linear-gradient';
 import ProfileModal from '../../Components/ProfileModal';
+import { G } from 'react-native-svg';
 
 LogBox.ignoreAllLogs();
 const { width } = Dimensions.get('window');
@@ -179,7 +180,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     currentGeolocation();
-  }, [currentCity, token]);
+  }, []);
 
   useEffect(() => {
     const eventEmitter = new NativeEventEmitter(
@@ -213,15 +214,44 @@ const HomeScreen = () => {
           const { latitude, longitude } = position.coords;
 
           try {
-            const response = await axios.get(
-              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
-            );
-            const address = response?.data?.address;
-            if (address) {
-              const city = `${address?.city ?? address?.suburb},${address?.country_code
-                }`;
-              setCurrentCity(city);
-            }
+            const locationPublish = `${latitude},${longitude}`; //PUBLISH
+            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationPublish}&sensor=true&key=AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s`;
+            fetch(url)
+              .then((response) => response.json())  // Parse the JSON from the response
+              .then((data) => {
+                if (data.results && data.results.length > 0) {
+                  // Loop through address components to find the city
+                  const addressComponents = data.results[0].address_components;
+                  let city = "";
+                  addressComponents.forEach((component) => {
+                    if (component.types.includes("locality")) {
+                      city = component.long_name;
+                    }
+                  });
+
+                  if (city) {
+                    console.log("City Name: =====================", city);
+                    setCurrentCity(city);
+                  } else {
+                    console.log("------------ City not found ------------");
+                  }
+                } else {
+                  console.log("-------------- No results found -----------");
+                }
+              })
+              .catch((e) => {
+                console.log("Error: ", e);
+              });
+
+            // const response = await axios.get(
+            //   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+            // );
+            // const address = response?.data?.address;
+            // if (address) {
+            //   const city = `${address?.city ?? address?.suburb},${address?.country_code
+            //     }`;
+            //   setCurrentCity(city);
+            // }
           } catch (error) {
             console.error('Error fetching city:', error);
           }
@@ -236,6 +266,83 @@ const HomeScreen = () => {
       console.error('Location Permission Neede');
     }
   };
+
+  // const currentGeolocation = async () => {
+  //   const locPermissionGranted = await common_fn.locationPermission(); // Check if permission is granted
+  //   if (locPermissionGranted === 'granted') { // Only proceed if permission is granted
+  //     const timeoutId = setTimeout(() => {
+  //       console.error('Location request timed out');
+  //     }, 10000);
+
+  //     Geolocation.getCurrentPosition(
+  //       async position => {
+  //         clearTimeout(timeoutId); // Clear timeout when position is received
+  //         const { latitude, longitude } = position.coords;
+  //         console.log("latitude ------------- : ", latitude + "    longitude ------------- : ", longitude);
+  //         try {
+  //           // const response = await axios.get(
+  //           //   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+  //           // );
+
+  //           // GOOGLE API KEYS
+  //           // AIzaSyAa_wlLYoGavSgqqmIUjSKarZ8kudhZZr8
+  //           // AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s
+
+  //           const response = await axios.get(
+  //             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s`
+  //           );
+  //           const address = response?.data?.results[0]?.formatted_address;
+  //           // const address = response?.data?.address;
+
+  //           let locationData = { door: "", locality: "", city: "", region: "", country: "" };
+
+  //           let result = address.split(",")
+  //           locationData.city = result[3];
+  //           locationData.region = result[4];
+  //           locationData.country = result[5];
+  //           setCurrentCity(locationData.city); // Update the city state
+  //           // data = address.split(',')
+  //           // city = data[0].match(/^\w+/g)
+
+  //           // res = {
+  //           //   'city': city[1],
+  //           //   'region': data[4],
+  //           //   'country': data[5]
+  //           // }
+  //           console.log("******************", locationData.city);  // Outputs: "Coimbatore"
+
+  //           // function extractCity(address) {
+  //           //   // Split the address into parts by commas
+  //           //   const parts = address.split(',');
+
+  //           //   // Find the city (generally the second to last element before the state)
+  //           //   const city = parts.find((part) => part.trim().match(/Tamil Nadu/i) === null && part.trim().match(/\d{6}/) === null && part.trim().match(/India/i) === null);
+
+  //           //   return city.trim();  // Return the city name after trimming extra spaces
+  //           // }
+
+  //           // const cityName = extractCity(address);
+
+
+  //           // if (address) {
+  //           //   const city = `${address?.city ?? address?.suburb}, ${address?.country_code}`;
+
+  //           //   setCurrentCity(city); // Update the city state
+  //           // }
+  //         } catch (error) {
+  //           console.error('Error fetching city:', error);
+  //         }
+  //       },
+  //       error => {
+  //         clearTimeout(timeoutId); // Clear the timeout on error
+  //         console.error('Error getting location:', error.message); // Use error.message for better error info
+  //       },
+  //       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 } // Location options
+  //     );
+  //   } else {
+  //     console.error('Location Permission Needed');
+  //   }
+  // };
 
   const calculateTotalDiscountPercentage = type => {
     const filteredProducts = products?.filter(
@@ -322,7 +429,7 @@ const HomeScreen = () => {
         dispatch(setUserData(JSON.parse(value)));
       }
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getUser_Data :', error);
     }
   };
 
@@ -332,10 +439,12 @@ const HomeScreen = () => {
       setFlashOffers(getFlashDeals?.data);
       var data = `project=offer&region_id=${countryCode?.id}`;
       const get_products = await fetchData.list_products(data, token);
+      console.log("flash -------------------- : ", get_products?.data);
+
       setProducts(get_products?.data);
       setShowLoadMore(true);
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getFlash_Deals :', error);
     }
   };
 
@@ -370,11 +479,8 @@ const HomeScreen = () => {
       const profile = await fetchData.profile_data(``, token);
       setProfileData(profile.data);
 
-      console.log("profile ------------- ", profile);
-
-
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in get_Data :', error);
     }
   };
 
@@ -392,7 +498,7 @@ const HomeScreen = () => {
         }),
       );
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getCount_Data :', error);
     }
   };
 
@@ -446,26 +552,30 @@ const HomeScreen = () => {
   };
 
   const latestLoadMoreData = async () => {
-    if (latestloadMore || latestendReached) {
-      return;
-    }
-    setlatestloadMore(true);
     try {
-      const nextPage = latestPage + 1;
-      var data = `page=${nextPage}&region_id=${countryCode?.id}`;
-      const response = await fetchData.list_products(data, token);
-      if (response?.data.length > 0) {
-        setlatestPage(nextPage);
-        const updatedData = [...latestProducts, ...response?.data];
-        setLatestProduct(updatedData);
-      } else {
-        setlatestendReached(true);
+      if (latestloadMore || latestendReached) {
+        return;
+      }
+      setlatestloadMore(true);
+      try {
+        const nextPage = latestPage + 1;
+        var data = `page=${nextPage}&region_id=${countryCode?.id}`;
+        const response = await fetchData.list_products(data, token);
+        if (response?.data.length > 0) {
+          setlatestPage(nextPage);
+          const updatedData = [...latestProducts, ...response?.data];
+          setLatestProduct(updatedData);
+        } else {
+          setlatestendReached(true);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setlatestloadMore(false);
+        console.log('error');
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setlatestloadMore(false);
-      console.log('error');
+      console.log("catch in latestLoad_MoreData : ", error);
     }
   };
 
@@ -481,16 +591,24 @@ const HomeScreen = () => {
   });
 
   const propertySearch = async input => {
-    setSearchProduct(input);
-    setSearchLoader(true);
     try {
+      setSearchProduct(input);
+      setSearchLoader(true);
       const data = `filter=${input}&page=1&limit=10`;
       const getData = await fetchData.search(data, token);
+      // console.log("getData ---------------- : ", getData);
       if (getData?.status === true) {
+
+        // const fetured_products = await fetchData.list_products(
+        //   `is_featured=1&region_id=${countryCode?.id}`,
+        //   token,
+        // );
+
         setProductSuggestions({
-          data: getData?.data?.keyword?.rows || [],
+          data: getData?.data || [],
           visible: true,
         });
+
       } else {
         setProductSuggestions({
           data: [],
@@ -499,8 +617,8 @@ const HomeScreen = () => {
       }
       setSearchLoader(false);
     } catch (error) {
-      console.log('error', error);
       setSearchLoader(false);
+      console.log('catch in propertySearch :', error);
     }
   };
 
@@ -511,13 +629,13 @@ const HomeScreen = () => {
     setSearchLoadMore(true);
     try {
       const nextPage = searchPage + 1;
-      var data = `filter=${searchProduct}&page=${nextPage}&limit=10`;
+      var data = `filter=${searchProduct?.name}&page=${nextPage}&limit=10`;
       const filterData = await fetchData.search(data, token);
       if (filterData.length > 0) {
         setSearchPage(nextPage);
         const updatedData = [
           ...ProductSuggestions,
-          ...filterData?.data?.keyword?.rows,
+          ...filterData?.data,
         ];
         setProductSuggestions(updatedData);
       } else {
@@ -537,13 +655,13 @@ const HomeScreen = () => {
         visible: false,
       });
       navigation.navigate('SearchDataList', {
-        searchProduct: item?.keyword,
+        searchProduct: item,
         selectData: item,
       });
       setSearchProduct('');
       setSelectData({});
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getSearch_Data :', error);
     }
   };
 
@@ -957,7 +1075,7 @@ const HomeScreen = () => {
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'center',
+                  alignItems: 'center', paddingHorizontal: 10
                 }}>
                 <Iconviewcomponent
                   Icontag={'Octicons'}
@@ -969,7 +1087,7 @@ const HomeScreen = () => {
                   style={{
                     fontSize: 16,
                     color: Color.white,
-                    marginLeft: 5,
+                    paddingHorizontal: 5,
                     textTransform: 'capitalize',
                     fontFamily: Manrope.Bold,
                   }}>
@@ -2116,6 +2234,8 @@ const HomeScreen = () => {
                       scrollEnabled
                       keyExtractor={(item, index) => item + index}
                       renderItem={({ item, index }) => {
+                        // console.log("item------------ :", item);
+
                         return (
                           <TouchableOpacity
                             key={index}
@@ -2131,7 +2251,7 @@ const HomeScreen = () => {
                                 fontFamily: Manrope.Medium,
                                 color: Color.black,
                               }}>
-                              {item?.keyword}
+                              {item?.name}
                             </Text>
                             {index < ProductSuggestions?.data.length - 1 && (
                               <Divider style={{ height: 1, marginVertical: 5 }} />

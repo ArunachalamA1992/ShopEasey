@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   Modal,
@@ -17,22 +17,26 @@ import {
 import F6Icon from 'react-native-vector-icons/FontAwesome6';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {FlatList} from 'react-native';
+import { FlatList } from 'react-native';
 import axios from 'axios';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import fetchData from '../../Config/fetchData';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import ItemCard from '../../Components/ItemCard';
 import VoiceSearch from '../../Components/VoiceSearch';
 
-const {height} = Dimensions.get('screen');
-const SearchDataList = ({navigation, route}) => {
+const { height } = Dimensions.get('screen');
+const SearchDataList = ({ navigation, route }) => {
+  console.log("SEARCH PRODUCT --------------- : ", route.params.searchProduct);
+
   const [searchProduct, setSearchProduct] = useState(
     route.params.searchProduct,
   );
   const [selectData, setSelectData] = useState(route.params.selectData);
+
+  console.log("SELECT DATA --------------- : ", route.params.selectData);
   const [ProductData, setProductData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [SearchloadMore, setSearchLoadMore] = useState(false);
@@ -55,27 +59,35 @@ const SearchDataList = ({navigation, route}) => {
   });
   const [isSearchModalVisible, setSearchModalVisible] = useState(false);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
+  // console.log("token --------------- : ", token);
 
   const handleVoiceSearch = query => {
     setVoiceSearchQuery(query);
   };
 
+  useEffect(() => {
+    getData();
+  }, [token, getData]);
+
   const getData = useCallback(async () => {
     try {
-      var data = `${selectData?.type}=${selectData?.value}&region_id=${countryCode?.id}`;
+      console.log("selectData?.type --------------- : ", selectData?.name);
+
+      var data = `${selectData && `keywords=${selectData?.name}`}&region_id=${countryCode?.id}`;
+      console.log("data --------------- : ", data);
       const Product_list = await fetchData.list_products(data, token);
+      console.log("Product_list --------------- : ", Product_list);
+
       setProductData(Product_list?.data);
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in get_Data :', error);
     } finally {
       setLoading(false);
     }
   }, [searchProduct]);
 
-  useEffect(() => {
-    getData();
-  }, [token, getData]);
+
 
   const handleSearch = async item => {
     try {
@@ -85,11 +97,26 @@ const SearchDataList = ({navigation, route}) => {
         visible: false,
       });
       getData();
-      const data = `filter=${item?.keyword}&page=1&limit=10`;
+      // console.log("Handle Search Item ++++++++++++++ : ", item);
+
+      const data = `filter=${item?.name}&page=1&limit=10`;
       const get_search_data = await fetchData.search(data, token);
+      // console.log("GET SEARCG DATA ------------------ : ", get_search_data);
+
+      if (get_search_data?.status === true) {
+        setProductSuggestions({
+          data: getData?.data || [],
+          visible: true,
+        });
+      } else {
+        setProductSuggestions({
+          data: [],
+          visible: true,
+        });
+      }
       setSearchModalVisible(false);
     } catch (error) {
-      console.log(`error`, error);
+      console.log(`catch in handle_Search :`, error);
     }
   };
 
@@ -99,11 +126,14 @@ const SearchDataList = ({navigation, route}) => {
     try {
       const data = `filter=${input}&page=1&limit=10`;
       const getData = await fetchData.search(data, token);
+      console.log("getData SEARCH--------------- : ", getData);
+
       if (getData?.status === true) {
         setProductSuggestions({
-          data: getData?.data?.keyword?.rows || [],
+          data: getData?.data || [],
           visible: true,
         });
+
       } else {
         setProductSuggestions({
           data: [],
@@ -112,10 +142,11 @@ const SearchDataList = ({navigation, route}) => {
       }
       setSearchLoader(false);
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in property_Search :', error);
       setSearchLoader(false);
     }
   };
+
 
   const loadSearchMoreData = async () => {
     if (SearchloadMore || SearchendReached) {
@@ -124,20 +155,20 @@ const SearchDataList = ({navigation, route}) => {
     setSearchLoadMore(true);
     try {
       const nextPage = Searchpage + 1;
-      var data = `filter=${searchProduct}&page=${nextPage}&limit=10`;
+      var data = `filter=${searchProduct?.name}&page=${nextPage}&limit=10`;
       const filterData = await fetchData.search(data, token);
       if (filterData.length > 0) {
         setSearchPage(nextPage);
         const updatedData = [
           ...ProductSuggestions,
-          ...filterData?.data?.keyword?.rows,
+          ...filterData?.data,
         ];
         setProductSuggestions(updatedData);
       } else {
         setSearchEndReached(true);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('catch in loadSearch_More_Data:', error);
     } finally {
       setSearchLoadMore(false);
     }
@@ -160,7 +191,7 @@ const SearchDataList = ({navigation, route}) => {
         setEndReached(true);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('catch in loadMore_Data :', error);
     } finally {
       setLoadMore(false);
     }
@@ -173,12 +204,24 @@ const SearchDataList = ({navigation, route}) => {
           placeholder="Search Products"
           placeholderTextColor={Color.grey}
           style={styles.searchView}
-          value={searchProduct}
+          value={searchProduct?.name}
           iconColor={Color.grey}
-          inputStyle={{color: Color.black}}
+          inputStyle={{ color: Color.black }}
           onChangeText={search => {
+            console.log("search ********************** : ", search);
+
             const sanitizedSearch = search.replace(/[^a-zA-Z0-9\s]/g, '');
             propertySearch(sanitizedSearch);
+          }}
+          clearIcon={true}
+          // icon={searchProduct != '' ? 'close' : 'search'}
+          onIconPress={() => {
+            setSearchProduct('');
+            setProductSuggestions({
+              data: [],
+              visible: false,
+            });
+            setProductData([]);
           }}
         />
 
@@ -206,12 +249,12 @@ const SearchDataList = ({navigation, route}) => {
               <FlatList
                 data={ProductSuggestions?.data}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({item, index}) => {
+                renderItem={({ item, index }) => {
                   return (
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
-                        setSearchProduct(item?.keyword);
+                        setSearchProduct(item);
                         setSelectData(item);
                         handleSearch(item);
                       }}>
@@ -221,10 +264,10 @@ const SearchDataList = ({navigation, route}) => {
                           fontFamily: Manrope.Medium,
                           color: Color.black,
                         }}>
-                        {item?.keyword}
+                        {item?.name}
                       </Text>
                       {index < ProductSuggestions?.data.length - 1 && (
-                        <Divider style={{height: 1, marginVertical: 5}} />
+                        <Divider style={{ height: 1, marginVertical: 5 }} />
                       )}
                     </TouchableOpacity>
                   );
@@ -234,6 +277,9 @@ const SearchDataList = ({navigation, route}) => {
                 }}
                 onEndReachedThreshold={3}
                 ListEmptyComponent={() => {
+                  if (ProductSuggestions?.data && ProductData?.length != 0) {
+                    return null
+                  }
                   return (
                     <View
                       style={{
@@ -292,7 +338,7 @@ const SearchDataList = ({navigation, route}) => {
         <VoiceSearch onSearch={handleVoiceSearch} />
       </TouchableOpacity> */}
       {loading ? (
-        <View style={{padding: 10}}>
+        <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item style={{}}>
               <SkeletonPlaceholder.Item
@@ -351,10 +397,13 @@ const SearchDataList = ({navigation, route}) => {
           data={ProductData}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             return <ItemCard item={item} navigation={navigation} />;
           }}
           ListEmptyComponent={() => {
+            if (ProductSuggestions?.data && ProductData?.length != 0) {
+              return null
+            }
             return (
               <View
                 style={{
@@ -380,15 +429,15 @@ const SearchDataList = ({navigation, route}) => {
               </View>
             );
           }}
-          onEndReached={() => {
-            loadMoreData();
-          }}
+          // onEndReached={() => {
+          //   loadMoreData();
+          // }}
           onEndReachedThreshold={3}
           ListFooterComponent={() => {
             return (
-              <View style={{alignItems: 'center', justifyContent: 'center'}}>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 {loadMore && ProductData?.length > 0 && (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text
                       style={{
                         fontSize: 12,

@@ -111,11 +111,28 @@ const OnboardScreen = () => {
   const getData = async () => {
     try {
       const onboard_data = await fetchData.list_countries({}, null);
-      console.log("COuntriessssssssssss ---------- : ", onboard_data);
-
+      // console.log("COuntriessssssssssss ---------- : ", onboard_data);
       setCountryData(onboard_data?.data);
-      const getBannerData = await fetchData.get_banner(``, null);
-      setBannerData(getBannerData?.data);
+
+      // const getBannerData = await fetchData.get_banner(``, null);
+      // console.log("getBannerData ============== : ", getBannerData);
+      // setBannerData(getBannerData?.data);
+
+
+      const formdata = new FormData();
+
+      const requestOptions = {
+        method: "GET",
+        // body: formdata,
+        redirect: "follow"
+      };
+
+      fetch("https://api.shopeasey.com/api/banner/user/mobile?category=welcome_banner", requestOptions)
+        .then((response) => response.json())
+        .then((result) => setBannerData(result?.data))
+        .catch((error) => console.error(error));
+
+
     } catch (error) {
       console.log('error', error);
     }

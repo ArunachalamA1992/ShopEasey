@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
+  FlatList,
   Image,
+  Modal,
+  Pressable,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -19,6 +23,9 @@ import fetchData from '../../Config/fetchData';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import moment from 'moment';
+import { BottomSheet } from 'react-native-btr';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { scr_width } from '../../Utils/Dimensions';
 
 const customStyles = {
   stepIndicatorSize: 25,
@@ -48,12 +55,19 @@ const TrackOrder = ({ navigation, route }) => {
   const [orderData] = useState(route.params.orderData);
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
+  const [reasonCancel, setReasonCancel] = useState([]);
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const userData = useSelector(state => state.UserReducer.userData);
   var { token } = userData;
 
+  const [comments, setComments] = useState('');
+  const [selectReason, setSelectReason] = useState(1);
+  const [selectReasonquestion, setSelectReasonquestion] = useState("I was hoping for a shorter delivery time");
+  const [couponModal, setCouponModal] = useState(false);
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+
   const filteredOrderData = orderStatus?.filter(
-    order => !['abandoned', 'pending', 'cancelled']?.includes(order.status),
+    order => !['abandoned', 'missing', 'pending', 'cancelled', 'cancel requested']?.includes(order.status),
   );
 
   const labels = filteredOrderData?.map(order => order.status);
@@ -62,7 +76,7 @@ const TrackOrder = ({ navigation, route }) => {
     order => order.status === orderData?.status,
   );
 
-  console.log("orderData ============= : ", orderData);
+  console.log("orderData ============= : ", orderData.status);
 
 
   useEffect(() => {
@@ -75,13 +89,19 @@ const TrackOrder = ({ navigation, route }) => {
       });
   }, [token]);
 
+  useEffect(async () => {
+    const cancelReasons = await fetchData.cancel_reasons(``, token);
+    // console.log("cancel_reasons ------------- : ", cancelReasons);
+    setReasonCancel(cancelReasons?.data);
+  }, [token]);
+
   const myorderData = async () => {
     try {
       const order_status = await fetchData.list_status(``, token);
       setOrderStatus(order_status?.data);
       setOrderLoading(false);
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in myorder_Data :', error);
     }
   };
 
@@ -133,18 +153,233 @@ const TrackOrder = ({ navigation, route }) => {
 
   const deliveryDate = addDays(8);
   const tilldate = addextractDays(4, deliveryDate);
-  console.log('deliveryDate', deliveryDate, tilldate);
+  // console.log('deliveryDate', deliveryDate, tilldate);
+
+
+  async function cancelOrderAPI() {
+    try {
+      if (comments != '' && selectReason != 0) {
+        // console.log("Cancel Order ============= : ", comments + 'select -------- : ' + selectReason);
+
+        var data = {
+          "id": orderData?.id,
+          "question_id": selectReason,
+          "comments": comments
+        };
+        const cancelOrders = await fetchData.cancel_Order(data, token);
+        // console.log("cancel_Orders ============= : ", cancelOrders);
+
+        if (cancelOrders?.status == true) {
+          common_fn.showToast(result?.message);
+          myorderData();
+          setOrderLoading(false);
+          setBottomSheetVisible(false);
+          navigation.navigate('MyOrder');
+          cancel_toggleBottomView();
+        }
+        else {
+          common_fn.showToast("Please check your internet connection");
+        }
+      } else {
+        common_fn.showToast('Please enter the reason for cancellation');
+      }
+    } catch (error) {
+      console.log("catch in cancel_OrderAPI : ", error);
+    }
+  }
+
+  function cancel_toggleBottomView() {
+    try {
+      setBottomSheetVisible(!bottomSheetVisible);
+    } catch (error) {
+      console.log('Catch in Ads sale_toggleBottomView :', error);
+    }
+  }
+
+
+  function cancel_BottomSheetmenu() {
+    try {
+      return (
+        <View>
+          <BottomSheet
+            visible={bottomSheetVisible}
+            onBackButtonPress={() => setBottomSheetVisible(false)}
+            onBackdropPress={() => setBottomSheetVisible(false)}>
+            <View
+              style={{
+                backgroundColor: 'white',
+                width: '100%',
+                height: 400,
+                minHeight: 200,
+                alignItems: 'center',
+                borderTopStartRadius: 20,
+                borderTopEndRadius: 20,
+              }}>
+              <View
+                style={{
+                  width: '100%',
+                  padding: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: Color.black,
+                    fontFamily: Manrope.Medium,
+                  }}>
+                  Easy Cancellation
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setBottomSheetVisible(false)}>
+                  <Iconviewcomponent
+                    Icontag={'AntDesign'}
+                    iconname={'closecircleo'}
+                    icon_size={30}
+                    iconstyle={{ color: Color.primary, marginRight: 10 }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1, width: '100%', alignItems: 'center' }}>
+                <Text style={{ width: '100%', paddingHorizontal: 20, textAlign: 'left', fontSize: 16, color: Color.cloudyGrey, fontFamily: Manrope.SemiBold }}>Reason for Cancellation</Text>
+                <TouchableOpacity onPress={() => setCouponModal(true)} style={{ width: scr_width - 40, height: 50, paddingHorizontal: 20, marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Color.white, borderColor: Color.primary, borderWidth: 0.5, borderRadius: 5 }}>
+                  <Text>{selectReasonquestion}</Text>
+                  <Iconviewcomponent
+                    Icontag={'Entypo'}
+                    iconname={'chevron-small-down'}
+                    icon_size={22}
+                    iconstyle={{ color: Color.primary, marginRight: 10 }}
+                  />
+                </TouchableOpacity>
+                <Text style={{ width: '100%', paddingHorizontal: 20, textAlign: 'left', fontSize: 16, color: Color.cloudyGrey, marginTop: 5, fontFamily: Manrope.SemiBold }}>Comments</Text>
+                <View style={{}}>
+                  <TextInput
+                    placeholder="please enter your comments"
+                    placeholderTextColor={Color.cloudyGrey}
+                    value={comments}
+                    keyboardType="name-phone-pad"
+                    multiline
+                    onChangeText={text => {
+                      setComments(text);
+                      // console.log('text --------------- : ', text);
+                    }}
+                    style={{
+                      textAlignVertical: 'top',
+                      textAlign: 'left',
+                      width: scr_width - 40,
+                      height: 120,
+                      maxHeight: 400,
+                      color: Color.black, padding: 5, letterSpacing: 0.5, lineHeight: 20,
+                      fontSize: 14, marginVertical: 10,
+                      fontFamily: Manrope.SemiBold,
+                      borderColor: Color.primary, borderWidth: 0.5, borderRadius: 5
+                    }}
+                  />
+                </View>
+                <TouchableOpacity onPress={() => cancelOrderAPI()} style={{ width: scr_width - 40, height: 50, marginVertical: 10, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.primary, borderRadius: 5 }}>
+                  <Text style={{ fontSize: 16, color: Color.white, fontFamily: Manrope.SemiBold, textTransform: 'uppercase' }}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+
+
+              <Modal visible={couponModal} transparent animationType="slide">
+                <Pressable
+                  onPress={() => {
+                    setCouponModal(false);
+                  }}
+                  style={{ flex: 1, backgroundColor: Color.transparantBlack }}
+                />
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: Color.white,
+                    padding: 10,
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                  }}>
+                  <TouchableOpacity
+                    style={{ alignItems: 'flex-end' }}
+                    onPress={() => {
+                      setCouponModal(false);
+                    }}>
+                    <Iconviewcomponent
+                      Icontag={'AntDesign'}
+                      iconname={'closecircleo'}
+                      icon_size={25}
+                      iconstyle={{ color: Color.primary, marginRight: 10 }}
+                    />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: Color.black,
+                      fontFamily: Manrope.Bold,
+                      marginVertical: 10,
+                    }}>
+                    Select Reason
+                  </Text>
+                  <FlatList
+                    data={reasonCancel}
+                    keyExtractor={(item, index) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item, index }) => {
+                      console.log("item========================= : ", item);
+
+                      return (
+                        <View key={index}>
+                          <TouchableOpacity
+                            key={item.id}
+                            style={{
+                              width: '95%', height: 50,
+                              justifyContent: 'center', alignItems: 'center',
+                              backgroundColor: Color.white,
+                            }}
+                            onPress={() => {
+                              selectCancelReason(item);
+                              // console.log("cancalId========================= : ", cancalItem);
+                            }}>
+                            <Text>{item?.question}</Text>
+                          </TouchableOpacity>
+                          <View style={{ width: '100%', height: 0.5, backgroundColor: Color.cloudyGrey }}></View>
+                        </View>
+                      );
+                    }}
+                  />
+                </View>
+              </Modal>
+
+            </View>
+          </BottomSheet >
+        </View >
+      );
+    } catch (error) {
+      console.log('catch in addImage_BottomSheet menu ', error);
+    }
+  }
+
+  function selectCancelReason(item) {
+    try {
+      console.log("select item ==================== : ", item.id);
+      setSelectReason(item.id)
+      setSelectReasonquestion(item.question)
+      setCouponModal(false);
+    } catch (error) {
+      console.log('catch in selectCancel_Reason:', error);
+    }
+  }
+
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F6FA' }}>
+    <View style={{ flex: 1, backgroundColor: '#F5F6FA' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ padding: 10, backgroundColor: Color.white }}>
+        <View style={{ margin: 10, backgroundColor: Color.white }}>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
               padding: 10,
-              backgroundColor: Color.white,
+              backgroundColor: Color.white
             }}>
             {orderData?.variants?.productImages?.length > 0 ? (
               <Image
@@ -338,7 +573,7 @@ const TrackOrder = ({ navigation, route }) => {
           </View>
         </View>
         <View
-          style={{ marginTop: 10, backgroundColor: Color.white, padding: 10 }}>
+          style={{ marginTop: 5, backgroundColor: Color.white, padding: 10, paddingHorizontal: 20 }}>
           <Text
             style={{
               fontSize: 16,
@@ -430,6 +665,26 @@ const TrackOrder = ({ navigation, route }) => {
               </Text>
             </View>
           )}
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+                paddingVertical: 5,
+                color: Color.black,
+              }}>
+              Order Placed on:
+            </Text>
+            <Text
+              style={{
+                color: Color.black,
+                fontSize: 14,
+                fontFamily: Manrope.Medium,
+              }}>
+              {moment(orderData?.order?.created_at).format('ddd, MMM D')}
+            </Text>
+          </View>
           {/* {orderData?.status_id != 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text
@@ -581,8 +836,21 @@ const TrackOrder = ({ navigation, route }) => {
             </Button> */}
           </>
         )}
+
+        <View style={{ width: '100%', justifyContent: 'flex-end', alignItems: 'center', marginVertical: 30 }}>
+          {orderData.status == "CANCEL REQUESTED" ?
+            <TouchableOpacity disabled style={{ width: '90%', height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.white, borderColor: Color.primary, borderWidth: 1, borderRadius: 5 }}>
+              <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold }}>Cancel Requested</Text>
+            </TouchableOpacity>
+            :
+            <TouchableOpacity onPress={() => cancel_toggleBottomView()} style={{ width: '90%', height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.white, borderColor: Color.primary, borderWidth: 1, borderRadius: 5 }}>
+              <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold }}>Cancel Order</Text>
+            </TouchableOpacity>}
+        </View>
+
+        {cancel_BottomSheetmenu()}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

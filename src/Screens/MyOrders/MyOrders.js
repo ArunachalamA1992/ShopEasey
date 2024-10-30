@@ -111,6 +111,8 @@ const Placed = ({ token, index, navigation }) => {
           renderItem={({ item, index }) => {
             const bgcolor = common_fn.getColorName(item?.variants?.color);
             // const statusBgColor = statusColor(item?.order_status);
+            // console.log("--------------- : ", item?.order);
+
             return (
               <View
                 key={index}
@@ -162,20 +164,22 @@ const Placed = ({ token, index, navigation }) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      {/* <Text
+                      <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
-                        Order ID #{item?.order?.id}
-                      </Text> */}
+                        Order ID : #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                       <Text
                         style={{
                           fontSize: 10,
                           color: Color.white,
                           padding: 5,
-                          paddingHorizontal: 10,
+                          paddingHorizontal: 20,
                           borderRadius: 50,
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
@@ -224,7 +228,7 @@ const Placed = ({ token, index, navigation }) => {
                                 fontFamily: Manrope.Medium,
                                 marginRight: 5,
                               }}>
-                              Color
+                              Color :
                             </Text>
                             <View
                               style={{
@@ -264,7 +268,7 @@ const Placed = ({ token, index, navigation }) => {
                                 fontFamily: Manrope.Medium,
                                 marginRight: 5,
                               }}>
-                              Size -
+                              Size :
                             </Text>
                             <Text
                               style={{
@@ -297,7 +301,7 @@ const Placed = ({ token, index, navigation }) => {
                             fontFamily: Manrope.Medium,
                             letterSpacing: 0.5,
                           }}>
-                          Quantity -{' '}
+                          Quantity :{' '}
                         </Text>
                         <Text
                           style={{
@@ -531,20 +535,22 @@ const Missing = ({ token, index, navigation }) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      {/* <Text
+                      <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
-                        Order ID #{item?.order?.id}
-                      </Text> */}
+                        Order ID #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                       <Text
                         style={{
                           fontSize: 10,
                           color: Color.white,
                           padding: 5,
-                          paddingHorizontal: 10,
+                          paddingHorizontal: 20,
                           borderRadius: 50,
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
@@ -554,6 +560,7 @@ const Missing = ({ token, index, navigation }) => {
                         {item?.status}
                       </Text>
                     </View>
+
                     <Text
                       style={{
                         fontSize: 14,
@@ -900,20 +907,23 @@ const Pending = ({ token, index, navigation }) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      {/* <Text
+                      <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
-                        Order ID #{item?.order?.id}
-                      </Text> */}
+                        Order ID #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                       <Text
                         style={{
                           fontSize: 10,
                           color: Color.white,
                           padding: 5,
-                          paddingHorizontal: 10,
+                          paddingHorizontal: 20,
                           borderRadius: 50,
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
@@ -923,6 +933,7 @@ const Pending = ({ token, index, navigation }) => {
                         {item?.status}
                       </Text>
                     </View>
+
                     <Text
                       style={{
                         fontSize: 14,
@@ -1269,20 +1280,22 @@ const Proccesed = ({ token, index, navigation }) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      {/* <Text
+                      <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
-                        Order ID #{item?.order?.id}
-                      </Text> */}
+                        Order ID #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                       <Text
                         style={{
                           fontSize: 10,
                           color: Color.white,
                           padding: 5,
-                          paddingHorizontal: 10,
+                          paddingHorizontal: 20,
                           borderRadius: 50,
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
@@ -1292,6 +1305,7 @@ const Proccesed = ({ token, index, navigation }) => {
                         {item?.status}
                       </Text>
                     </View>
+
                     <Text
                       style={{
                         fontSize: 14,
@@ -1636,20 +1650,23 @@ const OnShipping = ({ token, index, navigation }) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      {/* <Text
+                      <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
-                        Order ID #{item?.order?.id}
-                      </Text> */}
+                        Order ID #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                       <Text
                         style={{
                           fontSize: 10,
                           color: Color.white,
                           padding: 5,
-                          paddingHorizontal: 10,
+                          paddingHorizontal: 20,
                           borderRadius: 50,
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
@@ -1659,6 +1676,7 @@ const OnShipping = ({ token, index, navigation }) => {
                         {item?.status}
                       </Text>
                     </View>
+
                     <Text
                       style={{
                         fontSize: 14,
@@ -2004,20 +2022,23 @@ const ArrivedOrders = ({ token, index, navigation }) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      {/* <Text
+                      <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
-                        Order ID #{item?.order?.id}
-                      </Text> */}
+                        Order ID #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                       <Text
                         style={{
                           fontSize: 10,
                           color: Color.white,
                           padding: 5,
-                          paddingHorizontal: 10,
+                          paddingHorizontal: 20,
                           borderRadius: 50,
                           backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
@@ -2027,6 +2048,7 @@ const ArrivedOrders = ({ token, index, navigation }) => {
                         {item?.status}
                       </Text>
                     </View>
+
                     <Text
                       style={{
                         fontSize: 14,
@@ -2248,7 +2270,7 @@ const CancelledOrders = ({ token, index, navigation }) => {
   const myorderData = async () => {
     try {
       const order_data = await fetchData.list_order(`status=6`, token);
-      console.log("CancelledOrders --------------- : ", order_data);
+      console.log("Cancell Orders --------------- : ", JSON.stringify(order_data));
 
       setOrderData(order_data?.data);
       setOrderLoading(false);
@@ -2372,22 +2394,24 @@ const CancelledOrders = ({ token, index, navigation }) => {
                         justifyContent: 'flex-start',
                         alignItems: 'center',
                       }}>
-                      {/* <Text
+                      <Text
                         style={{
                           fontSize: 12,
                           color: Color.cloudyGrey,
                           fontFamily: Manrope.Medium,
                         }}>
-                        Order ID #{item?.order?.id}
-                      </Text> */}
+                        Order ID #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
                       <Text
                         style={{
-                          fontSize: 12,
+                          fontSize: 10,
                           color: Color.white,
                           padding: 5,
-                          paddingHorizontal: 10,
-                          borderRadius: 5,
-                          backgroundColor: Color.red,
+                          paddingHorizontal: 20,
+                          borderRadius: 50,
+                          backgroundColor: Color.green,
                           fontFamily: Manrope.SemiBold,
                           textTransform: 'capitalize',
                           marginHorizontal: 0,
@@ -2395,6 +2419,7 @@ const CancelledOrders = ({ token, index, navigation }) => {
                         {item?.status}
                       </Text>
                     </View>
+
                     <Text
                       style={{
                         fontSize: 14,
@@ -2527,7 +2552,7 @@ const CancelledOrders = ({ token, index, navigation }) => {
                     </View>
                   </View>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     padding: 10,
                     flexDirection: 'row',
@@ -2557,7 +2582,7 @@ const CancelledOrders = ({ token, index, navigation }) => {
                     icon_size={16}
                     icon_color={Color.primary}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             );
           }}
@@ -2577,6 +2602,366 @@ const CancelledOrders = ({ token, index, navigation }) => {
                     color: Color.black,
                   }}>
                   No Order's Cancelled
+                </Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+    </SafeAreaView>
+  );
+};
+
+const CancelledRequested = ({ token, index, navigation }) => {
+  const [OrderLoading, setOrderLoading] = useState(false);
+  const [orderData, setOrderData] = useState([]);
+
+  useEffect(() => {
+    setOrderLoading(true);
+    myorderData()
+      .then(() => setOrderLoading(false))
+      .catch(error => {
+        console.log('Error fetching data:', error);
+        setOrderLoading(false);
+      });
+  }, [token, index]);
+
+  const myorderData = async () => {
+    try {
+      const order_data = await fetchData.list_order(`status=7`, token);
+      console.log("Cancel Requested --------------- : ", order_data);
+
+      setOrderData(order_data?.data);
+      setOrderLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      {OrderLoading ? (
+        <View style={{ padding: 5 }}>
+          <SkeletonPlaceholder>
+            <SkeletonPlaceholder.Item style={{}}>
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+              <SkeletonPlaceholder.Item
+                width={'100%'}
+                height={100}
+                borderRadius={10}
+                marginTop={10}
+              />
+            </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+        </View>
+      ) : (
+        <FlatList
+          data={orderData}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({ item, index }) => {
+            const bgcolor = common_fn.getColorName(item?.variants?.color);
+            // const statusBgColor = statusColor(item?.order_status);
+            return (
+              <View
+                key={index}
+                style={{
+                  padding: 5,
+                  borderRadius: 5,
+                  borderColor: Color.lightgrey,
+                  borderWidth: 1,
+                  backgroundColor: Color.white,
+                  marginTop: 10,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    // alignItems: 'center',
+                    padding: 10,
+                    backgroundColor: Color.white,
+                  }}>
+                  {item?.variants?.productImages?.length > 0 ? (
+                    <Image
+                      source={{ uri: item?.variants?.productImages?.[0]?.image }}
+                      style={{
+                        width: 100,
+                        height: 130,
+                        resizeMode: 'cover',
+                        borderRadius: 10,
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      source={{ uri: Media.no_image }}
+                      style={{
+                        width: 100,
+                        height: 130,
+                        resizeMode: 'cover',
+                        borderRadius: 10,
+                      }}
+                    />
+                  )}
+                  <View
+                    style={{
+                      flex: 1,
+                      marginHorizontal: 10,
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: Color.cloudyGrey,
+                          fontFamily: Manrope.Medium,
+                        }}>
+                        Order ID #{item?.order?.unique_order_id}
+                      </Text>
+                    </View>
+                    <View style={{ width: '95%', justifyContent: 'flex-start', alignItems: 'flex-start', marginVertical: 2 }}>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          color: Color.white,
+                          padding: 5,
+                          paddingHorizontal: 20,
+                          borderRadius: 50,
+                          backgroundColor: Color.green,
+                          fontFamily: Manrope.SemiBold,
+                          textTransform: 'capitalize',
+                          marginHorizontal: 0,
+                        }}>
+                        {item?.status}
+                      </Text>
+                    </View>
+
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: Color.lightBlack,
+                        fontFamily: Manrope.SemiBold,
+                        letterSpacing: 0.5,
+                      }}
+                      numberOfLines={1}>
+                      {item?.products?.product_name}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        paddingVertical: 3,
+                      }}>
+                      {item?.variants?.color != '' ||
+                        item?.variants?.color != null ? (
+                        <View />
+                      ) : (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            borderRightWidth: 1,
+                            borderRightColor: Color.lightgrey,
+                            paddingHorizontal: 5,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: Color.cloudyGrey,
+                              fontFamily: Manrope.Medium,
+                              marginRight: 5,
+                            }}>
+                            Color
+                          </Text>
+                          <View
+                            style={{
+                              width: 15,
+                              height: 15,
+                              backgroundColor: bgcolor,
+                              borderRadius: 30,
+                              borderWidth: 1,
+                              borderColor: Color.primary,
+                            }}></View>
+                        </View>
+                      )}
+                      {item?.variants?.size != '' ||
+                        item?.variants?.size != null ? (
+                        <View />
+                      ) : (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            marginHorizontal: 5,
+                            borderRightWidth: 1,
+                            borderRightColor: Color.lightgrey,
+                            paddingHorizontal: 5,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: Color.cloudyGrey,
+                              fontFamily: Manrope.Medium,
+                              marginRight: 5,
+                            }}>
+                            Size -
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: Color.cloudyGrey,
+                              fontFamily: Manrope.Medium,
+                            }}>
+                            {item?.variants?.size}
+                          </Text>
+                        </View>
+                      )}
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: Color.cloudyGrey,
+                            fontFamily: Manrope.Medium,
+                            letterSpacing: 0.5,
+                          }}>
+                          Quantity -{' '}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: Color.black,
+                            fontFamily: Manrope.SemiBold,
+                          }}>
+                          {item?.quantity}
+                        </Text>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        width: '100%',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        paddingVertical: 3,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: Color.black,
+                          fontFamily: Manrope.Bold,
+                        }}>
+                        {item?.order?.region_id == 454
+                          ? '$ '
+                          : item?.order?.region_id == 453
+                            ? 'RM '
+                            : '₹ '}
+                        {item?.price}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                {/* <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderTopWidth: 1,
+                    borderColor: Color.lightgrey,
+                    borderStyle: 'dashed',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('ProductDetails', {
+                      id: item?.product_id,
+                      variant_id: item?.variants?.id,
+                    });
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: Color.primary,
+                      fontFamily: Manrope.Bold,
+                    }}>
+                    Re-order
+                  </Text>
+                  <Iconviewcomponent
+                    Icontag={'Ionicons'}
+                    iconname={'chevron-forward-outline'}
+                    icon_size={16}
+                    icon_color={Color.primary}
+                  />
+                </TouchableOpacity> */}
+              </View>
+            );
+          }}
+          ListEmptyComponent={() => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  height: height / 1.5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Manrope.SemiBold,
+                    fontSize: 14,
+                    color: Color.black,
+                  }}>
+                  No Cancelled Requested Items
                 </Text>
               </View>
             );
@@ -2689,6 +3074,15 @@ const MyOrders = ({ navigation }) => {
       case 'cancelled':
         return (
           <CancelledOrders
+            token={token}
+            index={index}
+            countryCode={countryCode}
+            navigation={navigation}
+          />
+        );
+      case 'cancel requested':
+        return (
+          <CancelledRequested
             token={token}
             index={index}
             countryCode={countryCode}
