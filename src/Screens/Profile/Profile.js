@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -13,11 +13,11 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation} from '@react-navigation/native';
-import {Media} from '../../Global/Media';
-import {useDispatch, useSelector} from 'react-redux';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
+import { useDispatch, useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,7 +35,7 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState({});
@@ -51,10 +51,10 @@ const Profile = () => {
     try {
       const profile = await fetchData.profile_data(``, token);
       // console.log("profile ============== : ", profile);
-      
+
       setProfileData(profile.data);
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getApiData_Profile:', error);
     }
   };
 
@@ -98,20 +98,20 @@ const Profile = () => {
     }
   };
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Color.white }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {loading ? (
-          <View style={{padding: 10}}>
+          <View style={{ padding: 10 }}>
             <SkeletonPlaceholder>
               <SkeletonPlaceholder.Item
-                style={{flexDirection: 'row', alignItems: 'center'}}>
+                style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <SkeletonPlaceholder.Item
                   width={100}
                   height={100}
                   borderRadius={100}
                   marginTop={10}
                 />
-                <SkeletonPlaceholder.Item style={{marginHorizontal: 10}}>
+                <SkeletonPlaceholder.Item style={{ marginHorizontal: 10 }}>
                   <SkeletonPlaceholder.Item
                     width={150}
                     height={10}
@@ -145,7 +145,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -181,7 +181,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -217,7 +217,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -253,7 +253,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -289,7 +289,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -325,7 +325,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -361,7 +361,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -397,7 +397,7 @@ const Profile = () => {
                     borderRadius={100}
                     marginTop={10}
                   />
-                  <View style={{flex: 1}}>
+                  <View style={{ flex: 1 }}>
                     <SkeletonPlaceholder.Item
                       width={150}
                       height={20}
@@ -417,7 +417,7 @@ const Profile = () => {
             </SkeletonPlaceholder>
           </View>
         ) : (
-          <View style={{width: '100%', alignItems: 'center'}}>
+          <View style={{ width: '100%', alignItems: 'center' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -431,7 +431,7 @@ const Profile = () => {
                 }}>
                 {profileData?.profile?.length > 0 ? (
                   <Image
-                    source={{uri: profileData?.profile}}
+                    source={{ uri: profileData?.profile }}
                     style={{
                       width: 80,
                       height: 80,
@@ -441,7 +441,7 @@ const Profile = () => {
                   />
                 ) : (
                   <Image
-                    source={{uri: Media.user}}
+                    source={{ uri: Media.user }}
                     style={{
                       width: 80,
                       height: 80,
@@ -472,7 +472,7 @@ const Profile = () => {
                       : ''}
                   </Text>
                 ) : (
-                  
+
                   <View>
                     <Text
                       style={{
@@ -481,7 +481,7 @@ const Profile = () => {
                         fontFamily: Manrope.Bold,
                         letterSpacing: 0.5,
                       }}>
-                     {profileData?.mobile}
+                      {profileData?.mobile}
                     </Text>
                   </View>
                 )}
@@ -1498,18 +1498,35 @@ const Profile = () => {
               </TouchableOpacity> */}
               {token != undefined ? (
                 <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('OnboardScreen');
-                    AsyncStorage.clear();
-                    dispatch(setUserData({}));
-                    dispatch(setCountryCode({}));
-                    dispatch(
-                      setDataCount({
-                        wishlist: 0,
-                        cart: 0,
-                      }),
-                    );
-                    dispatch(setOnBoardVisible(false));
+                  onPress={async () => {
+                    // AsyncStorage.clear();
+                    // dispatch(setUserData({}));
+                    // dispatch(setCountryCode({}));
+                    // dispatch(
+                    //   setDataCount({
+                    //     wishlist: 0,
+                    //     cart: 0,
+                    //   }),
+                    // );
+                    // dispatch(setOnBoardVisible(false));
+                    // navigation.replace('OnboardScreen');
+
+
+                    try {
+                      // Clear AsyncStorage
+                      await AsyncStorage.clear();
+
+                      // Reset redux state
+                      dispatch(setUserData({}));
+                      dispatch(setCountryCode({}));
+                      dispatch(setDataCount({ wishlist: 0, cart: 0 }));
+                      dispatch(setOnBoardVisible(false));
+
+                      // Navigate to onboarding or login screen
+                      navigation.replace('OnboardScreen');
+                    } catch (error) {
+                      console.error('Error clearing AsyncStorage during logout:', error);
+                    }
                   }}
                   style={{
                     width: '90%',

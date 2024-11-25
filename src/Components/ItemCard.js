@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -11,23 +11,23 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Color from '../Global/Color';
-import {Manrope} from '../Global/FontFamily';
+import { Manrope } from '../Global/FontFamily';
 import LinearGradient from 'react-native-linear-gradient';
-import {Media} from '../Global/Media';
-import {useDispatch, useSelector} from 'react-redux';
+import { Media } from '../Global/Media';
+import { useDispatch, useSelector } from 'react-redux';
 import common_fn from '../Config/common_fn';
 import fetchData from '../Config/fetchData';
-import {setDataCount} from '../Redux';
-import {ActivityIndicator} from 'react-native-paper';
+import { setDataCount } from '../Redux';
+import { ActivityIndicator } from 'react-native-paper';
 import FastImage from 'react-native-fast-image'
 
 const ItemCard = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
-  const {item: initialItem, navigation} = props;
+  const { item: initialItem, navigation } = props;
   const userData = useSelector(state => state.UserReducer.userData);
   const [loadingWishlist, setLoadingWishlist] = useState(null);
   const [reviewsData, setReviewsData] = useState({});
-  const {token} = userData;
+  const { token } = userData;
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
 
@@ -95,22 +95,36 @@ const ItemCard = props => {
     }
   };
   const isLoading = loadingWishlist === item.id;
+
+  // console.log("SOLD -------------- :", item?.variants?.[0]?.sold + " STOCK ---------- :" + item?.variants?.[0]?.stock);
+
+  const isOutOfStock = item?.variants?.[0]?.sold === item?.variants?.[0]?.stock;
+
+  // console.log("Sold:", item?.variants?.[0]?.sold);
+  // console.log("Stock:", item?.variants?.[0]?.stock);
+  // console.log("Overall equal check:", isOutOfStock);
+
   return (
-    <View style={{width: '50%'}}>
+    <View style={{ width: '50%' }}>
       <TouchableOpacity
         style={styles.product}
         onPress={() => {
-          navigation.navigate('ProductDetails', {
-            id: item?.id,
-            variant_id: item?.variants[0]?.id,
-          });
+          if (isOutOfStock) {
+            common_fn.showToast("Cannot open, because out of stock");
+          } else {
+            navigation.navigate('ProductDetails', {
+              id: item?.id,
+              variant_id: item?.variants[0]?.id,
+            });
+          }
         }}>
+        {/* {console.log("safdsfdasdf", item?.variants?.[0]?.productImages.find(item => item.image_type)?.image)} */}
         <FastImage
           style={styles.Productimage}
           source={{
             uri:
               item?.variants?.[0]?.productImages?.length > 0
-                ? item?.variants?.[0]?.productImages?.[0]?.image
+                ? item?.variants?.[0]?.productImages.find(item => item.image_type == 1)?.image
                 : Media.no_image,
           }}
           borderTopLeftRadius={10}
@@ -128,7 +142,7 @@ const ItemCard = props => {
                 <Text style={styles.offerText}>{discount}% off</Text>
               </View>
             ) : (
-              <View style={{flex: 1}} />
+              <View style={{ flex: 1 }} />
             )}
             {/* <TouchableOpacity
               onPress={() => {
@@ -161,8 +175,8 @@ const ItemCard = props => {
           </View>
           <LinearGradient
             style={styles.locationView}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             colors={['#1D1D1D78', '#1D1D1D4F']}>
             <View
               style={{
@@ -199,7 +213,7 @@ const ItemCard = props => {
           </LinearGradient>
         </FastImage>
         <View style={styles.contentView}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{
                 flex: 1,
@@ -223,7 +237,7 @@ const ItemCard = props => {
           <Text style={styles.productName} numberOfLines={2}>
             {item?.product_name?.trim()}
           </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={styles.productDiscountPrice}>
               {countryCode?.symbol}
               {parseFloat(
@@ -233,13 +247,23 @@ const ItemCard = props => {
                 // / countryCode?.price_margin,
               ).toFixed(2)}
             </Text>
-            <Text style={styles.productPrice}>
-              {countryCode?.symbol}
-              {parseFloat(
-                item?.variants?.[0]?.org_price,
-                // / countryCode?.price_margin,
-              ).toFixed(2)}
-            </Text>
+            {(item?.variants?.[0]?.offer_price
+              ? item?.variants?.[0]?.offer_price
+              : item?.variants?.[0]?.price) < item?.variants?.[0]?.org_price && <Text style={styles.productPrice}>
+                {countryCode?.symbol}
+                {parseFloat(
+                  item?.variants?.[0]?.org_price,
+                  // / countryCode?.price_margin,
+                ).toFixed(2)}
+              </Text>}
+
+            {/* {item?.variants?.[0]?.org_price !== item?.variants?.[0]?.offer_price && (
+              <Text style={styles.productPrice}>
+                {countryCode?.symbol}
+                {parseFloat(item?.variants?.[0]?.org_price).toFixed(2)}
+              </Text>
+            )} */}
+
           </View>
           {/* <Text style={styles.productDiscountPrice} numberOfLines={1}>
           ${item.discountPrice}{' '}
@@ -277,9 +301,9 @@ const ItemCard = props => {
 
 export const ItemCardHorizontal = props => {
   const countryCode = useSelector(state => state.UserReducer.country);
-  const {item: initialItem, navigation} = props;
+  const { item: initialItem, navigation } = props;
   const userData = useSelector(state => state.UserReducer.userData);
-  const {token} = userData;
+  const { token } = userData;
   const [reviewsData, setReviewsData] = useState({});
   const [item, setItem] = useState(initialItem);
   const dispatch = useDispatch();
@@ -366,7 +390,8 @@ export const ItemCardHorizontal = props => {
         source={{
           uri:
             item?.variants?.[0]?.productImages?.length > 0
-              ? item?.variants?.[0]?.productImages?.[0]?.image
+              // ? item?.variants?.[0]?.productImages?.[0]?.image
+              ? item?.variants?.[0]?.productImages.find(item => item.image_type == 1)?.image
               : Media.no_image,
         }}
         resizeMode="cover">
@@ -382,7 +407,7 @@ export const ItemCardHorizontal = props => {
               <Text style={styles.offerText}>{discount}% off</Text>
             </View>
           ) : (
-            <View style={{flex: 1}} />
+            <View style={{ flex: 1 }} />
           )}
           {/* <TouchableOpacity
             onPress={() => {
@@ -411,15 +436,15 @@ export const ItemCardHorizontal = props => {
         </View>
         <LinearGradient
           style={styles.locationView}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
           colors={['#1D1D1D78', '#1D1D1D4F']}>
           <Octicons name="location" size={15} color={Color.white} />
           <Text style={styles.locationText}>{item?.vendor?.country}</Text>
         </LinearGradient>
       </ImageBackground>
       <View style={styles.contentView}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text
             style={{
               flex: 1,
@@ -435,7 +460,7 @@ export const ItemCardHorizontal = props => {
         <Text style={styles.productName} numberOfLines={1}>
           {item?.product_name}
         </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={styles.productDiscountPrice}>
             {countryCode?.symbol}
             {parseFloat(

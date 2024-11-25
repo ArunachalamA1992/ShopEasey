@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -8,21 +8,21 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
 import fetchData from '../../Config/fetchData';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const {height} = Dimensions.get('screen');
-const CategoryScreen = ({navigation}) => {
+const { height } = Dimensions.get('screen');
+const CategoryScreen = ({ navigation }) => {
   const [categoryData, setCategoryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const [Page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   useEffect(() => {
     setLoading(true);
@@ -36,7 +36,14 @@ const CategoryScreen = ({navigation}) => {
   const getData = async () => {
     try {
       const categories_data = await fetchData.categories(``, token);
+      console.log("Categories ----------------:  ", categories_data?.data);
+
       setCategoryData(categories_data?.data);
+
+      categories_data.data.forEach((item, index) => {
+        console.log(`Category ${index + 1} - ${item.category_name}: ${item.sub_categories.length} sub-categories`);
+      });
+
     } catch (error) {
       console.log('error', error);
     }
@@ -65,9 +72,9 @@ const CategoryScreen = ({navigation}) => {
     }
   };
   return (
-    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+    <View style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
       {loading ? (
-        <View style={{marginHorizontal: 10}}>
+        <View style={{ marginHorizontal: 10 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item>
               <SkeletonPlaceholder.Item
@@ -125,7 +132,11 @@ const CategoryScreen = ({navigation}) => {
         <FlatList
           data={categoryData}
           keyExtractor={(item, index) => item + index}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
+            console.log("CATEGORY ITEMS ---------------- :", item.sub_categories);
+            // const subCategoryNames = item.sub_categories.map(subCategory => subCategory.sub_category_name);
+            // console.log("11111111111111111---------------- :", subCategoryNames);
+
             return (
               <TouchableOpacity
                 onPress={() => {
@@ -146,12 +157,12 @@ const CategoryScreen = ({navigation}) => {
                 }}>
                 <View
                   style={{
-                    // backgroundColor: '#D9EDFF',
+                    backgroundColor: '#D9EDFF',
                     borderRadius: 10,
                     // padding: 10,
                   }}>
                   <Image
-                    source={{uri: item?.file}}
+                    source={{ uri: item?.file }}
                     style={{
                       width: 90,
                       height: 90,
@@ -167,26 +178,27 @@ const CategoryScreen = ({navigation}) => {
                     alignItems: 'flex-start',
                     marginHorizontal: 20,
                   }}>
+
                   <Text
                     style={{
                       fontSize: 16,
                       color: Color.black,
-                      font: Manrope.ExtraBold,
-                      paddingVertical: 5,
+                      font: Manrope.Bold,
+                      paddingVertical: 5, letterSpacing: 0.5
                     }}>
-                    {item?.category_name}
+                    {item?.category_name != null ? item?.category_name : '-- -- --'}
                   </Text>
-                  {/* <Text
-                  style={{
-                    fontSize: 14,
-                    color: Color.cloudyGrey,
-                    font: Manrope.SemiBold,
-                    paddingVertical: 5,
-                  }}>
-                  {item?.products_count} Products
-                </Text> */}
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: Color.cloudyGrey,
+                      font: Manrope.SemiBold,
+                      paddingVertical: 5, letterSpacing: 0.5
+                    }}>
+                    {item.sub_categories.length} Sub Categories
+                  </Text>
                 </View>
-                <View style={{marginHorizontal: 10}}>
+                <View style={{ marginHorizontal: 10 }}>
                   <Iconviewcomponent
                     Icontag={'Ionicons'}
                     iconname={'chevron-forward-outline'}

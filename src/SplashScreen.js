@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,15 +6,15 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Color from './Global/Color';
-import {setAsync, setCountryCode, setDataCount, setUserData} from './Redux';
+import { setAsync, setCountryCode, setDataCount, setUserData } from './Redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import fetchData from './Config/fetchData';
 import NetInfo from '@react-native-community/netinfo';
-import {NetworkState} from './Utils/utils';
+import { NetworkState } from './Utils/utils';
 
-const SplashScreen = ({navigation}) => {
+const SplashScreen = ({ navigation }) => {
   const imageScale = new Animated.Value(0.1);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -31,13 +31,13 @@ const SplashScreen = ({navigation}) => {
 
   useEffect(() => {
     try {
-      if (loading) {
-        const SplashLoad = setTimeout(() => {
-          getloginData();
-          getUserData();
-        }, 3000);
-        return () => clearInterval(SplashLoad);
-      }
+      // if (loading) {
+      const SplashLoad = setTimeout(() => {
+        getloginData();
+        getUserData();
+      }, 3000);
+      return () => clearInterval(SplashLoad);
+      // }
     } catch (error) {
       console.log('catch in splash_Screen ', error);
     }
@@ -72,7 +72,7 @@ const SplashScreen = ({navigation}) => {
       const userStateValue = await AsyncStorage.getItem('UserState');
       if (userStateValue) {
         dispatch(setAsync(JSON.parse(userStateValue)));
-        const {onboardVisible} = JSON.parse(userStateValue);
+        const { onboardVisible } = JSON.parse(userStateValue);
         if (onboardVisible) {
           navigation.replace('TabNavigator');
           return;
@@ -85,9 +85,18 @@ const SplashScreen = ({navigation}) => {
         return;
       }
 
-      const {token} = JSON.parse(user_data);
+      const { token } = JSON.parse(user_data);
       if (!token) {
+        dispatch(setUserData({}));
+        // dispatch(setCountryCode({}));
+        dispatch(
+          setDataCount({
+            wishlist: 0,
+            cart: 0,
+          }),
+        );
         navigation.replace('OnboardScreen');
+
       } else {
         dispatch(setUserData(user_data));
         navigation.replace('TabNavigator');
@@ -100,7 +109,7 @@ const SplashScreen = ({navigation}) => {
         );
       }
     } catch (e) {
-      console.log(e);
+      console.log("catch in getloginData_SplashScreen :", error);
     }
   };
 
@@ -112,7 +121,7 @@ const SplashScreen = ({navigation}) => {
         source={{
           uri: 'https://shopeasey.s3.ap-south-1.amazonaws.com/mobile/assets/logos/main.png',
         }}
-        style={[styles.image, {transform: [{scale: imageScale}]}]}
+        style={[styles.image, { transform: [{ scale: imageScale }] }]}
       />
     </SafeAreaView>
   );

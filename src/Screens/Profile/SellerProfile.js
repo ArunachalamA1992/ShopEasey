@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,21 +14,21 @@ import {
   Linking,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Media} from '../../Global/Media';
-import {SellerCountdownTimer} from '../../Components/CountdownTimer';
-import {scr_width} from '../../Utils/Dimensions';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {ItemCardHorizontal} from '../../Components/ItemCard';
-import {TextStroke} from '../../Utils/TextStroke';
+import { Manrope } from '../../Global/FontFamily';
+import { Media } from '../../Global/Media';
+import { SellerCountdownTimer } from '../../Components/CountdownTimer';
+import { scr_width } from '../../Utils/Dimensions';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { ItemCardHorizontal } from '../../Components/ItemCard';
+import { TextStroke } from '../../Utils/TextStroke';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import common_fn from '../../Config/common_fn';
 
 LogBox.ignoreAllLogs();
 
-const SellerProfile = ({route, navigation}) => {
+const SellerProfile = ({ route, navigation }) => {
   const [vendor_id] = useState(route.params.vendor_id);
   const [sellerData, setSellerData] = useState({});
   const [topPicks, setTopPicks] = useState([]);
@@ -41,7 +41,7 @@ const SellerProfile = ({route, navigation}) => {
   const [endReached, setEndReached] = useState(false);
   const [seller_follow, setSeller_follow] = useState('Follow');
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   const [defaultRating, setDefaultRating] = useState(0);
 
@@ -51,15 +51,15 @@ const SellerProfile = ({route, navigation}) => {
   }, [sellerData]);
 
   const [shopSection] = useState([
-    {id: 1, title: 'Profile', data: ['Profile']},
-    {id: 2, title: 'About', data: ['About']},
-    {id: 3, title: 'Shop Categories', data: ['Shop Categories']},
-    {id: 4, title: 'OfferBanner', data: ['OfferBanner']},
-    {id: 5, title: 'Top Picks', data: ['Top Picks']},
-    {id: 6, title: 'Offer Coupon', data: ['Offer Coupon']},
-    {id: 7, title: 'New Arrival', data: ['New Arrival']},
-    {id: 8, title: 'flash deals', data: ['flash deals']},
-    {id: 9, title: 'Steel deals', data: ['Steel deals']},
+    { id: 1, title: 'Profile', data: ['Profile'] },
+    { id: 2, title: 'About', data: ['About'] },
+    { id: 3, title: 'Shop Categories', data: ['Shop Categories'] },
+    { id: 4, title: 'OfferBanner', data: ['OfferBanner'] },
+    { id: 5, title: 'Top Picks', data: ['Top Picks'] },
+    { id: 6, title: 'Offer Coupon', data: ['Offer Coupon'] },
+    { id: 7, title: 'New Arrival', data: ['New Arrival'] },
+    { id: 8, title: 'flash deals', data: ['flash deals'] },
+    { id: 9, title: 'Steel deals', data: ['Steel deals'] },
   ]);
 
   const [steelData, setSteelData] = useState([
@@ -115,17 +115,14 @@ const SellerProfile = ({route, navigation}) => {
       let result;
 
       if (Math.abs(daysAgo) > 0) {
-        result = `${Math.abs(daysAgo)} day${
-          Math.abs(daysAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(daysAgo)} day${Math.abs(daysAgo) !== 1 ? 's' : ''
+          } ago`;
       } else if (Math.abs(hoursAgo) > 0) {
-        result = `${Math.abs(hoursAgo)} hour${
-          Math.abs(hoursAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(hoursAgo)} hour${Math.abs(hoursAgo) !== 1 ? 's' : ''
+          } ago`;
       } else {
-        result = `${Math.abs(minutesAgo)} minute${
-          Math.abs(minutesAgo) !== 1 ? 's' : ''
-        } ago`;
+        result = `${Math.abs(minutesAgo)} minute${Math.abs(minutesAgo) !== 1 ? 's' : ''
+          } ago`;
       }
 
       setResultDate(result);
@@ -203,7 +200,7 @@ const SellerProfile = ({route, navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Color.primary} barStyle={'dark-content'} />
-      <View style={{width: '100%', alignItems: 'center'}}>
+      <View style={{ width: '100%', alignItems: 'center' }}>
         <Animated.SectionList
           sections={shopSection}
           scrollEnabled={true}
@@ -212,7 +209,7 @@ const SellerProfile = ({route, navigation}) => {
           scrollEventThrottle={1}
           nestedScrollEnabled
           initialNumToRender={5}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             switch (item) {
               case 'Profile':
                 return (
@@ -222,11 +219,11 @@ const SellerProfile = ({route, navigation}) => {
                       marginTop: 10,
                       padding: 10,
                     }}>
-                    <View style={{width: '100%', paddingHorizontal: 10}}>
+                    <View style={{ width: '100%', paddingHorizontal: 10 }}>
                       {sellerData?.profile == null ||
-                      sellerData?.profile == '' ? (
+                        sellerData?.profile == '' ? (
                         <Image
-                          source={{uri: Media.user}}
+                          source={{ uri: Media.user }}
                           style={{
                             width: 80,
                             height: 80,
@@ -236,7 +233,7 @@ const SellerProfile = ({route, navigation}) => {
                         />
                       ) : (
                         <Image
-                          source={{uri: sellerData?.profile}}
+                          source={{ uri: sellerData?.profile }}
                           style={{
                             width: 80,
                             height: 80,
@@ -260,17 +257,28 @@ const SellerProfile = ({route, navigation}) => {
                           alignItems: 'flex-start',
                         }}>
                         <View>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              color: Color.black,
-                              fontFamily: Manrope.SemiBold,
-                              letterSpacing: 0.5,
-                            }}>
-                            {sellerData?.first_name +
-                              ' ' +
-                              sellerData?.last_name}
-                          </Text>
+                          {sellerData?.first_name != undefined ?
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                color: Color.black,
+                                fontFamily: Manrope.SemiBold,
+                                letterSpacing: 0.5,
+                              }}>
+                              {sellerData?.first_name +
+                                ' ' +
+                                sellerData?.last_name}
+                            </Text> :
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                color: Color.black,
+                                fontFamily: Manrope.SemiBold,
+                                letterSpacing: 0.5,
+                              }}>
+                              {'-- -- --'}
+                            </Text>
+                          }
                         </View>
                         <View
                           style={{
@@ -550,7 +558,7 @@ const SellerProfile = ({route, navigation}) => {
                       data={sellerData?.categories}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         if (item == null) {
                           return null;
                         }
@@ -576,7 +584,7 @@ const SellerProfile = ({route, navigation}) => {
                                   justifyContent: 'center',
                                 }}>
                                 <Image
-                                  source={{uri: item?.file}}
+                                  source={{ uri: item?.file }}
                                   style={{
                                     width: 60,
                                     height: 60,
@@ -627,7 +635,7 @@ const SellerProfile = ({route, navigation}) => {
                 );
               case 'OfferBanner':
                 return (
-                  <View style={{width: scr_width}}>
+                  <View style={{ width: scr_width }}>
                     <Image
                       source={require('../../assets/category/flat.png')}
                       style={{
@@ -677,7 +685,7 @@ const SellerProfile = ({route, navigation}) => {
                       data={topPicks}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return (
                           <ItemCardHorizontal
                             item={item}
@@ -753,7 +761,7 @@ const SellerProfile = ({route, navigation}) => {
                           fontSize: 8,
                           color: Color.black,
                           fontFamily: Manrope.Bold,
-                          transform: [{rotate: '-90deg'}],
+                          transform: [{ rotate: '-90deg' }],
                         }}>
                         . T&C Apply
                       </Text>
@@ -818,7 +826,7 @@ const SellerProfile = ({route, navigation}) => {
                       data={newArrivals}
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({item, index}) => {
+                      renderItem={({ item, index }) => {
                         return (
                           <ItemCardHorizontal
                             item={item}
@@ -860,7 +868,7 @@ const SellerProfile = ({route, navigation}) => {
                               alignItems: 'center',
                             }}>
                             <Image
-                              source={{uri: item.logo}}
+                              source={{ uri: item.logo }}
                               style={{
                                 width: 120,
                                 height: 60,
@@ -876,12 +884,12 @@ const SellerProfile = ({route, navigation}) => {
                           </View>
                         );
                       })}
-                    <View style={{paddingStart: 10}}>
+                    <View style={{ paddingStart: 10 }}>
                       <FlatList
                         data={products}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({item, index}) => {
+                        renderItem={({ item, index }) => {
                           return (
                             <ItemCardHorizontal
                               item={item}
@@ -1022,7 +1030,7 @@ const SellerProfile = ({route, navigation}) => {
                           data={steelData}
                           horizontal
                           showsHorizontalScrollIndicator={false}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             return (
                               <TouchableOpacity
                                 key={index}

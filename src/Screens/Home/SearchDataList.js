@@ -36,7 +36,7 @@ const SearchDataList = ({ navigation, route }) => {
   );
   const [selectData, setSelectData] = useState(route.params.selectData);
 
-  console.log("SELECT DATA --------------- : ", route.params.selectData);
+  // console.log("SELECT DATA --------------- : ", route.params.selectData);
   const [ProductData, setProductData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [SearchloadMore, setSearchLoadMore] = useState(false);
@@ -68,17 +68,16 @@ const SearchDataList = ({ navigation, route }) => {
 
   useEffect(() => {
     getData();
-  }, [token, getData]);
+  }, [selectData, countryCode]);
 
   const getData = useCallback(async () => {
     try {
-      console.log("selectData?.type --------------- : ", selectData?.name);
-
-      var data = `${selectData && `keywords=${selectData?.name}`}&region_id=${countryCode?.id}`;
-      console.log("data --------------- : ", data);
+      // console.log("selectData?.type --------------- : ", selectData);
+      setProductData([])
+      const data = `${selectData && `keywords=${selectData?.name}`}&region_id=${countryCode?.id}`;
+      // console.log("get data --------------- : ", data);
       const Product_list = await fetchData.list_products(data, token);
-      console.log("Product_list --------------- : ", Product_list);
-
+      // console.log("Product_list --------------- : ", Product_list);
       setProductData(Product_list?.data);
     } catch (error) {
       console.log('catch in get_Data :', error);
@@ -92,20 +91,19 @@ const SearchDataList = ({ navigation, route }) => {
   const handleSearch = async item => {
     try {
       setLoading(true);
-      setProductSuggestions({
-        data: [],
-        visible: false,
-      });
-      getData();
-      // console.log("Handle Search Item ++++++++++++++ : ", item);
+      // setProductSuggestions({
+      //   data: [],
+      //   visible: false,
+      // });
 
-      const data = `filter=${item?.name}&page=1&limit=10`;
+      const data = `filter=${item?.name}`;
       const get_search_data = await fetchData.search(data, token);
-      // console.log("GET SEARCG DATA ------------------ : ", get_search_data);
+      console.log("GET SEARCG DATA ------------------ : ", get_search_data);
 
       if (get_search_data?.status === true) {
         setProductSuggestions({
-          data: getData?.data || [],
+          // data: getData?.data || [],
+          data: get_search_data?.status ? get_search_data?.data : [],
           visible: true,
         });
       } else {
@@ -114,6 +112,7 @@ const SearchDataList = ({ navigation, route }) => {
           visible: true,
         });
       }
+      // getData();
       setSearchModalVisible(false);
     } catch (error) {
       console.log(`catch in handle_Search :`, error);
@@ -124,9 +123,15 @@ const SearchDataList = ({ navigation, route }) => {
     setSearchProduct(input);
     setSearchLoader(true);
     try {
-      const data = `filter=${input}&page=1&limit=10`;
+      // console.log("input --------------- : ", input);
+      // setProductSuggestions({
+      //   data: [],
+      //   visible: false,
+      // });
+      const data = `filter=${input}`;
+      // const data = `filter=${input}&page=1&limit=10`;
       const getData = await fetchData.search(data, token);
-      console.log("getData SEARCH--------------- : ", getData);
+      // console.log("getData SEARCH--------------- : ", getData);
 
       if (getData?.status === true) {
         setProductSuggestions({
@@ -142,7 +147,7 @@ const SearchDataList = ({ navigation, route }) => {
       }
       setSearchLoader(false);
     } catch (error) {
-      console.log('catch in property_Search :', error);
+      console.log('catch in Search_Data_List :', error);
       setSearchLoader(false);
     }
   };
@@ -155,7 +160,7 @@ const SearchDataList = ({ navigation, route }) => {
     setSearchLoadMore(true);
     try {
       const nextPage = Searchpage + 1;
-      var data = `filter=${searchProduct?.name}&page=${nextPage}&limit=10`;
+      var data = `filter=${searchProduct?.name}&page=${nextPage}`;
       const filterData = await fetchData.search(data, token);
       if (filterData.length > 0) {
         setSearchPage(nextPage);
@@ -181,8 +186,10 @@ const SearchDataList = ({ navigation, route }) => {
     setLoadMore(true);
     try {
       const nextPage = page + 1;
-      var data = `${selectData?.type}=${selectData?.value}&region_id=${countryCode?.id}&page=${nextPage}`;
+      var data = `keywords=${selectData?.value}&region_id=${countryCode?.id}&page=${nextPage}`;
       const filterData = await fetchData.list_products(data, token);
+      console.log("dklfgkfdklgfdlgnl   ", filterData);
+
       if (filterData?.data?.length > 0) {
         setPage(nextPage);
         const updatedData = [...ProductData, ...filterData?.data];
@@ -201,7 +208,7 @@ const SearchDataList = ({ navigation, route }) => {
     <View style={styles.container}>
       <View style={styles.searchModal}>
         <Searchbar
-          placeholder="Search Products"
+          placeholder="Search Products Here"
           placeholderTextColor={Color.grey}
           style={styles.searchView}
           value={searchProduct?.name}
@@ -429,8 +436,11 @@ const SearchDataList = ({ navigation, route }) => {
               </View>
             );
           }}
+          onEndReached={() => {
+            loadMoreData();
+          }}
           // onEndReached={() => {
-          //   loadMoreData();
+          //   loadSearchMoreData();
           // }}
           onEndReachedThreshold={3}
           ListFooterComponent={() => {

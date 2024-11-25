@@ -110,7 +110,7 @@ const SearchScreen = ({navigation, route}) => {
       <TouchableOpacity style={styles.searchView}>
         <Icon color={Color.cloudyGrey} name="search" size={25} />
         <TextInput
-          placeholder="Search Products"
+          placeholder="Search Products 12323"
           value={searchProduct}
           style={{
             flex: 1,

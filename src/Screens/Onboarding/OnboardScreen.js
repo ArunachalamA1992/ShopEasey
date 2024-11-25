@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  BackHandler,
 } from 'react-native';
 import { scr_height, scr_width } from '../../Utils/Dimensions';
 import Color from '../../Global/Color';
@@ -42,7 +43,24 @@ const OnboardScreen = () => {
       duration: 1000,
       useNativeDriver: true,
     }).start();
+  }, [imageScale]);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
   }, []);
+
+  const handleBackPress = () => {
+    try {
+      navigation.goBack();
+      return true;
+
+    } catch (error) {
+      console.log('catch in handleBackPress : ', error);
+    }
+  };
 
   function sale_toggleBottomView(type) {
     try {
@@ -101,7 +119,7 @@ const OnboardScreen = () => {
   useEffect(() => {
     getData();
     handleInitialUrl();
-  }, []);
+  }, [countryData]);
 
   const splitByCategory = data => {
     return data.filter(item => item.category === 'welcome_banner');
@@ -120,7 +138,6 @@ const OnboardScreen = () => {
 
 
       const formdata = new FormData();
-
       const requestOptions = {
         method: "GET",
         // body: formdata,
@@ -129,7 +146,10 @@ const OnboardScreen = () => {
 
       fetch("https://api.shopeasey.com/api/banner/user/mobile?category=welcome_banner", requestOptions)
         .then((response) => response.json())
-        .then((result) => setBannerData(result?.data))
+        .then((result) => {
+          // console.log("result ==============123 : ", result),
+          setBannerData(result?.data)
+        })
         .catch((error) => console.error(error));
 
 

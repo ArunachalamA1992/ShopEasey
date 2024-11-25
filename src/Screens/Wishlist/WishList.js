@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -11,9 +11,9 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import fetchData from '../../Config/fetchData';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ItemCard from '../../Components/ItemCard';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import common_fn from '../../Config/common_fn';
@@ -22,18 +22,18 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
 import LinearGradient from 'react-native-linear-gradient';
-import {Media} from '../../Global/Media';
-import {setDataCount} from '../../Redux';
-import {ActivityIndicator} from 'react-native-paper';
+import { Media } from '../../Global/Media';
+import { setDataCount } from '../../Redux';
+import { ActivityIndicator } from 'react-native-paper';
 
-const {height} = Dimensions.get('screen');
-const WishList = ({navigation}) => {
+const { height } = Dimensions.get('screen');
+const WishList = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [WishlistData, setWishlistData] = useState([]);
   const [loadingWishlist, setLoadingWishlist] = useState(null);
   const [reviewsData, setReviewsData] = useState({});
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  const { token } = userData;
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -46,62 +46,78 @@ const WishList = ({navigation}) => {
       .catch(error => {
         setLoading(false);
       });
-  }, [token]);
+  }, [token, countryCode]);
 
-  useEffect(() => {
-    if (token) {
-      // console.log('Token is present, fetching wishlist data...');
-      getWishlistData();
-    } else {
-      console.log('Token is not present, skipping data fetch.');
-    }
-  }, [WishlistData, token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     getWishlistData();
+  //   } else {
+  //     console.log('Token is not present, skipping data fetch.');
+  //   }
+  // }, [token, countryCode]);
 
-  const handleRefresh = () => {
-    getWishlistData(true);
-    getCountData();
+  // const handleRefresh = () => {
+  //   getWishlistData();
+  //   getCountData();
+  // };
+
+  const handleRefresh = async () => {
+    await getWishlistData(); // Fetch updated wishlist
+    await getCountData(); // Refresh item counters (if applicable)
   };
 
-  const getWishlistData = useCallback(
-    async (isRefreshing = false) => {
-      if (isRefreshing) {
-        setRefreshing(true);
-      }
-      try {
-        const getWishlist = await fetchData.list_wishlist('', token);
-        // console.log("wishlist ================ : ", JSON.stringify(getWishlist));
-        if (getWishlist?.status == true) {
-          setWishlistData(getWishlist.data);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.log('Error fetching wishlist data:', error);
-      } finally {
-        if (isRefreshing) {
-          setRefreshing(false);
-        }
-      }
-    },
-    [token],
-  );
+  // console.log(`token --------------`, token, countryCode.id)
+  const getWishlistData = async (isRefreshing = false) => {
+    if (isRefreshing) {
+      setRefreshing(true);
+    }
+    try {
+      // Reset loading states for clarity
+      setLoading(true);
 
-  const toggleWishlist = async single => {
+      // Fetch wishlist data from the server
+      const getWishlist = await fetchData.list_wishlist(`?region_id=${countryCode?.id}`, token);
+
+      if (getWishlist?.status === true) {
+        // Update wishlist state
+        setWishlistData(getWishlist.data);
+      } else {
+        // If the API response fails, reset the wishlist state
+        setWishlistData([]);
+        console.log("Failed to fetch wishlist data:", getWishlist?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+      setWishlistData([]); // Reset data on error
+    } finally {
+      setLoading(false);
+      if (isRefreshing) {
+        setRefreshing(false);
+      }
+    }
+  };
+
+  const toggleWishlist = async (single) => {
     setLoadingWishlist(single?.product?.id);
     try {
       const data = {
         product_id: single?.product?.id,
         variant_id: single?.variant?.id,
       };
-      const wishlist = await fetchData.toggle_wishlists(data, token);
-      // console.log('Wishlist toggle response:', wishlist);
-      common_fn.showToast(wishlist?.message);
-      if (wishlist?.status === true) {
-        handleRefresh();
-        getWishlistData();
-        getCountData();
+
+      const wishlistResponse = await fetchData.toggle_wishlists(data, token);
+
+      common_fn.showToast(wishlistResponse?.message);
+
+      if (wishlistResponse?.status === true) {
+        // Refresh wishlist data after a successful toggle
+        await getWishlistData();
+        await getCountData(); // Update counts if necessary
+      } else {
+        console.error("Error in toggling wishlist:", wishlistResponse?.message);
       }
     } catch (error) {
-      console.log('Error toggling wishlist:', error);
+      console.error("Error toggling wishlist:", error);
     } finally {
       setLoadingWishlist(null);
     }
@@ -121,7 +137,7 @@ const WishList = ({navigation}) => {
         }),
       );
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getCountData_Wishlist :', error);
     }
   };
   return (
@@ -135,7 +151,7 @@ const WishList = ({navigation}) => {
         <View style={{}}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -152,7 +168,7 @@ const WishList = ({navigation}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -169,7 +185,7 @@ const WishList = ({navigation}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -186,7 +202,7 @@ const WishList = ({navigation}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -209,8 +225,11 @@ const WishList = ({navigation}) => {
           data={WishlistData}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
+
             const originalPrice = item?.variant?.org_price;
+            // console.log("Offer --------- :", item?.variant?.offer_price + "Price ---------- :", item?.variant?.price + "Original ------:", item?.variant?.org_price);
+
             // / countryCode?.price_margin;
             const offerPrice = item?.variant?.offer_price
               ? item?.variant?.offer_price
@@ -222,7 +241,7 @@ const WishList = ({navigation}) => {
             ).toFixed(2);
             const isLoading = loadingWishlist === item.product.id;
             return (
-              <View style={{width: '50%'}}>
+              <View style={{ width: '50%' }}>
                 <TouchableOpacity
                   style={styles.product}
                   onPress={() => {
@@ -252,7 +271,7 @@ const WishList = ({navigation}) => {
                           <Text style={styles.offerText}>{discount}% off</Text>
                         </View>
                       ) : (
-                        <View style={{flex: 1}} />
+                        <View style={{ flex: 1 }} />
                       )}
                       <TouchableOpacity
                         onPress={() => {
@@ -279,8 +298,8 @@ const WishList = ({navigation}) => {
                     </View>
                     <LinearGradient
                       style={styles.locationView}
-                      start={{x: 0, y: 0}}
-                      end={{x: 1, y: 0}}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
                       colors={['#1D1D1D78', '#1D1D1D4F']}>
                       <View
                         style={{
@@ -311,7 +330,7 @@ const WishList = ({navigation}) => {
                     </LinearGradient>
                   </ImageBackground>
                   <View style={styles.contentView}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Text
                         style={{
                           flex: 1,
@@ -356,6 +375,26 @@ const WishList = ({navigation}) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}>
+                      {/* <Text style={styles.productDiscountPrice}>
+                        {countryCode?.symbol}
+                        {parseFloat(
+                          item?.variant?.offer_price
+                            ? item?.variant?.offer_price
+                            : item?.variant?.price,
+                        ).toFixed(2)}
+                      </Text>
+                      {(item?.variant?.offer_price ? item?.variant?.offer_price : item?.variant?.price) < item?.variant?.org_price
+                        &&
+                        <Text style={styles.productPrice}>
+                          {countryCode?.symbol}
+                          {parseFloat(item?.variant?.org_price).toFixed(2)}
+                        </Text>
+                      } */}
+
+
+
+
+
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
                         {parseFloat(
@@ -363,15 +402,16 @@ const WishList = ({navigation}) => {
                             ? item?.variant?.offer_price
                             : item?.variant?.price,
                           // / countryCode?.price_margin,
-                        ).toFixed(2)}
+                        ).toFixed(2)}{' '}
+                        <Text style={styles.productPrice}>
+                          {countryCode?.symbol}
+                          {parseFloat(
+                            item?.variant?.org_price,
+                            // / countryCode?.price_margin,
+                          ).toFixed(2)}
+                        </Text>
                       </Text>
-                      <Text style={styles.productPrice}>
-                        {countryCode?.symbol}
-                        {parseFloat(
-                          item?.variant?.org_price,
-                          // / countryCode?.price_margin,
-                        ).toFixed(2)}
-                      </Text>
+
                     </View>
                     {/* <View style={styles.productRatingView}>
                       <FontAwesome
@@ -426,7 +466,7 @@ const WishList = ({navigation}) => {
                 </Text> */}
 
                 <Image
-                  source={{uri: Media.empty_wishlist}}
+                  source={{ uri: Media.empty_wishlist }}
                   style={{
                     width: 180,
                     height: 180,

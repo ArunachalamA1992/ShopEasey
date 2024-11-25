@@ -20,6 +20,8 @@ import { Button } from 'react-native-paper';
 import fetchData from '../../Config/fetchData';
 import { ItemCardHorizontal } from '../../Components/ItemCard';
 import moment from 'moment';
+import RNFetchBlob from 'rn-fetch-blob';
+import RNFS from 'react-native-fs';
 
 const customStyles = {
   stepIndicatorSize: 25,
@@ -82,6 +84,8 @@ const DeliveredOrder = ({ navigation, route }) => {
     try {
       var top_picks_data = `project=top-picks&region_id=${countryCode?.id}`;
       const top_picks = await fetchData.list_products(top_picks_data, token);
+      console.log("top pick ----------------- : ", top_picks);
+
       setRecommended(top_picks?.data);
       setLoading(false);
     } catch (error) {
@@ -89,7 +93,29 @@ const DeliveredOrder = ({ navigation, route }) => {
     }
   };
 
-  console.log("size ---------------- : ", orderData);
+  // console.log("size ---------------- : ", orderData);
+
+  const downloadInvoice = async () => {
+    try {
+      console.log("Order Data: ", orderData);
+      console.log("Country Code: ", countryCode);
+
+      const data = await common_fn.generatePDF(orderData, countryCode);
+      console.log("Data: ++++++++++++++++ :", orderData);
+      if (!data) {
+        console.error("Failed to generate PDF: No data returned.");
+        return;
+      }
+
+      const filePath = `${RNFS.DocumentDirectoryPath}/invoice.pdf`; // Update path if needed
+      await RNFS.writeFile(filePath, data, 'base64');
+      console.log("Invoice saved at: ", filePath);
+
+      await RNFetchBlob.android.actionViewIntent(filePath, 'application/pdf');
+    } catch (error) {
+      console.error("Error downloading invoice: ", error);
+    }
+  };
 
 
   return (
@@ -426,10 +452,7 @@ const DeliveredOrder = ({ navigation, route }) => {
         </Button>
         <Button
           mode="contained"
-          onPress={() => {
-            const data = common_fn.generatePDF(orderData, countryCode);
-            setPdfPath(data);
-          }}
+          onPress={() => downloadInvoice()}
           style={{
             backgroundColor: Color.primary,
             borderRadius: 5,

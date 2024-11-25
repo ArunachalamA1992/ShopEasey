@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,19 +6,41 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  BackHandler,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {scr_height, scr_width} from '../../Utils/Dimensions';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation} from '@react-navigation/native';
-import {Media} from '../../Global/Media';
-import {useDispatch} from 'react-redux';
-import {setOnBoardVisible} from '../../Redux';
+import { scr_height, scr_width } from '../../Utils/Dimensions';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { useNavigation } from '@react-navigation/native';
+import { Media } from '../../Global/Media';
+import { useDispatch } from 'react-redux';
+import { setOnBoardVisible } from '../../Redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OnboardTwo = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  // useEffect(async () => {
+  //   const countryData = await AsyncStorage.getItem('countryData');
+  //   console.log("countryData------------------ L : ", countryData);
+
+  // }, []);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, []);
+
+  const handleBackPress = () => {
+    navigation.goBack();
+    console.log('Back button pressed');
+    return true;
+  };
+
 
   return (
     <View style={styles.container}>
@@ -29,7 +51,7 @@ const OnboardTwo = () => {
           alignItems: 'center',
           padding: 10,
         }}>
-        <Image source={{uri: Media.welcome}} style={styles.image} />
+        <Image source={{ uri: Media.welcome }} style={styles.image} />
       </View>
       <View
         style={{
@@ -60,7 +82,7 @@ const OnboardTwo = () => {
             Shopeasey.
           </Text>
         </View>
-        <View style={{alignItems: 'center', padding: 15}}>
+        <View style={{ alignItems: 'center', padding: 15 }}>
           <View
             style={{
               flexDirection: 'row',
@@ -86,7 +108,7 @@ const OnboardTwo = () => {
                 Icontag={'MaterialCommunityIcons'}
                 iconname={'truck-fast'}
                 icon_size={22}
-                iconstyle={{color: Color.primary}}
+                iconstyle={{ color: Color.primary }}
               />
               <Text
                 style={{
@@ -111,8 +133,8 @@ const OnboardTwo = () => {
                 marginHorizontal: 5,
               }}>
               <Image
-                source={{uri: Media.voucher_icon}}
-                style={{width: 25, height: 25, resizeMode: 'contain'}}
+                source={{ uri: Media.voucher_icon }}
+                style={{ width: 25, height: 25, resizeMode: 'contain' }}
               />
               <Text
                 style={{
@@ -154,7 +176,7 @@ const OnboardTwo = () => {
                 Icontag={'AntDesign'}
                 iconname={'customerservice'}
                 icon_size={22}
-                iconstyle={{color: Color.primary}}
+                iconstyle={{ color: Color.primary }}
               />
               <Text
                 style={{
@@ -205,7 +227,7 @@ const OnboardTwo = () => {
           </View> */}
         </View>
       </View>
-      <View style={{padding: 10}}>
+      <View style={{ padding: 10 }}>
         <TouchableOpacity
           onPress={() => {
             dispatch(setOnBoardVisible(true));
@@ -235,7 +257,7 @@ const OnboardTwo = () => {
             Icontag={'AntDesign'}
             iconname={'arrowright'}
             icon_size={22}
-            iconstyle={{color: Color.white, paddingHorizontal: 5}}
+            iconstyle={{ color: Color.white, paddingHorizontal: 5 }}
           />
         </TouchableOpacity>
         {/* <TouchableOpacity

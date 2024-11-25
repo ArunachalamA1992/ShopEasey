@@ -26,10 +26,13 @@ import { baseUrl } from '../../Config/base_url';
 
 const OrderReview = ({ navigation, route }) => {
   const [orderData] = useState(route.params.orderData);
+  // console.log("ORDER DATA ----------------- : ", orderData);
+
   const bgcolor = common_fn.getColorName(orderData?.variants?.color);
   const [defaultRating, setDefaultRating] = useState(0);
   const userData = useSelector(state => state.UserReducer.userData);
   const [review, setReview] = useState('');
+  const [reviewStatus, setReviewStatus] = useState('');
   var { token } = userData;
   const [image, setImage] = useState([
     {
@@ -122,6 +125,8 @@ const OrderReview = ({ navigation, route }) => {
   const checkReview = async id => {
     try {
       const review = await fetchData.check_review(id, token);
+      console.log("review ----------------- : ", review);
+      setReviewStatus(reviewedData?.status);
       return review;
     } catch (error) {
       console.log('error', error);
@@ -130,8 +135,9 @@ const OrderReview = ({ navigation, route }) => {
 
   const postReview = async () => {
     try {
-      const reviewedData = await checkReview(orderData?.order?.id);
-      // console.log("reviewedData ----------------- : ", reviewedData);
+      const reviewedData = await checkReview(orderData?.product_id);
+      // console.log("reviewedData ----------------- : ", reviewedData?.status);
+
       if (reviewedData?.status == true) {
         if (defaultRating > 0 && review != '') {
           const myHeaders = new Headers();
@@ -155,12 +161,12 @@ const OrderReview = ({ navigation, route }) => {
             body: formdata,
             redirect: 'follow',
           };
-          // console.log("Review comments ----------------- : ", requestOptions);
+          console.log("Review comments ----------------- : ", requestOptions);
 
           fetch(`${baseUrl}api/review`, requestOptions)
             .then(response => response.json())
             .then(result => {
-              // console.log("Review result ----------------- : ", result);
+              console.log("Review result ----------------- : ", result);
               common_fn.showToast(result?.message);
               navigation.replace("MyOrders");
             })
@@ -169,91 +175,107 @@ const OrderReview = ({ navigation, route }) => {
           common_fn.showToast('Please write the review and rating');
         }
       } else {
+        setReviewStatus("reviewed");
         common_fn.showToast('Your order has been Reviewed already.');
+        navigation.replace("MyOrders");
       }
     } catch (error) {
-      console.log('error', error);
+      console.log("catch in postReview_OrderReview : ", error);
     }
   };
 
   useEffect(() => {
-    const resizeImages = [];
-    Promise.all(
-      image?.map(async (image, index) => {
-        var path = image?.uri;
-        var maxWidth = 1000,
-          maxHeight = 1000,
-          compressFormat = 'JPEG',
-          quality = 100,
-          rotation = 0,
-          keepMeta = false,
-          options = {};
-        var outputPath;
-        if (path) {
-          try {
-            const resizedImage = await ImageResizer.createResizedImage(
-              path,
-              maxWidth,
-              maxHeight,
-              compressFormat,
-              quality,
-              rotation,
-              outputPath,
-              keepMeta,
-              options,
-            );
-            resizeImages?.push(resizedImage);
-          } catch (err) {
-            console.log(err);
+    try {
+      const resizeImages = [];
+      Promise.all(
+        image?.map(async (image, index) => {
+          var path = image?.uri;
+          var maxWidth = 1000,
+            maxHeight = 1000,
+            compressFormat = 'JPEG',
+            quality = 100,
+            rotation = 0,
+            keepMeta = false,
+            options = {};
+          var outputPath;
+          if (path) {
+            try {
+              const resizedImage = await ImageResizer.createResizedImage(
+                path,
+                maxWidth,
+                maxHeight,
+                compressFormat,
+                quality,
+                rotation,
+                outputPath,
+                keepMeta,
+                options,
+              );
+              resizeImages?.push(resizedImage);
+            } catch (err) {
+              console.log(err);
+            }
           }
-        }
-      }),
-    ).then(() => {
-      setPhoto([...photo, ...resizeImages]);
-    });
+        }),
+      ).then(() => {
+        setPhoto([...photo, ...resizeImages]);
+      });
+    } catch (error) {
+      console.log("catch in useEffect_OrderReview : ", error);
+    }
   }, [image]);
 
   const captureImage = async index => {
-    const options = {
-      mediaType: 'photo',
-      maxWidth: 300,
-      maxHeight: 300,
-      quality: 1,
-    };
+    try {
+      const options = {
+        mediaType: 'photo',
+        maxWidth: 300,
+        maxHeight: 300,
+        quality: 1,
+      };
 
-    const isCameraPermitted = await requestCameraPermission();
-    if (isCameraPermitted) {
-      launchCamera(options, async response => {
-        const newImage = response.assets[0];
-        const updatedProfiles = [...image];
-        updatedProfiles[index].fileName = newImage?.fileName;
-        updatedProfiles[index].fileSize = newImage?.fileSize;
-        updatedProfiles[index].height = newImage?.height;
-        updatedProfiles[index].originalPath = newImage?.originalPath;
-        updatedProfiles[index].type = newImage?.type;
-        updatedProfiles[index].uri = newImage?.uri;
-        updatedProfiles[index].width = newImage?.width;
-        setImage(updatedProfiles);
-      });
-    } else {
-      common_fn.showToast('Please grant camera permissions to capture image');
+      const isCameraPermitted = await requestCameraPermission();
+      if (isCameraPermitted) {
+        launchCamera(options, async response => {
+          const newImage = response.assets[0];
+          const updatedProfiles = [...image];
+          updatedProfiles[index].fileName = newImage?.fileName;
+          updatedProfiles[index].fileSize = newImage?.fileSize;
+          updatedProfiles[index].height = newImage?.height;
+          updatedProfiles[index].originalPath = newImage?.originalPath;
+          updatedProfiles[index].type = newImage?.type;
+          updatedProfiles[index].uri = newImage?.uri;
+          updatedProfiles[index].width = newImage?.width;
+          setImage(updatedProfiles);
+        });
+      } else {
+        common_fn.showToast('Please grant camera permissions to capture image');
+      }
+    } catch (error) {
+      console.log("catch in captureImage_OrderReview : ", error);
     }
   };
 
   const addImage = async () => {
-    setImage([
-      ...image,
-      {
-        fileName: '',
-        fileSize: 0,
-        height: 0,
-        originalPath: '',
-        type: '',
-        uri: '',
-        width: 0,
-      },
-    ]);
+    try {
+      setImage([
+        ...image,
+        {
+          fileName: '',
+          fileSize: 0,
+          height: 0,
+          originalPath: '',
+          type: '',
+          uri: '',
+          width: 0,
+        },
+      ]);
+    } catch (error) {
+      console.log("catch in addImage_OrderReview : ", error);
+    }
   };
+
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F6FA' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -448,6 +470,7 @@ const OrderReview = ({ navigation, route }) => {
           style={{
             marginTop: 10,
             padding: 10,
+            marginHorizontal: 10,
             backgroundColor: Color.white,
           }}>
           <Text
@@ -484,7 +507,7 @@ const OrderReview = ({ navigation, route }) => {
               );
             })}
           </View>
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginVertical: 10 }}>
             <Text
               style={{
                 fontSize: 16,
@@ -615,7 +638,7 @@ const OrderReview = ({ navigation, route }) => {
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Button
             mode="contained"
-            onPress={() => { }}
+            onPress={() => navigation.replace("MyOrders")}
             style={{
               backgroundColor: Color.white,
               borderRadius: 5,
@@ -627,22 +650,41 @@ const OrderReview = ({ navigation, route }) => {
             textColor={Color.primary}>
             Cancel
           </Button>
-          <Button
-            mode="contained"
-            onPress={() => {
-              postReview();
-            }}
-            style={{
-              backgroundColor: Color.primary,
-              borderRadius: 5,
-              margin: 10,
-              borderWidth: 1,
-              borderColor: Color.primary,
-              flex: 1,
-            }}
-            textColor={Color.white}>
-            Submit
-          </Button>
+          {reviewStatus == "reviewed" ?
+            <Button
+              mode="contained"
+              disabled
+              // onPress={() => {
+              //   postReview();
+              // }}
+              style={{
+                backgroundColor: Color.Venus,
+                borderRadius: 5,
+                margin: 10,
+                borderWidth: 1,
+                borderColor: Color.Venus,
+                flex: 1,
+              }}
+              textColor={Color.black}>
+              Submit
+            </Button> :
+            <Button
+              mode="contained"
+              onPress={() => {
+                postReview();
+              }}
+              style={{
+                backgroundColor: Color.primary,
+                borderRadius: 5,
+                margin: 10,
+                borderWidth: 1,
+                borderColor: Color.primary,
+                flex: 1,
+              }}
+              textColor={Color.white}>
+              Submit
+            </Button>
+          }
         </View>
       </ScrollView>
     </SafeAreaView>

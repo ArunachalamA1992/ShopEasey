@@ -5,6 +5,7 @@ const api_name = 'api/';
 export default {
   login_with_otp: (data, token) => {
     let url = api_name + 'auth/user/login_with_otp';
+    console.log(url, data, token, "dfafdasdf")
     return api.postMethod(url, data, token);
   },
   login_with_gmail: (data, token) => {
@@ -13,6 +14,7 @@ export default {
   },
   login_verify_otp: (data, token) => {
     let url = api_name + 'auth/user/login_verify_otp';
+
     return api.postMethod(url, data, token);
   },
   Register_request_otp: (data, token) => {
@@ -72,7 +74,8 @@ export default {
     return api.postMethod(url, data, token);
   },
   list_wishlist: (data, token) => {
-    let url = api_name + 'wishlists';
+    let url = api_name + 'wishlists' + data;
+    // console.log(url, "asdfasdfasdfasd")
     return api.getMethod(url, token);
   },
   list_address: (data, token) => {

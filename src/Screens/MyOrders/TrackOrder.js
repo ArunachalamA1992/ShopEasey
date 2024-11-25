@@ -26,6 +26,7 @@ import moment from 'moment';
 import { BottomSheet } from 'react-native-btr';
 import { Iconviewcomponent } from '../../Components/Icontag';
 import { scr_width } from '../../Utils/Dimensions';
+import { useNavigation } from '@react-navigation/native';
 
 const customStyles = {
   stepIndicatorSize: 25,
@@ -51,7 +52,8 @@ const customStyles = {
   stepIndicatorLabelUnFinishedColor: Color.white,
 };
 
-const TrackOrder = ({ navigation, route }) => {
+const TrackOrder = ({ route }) => {
+  const navigation = useNavigation();
   const [orderData] = useState(route.params.orderData);
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
@@ -76,24 +78,41 @@ const TrackOrder = ({ navigation, route }) => {
     order => order.status === orderData?.status,
   );
 
-  console.log("orderData ============= : ", orderData.status);
+  // console.log("orderData ============= : ", orderData.status);
 
 
   useEffect(() => {
-    setOrderLoading(true);
-    myorderData()
-      .then(() => setOrderLoading(false))
-      .catch(error => {
-        console.log('Error fetching data:', error);
-        setOrderLoading(false);
-      });
+    try {
+      setOrderLoading(true);
+      myorderData()
+        .then(() => setOrderLoading(false))
+        .catch(error => {
+          console.log('Error fetching data:', error);
+          setOrderLoading(false);
+        });
+      setOrderLoading(true);
+      cancelData()
+        .then(() => setOrderLoading(false))
+        .catch(error => {
+          console.log('Error fetching data:', error);
+          setOrderLoading(false);
+        });
+    } catch (error) {
+      console.log('catch in fetching_data TrackOrder:', error);
+    }
   }, [token]);
 
-  useEffect(async () => {
-    const cancelReasons = await fetchData.cancel_reasons(``, token);
-    // console.log("cancel_reasons ------------- : ", cancelReasons);
-    setReasonCancel(cancelReasons?.data);
-  }, [token]);
+
+  const cancelData = async () => {
+    try {
+      const cancelReasons = await fetchData.cancel_reasons(``, token);
+      // console.log("cancel_reasons ------------- : ", cancelReasons);
+      setReasonCancel(cancelReasons?.data);
+      setOrderLoading(false);
+    } catch (error) {
+      console.log('catch in cancelData_TrackOrder :', error);
+    }
+  };
 
   const myorderData = async () => {
     try {
@@ -101,7 +120,7 @@ const TrackOrder = ({ navigation, route }) => {
       setOrderStatus(order_status?.data);
       setOrderLoading(false);
     } catch (error) {
-      console.log('catch in myorder_Data :', error);
+      console.log('catch in myorder_Data_TrackOrder :', error);
     }
   };
 
@@ -160,8 +179,7 @@ const TrackOrder = ({ navigation, route }) => {
     try {
       if (comments != '' && selectReason != 0) {
         // console.log("Cancel Order ============= : ", comments + 'select -------- : ' + selectReason);
-
-        var data = {
+        const data = {
           "id": orderData?.id,
           "question_id": selectReason,
           "comments": comments
@@ -170,11 +188,11 @@ const TrackOrder = ({ navigation, route }) => {
         // console.log("cancel_Orders ============= : ", cancelOrders);
 
         if (cancelOrders?.status == true) {
-          common_fn.showToast(result?.message);
+          common_fn.showToast(cancelOrders?.message);
           myorderData();
           setOrderLoading(false);
           setBottomSheetVisible(false);
-          navigation.navigate('MyOrder');
+          navigation.navigate('MyOrders');
           cancel_toggleBottomView();
         }
         else {
@@ -360,7 +378,7 @@ const TrackOrder = ({ navigation, route }) => {
 
   function selectCancelReason(item) {
     try {
-      console.log("select item ==================== : ", item.id);
+      // console.log("select item ==================== : ", item.id);
       setSelectReason(item.id)
       setSelectReasonquestion(item.question)
       setCouponModal(false);
@@ -456,9 +474,9 @@ const TrackOrder = ({ navigation, route }) => {
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
-                        borderRightWidth: 1,
-                        borderRightColor: Color.lightgrey,
-                        paddingHorizontal: 5,
+                        // borderRightWidth: 1,
+                        // borderRightColor: Color.lightgrey,
+                        // paddingHorizontal: 5,
                       }}>
                       <Text
                         style={{
@@ -488,8 +506,8 @@ const TrackOrder = ({ navigation, route }) => {
                     />
                   </>
                 )}
-                {/* {orderData?.variants?.size != ''( */}
-                <>
+                {orderData?.variants?.size != '' ?
+
                   <View
                     style={{
                       flexDirection: 'row',
@@ -514,15 +532,16 @@ const TrackOrder = ({ navigation, route }) => {
                       {orderData?.variants?.size != null ? orderData?.variants?.size : "--"}
                     </Text>
                   </View>
-                  <View
-                    style={{
-                      width: 1,
-                      height: 20,
-                      backgroundColor: Color.lightgrey,
-                    }}
-                  />
-                </>
-                {/* )} */}
+                  : null}
+                <View
+                  style={{
+                    width: 1,
+                    height: 20,
+                    backgroundColor: Color.lightgrey,
+                  }}
+                />
+
+
                 <View
                   style={{
                     flexDirection: 'row',
@@ -550,7 +569,7 @@ const TrackOrder = ({ navigation, route }) => {
               </View>
               <View
                 style={{
-                  width: '100%',
+                  width: '95%',
                   justifyContent: 'flex-start',
                   alignItems: 'flex-start',
                   paddingVertical: 3,
@@ -560,7 +579,7 @@ const TrackOrder = ({ navigation, route }) => {
                     fontSize: 16,
                     color: Color.cloudyGrey,
                     fontFamily: Manrope.Bold,
-                  }}>
+                  }} numberOfLines={1}>
                   {orderData?.order?.region_id == 454
                     ? '$'
                     : orderData?.order?.region_id == 453
@@ -636,10 +655,11 @@ const TrackOrder = ({ navigation, route }) => {
             </Text>
             <Text
               style={{
+                width: '70%',
                 color: Color.black,
-                fontSize: 14,
+                fontSize: 14, textAlign: 'right',
                 fontFamily: Manrope.Medium,
-              }}>
+              }} numberOfLines={3}>
               {orderData?.order?.user_address?.address_line1}
             </Text>
           </View>
@@ -737,13 +757,13 @@ const TrackOrder = ({ navigation, route }) => {
             <View
               style={{
                 marginTop: 10,
-                padding: 10,
+                padding: 10, marginHorizontal: 10, paddingVertical: 10,
                 backgroundColor: Color.white,
               }}>
               <Text
                 style={{
                   fontSize: 16,
-                  fontFamily: Manrope.SemiBold,
+                  fontFamily: Manrope.Bold,
                   paddingVertical: 5,
                   color: Color.black,
                 }}>
@@ -794,7 +814,7 @@ const TrackOrder = ({ navigation, route }) => {
                     }
                   }}
                 />
-                <Divider style={{ height: 1, marginVertical: 10 }} />
+                {/* <Divider style={{ height: 1, marginVertical: 10 }} /> */}
                 {/* <TouchableOpacity
                   style={{
                     flexDirection: 'row',
@@ -844,7 +864,7 @@ const TrackOrder = ({ navigation, route }) => {
             </TouchableOpacity>
             :
             <TouchableOpacity onPress={() => cancel_toggleBottomView()} style={{ width: '90%', height: 50, justifyContent: 'center', alignItems: 'center', backgroundColor: Color.white, borderColor: Color.primary, borderWidth: 1, borderRadius: 5 }}>
-              <Text style={{ fontSize: 16, color: Color.black, fontFamily: Manrope.SemiBold }}>Cancel Order</Text>
+              <Text style={{ fontSize: 16, color: Color.primary, fontFamily: Manrope.Bold }}>Cancel Order</Text>
             </TouchableOpacity>}
         </View>
 

@@ -45,6 +45,8 @@ const MyCart = ({ }) => {
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
+  // console.log("countryCode ============= :", countryCode?.id);
+
   const [maxRating, setMaxRating] = useState([
     {
       id: 1,
@@ -106,7 +108,7 @@ const MyCart = ({ }) => {
       getAPIData();
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [token]);
 
   const getAPIData = async () => {
     try {
@@ -121,9 +123,11 @@ const MyCart = ({ }) => {
         `region_id=${countryCode?.id}`,
         token,
       );
+      // console.log("Cart resp ---------- : ", getCart?.data);
+
       setCartData(getCart?.data);
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getAPIData_MyCart', error);
     }
   };
 
@@ -135,7 +139,7 @@ const MyCart = ({ }) => {
       .catch(error => {
         setLoading(false);
       });
-  }, [token]);
+  }, [token, addressData]);
 
   const getCartData = useCallback(
     async (isRefreshing = false) => {
@@ -147,12 +151,16 @@ const MyCart = ({ }) => {
           `region_id=${countryCode?.id}`,
           token,
         );
+        // console.log("GET CART ============= :",getCart?.data);
+
         setCartData(getCart?.data);
         const getaddress = await fetchData.list_address(``, token);
+        // console.log("setAddressCount ============= : ", getaddress);
+
         setAddressCount(getaddress?.count);
         setLoading(false);
       } catch (error) {
-        console.log('error', error);
+        console.log('catch in getCartData_MyCart:', error);
       } finally {
         if (isRefreshing) {
           setRefreshing(false);
@@ -187,7 +195,7 @@ const MyCart = ({ }) => {
         common_fn.showToast(update_cart?.message);
       }
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in updateCartData_MyCart', error);
     }
   };
 
@@ -195,6 +203,8 @@ const MyCart = ({ }) => {
     try {
       var param = `${bottomData?.id}`;
       const delete_cart = await fetchData.delete_cart(param, token);
+      // console.log("remove cart --------------- : ", delete_cart);
+
       common_fn.showToast(delete_cart?.message);
       setSaleBottomSheetVisible(false);
       getCartData();
@@ -207,7 +217,8 @@ const MyCart = ({ }) => {
       // );
       setSelectedData(selectedData.filter(id => id !== item.id));
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in deleteCartData :', error);
+      // console.log('catch in deleteCartData :', error.response.data);
     }
   };
 
@@ -262,7 +273,7 @@ const MyCart = ({ }) => {
         }),
       );
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getCountData_MyCart', error);
     }
   };
 
@@ -383,6 +394,8 @@ const MyCart = ({ }) => {
       console.log('catch in addImage_BottomSheet menu ', error);
     }
   }
+
+  // console.log('length ------------ :', cartData?.length);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
@@ -866,7 +879,7 @@ const MyCart = ({ }) => {
                 <View
                   style={{
                     flex: 1,
-                    height: height / 2.5,
+                    height: height / 2,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
@@ -981,11 +994,14 @@ const MyCart = ({ }) => {
                   <TouchableOpacity
                     onPress={() => {
                       if (selectedData?.length > 0) {
+                        // console.log("CHECK OUT ---------------- :", CheckOut + "  selectedData ========== : " + selectedData);
                         if (addressData > 0) {
                           navigation.navigate('OrderConfirmation', {
                             CheckOut: CheckOut,
                             ids: selectedData,
+                            buyNow: "Cart"
                           });
+
                         } else {
                           navigation.navigate('AddAddress', {
                             item: {},

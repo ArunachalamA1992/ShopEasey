@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -68,7 +68,9 @@ const HomeScreen = () => {
   const [latestendReached, setlatestendReached] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector(state => state.UserReducer.userData);
-  var { token } = userData;
+
+  const { token } = userData;
+  console.log("Token -------------------- : ", token);
   const [imageVisible, setImageVisible] = useState(true);
   const [profileVisible, setProfileVisible] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
@@ -84,6 +86,12 @@ const HomeScreen = () => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
   var { wishlist, cart } = dataCount;
+  const [notificationData, setNotificationData] = useState("")
+  // console.log("countryCode *********************** : ", countryCode?.country);
+
+  // const [currentCountry, setCurrentCountry] = useState('');
+  // const [countryImage, setCountryImage] = useState('');
+
 
   const [bannerData, setBannerData] = useState([]);
   const [profileData, setProfileData] = useState({});
@@ -163,6 +171,24 @@ const HomeScreen = () => {
         },
       ],
     },
+    {
+      id: 4,
+      ban_image: require('../../assets/Brands/banner-down-2.png'),
+      banners: [
+        {
+          id: 1,
+          image: require('../../assets/Brands/slide-1.png'),
+        },
+        {
+          id: 2,
+          image: require('../../assets/Brands/slide-2.png'),
+        },
+        {
+          id: 3,
+          image: require('../../assets/Brands/slide-3.png'),
+        },
+      ],
+    },
   ]);
 
   const [shopSection] = useState([
@@ -178,9 +204,9 @@ const HomeScreen = () => {
     { id: 10, title: 'Latest Product', data: ['Latest Product'] },
   ]);
 
-  useEffect(() => {
-    currentGeolocation();
-  }, []);
+  // useEffect(() => {
+  //   currentGeolocation();
+  // }, [currentCity]);
 
   useEffect(() => {
     const eventEmitter = new NativeEventEmitter(
@@ -201,133 +227,72 @@ const HomeScreen = () => {
     };
   }, [navigation]);
 
-  const currentGeolocation = async () => {
-    const locPermissionDenied = await common_fn.locationPermission();
-    if (locPermissionDenied) {
-      const timeoutId = setTimeout(() => {
-        console.error('Location request timed out');
-      }, 10000);
+  useEffect(() => {
+    getNotification();
+  }, [token]);
 
-      Geolocation.getCurrentPosition(
-        async position => {
-          clearTimeout(timeoutId);
-          const { latitude, longitude } = position.coords;
-
-          try {
-            const locationPublish = `${latitude},${longitude}`; //PUBLISH
-            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationPublish}&sensor=true&key=AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s`;
-            fetch(url)
-              .then((response) => response.json())  // Parse the JSON from the response
-              .then((data) => {
-                if (data.results && data.results.length > 0) {
-                  // Loop through address components to find the city
-                  const addressComponents = data.results[0].address_components;
-                  let city = "";
-                  addressComponents.forEach((component) => {
-                    if (component.types.includes("locality")) {
-                      city = component.long_name;
-                    }
-                  });
-
-                  if (city) {
-                    console.log("City Name: =====================", city);
-                    setCurrentCity(city);
-                  } else {
-                    console.log("------------ City not found ------------");
-                  }
-                } else {
-                  console.log("-------------- No results found -----------");
-                }
-              })
-              .catch((e) => {
-                console.log("Error: ", e);
-              });
-
-            // const response = await axios.get(
-            //   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
-            // );
-            // const address = response?.data?.address;
-            // if (address) {
-            //   const city = `${address?.city ?? address?.suburb},${address?.country_code
-            //     }`;
-            //   setCurrentCity(city);
-            // }
-          } catch (error) {
-            console.error('Error fetching city:', error);
-          }
-        },
-        error => {
-          clearTimeout(timeoutId); // Clear the timeout on error
-          console.error('Error getting location:', error);
-        },
-      );
+  const getNotification = useCallback(async () => {
+    try {
+      const notification_list = await fetchData.notification(null, token);
+      // console.log('notification_list-----------------------------111', notification_list?.data.length);
+      if (notification_list) {
+        setNotificationData(notification_list?.data?.length);
+      }
+    } catch (error) {
+      console.log('error', error);
     }
-    else {
-      console.error('Location Permission Neede');
-    }
-  };
+  }, [token]);
 
   // const currentGeolocation = async () => {
-  //   const locPermissionGranted = await common_fn.locationPermission(); // Check if permission is granted
-  //   if (locPermissionGranted === 'granted') { // Only proceed if permission is granted
+  //   const locPermissionDenied = await common_fn.locationPermission();
+  //   if (locPermissionDenied) {
   //     const timeoutId = setTimeout(() => {
   //       console.error('Location request timed out');
   //     }, 10000);
 
   //     Geolocation.getCurrentPosition(
   //       async position => {
-  //         clearTimeout(timeoutId); // Clear timeout when position is received
+  //         clearTimeout(timeoutId);
   //         const { latitude, longitude } = position.coords;
-  //         console.log("latitude ------------- : ", latitude + "    longitude ------------- : ", longitude);
+
   //         try {
+  //           const locationPublish = `${latitude},${longitude}`; //PUBLISH
+  //           const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationPublish}&sensor=true&key=AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s`;
+  //           fetch(url)
+  //             .then((response) => response.json())  // Parse the JSON from the response
+  //             .then((data) => {
+  //               if (data.results && data.results.length > 0) {
+  //                 // Loop through address components to find the city
+  //                 const addressComponents = data.results[0].address_components;
+  //                 let city = "";
+  //                 addressComponents.forEach((component) => {
+  //                   if (component.types.includes("locality")) {
+  //                     city = component.long_name;
+  //                   }
+  //                 });
+
+  //                 if (city) {
+  //                   console.log("City Name: =====================", city);
+  //                   setCurrentCity(city);
+  //                 } else {
+  //                   console.log("------------ City not found ------------");
+  //                 }
+  //               } else {
+  //                 console.log("-------------- No results found -----------");
+  //               }
+  //             })
+  //             .catch((e) => {
+  //               console.log("Error: ", e);
+  //             });
+
   //           // const response = await axios.get(
   //           //   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
   //           // );
-
-  //           // GOOGLE API KEYS
-  //           // AIzaSyAa_wlLYoGavSgqqmIUjSKarZ8kudhZZr8
-  //           // AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s
-
-  //           const response = await axios.get(
-  //             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s`
-  //           );
-  //           const address = response?.data?.results[0]?.formatted_address;
   //           // const address = response?.data?.address;
-
-  //           let locationData = { door: "", locality: "", city: "", region: "", country: "" };
-
-  //           let result = address.split(",")
-  //           locationData.city = result[3];
-  //           locationData.region = result[4];
-  //           locationData.country = result[5];
-  //           setCurrentCity(locationData.city); // Update the city state
-  //           // data = address.split(',')
-  //           // city = data[0].match(/^\w+/g)
-
-  //           // res = {
-  //           //   'city': city[1],
-  //           //   'region': data[4],
-  //           //   'country': data[5]
-  //           // }
-  //           console.log("******************", locationData.city);  // Outputs: "Coimbatore"
-
-  //           // function extractCity(address) {
-  //           //   // Split the address into parts by commas
-  //           //   const parts = address.split(',');
-
-  //           //   // Find the city (generally the second to last element before the state)
-  //           //   const city = parts.find((part) => part.trim().match(/Tamil Nadu/i) === null && part.trim().match(/\d{6}/) === null && part.trim().match(/India/i) === null);
-
-  //           //   return city.trim();  // Return the city name after trimming extra spaces
-  //           // }
-
-  //           // const cityName = extractCity(address);
-
-
   //           // if (address) {
-  //           //   const city = `${address?.city ?? address?.suburb}, ${address?.country_code}`;
-
-  //           //   setCurrentCity(city); // Update the city state
+  //           //   const city = `${address?.city ?? address?.suburb},${address?.country_code
+  //           //     }`;
+  //           //   setCurrentCity(city);
   //           // }
   //         } catch (error) {
   //           console.error('Error fetching city:', error);
@@ -335,14 +300,257 @@ const HomeScreen = () => {
   //       },
   //       error => {
   //         clearTimeout(timeoutId); // Clear the timeout on error
-  //         console.error('Error getting location:', error.message); // Use error.message for better error info
+  //         console.error('Error getting location:', error);
   //       },
-  //       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 } // Location options
   //     );
-  //   } else {
-  //     console.error('Location Permission Needed');
+  //   }
+  //   else {
+  //     console.error('Location Permission Neede');
   //   }
   // };
+
+  // const currentGeolocation = async () => {
+  //   const locPermissionDenied = await common_fn.locationPermission();
+  //   if (locPermissionDenied) {
+  //     const timeoutId = setTimeout(() => {
+  //       console.error('Location request timed out');
+  //     }, 10000);
+
+  //     Geolocation.getCurrentPosition(
+  //       async position => {
+  //         try {
+  //           const { latitude, longitude } = position.coords;
+  //           console.log("latitude ===============:", latitude);
+  //           // API call to reverse geocode
+  //           const response = await axios.get(
+  //             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+  //           );
+
+  //           console.log("Full Address Response ===============:", response.data);
+
+  //           const address = response.data?.address;
+  //           if (address) {
+  //             // Check multiple possible fields for city-like information
+  //             const city = address.city || address.town || address.village || address.municipality || address.suburb;
+  //             const countryCode = address.country_code || '';
+  //             const formattedCity = city ? `${city}, ${countryCode}` : 'Location not found';
+
+  //             console.log("Current City:", formattedCity);
+  //             setCurrentCity(formattedCity);
+  //           }
+  //         } catch (error) {
+  //           console.error('Error fetching city:', error);
+  //         }
+  //       },
+  //       error => {
+  //         console.error('Error getting location:', error);
+  //       }
+  //     );
+
+
+  //   }
+  // };
+
+  // const currentGeolocation = async () => {
+  //   try {
+  //     const locPermissionGranted = await common_fn.locationPermission(); // Check if permission is granted
+  //     if (locPermissionGranted === 'granted') { // Only proceed if permission is granted
+  //       const timeoutId = setTimeout(() => {
+  //         console.error('Location request timed out');
+  //       }, 10000);
+
+  //       Geolocation.getCurrentPosition(
+  //         async position => {
+  //           clearTimeout(timeoutId); // Clear timeout when position is received
+  //           const { latitude, longitude } = position.coords;
+  //           // console.log("latitude ------------- : ", latitude + "    longitude ------------- : ", longitude);
+  //           try {
+  //             // const response = await axios.get(
+  //             //   `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+  //             // );
+
+  //             // GOOGLE API KEYS
+  //             // AIzaSyAa_wlLYoGavSgqqmIUjSKarZ8kudhZZr8
+  //             // AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s
+
+  //             const response = await axios.get(
+  //               `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCpCJVGt4r1JHIrkRPHDgA0q6RCppCmE3s`
+  //             );
+  //             const address = response?.data?.results[0]?.formatted_address;
+  //             // const address = response?.data?.address;
+
+  //             let locationData = { door: "", locality: "", city: "", region: "", country: "" };
+
+  //             let result = address.split(",")
+  //             locationData.city = result[3];
+  //             locationData.region = result[4];
+  //             locationData.country = result[5];
+  //             setCurrentCity(locationData.city); // Update the city state
+  //             // data = address.split(',')
+  //             // city = data[0].match(/^\w+/g)
+
+  //             // res = {
+  //             //   'city': city[1],
+  //             //   'region': data[4],
+  //             //   'country': data[5]
+  //             // }
+  //             console.log("******************", locationData.city);  // Outputs: "Coimbatore"
+
+  //             // function extractCity(address) {
+  //             //   // Split the address into parts by commas
+  //             //   const parts = address.split(',');
+
+  //             //   // Find the city (generally the second to last element before the state)
+  //             //   const city = parts.find((part) => part.trim().match(/Tamil Nadu/i) === null && part.trim().match(/\d{6}/) === null && part.trim().match(/India/i) === null);
+
+  //             //   return city.trim();  // Return the city name after trimming extra spaces
+  //             // }
+
+  //             // const cityName = extractCity(address);
+
+
+  //             // if (address) {
+  //             //   const city = `${address?.city ?? address?.suburb}, ${address?.country_code}`;
+
+  //             //   setCurrentCity(city); // Update the city state
+  //             // }
+  //           } catch (error) {
+  //             console.error('Error fetching city:', error);
+  //           }
+  //         },
+  //         error => {
+  //           clearTimeout(timeoutId); // Clear the timeout on error
+  //           console.error('Error getting location:', error.message); // Use error.message for better error info
+  //         },
+  //         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 } // Location options
+  //       );
+  //     } else {
+  //       console.error('Location Permission Needed');
+  //     }
+  //   } catch (error) {
+  //     console.log("catch in currentGeolocation_HomeScreen : ", error);
+
+  //   }
+  // };
+
+
+  useEffect(() => {
+    setLoading(true);
+    getUserData();
+    getData()
+      .then(() => setLoading(false))
+      .catch(error => {
+        setLoading(false);
+      });
+  }, [token]);
+
+  useEffect(() => {
+    getFlashDeals();
+  }, []);
+
+  const getUserData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user_data');
+      // console.log("value ///////////////////", value);
+      if (value !== null) {
+        dispatch(setUserData(JSON.parse(value)));
+      }
+
+    } catch (error) {
+      console.log('catch in getUser_Data_HomeScreen :', error);
+    }
+  };
+
+  const getFlashDeals = async () => {
+    try {
+      const getFlashDeals = await fetchData.flash_Offers(``, token);
+      setFlashOffers(getFlashDeals?.data);
+      var data = `project=offer&region_id=${countryCode?.id}`;
+      const get_products = await fetchData.list_products(data, token);
+      console.log("flash -------------------- : ", get_products?.data);
+
+      setProducts(get_products?.data);
+      setShowLoadMore(true);
+    } catch (error) {
+      console.log('catch in getFlash_Deals_HomeScreen :', error);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const categories_data = await fetchData.categories(`?limit=14`, token);
+      console.log("CATEGORY =================== :", categories_data);
+      setCategoryData(categories_data?.data);
+
+      const trending_products = await fetchData.list_products(
+        `is_trending=1&region_id=${countryCode?.id}`,
+        token,
+      );
+      console.log("Trending =================== :", trending_products?.data);
+      setTrendingProducts(trending_products?.data);
+
+      const latest_products = await fetchData.list_products(
+        `region_id=${countryCode?.id}`,
+        token,
+      );
+      console.log("Latest =================== :", latest_products?.data);
+      setLatestProduct(latest_products?.data);
+
+      const fetured_products = await fetchData.list_products(
+        `is_featured=1&region_id=${countryCode?.id}`,
+        token,
+      );
+      // console.log("Featured =================== :", fetured_products?.data);
+      setFeaturedProducts(fetured_products?.data);
+      setFeaturedShowLoadMore(true);
+
+      //banner
+      var banner_data = `seller=home_page`;
+      const getBannerData = await fetchData.get_banner(banner_data, null);
+      // console.log("Banner =================== :", getBannerData?.data)
+      setBannerData(getBannerData?.data);
+      //profile
+
+      const profile = await fetchData.profile_data(``, token);
+      console.log("Profile =================== :", profile?.data)
+      setProfileData(profile.data);
+
+    } catch (error) {
+      console.log('catch in get_Data_HomeScreen :', error.response ? error.response.data : error.message);
+
+      // if (error.response?.data?.message === "Token expired or Unauthorized") {
+      //   const newToken = userData?.token;
+      //   if (newToken) {
+      //     // Retry getData with the new token
+      //     return await getData();
+      //   } else {
+      //     console.log('Failed to refresh token, redirecting to login.');
+      //   }
+      // } else {
+      //   console.log('catch in get_Data_HomeScreen :', error.response?.data || error.message);
+      // }
+
+    }
+  };
+
+  useEffect(() => {
+    getCountData();
+  }, [token, userData]);
+
+  const getCountData = async () => {
+    try {
+      const getData = await fetchData.profile_data(``, token);
+      dispatch(
+        setDataCount({
+          wishlist: getData?.data?.wishlist_count,
+          cart: getData?.data?.cart_count,
+        }),
+      );
+    } catch (error) {
+      console.log('catch in getCount_Data :', error);
+    }
+  };
+
 
   const calculateTotalDiscountPercentage = type => {
     const filteredProducts = products?.filter(
@@ -369,11 +577,12 @@ const HomeScreen = () => {
   const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
 
   const handleVoiceSearch = query => {
-    // if (query != '') {
-    //   navigation.navigate('Search', {searchProduct: query});
-    // }
-    setVoiceSearchQuery(query);
-    propertySearch(query);
+    try {
+      setVoiceSearchQuery(query);
+      propertySearch(query);
+    } catch (error) {
+      console.log("catch in handleVoiceSearch : ", error);
+    }
   };
 
   const openCameraWithPermission = async () => {
@@ -405,100 +614,6 @@ const HomeScreen = () => {
       }
     } catch (err) {
       console.warn(err);
-    }
-  };
-
-  useEffect(() => {
-    getUserData();
-    setLoading(true);
-    getData()
-      .then(() => setLoading(false))
-      .catch(error => {
-        setLoading(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    getFlashDeals();
-  }, []);
-
-  const getUserData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('user_data');
-      if (value !== null) {
-        dispatch(setUserData(JSON.parse(value)));
-      }
-    } catch (error) {
-      console.log('catch in getUser_Data :', error);
-    }
-  };
-
-  const getFlashDeals = async () => {
-    try {
-      const getFlashDeals = await fetchData.flash_Offers(``, token);
-      setFlashOffers(getFlashDeals?.data);
-      var data = `project=offer&region_id=${countryCode?.id}`;
-      const get_products = await fetchData.list_products(data, token);
-      console.log("flash -------------------- : ", get_products?.data);
-
-      setProducts(get_products?.data);
-      setShowLoadMore(true);
-    } catch (error) {
-      console.log('catch in getFlash_Deals :', error);
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const categories_data = await fetchData.categories(`?limit=14`, token);
-      setCategoryData(categories_data?.data);
-      const trending_products = await fetchData.list_products(
-        `is_trending=1&region_id=${countryCode?.id}`,
-        token,
-      );
-      setTrendingProducts(trending_products?.data);
-      const latest_products = await fetchData.list_products(
-        `region_id=${countryCode?.id}`,
-        token,
-      );
-      setLatestProduct(latest_products?.data);
-
-      const fetured_products = await fetchData.list_products(
-        `is_featured=1&region_id=${countryCode?.id}`,
-        token,
-      );
-      setFeaturedProducts(fetured_products?.data);
-      setFeaturedShowLoadMore(true);
-
-      //banner
-      var banner_data = `seller=home_page`;
-      const getBannerData = await fetchData.get_banner(banner_data, null);
-      setBannerData(getBannerData?.data);
-      //profile
-
-      const profile = await fetchData.profile_data(``, token);
-      setProfileData(profile.data);
-
-    } catch (error) {
-      console.log('catch in get_Data :', error);
-    }
-  };
-
-  useEffect(() => {
-    getCountData();
-  }, [token, getCountData, userData]);
-
-  const getCountData = async () => {
-    try {
-      const getData = await fetchData.profile_data(``, token);
-      dispatch(
-        setDataCount({
-          wishlist: getData?.data?.wishlist_count,
-          cart: getData?.data?.cart_count,
-        }),
-      );
-    } catch (error) {
-      console.log('catch in getCount_Data :', error);
     }
   };
 
@@ -592,23 +707,48 @@ const HomeScreen = () => {
 
   const propertySearch = async input => {
     try {
+
       setSearchProduct(input);
       setSearchLoader(true);
-      const data = `filter=${input}&page=1&limit=10`;
-      const getData = await fetchData.search(data, token);
-      // console.log("getData ---------------- : ", getData);
+      const data = `filter=${input}`;
+      // const data = `filter=${input}&page=1&limit=10`;
+      // console.log("TYPING DATA----------- :", data);
+      // const getData = await fetchData.search(data, token);
+      // // console.log("getData search ---------------- : ", getData);
+      // if (getData?.status === true) {
+      //   // const fetured_products = await fetchData.list_products(
+      //   //   `is_featured=1&region_id=${countryCode?.id}`,
+      //   //   token,
+      //   // );
+
+      //   setProductSuggestions({
+      //     data: getData?.data || [],
+      //     visible: true,
+      //   });
+
+      // } else {
+      //   setProductSuggestions({
+      //     data: [],
+      //     visible: true,
+      //   });
+      // }
+
+
+
+      const fetchPromise = fetchData.search(data, token);
+
+      // Set a timeout of 5 seconds (5000 ms)
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Request timed out")), 5000)
+      );
+
+      const getData = await Promise.race([fetchPromise, timeoutPromise]);
+
       if (getData?.status === true) {
-
-        // const fetured_products = await fetchData.list_products(
-        //   `is_featured=1&region_id=${countryCode?.id}`,
-        //   token,
-        // );
-
         setProductSuggestions({
           data: getData?.data || [],
           visible: true,
         });
-
       } else {
         setProductSuggestions({
           data: [],
@@ -1077,11 +1217,19 @@ const HomeScreen = () => {
                   flexDirection: 'row',
                   alignItems: 'center', paddingHorizontal: 10
                 }}>
-                <Iconviewcomponent
+                {/* <Iconviewcomponent
                   Icontag={'Octicons'}
                   iconname={'location'}
                   icon_size={20}
                   icon_color={Color.white}
+                /> */}
+                <Image
+                  source={{ uri: countryCode?.country_image }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    resizeMode: 'contain',
+                  }}
                 />
                 <Text
                   style={{
@@ -1089,16 +1237,30 @@ const HomeScreen = () => {
                     color: Color.white,
                     paddingHorizontal: 5,
                     textTransform: 'capitalize',
-                    fontFamily: Manrope.Bold,
+                    fontFamily: Manrope.SemiBold, letterSpacing: 0.5
                   }}>
-                  {currentCity}
+                  {countryCode?.country}
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity
                   style={{ marginHorizontal: 10 }}
                   onPress={() => navigation.navigate('notification')}>
-                  <Feather name="bell" size={24} color={Color.white} />
+                  {notificationData.length > 0 ? null :
+                    <View style={{ position: 'absolute', zIndex: 999, top: -5, right: -5 }}>
+                      <Badge
+                        badgeStyle={{
+                          position: 'absolute',
+                          zIndex: 999,
+                          backgroundColor: Color.red,
+                          color: Color.white,
+                          fontFamily: Manrope.Bold,
+                          fontSize: 12,
+                        }} maxLength={3} >
+                        {notificationData}
+                      </Badge>
+                    </View>}
+                  <Feather name="bell" size={24} color={Color.white} style={{ top: 0 }} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{ marginHorizontal: 10 }}
@@ -1931,87 +2093,91 @@ const HomeScreen = () => {
                 case 'product':
                   return (
                     <View>
-                      <Image
-                        source={{ uri: Media.flash_ban }}
-                        style={{ width: Dimensions.get('window').width, height: 70 }}
-                      />
-                      <LinearGradient
-                        style={{
-                          marginBottom: 10,
-                          padding: 10,
-                        }}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        colors={['#FF0066', '#fff']}>
-                        <FlatList
-                          data={products}
-                          numColumns={2}
-                          showsVerticalScrollIndicator={false}
-                          renderItem={({ item, index }) => {
-                            return (
-                              <ItemCard item={item} navigation={navigation} />
-                            );
-                          }}
-                          ListFooterComponent={() => {
-                            return (
-                              <View
+                      {products?.length > 0 && (
+                        <>
+                          <Image
+                            source={{ uri: Media.flash_ban }}
+                            style={{ width: Dimensions.get('window').width, height: 70 }}
+                          />
+                          <LinearGradient
+                            style={{
+                              marginBottom: 10,
+                              padding: 10,
+                            }}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            colors={['#FF0066', '#fff']}>
+                            <FlatList
+                              data={products}
+                              numColumns={2}
+                              showsVerticalScrollIndicator={false}
+                              renderItem={({ item, index }) => {
+                                return (
+                                  <ItemCard item={item} navigation={navigation} />
+                                );
+                              }}
+                              ListFooterComponent={() => {
+                                return (
+                                  <View
+                                    style={{
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}>
+                                    {latestloadMore && (
+                                      <View
+                                        style={{
+                                          flexDirection: 'row',
+                                          alignItems: 'center',
+                                        }}>
+                                        <Text
+                                          style={{
+                                            fontSize: 12,
+                                            color: Color.black,
+                                            marginHorizontal: 10,
+                                            fontFamily: Manrope.Medium,
+                                          }}>
+                                          Loading...
+                                        </Text>
+                                        <ActivityIndicator />
+                                      </View>
+                                    )}
+                                  </View>
+                                );
+                              }}
+                            />
+                            {showLoadMore && (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  loadMoreData();
+                                }}
                                 style={{
+                                  padding: 5,
+                                  flexDirection: 'row',
                                   alignItems: 'center',
                                   justifyContent: 'center',
                                 }}>
-                                {latestloadMore && (
-                                  <View
-                                    style={{
-                                      flexDirection: 'row',
-                                      alignItems: 'center',
-                                    }}>
-                                    <Text
-                                      style={{
-                                        fontSize: 12,
-                                        color: Color.black,
-                                        marginHorizontal: 10,
-                                        fontFamily: Manrope.Medium,
-                                      }}>
-                                      Loading...
-                                    </Text>
-                                    <ActivityIndicator />
-                                  </View>
-                                )}
-                              </View>
-                            );
-                          }}
-                        />
-                        {showLoadMore && (
-                          <TouchableOpacity
-                            onPress={() => {
-                              loadMoreData();
-                            }}
-                            style={{
-                              padding: 5,
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                fontFamily: Manrope.Bold,
-                                color: Color.white,
-                                marginHorizontal: 5,
-                                textDecorationLine: 'underline',
-                                textAlign: 'center',
-                              }}>
-                              More
-                            </Text>
-                            <Icon
-                              name="chevron-forward-circle"
-                              size={15}
-                              color={Color.white}
-                              style={{ marginTop: 5 }}
-                            />
-                          </TouchableOpacity>
-                        )}
-                      </LinearGradient>
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                    fontFamily: Manrope.Bold,
+                                    color: Color.white,
+                                    marginHorizontal: 5,
+                                    textDecorationLine: 'underline',
+                                    textAlign: 'center',
+                                  }}>
+                                  More
+                                </Text>
+                                <Icon
+                                  name="chevron-forward-circle"
+                                  size={15}
+                                  color={Color.white}
+                                  style={{ marginTop: 5 }}
+                                />
+                              </TouchableOpacity>
+                            )}
+                          </LinearGradient>
+                        </>
+                      )}
                     </View>
                   );
                 case 'Featured Product':
@@ -2205,16 +2371,16 @@ const HomeScreen = () => {
                 position: 'absolute',
                 alignItems: 'center',
                 top: 115,
-                zIndex: 1,
+                zIndex: 1, right: 10
               }}>
               <View
                 style={{
                   width: '90%',
-                  maxHeight: 200,
+                  maxHeight: 250,
                   backgroundColor: Color.white,
                   padding: 10,
                   marginTop: 5,
-                  borderWidth: 1,
+                  borderWidth: 1, right: -10,
                   borderColor: Color.lightgrey,
                   borderBottomLeftRadius: 20,
                   borderBottomRightRadius: 20,
@@ -2249,7 +2415,7 @@ const HomeScreen = () => {
                               style={{
                                 fontSize: 16,
                                 fontFamily: Manrope.Medium,
-                                color: Color.black,
+                                color: Color.black, paddingVertical: 5
                               }}>
                               {item?.name}
                             </Text>

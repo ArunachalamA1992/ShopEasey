@@ -1,5 +1,5 @@
-import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import { StackActions, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   PermissionsAndroid,
@@ -14,16 +14,16 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
-import {BottomSheet} from 'react-native-btr';
-import {baseUrl} from '../../Config/base_url';
-import {useSelector} from 'react-redux';
+import { BottomSheet } from 'react-native-btr';
+import { baseUrl } from '../../Config/base_url';
+import { useSelector } from 'react-redux';
 import ImageResizer from 'react-native-image-resizer';
-import {Media} from '../../Global/Media';
+import { Media } from '../../Global/Media';
 import common_fn from '../../Config/common_fn';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -43,10 +43,10 @@ const genderData = [
   },
 ];
 
-const EditProfile = ({navigation, route}) => {
+const EditProfile = ({ navigation, route }) => {
   const userData = route.params.profileData;
   const rootuserData = useSelector(state => state.UserReducer.userData);
-  var {token} = rootuserData;
+  var { token } = rootuserData;
   const [firstName, setfirstName] = useState(userData.first_name);
   const [lastName, setLastName] = useState(userData.last_name);
   const [phoneNumber, setPhoneNumber] = useState(userData.mobile);
@@ -205,8 +205,8 @@ const EditProfile = ({navigation, route}) => {
         const formdata = new FormData();
 
         if (image && image.length > 0) {
-          const {uri, name} = image[0];
-          formdata.append('profile', {uri, type: 'image/jpeg', name});
+          const { uri, name } = image[0];
+          formdata.append('profile', { uri, type: 'image/jpeg', name });
         }
 
         formdata.append('first_name', firstName);
@@ -227,7 +227,7 @@ const EditProfile = ({navigation, route}) => {
             if (result?.status) {
               const UserLogin = {
                 ...result?.data,
-                token: token,
+                token: result?.token,
               };
 
               await AsyncStorage.setItem(
@@ -326,14 +326,14 @@ const EditProfile = ({navigation, route}) => {
                     Icontag={'AntDesign'}
                     iconname={'closecircleo'}
                     icon_size={24}
-                    iconstyle={{color: Color.primary, marginRight: 10}}
+                    iconstyle={{ color: Color.primary, marginRight: 10 }}
                   />
                 </TouchableOpacity>
               </View>
 
-              <View style={{width: '100%', alignItems: 'center'}}>
+              <View style={{ width: '100%', alignItems: 'center' }}>
                 {selectBtm == 'Profile' ? (
-                  <View style={{width: '95%'}}>
+                  <View style={{ width: '95%' }}>
                     <View
                       style={{
                         alignItems: 'center',
@@ -426,7 +426,7 @@ const EditProfile = ({navigation, route}) => {
                   </View>
                 ) : null}
                 {selectBtm == 'Gender' ? (
-                  <View style={{width: '100%'}}>
+                  <View style={{ width: '100%' }}>
                     {genderData.map((item, index) => {
                       return (
                         <TouchableOpacity
@@ -502,7 +502,7 @@ const EditProfile = ({navigation, route}) => {
           }}>
           {profileImage != '' ? (
             <Image
-              source={{uri: profileImage}}
+              source={{ uri: profileImage }}
               style={{
                 width: 100,
                 height: 100,
@@ -514,7 +514,7 @@ const EditProfile = ({navigation, route}) => {
             />
           ) : (
             <Image
-              source={{uri: Media.user}}
+              source={{ uri: Media.user }}
               style={{
                 width: 100,
                 height: 100,
@@ -547,7 +547,7 @@ const EditProfile = ({navigation, route}) => {
           style={{
             marginVertical: 10,
           }}>
-          <View style={{marginVertical: 10}}>
+          <View style={{ marginVertical: 10 }}>
             <Text
               style={{
                 textAlign: 'left',
@@ -563,7 +563,7 @@ const EditProfile = ({navigation, route}) => {
                 Icontag={'Feather'}
                 iconname={'user'}
                 icon_size={22}
-                iconstyle={{color: Color.cloudyGrey}}
+                iconstyle={{ color: Color.cloudyGrey }}
               />
               <TextInput
                 style={styles.numberTextBox}
@@ -578,7 +578,7 @@ const EditProfile = ({navigation, route}) => {
             </View>
           </View>
 
-          <View style={{marginVertical: 10}}>
+          <View style={{ marginVertical: 10 }}>
             <Text
               style={{
                 textAlign: 'left',
@@ -594,7 +594,7 @@ const EditProfile = ({navigation, route}) => {
                 Icontag={'Feather'}
                 iconname={'user'}
                 icon_size={22}
-                iconstyle={{color: Color.cloudyGrey}}
+                iconstyle={{ color: Color.cloudyGrey }}
               />
               <TextInput
                 style={styles.numberTextBox}
@@ -609,7 +609,7 @@ const EditProfile = ({navigation, route}) => {
             </View>
           </View>
 
-          <View style={{marginVertical: 0}}>
+          <View style={{ marginVertical: 0 }}>
             <Text
               style={{
                 textAlign: 'left',
@@ -625,7 +625,7 @@ const EditProfile = ({navigation, route}) => {
                 Icontag={'Feather'}
                 iconname={'mail'}
                 icon_size={22}
-                iconstyle={{color: Color.cloudyGrey}}
+                iconstyle={{ color: Color.cloudyGrey }}
               />
               <TextInput
                 style={styles.numberTextBox}
@@ -654,7 +654,7 @@ const EditProfile = ({navigation, route}) => {
             ) : null}
           </View>
 
-          <View style={{marginVertical: 10}}>
+          <View style={{ marginVertical: 10 }}>
             <Text
               style={{
                 textAlign: 'left',
@@ -670,7 +670,7 @@ const EditProfile = ({navigation, route}) => {
                 Icontag={'Feather'}
                 iconname={'phone'}
                 icon_size={22}
-                iconstyle={{color: Color.cloudyGrey}}
+                iconstyle={{ color: Color.cloudyGrey }}
               />
               <Text style={styles.numberCountryCode}>
                 {countryCode?.mobile_prefix}

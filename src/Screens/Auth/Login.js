@@ -8,6 +8,7 @@ import {
   TextInput,
   Keyboard,
   SafeAreaView,
+  BackHandler,
 } from 'react-native';
 import Color from '../../Global/Color';
 import { Manrope } from '../../Global/FontFamily';
@@ -29,6 +30,8 @@ const Login = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
+  console.log("countryCode *********************:", countryCode);
+
   const [number, setNumber] = useState('');
   const [error, setError] = useState(false);
   const [loginType, setLoginType] = useState('');
@@ -41,12 +44,11 @@ const Login = () => {
   };
 
   const isMobile = input => {
-    const mobileRegex = /^[0-9]{10}$/;
+    const mobileRegex = countryCode?.id === 454 ? /^[0-9]{8}$/ : 453 ? /^[0-9]{10}$/ : /^[6-9][0-9]{9}$/;
     return mobileRegex.test(input);
   };
 
   useEffect(() => {
-
     try {
       GoogleSignin.configure({
         scopes: ['email', 'profile'],
@@ -56,16 +58,33 @@ const Login = () => {
       });
       getFCMToken();
     } catch (error) {
-      console.log('error ----------- : ', error);
+      console.log('catch in useEffext_Sigin ----------- : ', error);
     }
   }, []);
 
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, []);
+
+  const handleBackPress = () => {
+    navigation.goBack();
+    return true;
+  };
+
   const getFCMToken = async () => {
     try {
+      console.log("jksdgjksdhkghjksdghk");
+
       let fcmToken = await AsyncStorage.getItem('fcmToken');
+      console.log("NEW -------------- :", fcmToken);
       if (!fcmToken) {
         try {
           const newToken = await messaging().getToken();
+
+
           if (newToken) {
             await AsyncStorage.setItem('fcmToken', newToken);
             setToken(newToken);
@@ -88,10 +107,8 @@ const Login = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      // console.log("userInfo ------------- : ", userInfo);
-
       if (userInfo) {
-        var data = {
+        const data = {
           first_name: userInfo?.user?.givenName,
           last_name: userInfo?.user?.familyName,
           profile: userInfo?.user?.photo,
@@ -99,10 +116,10 @@ const Login = () => {
           email: userInfo?.user?.email,
           fcm_token: token,
         };
-        const updateProfiledata = await fetchData.login_with_gmail(data, null);
-        // console.log("updateProfiledata =========== : ", updateProfiledata);
+        console.log('Form data ================= : ', data);
 
-        if (updateProfiledata.message === "Login successful") {
+        const updateProfiledata = await fetchData.login_with_gmail(data, null);
+        if (updateProfiledata.message) {
           const UserLogin = {
             ...updateProfiledata?.data,
             token: updateProfiledata?.token,
@@ -111,59 +128,87 @@ const Login = () => {
           navigation.replace('TabNavigator');
           common_fn.showToast(`Welcome to ShopEasey`);
         }
-        else {
-          common_fn.showToast(updateProfiledata.message);
-        }
-      }
-      else {
-        alert("User not found, please check credentials and try again!")
       }
     } catch (error) {
       console.log('catch in google_Signing', error);
     }
   };
 
-  const chkNumber = number => {
+  const chkNumber = (number) => {
     setNumber(number);
-    const isValidLength =
-      countryCode?.id === 454 ? number?.length === 8 : number?.length === 10;
-    const mobileRegex = countryCode?.id === 454 ? /^[0-9]{8}$/ : /^[0-9]{10}$/;
-    if (mobileRegex.test(number) && isValidLength) {
-      Keyboard.dismiss();
+
+    // Set min and max length dynamically based on country code
+    const minLength =
+      countryCode?.id === 454 ? 8 : countryCode?.id === 453 ? 10 : 10;
+    const maxLength =
+      countryCode?.id === 454 ? 9 : countryCode?.id === 453 ? 11 : 10;
+
+    // Define regex for mobile number validation
+    const mobileRegex = /^[0-9]*$/; // Allow only digits
+
+    // Validate length and format
+    if (
+      mobileRegex.test(number) &&
+      number.length >= minLength &&
+      number.length <= maxLength
+    ) {
+      Keyboard.dismiss(); // Dismiss keyboard on valid input
     }
   };
 
-  const chkNumberError = number => {
-    let reg = /^[6-9][0-9]*$/;
+  const chkNumberError = (number) => {
+    const minLength =
+      countryCode?.id === 454 ? 8 : countryCode?.id === 453 ? 10 : 10;
+    const maxLength =
+      countryCode?.id === 454 ? 9 : countryCode?.id === 453 ? 11 : 10;
+
+    let reg = /^[6-9][0-9]*$/; // Starting digit validation
 
     if (number.length === 0) {
       setError('Please enter your mobile number');
-    } else if (reg.test(number) === false) {
-      setError(false);
-      setError(false);
-    } else if (reg.test(number) === true) {
-      setError('');
+    } else if (number.length < minLength) {
+      setError(`Number must be at least ${minLength} digits`);
+    } else if (number.length > maxLength) {
+      setError(`Number must not exceed ${maxLength} digits`);
+    } else if (!reg.test(number)) {
+      setError('Invalid number format');
+    } else {
+      setError(''); // Clear error if valid
     }
   };
-
   const loginVerify = async () => {
     try {
       setLoading(true);
+
       const numberIsEmail = isEmail(number);
       const numberIsMobile = isMobile(number);
-      const num_len = countryCode?.id == 454 ? 8 : 10;
-      if (number != '') {
-        if (numberIsEmail || (numberIsMobile && number.length === num_len)) {
-          var data = {
+
+      // Set min and max length dynamically based on country code
+      const minLength =
+        countryCode?.id === 454 ? 8 : countryCode?.id === 453 ? 10 : 10;
+      const maxLength =
+        countryCode?.id === 454 ? 9 : countryCode?.id === 453 ? 11 : 10;
+
+      if (number !== '') {
+        // console.log("MOBILE ------------- ", numberIsMobile + "Email -------------- :" + numberIsEmail);
+        if (
+          numberIsEmail || numberIsMobile &&
+          (
+            number.length >= minLength &&
+            number.length <= maxLength)
+        ) {
+
+          const data = {
             region_id: countryCode?.id,
+            ...(isEmail(number) ? { email: number } : { mobile: number }),
           };
-          if (isEmail(number)) {
-            data.email = number;
-          } else if (isMobile(number)) {
-            data.mobile = number;
-          }
+
+          console.log("token ---------------- :", token);
+
+          // Call the API
           const login_data = await fetchData.login_with_otp(data, null);
-          console.log('login_data', login_data);
+          console.log('login_data resp ================:', login_data);
+
           if (login_data?.status) {
             common_fn.showToast(login_data?.message);
             navigation.dispatch(
@@ -172,38 +217,31 @@ const Login = () => {
                 token: null,
                 loginType,
                 fcmToken: token,
-              }),
+              })
             );
-            setLoading(false);
           } else {
-            var msg = login_data?.message;
-            setError(msg);
-            setLoading(false);
+            setError(login_data?.message || 'Login failed');
           }
-          setLoading(false);
         } else {
-          let reg = /[A-Za-z- #*;,.<>\{\}\[\]\\\/]/gi;
-          if (reg.test(number)) {
-            common_fn.showToast(`Invalid Email ID`);
-          } else {
-            common_fn.showToast(
-              `Invalid ${countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
-              }  Number`,
-            );
-          }
-          setLoading(false);
+          common_fn.showToast(
+            `Invalid ${countryCode?.id === 452 ? 'Phone' : 'WhatsApp'
+            } Number`
+          );
         }
       } else {
         common_fn.showToast(
-          `Enter your ${countryCode?.id == 452 ? 'Phone' : 'Whatsapp'
-          } or email id`,
+          `Enter your ${countryCode?.id === 452 ? 'Phone' : 'WhatsApp'
+          } or Email ID`
         );
       }
     } catch (error) {
       console.log('error', error);
+      common_fn.showToast('Something went wrong. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
+
 
   const RegisterVerify = async () => {
     try {
@@ -213,20 +251,22 @@ const Login = () => {
       const num_len = countryCode?.id == 454 ? 8 : 10;
 
       if (number != '') {
-        if (numberIsEmail || (numberIsMobile && number.length === num_len)) {
+        if (numberIsEmail || (number.length === num_len)) {
           var data = {
             region_id: countryCode?.id,
           };
           if (isEmail(number)) {
             data.email = number;
-          } else if (isMobile(number)) {
+          } else {
             data.mobile = number;
           }
 
+          console.log("Request -------------- :", data);
           const Register_data = await fetchData.Register_request_otp(
             data,
             null,
           );
+          console.log("Response -------------- :", Register_data);
 
           if (Register_data?.status) {
             common_fn.showToast(Register_data?.message);
@@ -262,7 +302,7 @@ const Login = () => {
         );
       }
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in Register_Verify_', error);
       setLoading(false);
     }
   };
@@ -271,11 +311,11 @@ const Login = () => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          // flex: 1,
-          // justifyContent: 'flex-end',
-          // alignItems: 'flex-start',
+          flex: 2,
+          justifyContent: 'center',
+          alignItems: 'flex-start',
           padding: 10,
-          marginTop: 20,
+          // marginTop: 20,
         }}>
         <Text
           style={{
@@ -327,37 +367,24 @@ const Login = () => {
                 {countryCode?.mobile_prefix}
               </Text>
             )}
-            {console.log(countryCode?.id ,"CCCCCCCCCCCCC")
-            }
             <TextInput
               placeholder={
-                countryCode?.id == 452 ? 'Mobile' : 'WhatsApp Number or Email'
+                countryCode?.id === 452 ? 'Mobile' : 'WhatsApp Number or Email'
               }
               placeholderTextColor={Color.cloudyGrey}
               value={number}
-              // maxLength={
-              //   isMobile(number) && [452, 453, 454].includes(countryCode?.id)
-              //     ? countryCode?.id == 454
-              //       ? 8
-              //       : countryCode?.id == 453 ? 11 : 10
-              //     : 10
-              // }
-               maxLength={
-                isMobile(number) &&  countryCode?.id == 454
-                    ? 8
-                    : countryCode?.id == 453 ? 11 : 10
+              maxLength={
+                isMobile(number) && [452, 453, 454].includes(countryCode?.id)
+                  ? countryCode?.id === 454
+                    ? 9 // Singapore max length
+                    : countryCode?.id === 453
+                      ? 11 // Malaysia max length
+                      : 10 // India max length
+                  : undefined
               }
-              autoFocus={
-                countryCode?.id == 454 && number?.length == 8
-                  ? false
-                  : (countryCode?.id == 454 && number?.length == 8) ||
-                    (countryCode?.id == 453 && number?.length == 10)
-                    ? false
-                    : true
-              }
-              onChangeText={input => {
-                chkNumber(input);
-                chkNumberError(input);
+              onChangeText={(input) => {
+                chkNumber(input); // Validate number dynamically
+                // chkNumberError(input); // Show error feedback
               }}
               style={styles.numberTextBox}
             />
@@ -430,8 +457,10 @@ const Login = () => {
       <View
         style={{
           //   flex: 1,
+          width: '100%',
           flexDirection: 'row',
-          alignItems: 'center',
+          justifyContent: 'center',
+          alignItems: 'center', marginVertical: 10
         }}>
         <View
           style={{
@@ -465,17 +494,17 @@ const Login = () => {
           //   flex: 1,
           justifyContent: 'center',
           padding: 10,
-          marginTop: 20,
+          // marginTop: 20,
         }}>
         <Text
           style={{
             fontSize: 16,
             color: Color.black,
-            fontFamily: Manrope.Bold,
+            fontFamily: Manrope.SemiBold,
             // paddingHorizontal: 10,
           }}>
           {loginType == ''
-            ? "Don't Have An Account?"
+            ? "Don't have an account?"
             : 'You already have an account'}
         </Text>
         <TouchableOpacity
@@ -517,7 +546,7 @@ const Login = () => {
           <Text
             style={{
               textAlign: 'justify',
-              fontSize: 12,
+              fontSize: 13,
               color: Color.cloudyGrey,
               fontFamily: Manrope.Medium,
               lineHeight: 22,
@@ -554,7 +583,7 @@ const Login = () => {
           <Text
             style={{
               textAlign: 'justify',
-              fontSize: 12,
+              fontSize: 13,
               paddingHorizontal: 5,
               color: Color.cloudyGrey,
               fontFamily: Manrope.Medium,

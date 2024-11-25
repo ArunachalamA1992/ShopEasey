@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -8,19 +8,19 @@ import {
   View,
 } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
-import {Iconviewcomponent} from '../../Components/Icontag';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import {Media} from '../../Global/Media';
+import { Manrope } from '../../Global/FontFamily';
+import { Iconviewcomponent } from '../../Components/Icontag';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { Media } from '../../Global/Media';
 import fetchData from '../../Config/fetchData';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {Divider} from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 
 const ProfileView = () => {
   const navigation = useNavigation();
   const userData = useSelector(state => state.UserReducer.userData);
-  var {first_name, last_name, profile, email, mobile, dob, gender, token} =
+  var { first_name, last_name, profile, email, mobile, dob, gender, token } =
     userData;
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,7 @@ const ProfileView = () => {
       setLoading(true);
       getData().finally(() => setLoading(false));
     } catch (error) {
-      console.log('catch in Profile_View :', error);
+      console.log('catch in useEffect_ProfileView:', error);
     }
   }, [token]);
 
@@ -41,7 +41,7 @@ const ProfileView = () => {
       const profile = await fetchData.profile_data(``, token);
       setProfileData(profile.data);
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in getData_ProfileView:', error);
     }
   };
 
@@ -57,31 +57,31 @@ const ProfileView = () => {
                   width="100%"
                   height={150}
                   borderRadius={10}
-                  style={{marginTop: 10}}
+                  style={{ marginTop: 10 }}
                 />
                 <SkeletonPlaceholder.Item
                   width="100%"
                   height={150}
                   borderRadius={10}
-                  style={{marginTop: 10}}
+                  style={{ marginTop: 10 }}
                 />
                 <SkeletonPlaceholder.Item
                   width="100%"
                   height={150}
                   borderRadius={10}
-                  style={{marginTop: 10}}
+                  style={{ marginTop: 10 }}
                 />
                 <SkeletonPlaceholder.Item
                   width="100%"
                   height={150}
                   borderRadius={10}
-                  style={{marginTop: 10}}
+                  style={{ marginTop: 10 }}
                 />
                 <SkeletonPlaceholder.Item
                   width="100%"
                   height={150}
                   borderRadius={10}
-                  style={{marginTop: 10}}
+                  style={{ marginTop: 10 }}
                 />
               </SkeletonPlaceholder.Item>
             </SkeletonPlaceholder>
@@ -99,7 +99,7 @@ const ProfileView = () => {
               }}>
               {profileData.profile?.length > 0 ? (
                 <Image
-                  source={{uri: profileData.profile}}
+                  source={{ uri: profileData.profile }}
                   style={{
                     width: 80,
                     height: 80,
@@ -109,7 +109,7 @@ const ProfileView = () => {
                 />
               ) : (
                 <Image
-                  source={{uri: Media.user}}
+                  source={{ uri: Media.user }}
                   style={{
                     width: 80,
                     height: 80,
@@ -119,7 +119,7 @@ const ProfileView = () => {
                 />
               )}
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <View
                 style={{
                   marginTop: 20,
@@ -141,7 +141,7 @@ const ProfileView = () => {
                       profileData: profileData,
                     })
                   }
-                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                  style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Iconviewcomponent
                     Icontag={'MaterialIcons'}
                     iconname={'edit'}
@@ -188,7 +188,7 @@ const ProfileView = () => {
                     ? `${profileData.first_name} ${profileData.last_name}`
                     : ''}
                 </Text>
-                <Divider style={{height: 1, marginVertical: 10}} />
+                <Divider style={{ height: 1, marginVertical: 10 }} />
               </View>
               {email != null ? (
                 <View
@@ -211,7 +211,7 @@ const ProfileView = () => {
                     }}>
                     {profileData.email != null ? profileData.email : ''}
                   </Text>
-                  <Divider style={{height: 1, marginVertical: 10}} />
+                  <Divider style={{ height: 1, marginVertical: 10 }} />
                 </View>
               ) : null}
 
@@ -235,7 +235,7 @@ const ProfileView = () => {
                   }}>
                   {countryCode?.mobile_prefix} {profileData.mobile}
                 </Text>
-                <Divider style={{height: 1, marginVertical: 10}} />
+                <Divider style={{ height: 1, marginVertical: 10 }} />
               </View>
 
               {/* <View

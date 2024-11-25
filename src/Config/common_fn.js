@@ -195,6 +195,11 @@ const common_fn = {
     return closestColor;
   },
   generatePDF: async (response, countryCode) => {
+
+    console.log("Order Data: 111111111", orderData);
+    console.log("Country Code: 11111111111", countryCode);
+
+
     var discount = parseFloat(
       100 -
       ((response?.variants?.org_price -

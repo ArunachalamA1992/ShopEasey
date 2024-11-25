@@ -40,11 +40,13 @@ import { useNavigation } from '@react-navigation/native';
 const ProductDetails = ({ route }) => {
   const navigation = useNavigation();
   const { id, variant_id } = route.params;
+
   const [singleData, setSingleData] = useState({});
   const [loading, setLoading] = useState(false);
   const [sizeChartVisible, setSizeChartVisible] = useState(false);
   const [resultDate, setResultDate] = useState(null);
   const countryCode = useSelector(state => state.UserReducer.country);
+  // console.log("countryCode------  :" + JSON.stringify(countryCode));
   const dataCount = useSelector(state => state.UserReducer.count);
   var { wishlist, cart } = dataCount;
   const [topPicks, setTopPicks] = useState([]);
@@ -168,12 +170,14 @@ const ProductDetails = ({ route }) => {
 
         try {
           let param = `${id}`;
-          console.log('Sending only current param:', data);
+          data += `&region_id=${countryCode?.id}`
+          console.log('Sending only current param *********************:', data);
           const responseData = await fetchData.single_property(
             param,
             data,
             token,
           );
+
           setSingleData(responseData?.data);
         } catch (error) {
           console.log('Error fetching property data:', error);
@@ -215,7 +219,7 @@ const ProductDetails = ({ route }) => {
         if (selectedMaterial && type !== 'material')
           data += `&material=${selectedMaterial}`;
 
-        console.log('data-------------------', data);
+        console.log('data-------------------********', data);
         const responseData = await fetchData.single_property(
           param,
           data,
@@ -288,13 +292,15 @@ const ProductDetails = ({ route }) => {
         '',
         token,
       );
-
+      // console.log("productData ------------- : ", productData);
       setSingleData(productData?.data);
       // top picks
       const topPicksData = await fetchData.list_products(
         `project=top-picks&region_id=${countryCode?.id}`,
         token,
       );
+      // console.log("top-picks ------------- : ", topPicksData);
+
       setTopPicks(topPicksData?.data);
       //you may also like this
       var like_this_param = `category_id=${productData?.data?.product?.category_id}&region_id=${countryCode?.id}`;
@@ -484,7 +490,7 @@ const ProductDetails = ({ route }) => {
             tax: singleData?.tax,
           },
         ];
-        navigation.navigate('OrderConfirmation', { CheckOut, ids: [] });
+        navigation.navigate('OrderConfirmation', { CheckOut, ids: [], buyNow: "BuyNow" });
         setModalVisible(false);
       } else {
         common_fn.showToast(`Please Select the
@@ -529,6 +535,8 @@ const ProductDetails = ({ route }) => {
   const getCountData = async () => {
     try {
       const getaddress = await fetchData.list_address(``, token);
+      console.log("address --------------- :",getaddress);
+      
       setAddressCount(getaddress?.count);
       const getData = await fetchData.profile_data(``, token);
       dispatch(
@@ -618,6 +626,10 @@ const ProductDetails = ({ route }) => {
     return date;
   };
   const deliveryDate = addDays(8);
+
+  // console.log("singleData?.offer_price : singleData?.price ==== :", singleData?.offer_price + "dgfdgklk" + singleData?.price);
+
+
   return (
     <View
       style={{
@@ -1082,21 +1094,16 @@ const ProductDetails = ({ route }) => {
                       }}>
                       <Text style={styles.productDiscountPrice}>
                         {countryCode?.symbol}
-                        {parseFloat(
-                          singleData?.offer_price
-                            ? singleData?.offer_price
-                            : singleData?.price,
-                          // / countryCode?.price_margin,
-                        ).toFixed(2)}{' '}
-                        <Text style={styles.productPrice}>
+                        {parseFloat(singleData?.offer_price ? singleData?.offer_price : singleData?.price).toFixed(2)}{' '}
+                        {/* {singleData?.org_price > singleData?.offer_price &&
+                          singleData?.org_price > 0 && ( */}
+                        {(singleData?.offer_price ? singleData?.offer_price : singleData?.price) < singleData?.org_price && <Text style={styles.productPrice}>
                           {countryCode?.symbol}
-                          {parseFloat(
-                            singleData?.org_price,
-                            //  / countryCode?.price_margin,
-                          ).toFixed(2)}
-                        </Text>
+                          {parseFloat(singleData?.org_price).toFixed(2)}
+                        </Text>}
+                        {/* )} */}
                       </Text>
-                      <Text
+                      {(singleData?.offer_price ? singleData?.offer_price : singleData?.price) < singleData?.org_price && <Text
                         style={{
                           fontFamily: Manrope.ExtraBold,
                           fontSize: 12,
@@ -1106,7 +1113,7 @@ const ProductDetails = ({ route }) => {
                           paddingHorizontal: 10,
                         }}>
                         {discount}% OFF
-                      </Text>
+                      </Text>}
                     </View>
                     {singleData?.stock == 0 && (
                       <Text
@@ -1191,7 +1198,7 @@ const ProductDetails = ({ route }) => {
                           fontFamily: Manrope.Bold,
                           marginHorizontal: 10,
                         }}>
-                        {countryCode?.symbol} {10}
+                        {countryCode?.symbol} {countryCode?.shipping_charge}
                       </Text>
                     </View>
                   )}

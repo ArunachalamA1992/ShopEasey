@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -35,7 +35,7 @@ LogBox.ignoreAllLogs();
 const { height } = Dimensions.get('screen');
 
 const OrderConfirmation = ({ navigation, route }) => {
-  const { CheckOut, ids } = route.params;
+  const { CheckOut, ids, buyNow } = route.params;
   const [OrderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [netInfo_State, setNetinfo] = useState(true);
@@ -43,32 +43,123 @@ const OrderConfirmation = ({ navigation, route }) => {
   const [selectAddress, setSelectAddress] = useState(null);
   const [couponModal, setCouponModal] = useState(false);
   const [couponCode, setCouponCode] = useState('');
-  const countryCode = useSelector(state => state.UserReducer.country);
+  let countryCode = useSelector(state => state.UserReducer.country);
+
+  const [selectedData, setSelectedData] = useState([])
   const [address, setAddress] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  var { token } = userData;
+  const { token } = userData;
   const dispatch = useDispatch();
 
+
+  // useEffect(() => {
+  //   const interval = setTimeout(() => {
+  //     getCartData();
+  //   }, 1000);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
+
+  // const getCartData = async () => {
+  //   try {
+  //     var data = `id=${ids?.join(',')}&region_id=${countryCode?.id}`;
+  //     const getCart = await fetchData.list_cart(data, token);
+  //     setOrderData(getCart?.data);
+  //     const getaddress = await fetchData.list_address(``, token);
+  //     setAddress(getaddress?.data);
+  //   } catch (error) {
+  //     console.log('error------', error);
+  //   }
+  // };
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      getCartData();
-    }, 1000);
-    return () => {
-      clearInterval(interval);
+    const fetchInitialData = async () => {
+      try {
+        // Fetch addresses
+        const getaddress = await fetchData.list_address(``, token);
+        setAddress(getaddress?.data);
+        // Set selected data based on the condition
+        setSelectedData(ids?.length > 0 ? OrderData : CheckOut);
+        // Fetch cart data only if buyNow is not "BuyNow"
+        if (buyNow !== "BuyNow") {
+          await getCartData();
+        }
+
+
+      } catch (error) {
+        console.log("Error in fetching initial data:", error);
+      }
     };
-  }, []);
+
+    if (token) {
+      fetchInitialData();
+    }
+  }, [token, ids, buyNow, countryCode]);
+
+
+  // useEffect(() => {
+  //   // setTimeout(async () => {
+  //   const getaddress = fetchData.list_address(``, token);
+  //   setAddress(getaddress?.data);
+
+  //   buyNow !== "BuyNow" && getCartData();
+  //   setSelectedData(ids?.length > 0 ? OrderData : CheckOut)
+  //   // }, 1000);
+
+  // }, [token, address]);
 
   const getCartData = async () => {
     try {
-      var data = `id=${ids?.join(',')}&region_id=${countryCode?.id}`;
+      const data = `id=${ids?.join(',')}&region_id=${countryCode?.id}`;
       const getCart = await fetchData.list_cart(data, token);
-      setOrderData(getCart?.data);
-      const getaddress = await fetchData.list_address(``, token);
-      setAddress(getaddress?.data);
+      setSelectedData(getCart?.data);
+
     } catch (error) {
       console.log('error------', error);
     }
   };
+
+
+  // useEffect(async () => {
+  //   try {
+  //     getCartData();
+
+  //     buyNow !== "BuyNow" && getCartData();
+  //     setSelectedData(ids?.length > 0 ? OrderData : CheckOut)
+
+  //   } catch (error) {
+  //     console.log('catch in useEffect------', error);
+  //   }
+  // }, [token]);
+
+  // useEffect(() => {
+  //   setInterval(() => {
+
+
+  //     setSelectedData(ids?.length > 0 ? OrderData : CheckOut)
+  //   }, 1000);
+  //   buyNow !== "BuyNow" && getCartData();
+  // }, [token, address, selectedData]);
+
+  // const getCartData = async () => {
+  //   try {
+  //     const getaddress = await fetchData.list_address(``, token);
+  //     setAddress(getaddress?.data);
+
+  //     const data = `id=${ids?.join(',')}&region_id=${countryCode?.id}`;
+  //     const getCart = await fetchData.list_cart(data, token);
+  //     setOrderData(getCart?.data);
+
+
+  //     // const interval = setInterval(async () => {
+
+
+  //   } catch (error) {
+  //     console.log('error------', error);
+  //   }
+  // };
+
 
   const deleteAddress = async id => {
     try {
@@ -90,8 +181,8 @@ const OrderConfirmation = ({ navigation, route }) => {
                   '',
                   token,
                 );
-                console.log("getAddress",getAddress);
-                
+                console.log("getAddress", getAddress);
+
                 common_fn.showToast(getAddress?.message);
               } catch (error) {
                 console.log('Error deleting address:', error);
@@ -109,7 +200,13 @@ const OrderConfirmation = ({ navigation, route }) => {
     }
   };
 
-  var selectedData = ids?.length > 0 ? OrderData : CheckOut;
+  // var selectedData = ids?.length > 0 ? OrderData : CheckOut;
+  // console.log("Selected Data -------------- : ", selectedData);
+
+  // console.log(new Set(selectedData.map(i => i.product?.vendor_id)), "dfasdfasdf", countryCode?.shipping_charge, new Set(selectedData.map(i => i.product?.vendor_id)).size, selectedData.map(i => i.product?.vendor_id));
+
+  // var selectedData = ids?.length > 0 ? OrderData : CheckOut;
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [paymentMethod] = useState([
@@ -273,7 +370,7 @@ const OrderConfirmation = ({ navigation, route }) => {
   const postOrder = async () => {
     try {
       const total_price = parseFloat(
-        Sub_total + overall_tax + (countryCode?.id == 452 ? 0 : 10),
+        Sub_total + overall_tax + (countryCode?.shipping_charge * new Set(selectedData.map(i => i.product?.vendor_id)).size),
       );
       // const data = {
       //   total: total_price,
@@ -310,12 +407,13 @@ const OrderConfirmation = ({ navigation, route }) => {
       //     }),
       //   ),
       // };
+      // console.log(selectedData)
       const data = {
         total: total_price,
         sub_total: parseFloat(Sub_total),
         payment_method:
           selectPayment?.name === 'cash on delivery' ? 'COD' : 'ONLINE',
-        shipping_charge: countryCode?.id == 452 ? 0 : 10,
+        shipping_charge: countryCode?.shipping_charge * new Set(selectedData.map(i => i.product?.vendor_id)).size,
         address_id: selectAddress?.id,
         tax: 0,
         products: selectedData?.flatMap(item =>
@@ -389,14 +487,14 @@ const OrderConfirmation = ({ navigation, route }) => {
         };
 
         // console.log("sign data ====================== : ",JSON.stringify(data)+"razorpay_signature =-========= :"+razorpay_signature);
-        
+
         const placeOrder = await fetchData.verify_pay(
           data,
           token,
           razorpay_signature,
         );
         // console.log("placeOrder ---------------:", placeOrder);
-        
+
         dispatch(setOrderSuccessVisible(true));
         navigation?.replace('TabNavigator');
         common_fn.showToast(post_order?.message);
@@ -421,8 +519,11 @@ const OrderConfirmation = ({ navigation, route }) => {
         data.quantity += quantity - 1;
       }
       const update_cart = await fetchData.update_cart(param, data, token);
+      console.log("PLUS ---------------- : ", update_cart);
+
       if (update_cart?.status == true) {
         // common_fn.showToast(update_cart?.message);
+
         getCartData();
       } else {
         common_fn.showToast(update_cart?.message);
@@ -651,6 +752,9 @@ const OrderConfirmation = ({ navigation, route }) => {
             {isExpanded ? (
               <View style={{ width: '100%' }}>
                 {selectedData?.map(item => {
+
+                  // console.log("ITEM ********************* : ", item);
+
                   var discount = parseFloat(
                     100 -
                     ((item?.variant?.org_price -
@@ -794,38 +898,39 @@ const OrderConfirmation = ({ navigation, route }) => {
                                   }}></View>
                               </View>
                             )}
-                          {item?.variant?.size != '' ||
-                            (item?.variant?.size != null && (
-                              <View
+                          {/* {item?.variant?.size != '' || */}
+                          {(item?.variant?.size != null && (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                marginHorizontal: 5,
+                                borderRightWidth: 1,
+                                borderRightColor: Color.lightgrey,
+                                paddingHorizontal: 5,
+                              }}>
+                              <Text
                                 style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'flex-start',
-                                  alignItems: 'center',
-                                  marginHorizontal: 5,
-                                  borderRightWidth: 1,
-                                  borderRightColor: Color.lightgrey,
-                                  paddingHorizontal: 5,
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                  marginRight: 5,
                                 }}>
-                                <Text
-                                  style={{
-                                    fontSize: 12,
-                                    color: Color.cloudyGrey,
-                                    fontFamily: Manrope.Medium,
-                                    marginRight: 5,
-                                  }}>
-                                  Size -
-                                </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 12,
-                                    color: Color.cloudyGrey,
-                                    fontFamily: Manrope.Medium,
-                                  }}>
-                                  {item?.variant?.size}
-                                </Text>
-                              </View>
-                            ))}
-                          {/* <View
+                                Size -
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Color.cloudyGrey,
+                                  fontFamily: Manrope.Medium,
+                                }}>
+                                {item?.variant?.size}
+                              </Text>
+                            </View>
+                          ))
+                          }
+                          <View
                             style={{
                               flexDirection: 'row',
                               justifyContent: 'flex-start',
@@ -848,7 +953,7 @@ const OrderConfirmation = ({ navigation, route }) => {
                               }}>
                               {item?.quantity}
                             </Text>
-                          </View> */}
+                          </View>
                         </View>
                         <View
                           style={{
@@ -871,11 +976,12 @@ const OrderConfirmation = ({ navigation, route }) => {
                             }}>
                             <TouchableOpacity
                               onPress={() => {
-                                updateCartData(
-                                  item?.id,
-                                  'minus',
-                                  item?.quantity,
-                                );
+                                buyNow !== "BuyNow" ?
+                                  updateCartData(
+                                    item?.id,
+                                    'minus',
+                                    item?.quantity,
+                                  ) : setSelectedData((prev) => prev.map(i => i?.id === item?.id ? { ...item, quantity: item?.quantity - 1 } : i))
                               }}
                               disabled={item?.quantity == 1}
                               style={{
@@ -912,11 +1018,14 @@ const OrderConfirmation = ({ navigation, route }) => {
                             </View>
                             <TouchableOpacity
                               onPress={() => {
-                                updateCartData(
-                                  item?.id,
-                                  'plus',
-                                  item?.quantity,
-                                );
+                                // console.log(buyNow, "dfasdfasdfasdfasd=======================", OrderData, selectedData.map(i => i?.id === item?.id ? { ...item, quantity: item?.quantity + 1 } : i))
+                                buyNow !== "BuyNow" ?
+                                  updateCartData(
+                                    item?.id,
+                                    'plus',
+                                    item?.quantity,
+                                  ) :
+                                  setSelectedData((prev) => prev.map(i => i?.id === item?.id ? { ...item, quantity: item?.quantity + 1 } : i))
                               }}
                               disabled={item?.quantity === item?.variant?.stock}
                               style={{
@@ -1336,8 +1445,6 @@ const OrderConfirmation = ({ navigation, route }) => {
                   }}>
                   Shipping
                 </Text>
-                {/* {console.log(countryCode, '??????????????')
-                } */}
                 <Text
                   style={{
                     fontSize: 14,
@@ -1348,7 +1455,8 @@ const OrderConfirmation = ({ navigation, route }) => {
                   }}
                   numberOfLines={2}>
                   {countryCode?.symbol}
-                  {countryCode?.id == 452 ? 0 : 10}
+                  {/* {countryCode?.id == 452 ? 0 : 10} */}
+                  {countryCode?.shipping_charge * new Set(selectedData.map(i => i.product?.vendor_id)).size}
                   {/* {countryCode?.shipping_charge == 0 ? 99 : 10} */}
                 </Text>
               </View>
@@ -1416,7 +1524,7 @@ const OrderConfirmation = ({ navigation, route }) => {
                   numberOfLines={2}>
                   {countryCode?.symbol}
                   {parseFloat(
-                    Sub_total + overall_tax + (countryCode?.id == 452 ? 0 : 10),
+                    Sub_total + overall_tax + (countryCode?.shipping_charge * new Set(selectedData.map(i => i.product?.vendor_id)).size),
                   ).toFixed(2)}
                 </Text>
               </View>
@@ -1500,8 +1608,11 @@ const OrderConfirmation = ({ navigation, route }) => {
             }}
             numberOfLines={1}>
             {countryCode?.symbol}
-            {parseFloat(
+            {/* {parseFloat(
               Sub_total + overall_tax + (countryCode?.id == 452 ? 0 : 10),
+            ).toFixed(2)} */}
+            {parseFloat(
+              Sub_total + overall_tax + (countryCode?.shipping_charge * new Set(selectedData.map(i => i.product?.vendor_id)).size),
             ).toFixed(2)}
           </Text>
         </View>

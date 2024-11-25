@@ -1,28 +1,47 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, FlatList, Text, TouchableOpacity, View} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import fetchData from '../../Config/fetchData';
 import common_fn from '../../Config/common_fn';
 
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
 const NotificationScreen = () => {
   const [notificationData, setNotificationData] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
 
   useEffect(() => {
     getNotification();
   }, []);
 
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+
+    const formattedDate = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+
+    const formattedTime = date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    return `${formattedDate} ${formattedTime}`;
+  };
+
   const getNotification = useCallback(async () => {
     try {
       const notification_list = await fetchData.notification(null, token);
+      console.log('notification_list-----------------------------111', notification_list?.data);
       if (notification_list) {
         setNotificationData(notification_list?.data);
       }
@@ -33,12 +52,11 @@ const NotificationScreen = () => {
 
   const single_notification = async ids => {
     try {
-      const data = {id: [ids]};
+      const data = { id: [ids] };
       const notification_list = await fetchData.read_notification(data, token);
-      console.log(
-        'notification_list-----------------------------',
-        notification_list,
-      );
+      console.log("cliked ================== : ", notification_list);
+
+
       if (notification_list) {
         common_fn?.showToast(notification_list?.message);
         getNotification();
@@ -88,15 +106,15 @@ const NotificationScreen = () => {
 
   const groupedNotifications = groupNotificationsByDate();
   return (
-    <View style={{flex: 1, backgroundColor: Color.white, padding: 10}}>
+    <View style={{ flex: 1, backgroundColor: Color.white, padding: 10 }}>
       <FlatList
         data={[
-          {category: 'Today', data: groupedNotifications['Today']},
-          {category: 'Yesterday', data: groupedNotifications['Yesterday']},
-          {category: 'Earlier', data: groupedNotifications['Earlier']},
+          { category: 'Today', data: groupedNotifications['Today'] },
+          { category: 'Yesterday', data: groupedNotifications['Yesterday'] },
+          { category: 'Earlier', data: groupedNotifications['Earlier'] },
         ]}
         keyExtractor={(item, index) => item.category}
-        renderItem={({item, index}) => {
+        renderItem={({ item, index }) => {
           return (
             <View key={index}>
               {item.data.length > 0 && (
@@ -161,7 +179,7 @@ const NotificationScreen = () => {
                           {single_notify?.message}
                         </Text>
                       </View>
-                      <View style={{alignItems: 'center'}}>
+                      <View style={{ alignItems: 'center' }}>
                         <Icon
                           name="information-circle"
                           size={20}
@@ -174,7 +192,8 @@ const NotificationScreen = () => {
                             fontFamily: Manrope.Medium,
                           }}
                           numberOfLines={2}>
-                          {moment(single_notify?.created_at).format('HH:mm:ss')}
+                          {formatDate(single_notify?.created_at)}
+                          {/* {moment(single_notify?.created_at).format('hh:mm:ss')} */}
                         </Text>
                       </View>
                     </View>
