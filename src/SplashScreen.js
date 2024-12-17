@@ -61,6 +61,7 @@ const SplashScreen = ({ navigation }) => {
   };
 
   const getloginData = async () => {
+    console.log('triggered123');
     try {
       const countryData = await AsyncStorage.getItem('countryData');
       if (countryData === null) {

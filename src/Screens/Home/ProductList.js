@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   BackHandler,
   Dimensions,
@@ -13,19 +13,19 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import {ActivityIndicator, Badge} from 'react-native-paper';
+import { ActivityIndicator, Badge } from 'react-native-paper';
 import ItemCard from '../../Components/ItemCard';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import fetchData from '../../Config/fetchData';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {setDataCount} from '../../Redux';
+import { setDataCount } from '../../Redux';
 import FilterModal from '../../Components/Filter/FilterModal';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-const {height} = Dimensions.get('screen');
-const ProductList = ({route}) => {
+const { height } = Dimensions.get('screen');
+const ProductList = ({ route }) => {
   const navigation = useNavigation();
   const [category_id] = useState(route.params.category_id);
   const [param] = useState(route.params.param);
@@ -34,13 +34,13 @@ const ProductList = ({route}) => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [products, setProducts] = useState([]);
   const userData = useSelector(state => state.UserReducer.userData);
-  const {token} = userData;
+  const { token } = userData;
   const dispatch = useDispatch();
   const [CategoryData, setCategoryData] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(false);
   const [sub_cat_id, setSub_cat_id] = useState(0);
   const dataCount = useSelector(state => state.UserReducer.count);
-  const {wishlist, cart} = dataCount;
+  const { wishlist, cart } = dataCount;
   const [loadMore, setLoadMore] = useState(false);
   const countryCode = useSelector(state => state.UserReducer.country);
   const [Page, setPage] = useState(1);
@@ -109,8 +109,8 @@ const ProductList = ({route}) => {
         query += `&${param}`;
       }
       const product_data = await fetchData.list_products(query, token);
-      console.log("product_data --------------- : ",product_data);
-      
+      console.log("product_data --------------- : ", product_data);
+
       setProducts(product_data?.data);
     } catch (error) {
       console.log('Error loading products:', error);
@@ -191,18 +191,19 @@ const ProductList = ({route}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor={Color.primary} barStyle={'light-content'} />
       <View style={styles.header}>
         <TouchableOpacity
-          style={{marginRight: 10}}
+          style={{ marginRight: 10 }}
           onPress={() => handleBackPress()}>
           <AntDesign name="arrowleft" size={30} color={Color.white} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.searchView}
           onPress={() => {
-            navigation.navigate('Search', {searchProduct: ''});
+            // navigation.navigate('Search', {searchProduct: ''});
+            navigation.navigate('SearchDataList', { searchProduct: '', selectData: '' });
           }}>
           <AntDesign name="search1" size={22} color={Color.cloudyGrey} />
           <View style={styles.searchInput}>
@@ -219,7 +220,7 @@ const ProductList = ({route}) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginRight: 10}}
+          style={{ marginRight: 10 }}
           onPress={() => {
             navigation.navigate('WishListTab');
           }}>
@@ -241,7 +242,7 @@ const ProductList = ({route}) => {
           <AntDesign name="hearto" size={22} color={Color.white} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginRight: 10, padding: 5}}
+          style={{ marginRight: 10, padding: 5 }}
           onPress={() => {
             navigation.navigate('MyCartTab');
           }}>
@@ -264,10 +265,10 @@ const ProductList = ({route}) => {
         </TouchableOpacity>
       </View>
       {loading ? (
-        <View style={{marginHorizontal: 5}}>
+        <View style={{ marginHorizontal: 5 }}>
           <SkeletonPlaceholder>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={80}
                 height={40}
@@ -305,7 +306,7 @@ const ProductList = ({route}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -322,7 +323,7 @@ const ProductList = ({route}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -339,7 +340,7 @@ const ProductList = ({route}) => {
               />
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
               <SkeletonPlaceholder.Item
                 width={'45%'}
                 height={200}
@@ -358,7 +359,7 @@ const ProductList = ({route}) => {
           </SkeletonPlaceholder>
         </View>
       ) : (
-        <View style={{flex: 1, backgroundColor: Color.white}}>
+        <View style={{ flex: 1, backgroundColor: Color.white }}>
           <View
             style={{
               width: '100%',
@@ -397,12 +398,12 @@ const ProductList = ({route}) => {
               data={CategoryData}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 const isFocused = currentLevel
                   ? item.sub_sub_category_name ===
-                    selectedCategory?.sub_sub_category_name
+                  selectedCategory?.sub_sub_category_name
                   : item.sub_category_name ===
-                    selectedCategory?.sub_category_name;
+                  selectedCategory?.sub_category_name;
 
                 return (
                   <TouchableOpacity
@@ -440,7 +441,7 @@ const ProductList = ({route}) => {
             data={products}
             numColumns={2}
             showsVerticalScrollIndicator={false}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return <ItemCard item={item} navigation={navigation} />;
             }}
             onEndReached={() => {
@@ -449,9 +450,9 @@ const ProductList = ({route}) => {
             onEndReachedThreshold={10}
             ListFooterComponent={() => {
               return (
-                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                   {loadMore && products?.length > 0 && (
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Text
                         style={{
                           fontSize: 12,

@@ -86,7 +86,7 @@ const HomeScreen = () => {
   const countryCode = useSelector(state => state.UserReducer.country);
   const dataCount = useSelector(state => state.UserReducer.count);
   var { wishlist, cart } = dataCount;
-  const [notificationData, setNotificationData] = useState("")
+  const [notificationData, setNotificationData] = useState(0)
   // console.log("countryCode *********************** : ", countryCode?.country);
 
   // const [currentCountry, setCurrentCountry] = useState('');
@@ -228,20 +228,43 @@ const HomeScreen = () => {
   }, [navigation]);
 
   useEffect(() => {
-    getNotification();
+    setTimeout(() => {
+      getNotification();
+    }, 3000);
   }, [token]);
 
-  const getNotification = useCallback(async () => {
+  const getNotification = async () => {
     try {
       const notification_list = await fetchData.notification(null, token);
-      // console.log('notification_list-----------------------------111', notification_list?.data.length);
+      // console.log('notification_list ************************** 111', notification_list?.data.length);
       if (notification_list) {
         setNotificationData(notification_list?.data?.length);
+
+        // Calculate unread notifications
+        const unread = notification_list?.data.filter(item => !item.read_at).length;
+        setNotificationData(unread);
+      }
+      else {
+        setNotificationData([]);
+        console.log('Else in getNotification: ', error);
       }
     } catch (error) {
-      console.log('error', error);
+      console.log('catch in get_Notification: ', error);
     }
-  }, [token]);
+  }
+
+
+  // const getNotification = useCallback(async () => {
+  //   try {
+  //     const notification_list = await fetchData.notification(null, token);
+  //     console.log('notification_list ************************** 111', notification_list?.data.length);
+  //     if (notification_list) {
+  //       setNotificationData(notification_list?.data?.length);
+  //     }
+  //   } catch (error) {
+  //     console.log('error', error);
+  //   }
+  // }, [token]);
 
   // const currentGeolocation = async () => {
   //   const locPermissionDenied = await common_fn.locationPermission();
@@ -739,7 +762,7 @@ const HomeScreen = () => {
 
       // Set a timeout of 5 seconds (5000 ms)
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Request timed out")), 5000)
+        setTimeout(() => reject(new Error("Request timed out")), 3000)
       );
 
       const getData = await Promise.race([fetchPromise, timeoutPromise]);
@@ -2385,7 +2408,7 @@ const HomeScreen = () => {
                   borderBottomLeftRadius: 20,
                   borderBottomRightRadius: 20,
                 }}>
-                {searchLoader ? (
+                {/* {searchLoader ? (
                   <View
                     style={{
                       alignItems: 'center',
@@ -2393,70 +2416,70 @@ const HomeScreen = () => {
                     }}>
                     <ActivityIndicator />
                   </View>
-                ) : (
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <FlatList
-                      data={ProductSuggestions?.data}
-                      scrollEnabled
-                      keyExtractor={(item, index) => item + index}
-                      renderItem={({ item, index }) => {
-                        // console.log("item------------ :", item);
+                ) : ( */}
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <FlatList
+                    data={ProductSuggestions?.data}
+                    scrollEnabled
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={({ item, index }) => {
+                      // console.log("item------------ :", item);
 
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            onPress={() => {
-                              getSearchData(item);
-                            }}
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          onPress={() => {
+                            getSearchData(item);
+                          }}
+                          style={{
+                            width: '90%',
+                          }}>
+                          <Text
                             style={{
-                              width: '90%',
+                              fontSize: 16,
+                              fontFamily: Manrope.Medium,
+                              color: Color.black, paddingVertical: 5
                             }}>
-                            <Text
-                              style={{
-                                fontSize: 16,
-                                fontFamily: Manrope.Medium,
-                                color: Color.black, paddingVertical: 5
-                              }}>
-                              {item?.name}
-                            </Text>
-                            {index < ProductSuggestions?.data.length - 1 && (
-                              <Divider style={{ height: 1, marginVertical: 5 }} />
-                            )}
-                          </TouchableOpacity>
-                        );
-                      }}
-                      onEndReached={() => {
-                        loadSearchMoreData();
-                      }}
-                      ListEmptyComponent={() => {
-                        return (
-                          <View
+                            {item?.name}
+                          </Text>
+                          {index < ProductSuggestions?.data.length - 1 && (
+                            <Divider style={{ height: 1, marginVertical: 5 }} />
+                          )}
+                        </TouchableOpacity>
+                      );
+                    }}
+                    onEndReached={() => {
+                      loadSearchMoreData();
+                    }}
+                    ListEmptyComponent={() => {
+                      return (
+                        <View
+                          style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginVertical: 10,
+                            width: '100%',
+                          }}>
+                          <Text
                             style={{
-                              alignItems: 'center',
-                              justifyContent: 'center',
+                              fontSize: 14,
+                              padding: 5,
+                              paddingHorizontal: 20,
+                              marginStart: 5,
+                              borderRadius: 5,
                               marginVertical: 10,
-                              width: '100%',
+                              color: Color.primary,
+                              fontFamily: Manrope.Bold,
                             }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                padding: 5,
-                                paddingHorizontal: 20,
-                                marginStart: 5,
-                                borderRadius: 5,
-                                marginVertical: 10,
-                                color: Color.primary,
-                                fontFamily: Manrope.Bold,
-                              }}>
-                              No Data
-                            </Text>
-                          </View>
-                        );
-                      }}
-                      onEndReachedThreshold={3}
-                    />
-                  </ScrollView>
-                )}
+                            No Data
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    onEndReachedThreshold={3}
+                  />
+                </ScrollView>
+                {/* )} */}
               </View>
             </View>
           )}

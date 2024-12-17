@@ -538,6 +538,8 @@ const TabNavigator = () => {
   }, [token]);
 
   const getCountData = async () => {
+    console.log('triggered');
+    
     try {
       const getData = await fetchData.profile_data(``, token);
       dispatch(

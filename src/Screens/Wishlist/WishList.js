@@ -46,7 +46,7 @@ const WishList = ({ navigation }) => {
       .catch(error => {
         setLoading(false);
       });
-  }, [token, countryCode]);
+  }, []);
 
   // useEffect(() => {
   //   if (token) {
@@ -98,8 +98,8 @@ const WishList = ({ navigation }) => {
   };
 
   const toggleWishlist = async (single) => {
-    setLoadingWishlist(single?.product?.id);
     try {
+      setLoadingWishlist(single?.product?.id);
       const data = {
         product_id: single?.product?.id,
         variant_id: single?.variant?.id,
@@ -108,6 +108,7 @@ const WishList = ({ navigation }) => {
       const wishlistResponse = await fetchData.toggle_wishlists(data, token);
 
       common_fn.showToast(wishlistResponse?.message);
+      console.log("Wsih ------------------- :", wishlistResponse);
 
       if (wishlistResponse?.status === true) {
         // Refresh wishlist data after a successful toggle

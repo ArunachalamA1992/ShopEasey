@@ -18,7 +18,7 @@ const NotificationScreen = () => {
 
   useEffect(() => {
     getNotification();
-  }, []);
+  }, [token]);
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
@@ -41,7 +41,7 @@ const NotificationScreen = () => {
   const getNotification = useCallback(async () => {
     try {
       const notification_list = await fetchData.notification(null, token);
-      console.log('notification_list-----------------------------111', notification_list?.data);
+      // console.log('notification_list-----------------------------111', notification_list?.data);
       if (notification_list) {
         setNotificationData(notification_list?.data);
       }
@@ -54,12 +54,14 @@ const NotificationScreen = () => {
     try {
       const data = { id: [ids] };
       const notification_list = await fetchData.read_notification(data, token);
-      console.log("cliked ================== : ", notification_list);
-
+      // console.log("cliked ================== : ", notification_list);
 
       if (notification_list) {
         common_fn?.showToast(notification_list?.message);
         getNotification();
+      }
+      else {
+        common_fn?.showToast(notification_list?.message);
       }
     } catch (error) {
       console.log('error', error);

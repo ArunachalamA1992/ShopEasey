@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {baseUrl} from './base_url';
+import { baseUrl } from './base_url';
 
 export const api = {
   header: token => {
@@ -15,6 +15,7 @@ export const api = {
   },
   getMethod: (url, token) => {
     var headers = api.header(token);
+    console.log(token, url)
     return new Promise((resolve, reject) => {
       axios
         .get(baseUrl + url, {
@@ -39,7 +40,7 @@ export const api = {
     });
     return new Promise((resolve, reject) => {
       axios
-        .post(baseUrl + url, data, {headers: headers})
+        .post(baseUrl + url, data, { headers: headers })
         .then(res => {
           if (res.status == 200 || res.status == 201) {
             resolve(res.data);

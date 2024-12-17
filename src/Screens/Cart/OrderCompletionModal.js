@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import {
   Modal,
   Pressable,
@@ -7,15 +7,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {LottieCancelled, LottieCheck} from '../../Components/Lottie';
-import {Manrope} from '../../Global/FontFamily';
-import {Button} from 'react-native-paper';
+import { LottieCancelled, LottieCheck } from '../../Components/Lottie';
+import { Manrope } from '../../Global/FontFamily';
+import { Button } from 'react-native-paper';
 import Color from '../../Global/Color';
-import {useDispatch, useSelector} from 'react-redux';
-import {setOrderCancelVisible, setOrderSuccessVisible} from '../../Redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOrderCancelVisible, setOrderSuccessVisible } from '../../Redux';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const PostCompletedModal = ({}) => {
+const PostCompletedModal = ({ }) => {
   const orderSuccessModal = useSelector(
     state => state.OrderReducer.orderSuccessVisible,
   );
@@ -68,8 +68,8 @@ const PostCompletedModal = ({}) => {
             }}
             onPress={() => {
               if (orderSuccessModal) {
-                navigation.navigate('MyOrders');
                 dispatch(setOrderSuccessVisible(false));
+                navigation.navigate('MyOrders');
               } else {
                 dispatch(setOrderCancelVisible(false));
               }
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 30,
   },
-  closeModal: {position: 'absolute', right: 10, top: 10},
+  closeModal: { position: 'absolute', right: 10, top: 10 },
   orderStatus: {
     fontSize: 20,
     fontFamily: Manrope.Bold,

@@ -29,6 +29,10 @@ import {
   setUserData,
 } from '../../Redux';
 import DeviceInfo from 'react-native-device-info';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -41,10 +45,7 @@ const Profile = () => {
   const [profileData, setProfileData] = useState({});
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      getApiData();
-    }, 1000);
-    return () => clearInterval(interval);
+    getApiData();
   }, []);
 
   const getApiData = async () => {
@@ -1456,63 +1457,13 @@ const Profile = () => {
                 }}>
                 AppVersion {DeviceInfo.getVersion()}
               </Text>
-              {/* <TouchableOpacity
-                style={{
-                  width: '90%',
-                  height: 50,
-                  borderRadius: 5,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  backgroundColor: '#ECEFFE',
-                  marginVertical: 10,
-                }}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Iconviewcomponent
-                    Icontag={'FontAwesome5'}
-                    iconname={'headset'}
-                    icon_size={20}
-                    icon_color={Color.primary}
-                  />
-                </View>
-                <View
-                  style={{
-                    flex: 4,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: Color.primary,
-                      fontFamily: Manrope.Bold,
-                      letterSpacing: 0.5,
-                    }}>
-                    Feel free to ask! We're here to help
-                  </Text>
-                </View>
-              </TouchableOpacity> */}
+
               {token != undefined ? (
                 <TouchableOpacity
                   onPress={async () => {
-                    // AsyncStorage.clear();
-                    // dispatch(setUserData({}));
-                    // dispatch(setCountryCode({}));
-                    // dispatch(
-                    //   setDataCount({
-                    //     wishlist: 0,
-                    //     cart: 0,
-                    //   }),
-                    // );
-                    // dispatch(setOnBoardVisible(false));
-                    // navigation.replace('OnboardScreen');
-
-
                     try {
+                      // Navigate to onboarding or login screen
+                      navigation.navigate('OnboardScreen');
                       // Clear AsyncStorage
                       await AsyncStorage.clear();
 
@@ -1520,10 +1471,15 @@ const Profile = () => {
                       dispatch(setUserData({}));
                       dispatch(setCountryCode({}));
                       dispatch(setDataCount({ wishlist: 0, cart: 0 }));
-                      dispatch(setOnBoardVisible(false));
+                      dispatch(setOnBoardVisible(false))
 
-                      // Navigate to onboarding or login screen
-                      navigation.replace('OnboardScreen');
+                      await GoogleSignin.revokeAccess();
+                      // Sign out
+                      await GoogleSignin.signOut();
+                      // Clear stored tokens
+                      await AsyncStorage.removeItem('googleAuthToken');
+                      console.log('User logged out successfully');
+
                     } catch (error) {
                       console.error('Error clearing AsyncStorage during logout:', error);
                     }

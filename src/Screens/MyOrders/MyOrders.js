@@ -22,7 +22,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const { height } = Dimensions.get('screen');
 
-const Placed = ({ token, index, navigation }) => {
+const Placed = ({ token, index, navigation, countryCode }) => {
   const [OrderLoading, setOrderLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
 
@@ -331,7 +331,7 @@ const Placed = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM'
                             : '₹'}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>
@@ -703,7 +703,7 @@ const Missing = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM'
                             : '₹'}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>
@@ -1076,7 +1076,7 @@ const Pending = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM'
                             : '₹'}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>
@@ -1448,7 +1448,7 @@ const Proccesed = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM'
                             : '₹'}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>
@@ -1819,7 +1819,7 @@ const OnShipping = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM'
                             : '₹'}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>
@@ -2190,7 +2190,7 @@ const ArrivedOrders = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM'
                             : '₹'}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>
@@ -2547,7 +2547,7 @@ const CancelledOrders = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM '
                             : '₹ '}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>
@@ -2907,7 +2907,7 @@ const CancelledRequested = ({ token, index, navigation }) => {
                           : item?.order?.region_id == 453
                             ? 'RM '
                             : '₹ '}
-                        {item?.price}
+                        {item?.price.toFixed(2)}
                       </Text>
                     </View>
                   </View>

@@ -53,7 +53,7 @@ react {
 }
 
 project.ext.react = [
-        enableHermes: true,  // false to true , clean and rebuild if changing
+        enableHermes: false,  // false to true , clean and rebuild if changing
 ]
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.

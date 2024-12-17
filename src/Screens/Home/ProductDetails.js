@@ -311,6 +311,8 @@ const ProductDetails = ({ route }) => {
       setCategories_data(like_this_data?.data);
       // Reviews
       const reviewData = await fetchData.get_review(id, token);
+      console.log("REVIEW DATAS ----------------:",reviewData);
+      
       setReviewsData(reviewData);
       setShowLoadMore(true);
       // Follow Status
@@ -423,6 +425,7 @@ const ProductDetails = ({ route }) => {
         } else {
           common_fn.showToast(add_to_cart?.message);
           setModalVisible(false);
+          navigation.navigate('Auth');
         }
       } else {
         common_fn.showToast(`Please Select the 
@@ -534,10 +537,13 @@ const ProductDetails = ({ route }) => {
 
   const getCountData = async () => {
     try {
-      const getaddress = await fetchData.list_address(``, token);
-      console.log("address --------------- :",getaddress);
-      
-      setAddressCount(getaddress?.count);
+      setInterval(async () => {
+        const getaddress = await fetchData.list_address(``, token);
+        // console.log("address --------------- :", getaddress);
+        setAddressCount(getaddress?.count);
+      }, 1000);
+
+
       const getData = await fetchData.profile_data(``, token);
       dispatch(
         setDataCount({
@@ -2588,12 +2594,12 @@ const ProductDetails = ({ route }) => {
                       YOU MAY ALSO LIKE
                     </Text>
                     <FlatList
-                      data={Categories_data}
+                      data={Categories_data.filter(item => item.id !== id)}
                       numColumns={2}
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({ item, index }) => {
-                        return <ItemCard item={item} navigation={navigation} />;
-                      }}
+                      renderItem={({ item, index }) =>
+                        <ItemCard item={item} navigation={navigation} />
+                      }
                       onEndReached={() => {
                         loadMoreData();
                       }}

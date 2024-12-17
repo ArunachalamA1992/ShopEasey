@@ -43,16 +43,12 @@ const FollowingSellers = () => {
 
 
   useEffect(() => {
-    const interval = setInterval(() => {
       getSellersData();
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    };
   }, []);
 
 
   const getSellersData = async () => {
+    console.log('trigger');
     try {
       const getSellerList = await fetchData.following_seller_list(``, token);
       setSellerData(getSellerList?.data);

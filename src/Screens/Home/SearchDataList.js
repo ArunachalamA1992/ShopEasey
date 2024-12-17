@@ -29,7 +29,7 @@ import VoiceSearch from '../../Components/VoiceSearch';
 
 const { height } = Dimensions.get('screen');
 const SearchDataList = ({ navigation, route }) => {
-  console.log("SEARCH PRODUCT --------------- : ", route.params.searchProduct);
+  // console.log("SEARCH PRODUCT --------------- : ", route.params.searchProduct);
 
   const [searchProduct, setSearchProduct] = useState(
     route.params.searchProduct,
@@ -72,6 +72,10 @@ const SearchDataList = ({ navigation, route }) => {
 
   const getData = useCallback(async () => {
     try {
+      setProductSuggestions({
+        data: [],
+        visible: false,
+      });
       // console.log("selectData?.type --------------- : ", selectData);
       setProductData([])
       const data = `${selectData && `keywords=${selectData?.name}`}&region_id=${countryCode?.id}`;
@@ -88,34 +92,58 @@ const SearchDataList = ({ navigation, route }) => {
 
 
 
-  const handleSearch = async item => {
+  // const handleSearch = async (item) => {
+  //   try {
+  //     setLoading(true);
+  //     setProductSuggestions({
+  //       data: [],
+  //       visible: false,
+  //     });
+
+  //     const data = `filter=${item?.name}`;
+  //     const get_search_data = await fetchData.search(data, token);
+  //     // console.log("GET SEARCG DATA ------------------ : ", get_search_data);
+
+  //     if (get_search_data?.status === true) {
+  //       setProductSuggestions({
+  //         // data: getData?.data || [],
+  //         data: get_search_data?.status ? get_search_data?.data : [],
+  //         visible: true,
+  //       });
+  //     } else {
+  //       setProductSuggestions({
+  //         data: [],
+  //         visible: false,
+  //       });
+  //     }
+  //     // getData();
+  //     // setSearchModalVisible(false);
+  //   } catch (error) {
+  //     console.log(`catch in handle_Search :`, error);
+  //   }
+  // };
+
+  const handleSearch = async (item) => {
     try {
       setLoading(true);
-      // setProductSuggestions({
-      //   data: [],
-      //   visible: false,
-      // });
+      setProductSuggestions({
+        data: [],
+        visible: false,
+      });
 
       const data = `filter=${item?.name}`;
       const get_search_data = await fetchData.search(data, token);
-      console.log("GET SEARCG DATA ------------------ : ", get_search_data);
 
       if (get_search_data?.status === true) {
-        setProductSuggestions({
-          // data: getData?.data || [],
-          data: get_search_data?.status ? get_search_data?.data : [],
-          visible: true,
-        });
+        // Set the filtered data to the ProductData state
+        setProductData(get_search_data?.data || []);
       } else {
-        setProductSuggestions({
-          data: [],
-          visible: true,
-        });
+        setProductData([]); // Clear data if no results
       }
-      // getData();
-      setSearchModalVisible(false);
     } catch (error) {
-      console.log(`catch in handle_Search :`, error);
+      console.log(`catch in handle_Search:`, error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,10 +152,10 @@ const SearchDataList = ({ navigation, route }) => {
     setSearchLoader(true);
     try {
       // console.log("input --------------- : ", input);
-      // setProductSuggestions({
-      //   data: [],
-      //   visible: false,
-      // });
+      setProductSuggestions({
+        data: [],
+        visible: false,
+      });
       const data = `filter=${input}`;
       // const data = `filter=${input}&page=1&limit=10`;
       const getData = await fetchData.search(data, token);
@@ -142,7 +170,7 @@ const SearchDataList = ({ navigation, route }) => {
       } else {
         setProductSuggestions({
           data: [],
-          visible: true,
+          visible: false,
         });
       }
       setSearchLoader(false);
@@ -180,27 +208,37 @@ const SearchDataList = ({ navigation, route }) => {
   };
 
   const loadMoreData = async () => {
-    if (loadMore || endReached) {
-      return;
-    }
+    console.log("loadMoreData called"); // Debug Start Point
+    console.log("loadMore:", loadMore, "endReached:", endReached);
+
+    // if (loadMore || endReached) {
+    //   console.log("Skipping loadMoreData...");
+    //   return;
+    // }
+
     setLoadMore(true);
     try {
       const nextPage = page + 1;
-      var data = `keywords=${selectData?.value}&region_id=${countryCode?.id}&page=${nextPage}`;
+      console.log("DATA --------------- :", selectData?.name+ "REGION ---------- :"+countryCode?.id+"PAGE -------------- :"+nextPage);
+      const data = `keywords=${selectData?.name}&region_id=${countryCode?.id}&page=${nextPage}`;
+      // const data = `keywords=${selectData?.name}&region_id=${countryCode?.id}&page=${nextPage}`;
+
       const filterData = await fetchData.list_products(data, token);
-      console.log("dklfgkfdklgfdlgnl   ", filterData);
 
       if (filterData?.data?.length > 0) {
         setPage(nextPage);
         const updatedData = [...ProductData, ...filterData?.data];
+        console.log("SEARCH updatedData *******************", updatedData);
         setProductData(updatedData);
       } else {
+        console.log("No more data to load");
         setEndReached(true);
       }
     } catch (error) {
-      console.error('catch in loadMore_Data :', error);
+      console.error("Error in loadMoreData:", error);
     } finally {
       setLoadMore(false);
+      console.log("loadMore reset to false");
     }
   };
 
@@ -212,15 +250,15 @@ const SearchDataList = ({ navigation, route }) => {
           placeholderTextColor={Color.grey}
           style={styles.searchView}
           value={searchProduct?.name}
-          iconColor={Color.grey}
+          iconColor={Color.black}
           inputStyle={{ color: Color.black }}
           onChangeText={search => {
-            console.log("search ********************** : ", search);
+            // console.log("search ********************** : ", search);
 
             const sanitizedSearch = search.replace(/[^a-zA-Z0-9\s]/g, '');
             propertySearch(sanitizedSearch);
           }}
-          clearIcon={true}
+          clearIcon={false}
           // icon={searchProduct != '' ? 'close' : 'search'}
           onIconPress={() => {
             setSearchProduct('');
@@ -282,7 +320,7 @@ const SearchDataList = ({ navigation, route }) => {
                 onEndReached={() => {
                   loadSearchMoreData();
                 }}
-                onEndReachedThreshold={3}
+                onEndReachedThreshold={0.5}
                 ListEmptyComponent={() => {
                   if (ProductSuggestions?.data && ProductData?.length != 0) {
                     return null
@@ -316,34 +354,7 @@ const SearchDataList = ({ navigation, route }) => {
           </View>
         )}
       </View>
-      {/* <TouchableOpacity
-        onPress={() => setSearchModalVisible(true)}
-        activeOpacity={0.7}
-        style={{
-          width: '100%',
-          height: 45,
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: 20,
-          borderRadius: 50,
-          marginBottom: 10,
-          borderColor: Color.lightgrey,
-          borderWidth: 1,
-        }}>
-        <FIcon name="search" size={18} color={Color.cloudyGrey} />
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 16,
-            color: Color.cloudyGrey,
-            fontFamily: Manrope.Medium,
-            marginHorizontal: 10,
-          }}
-          numberOfLines={1}>
-          {`Search for ${searchProduct}`}
-        </Text>
-        <VoiceSearch onSearch={handleVoiceSearch} />
-      </TouchableOpacity> */}
+
       {loading ? (
         <View style={{ padding: 10 }}>
           <SkeletonPlaceholder>
@@ -403,6 +414,7 @@ const SearchDataList = ({ navigation, route }) => {
         <FlatList
           data={ProductData}
           numColumns={2}
+          scrollEnabled={true}
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => {
             return <ItemCard item={item} navigation={navigation} />;
@@ -420,7 +432,8 @@ const SearchDataList = ({ navigation, route }) => {
                   marginVertical: 10,
                   width: '100%',
                 }}>
-                <Text
+                <ActivityIndicator size={'large'} color={Color.primary}></ActivityIndicator>
+                {/* <Text
                   style={{
                     fontSize: 14,
                     padding: 5,
@@ -432,17 +445,15 @@ const SearchDataList = ({ navigation, route }) => {
                     fontFamily: Manrope.Bold,
                   }}>
                   Product Not Found
-                </Text>
+                </Text> */}
               </View>
             );
           }}
           onEndReached={() => {
+            console.log("end reached *********");
             loadMoreData();
           }}
-          // onEndReached={() => {
-          //   loadSearchMoreData();
-          // }}
-          onEndReachedThreshold={3}
+          onEndReachedThreshold={0.5}
           ListFooterComponent={() => {
             return (
               <View style={{ alignItems: 'center', justifyContent: 'center' }}>

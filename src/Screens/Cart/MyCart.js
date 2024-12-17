@@ -103,12 +103,19 @@ const MyCart = ({ }) => {
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
+
+  useFocusEffect(
+    React.useCallback(() => {
       getAPIData();
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [token]);
+    }, [token, cartData])
+  );
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     getAPIData();
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, [token,countryCode]);
 
   const getAPIData = async () => {
     try {

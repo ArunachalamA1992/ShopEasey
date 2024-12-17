@@ -450,7 +450,7 @@ const DeliveredOrder = ({ navigation, route }) => {
           textColor={Color.primary}>
           Add Reviews
         </Button>
-        <Button
+        {/* <Button
           mode="contained"
           onPress={() => downloadInvoice()}
           style={{
@@ -462,7 +462,7 @@ const DeliveredOrder = ({ navigation, route }) => {
           }}
           textColor={Color.white}>
           Download Invoice
-        </Button>
+        </Button> */}
         {/* {pdfPath && (
           <Pdf
             source={{uri: pdfPath}}

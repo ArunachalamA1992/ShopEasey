@@ -232,6 +232,7 @@ const OrderReview = ({ navigation, route }) => {
         maxWidth: 300,
         maxHeight: 300,
         quality: 1,
+        cameraType: 'back', // Specify back camera
       };
 
       const isCameraPermitted = await requestCameraPermission();

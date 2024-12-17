@@ -595,7 +595,7 @@ const MainApp = () => {
           name="OrderReview"
           component={OrderReview}
           options={({ navigation, route }) => ({
-            headerTitle: 'Leave a Review 1231',
+            headerTitle: 'Leave a Review',
             headerTitleAlign: 'center',
             headerTitleStyle: {
               color: Color.black,

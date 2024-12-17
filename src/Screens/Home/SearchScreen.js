@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -7,18 +7,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Divider, Searchbar} from 'react-native-paper';
+import { Divider, Searchbar } from 'react-native-paper';
 import F6Icon from 'react-native-vector-icons/FontAwesome6';
 import Color from '../../Global/Color';
-import {Manrope} from '../../Global/FontFamily';
+import { Manrope } from '../../Global/FontFamily';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import fetchData from '../../Config/fetchData';
 import VoiceSearch from '../../Components/VoiceSearch';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import common_fn from '../../Config/common_fn';
 
-const SearchScreen = ({navigation, route}) => {
+const SearchScreen = ({ navigation, route }) => {
   const [searchProduct, setSearchProduct] = useState(
     route.params.searchProduct,
   );
@@ -28,13 +28,13 @@ const SearchScreen = ({navigation, route}) => {
   const [endReached, setEndReached] = useState(false);
   const [voiceSearchQuery, setVoiceSearchQuery] = useState('');
   const userData = useSelector(state => state.UserReducer.userData);
-  var {token} = userData;
+  var { token } = userData;
   const [ProductSuggestions, setProductSuggestions] = useState({
     data: [],
     visible: false,
   });
 
-  console.log('ProductSuggestions?.visible', ProductSuggestions?.visible);
+  // console.log('ProductSuggestions?.visible', ProductSuggestions?.visible);
 
   const [RecentlySearch] = useState([
     {
@@ -51,15 +51,16 @@ const SearchScreen = ({navigation, route}) => {
 
   const handleVoiceSearch = query => {
     setSearchProduct(query);
+    setVoiceSearchQuery(query);
   };
 
   const propertySearch = async data => {
     setSearchProduct(data);
     try {
-      const data = `filter=${searchProduct}&page=1&limit=10`;
+      const data = `filter=${data}`;
       const getData = await fetchData.search(data, token);
       setProductSuggestions({
-        data: getData?.data?.keyword?.rows,
+        data: getData?.data,
         visible: true,
       });
     } catch (error) {
@@ -80,9 +81,9 @@ const SearchScreen = ({navigation, route}) => {
         setPage(nextPage);
         const updatedData = [
           ...ProductSuggestions,
-          ...filterData?.data?.keyword?.rows,
+          ...filterData?.data,
         ];
-        setProductSuggestions({data: updatedData, visible: true});
+        setProductSuggestions({ data: updatedData, visible: true });
       } else {
         setEndReached(true);
       }
@@ -93,10 +94,38 @@ const SearchScreen = ({navigation, route}) => {
     }
   };
 
+
+
+  const loadSearchMoreData = async () => {
+    if (loadMore || endReached) {
+      return;
+    }
+    setLoadMore(true);
+    try {
+      const nextPage = Searchpage + 1;
+      var data = `filter=${searchProduct?.name}&page=${nextPage}`;
+      const filterData = await fetchData.search(data, token);
+      if (filterData.length > 0) {
+        setPage(nextPage);
+        const updatedData = [
+          ...ProductSuggestions,
+          ...filterData?.data,
+        ];
+        setProductSuggestions(updatedData);
+      } else {
+        setEndReached(true);
+      }
+    } catch (error) {
+      console.error('catch in loadSearch_More_Data:', error);
+    } finally {
+      setLoadMore(false);
+    }
+  };
+
   const getSearchData = async () => {
     try {
       if (searchProduct != '') {
-        navigation.navigate('SearchDataList', {searchProduct, selectData});
+        navigation.navigate('SearchDataList', { searchProduct, selectData });
       } else {
         common_fn.showToast('Please Select the Search');
       }
@@ -105,12 +134,41 @@ const SearchScreen = ({navigation, route}) => {
     }
   };
 
+  const handleSearch = async item => {
+    try {
+      setProductSuggestions({
+        data: [],
+        visible: false,
+      });
+
+      const data = `filter=${item?.name}`;
+      const get_search_data = await fetchData.search(data, token);
+      // console.log("GET SEARCG DATA ------------------ : ", get_search_data);
+
+      if (get_search_data?.status === true) {
+        setProductSuggestions({
+          // data: getData?.data || [],
+          data: get_search_data?.status ? get_search_data?.data : [],
+          visible: true,
+        });
+      } else {
+        setProductSuggestions({
+          data: [],
+          visible: true,
+        });
+      }
+      // getData();
+    } catch (error) {
+      console.log(`catch in handle_Search :`, error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.searchView}>
         <Icon color={Color.cloudyGrey} name="search" size={25} />
         <TextInput
-          placeholder="Search Products 12323"
+          placeholder="Search Products"
           value={searchProduct}
           style={{
             flex: 1,
@@ -122,7 +180,7 @@ const SearchScreen = ({navigation, route}) => {
           placeholderTextColor={Color.cloudyGrey}
           onChangeText={search => propertySearch(search)}
         />
-        <VoiceSearch onSearch={handleVoiceSearch} />
+        {/* <VoiceSearch onSearch={handleVoiceSearch} /> */}
       </TouchableOpacity>
 
       {ProductSuggestions?.visible == true && searchProduct != '' && (
@@ -145,17 +203,18 @@ const SearchScreen = ({navigation, route}) => {
             <FlatList
               data={ProductSuggestions?.data}
               keyExtractor={(item, index) => item + index}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return (
                   <TouchableOpacity
                     key={index}
                     onPress={() => {
-                      setSearchProduct(item?.keyword);
+                      setSearchProduct(item);
                       setSelectData(item);
-                      setProductSuggestions({
-                        data: [],
-                        visible: false,
-                      });
+                      handleSearch(item);
+                      // setProductSuggestions({
+                      //   data: [],
+                      //   visible: false,
+                      // });
                     }}
                     style={{
                       width: '90%',
@@ -166,16 +225,16 @@ const SearchScreen = ({navigation, route}) => {
                         fontFamily: Manrope.Medium,
                         color: Color.black,
                       }}>
-                      {item?.keyword}
+                      {item?.name}
                     </Text>
                     {index < ProductSuggestions?.data.length - 1 && (
-                      <Divider style={{height: 1, marginVertical: 5}} />
+                      <Divider style={{ height: 1, marginVertical: 5 }} />
                     )}
                   </TouchableOpacity>
                 );
               }}
               onEndReached={() => {
-                loadMoreData();
+                loadSearchMoreData();
               }}
               ListEmptyComponent={() => {
                 return (
@@ -221,7 +280,7 @@ const SearchScreen = ({navigation, route}) => {
         onPress={() => {
           getSearchData();
         }}>
-        <Text style={{fontSize: 16, color: Color.white}}>Search</Text>
+        <Text style={{ fontSize: 16, color: Color.white }}>Search</Text>
       </TouchableOpacity>
       {/* <View style={{flex: 1, marginTop: 10}}>
         <View

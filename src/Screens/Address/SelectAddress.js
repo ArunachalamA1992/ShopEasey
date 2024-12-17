@@ -48,7 +48,7 @@ const selectAddressess = () => {
   const getAddressData = async () => {
     try {
       const getaddress = await fetchData.list_address(``, token);
-      console.log('Address -------------', getaddress);
+      // console.log('Address -------------', getaddress);
       setAddressData(getaddress?.data);
     } catch (error) {
       console.log('catch in getAddressData_SelectAddress:', error);
